@@ -1,0 +1,29 @@
+# Gradle / Android Studio
+.gradle/
+local.properties
+.idea/
+*.iml
+app/build/
+build/
+captures/
+.cxx/
+
+# Standalone CMake builds (CMakePresets.json) go to builds/
+builds/*
+!builds/.gitkeep
+!builds/README.md
+
+# FetchContent / dependency caches
+_deps/
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+
+# Packed script archives (generated)
+lua.dat
+
+# Keystores — never commit signing material
+*.jks
+*.keystore

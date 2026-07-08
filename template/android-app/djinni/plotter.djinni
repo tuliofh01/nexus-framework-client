@@ -1,0 +1,33 @@
+# plotter.djinni — Djinni IDL for the C++ <-> Kotlin/JVM bridge.
+#
+# Regenerate the stubs in ../djinni-generated with:
+#   djinni --idl djinni/plotter.djinni \
+#          --cpp-out djinni-generated/cpp   --cpp-namespace nxs::bridge \
+#          --java-out djinni-generated/java/com/nexus/plotter \
+#          --java-package com.nexus.plotter \
+#          --jni-out djinni-generated/jni
+#
+# Direction of the arrows:
+#   +j  implemented in Kotlin/Java (Chaquopy lives on the JVM side)
+#   +c  implemented in C++ (the native core the activity drives)
+
+# Result of one Python evaluation. Arrays cross the JNI boundary once per
+# resample as primitive double[] — cheap next to per-frame chatter.
+eval_result = record {
+    ok: bool;
+    error: string;
+    xs: list<f64>;
+    ys: list<f64>;
+}
+
+# Implemented in Kotlin on top of Chaquopy: calls functions.evaluate() in
+# app/src/main/python/functions.py and repacks the numpy output.
+python_bridge = interface +j {
+    evaluate(function_name: string, x_min: f64, x_max: f64, samples: i32): eval_result;
+}
+
+# Implemented in C++: entry point the MainActivity uses to hand the
+# Chaquopy-backed bridge to the native core before SDL_main runs.
+plotter_core = interface +c {
+    static install_python_bridge(bridge: python_bridge);
+}

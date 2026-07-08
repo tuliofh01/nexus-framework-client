@@ -1,0 +1,35 @@
+# Out-of-source builds live in builds/ (see builds/README.md)
+builds/*
+!builds/.gitkeep
+!builds/README.md
+
+# CMake / compiler artifacts anywhere else
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# FetchContent / dependency caches
+_deps/
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Packed script archives (generated)
+lua.dat
+python.dat
+
+# Editors
+.vscode/
+.idea/
+*.swp

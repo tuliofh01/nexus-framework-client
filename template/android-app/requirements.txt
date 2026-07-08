@@ -1,0 +1,6 @@
+# Python packages for the Chaquopy-embedded interpreter.
+# On Android these are installed by the `chaquopy { defaultConfig { pip { ... } } }`
+# block in app/build.gradle.kts — do not pip-install by hand into the APK.
+# numpy wheels are published by Chaquopy for arm64-v8a / x86_64, so this
+# works on-device without a local NDK build of numpy.
+numpy>=1.26

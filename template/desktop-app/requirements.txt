@@ -1,0 +1,6 @@
+# Python packages used by the embedded interpreter (python/functions.py).
+# Desktop: install into the interpreter CMake found (or a venv you point
+# Python3_ROOT_DIR at):  pip install -r requirements.txt
+# Android: this file is mirrored by Chaquopy's `pip { install "numpy" }`
+# block in app/build.gradle — do not pip-install by hand there.
+numpy>=1.26
