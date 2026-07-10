@@ -8,8 +8,7 @@ Compose Desktop + Gradle scaffolder for The Nexus Framework. It does not run gen
 
 | Module | Role |
 |--------|------|
-| `:app` | Primary UI — Compose Desktop, **MVC** packages under `nexus.opensource.app` |
-| `:utils` | Shared helpers (`NexusBranding`) + kotlinx ecosystem |
+| `:app` | Compose Desktop client — **MVC** under `nexus.opensource` (`model/`, `view/`, `controller/`) |
 | `docs/assets/diagrams/` | PlantUML-rendered architecture SVGs referenced from README |
 
 Generated-app stack (see README): C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Djinni**; wizard authors Langflow-style JSON flows via **imnodes**.
@@ -26,20 +25,19 @@ Generated-app stack (see README): C++ + Lua (**sol2**) + TypeScript/XHTML + Pyth
 ```bash
 ./gradlew :app:compileKotlin
 ./gradlew :app:run
-./gradlew :utils:test
+./gradlew :app:test
 ```
 
 ## Where to edit
 
 | Change | Location |
 |--------|----------|
-| Entry / window | `app/.../App.kt` |
-| Model | `app/.../model/` |
-| View + `@Preview` | `app/.../view/` |
-| Controller | `app/.../controller/` |
-| Branding / shared | `utils/.../NexusBranding.kt` |
+| Entry / window | `app/src/main/kotlin/nexus/opensource/App.kt` |
+| Model | `app/src/main/kotlin/nexus/opensource/model/` |
+| View + `@Preview` | `app/src/main/kotlin/nexus/opensource/view/` |
+| Controller | `app/src/main/kotlin/nexus/opensource/controller/` |
 | Product docs | `README.md`, `README.pt-BR.md` |
-| Architecture SVGs | `docs/assets/diagrams/*.svg` |
+| Architecture SVGs | `docs/assets/diagrams/full-stack-architecture.svg`, `app-creation-wizard-flow.svg` |
 
 ## Docs
 
