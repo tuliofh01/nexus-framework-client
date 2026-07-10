@@ -6,11 +6,23 @@
 
 <p align="center"><strong>🧩 Apps nativos, não abas de browser</strong> — entregue binários SDL3 a partir de um grafo blueprint.</p>
 
-<p align="center">🇧🇷 Versão em português · <a href="../../README.md">English README</a></p>
+<p align="center">
+  🌐 <strong>Traduções:</strong>
+  <a href="../../README.md">English</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.zh-CN.md">简体中文</a>
+</p>
 
 <p align="center">
   <a href="../../README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
   <a href="README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
+  <a href="README.es.md"><img src="https://img.shields.io/badge/lang-Espa%C3%B1ol-red?style=for-the-badge" alt="Español" /></a>
+  <a href="README.de.md"><img src="https://img.shields.io/badge/lang-Deutsch-yellow?style=for-the-badge" alt="Deutsch" /></a>
+  <a href="README.ru.md"><img src="https://img.shields.io/badge/lang-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-lightgrey?style=for-the-badge" alt="Русский" /></a>
+  <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/lang-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-orange?style=for-the-badge" alt="简体中文" /></a>
 </p>
 
 <p align="center">
@@ -367,7 +379,7 @@ A pasta `misc/` consolida **ferramentas do repositório Framework** — módulos
 | [misc/scripts/](../scripts/) | [dev/](../scripts/dev/) · [test-gen/](../scripts/test-gen/) · [generate-diagrams/](../scripts/generate-diagrams/) |
 | [misc/docker/](../docker/) | Geração containerizada |
 | [misc/jenkins/](../jenkins/) | CI Jenkins opcional |
-| [misc/translations/](README.pt-BR.md) | [README pt-BR](README.pt-BR.md) |
+| [misc/translations/](README.md) | READMEs localizados — [pt-BR](README.pt-BR.md) · [es](README.es.md) · [de](README.de.md) · [ru](README.ru.md) · [zh-CN](README.zh-CN.md) |
 
 O Gradle mapeia `:core` e `:cli` a partir de `misc/` via [settings.gradle.kts](../../settings.gradle.kts). Hub: [misc/README.md](../README.md) · Pipeline: [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md)
 

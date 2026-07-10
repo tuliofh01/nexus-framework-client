@@ -6,11 +6,22 @@
 
 <p align="center"><strong>🧩 Native apps, not browser tabs</strong> — ship SDL3 binaries from a blueprint graph.</p>
 
-<p align="center">🇧🇷 <a href="misc/translations/README.pt-BR.md">Versão em português</a></p>
+<p align="center">
+  🌐 <strong>Translations:</strong>
+  <a href="misc/translations/README.pt-BR.md">Português</a> ·
+  <a href="misc/translations/README.es.md">Español</a> ·
+  <a href="misc/translations/README.de.md">Deutsch</a> ·
+  <a href="misc/translations/README.ru.md">Русский</a> ·
+  <a href="misc/translations/README.zh-CN.md">简体中文</a>
+</p>
 
 <p align="center">
   <a href="README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
   <a href="misc/translations/README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
+  <a href="misc/translations/README.es.md"><img src="https://img.shields.io/badge/lang-Espa%C3%B1ol-red?style=for-the-badge" alt="Español" /></a>
+  <a href="misc/translations/README.de.md"><img src="https://img.shields.io/badge/lang-Deutsch-yellow?style=for-the-badge" alt="Deutsch" /></a>
+  <a href="misc/translations/README.ru.md"><img src="https://img.shields.io/badge/lang-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-lightgrey?style=for-the-badge" alt="Русский" /></a>
+  <a href="misc/translations/README.zh-CN.md"><img src="https://img.shields.io/badge/lang-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-orange?style=for-the-badge" alt="简体中文" /></a>
 </p>
 
 <p align="center">
@@ -367,7 +378,7 @@ The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, c
 | [misc/scripts/](misc/scripts/) | [dev/](misc/scripts/dev/) · [test-gen/](misc/scripts/test-gen/) · [generate-diagrams/](misc/scripts/generate-diagrams/) |
 | [misc/docker/](misc/docker/) | Containerized generation |
 | [misc/jenkins/](misc/jenkins/) | Optional Jenkins CI |
-| [misc/translations/](misc/translations/) | [pt-BR README](misc/translations/README.pt-BR.md) |
+| [misc/translations/](misc/translations/) | Localized READMEs — [pt-BR](misc/translations/README.pt-BR.md) · [es](misc/translations/README.es.md) · [de](misc/translations/README.de.md) · [ru](misc/translations/README.ru.md) · [zh-CN](misc/translations/README.zh-CN.md) |
 
 Gradle maps `:core` and `:cli` from `misc/` via [settings.gradle.kts](settings.gradle.kts). Hub: [misc/README.md](misc/README.md) · Pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 
