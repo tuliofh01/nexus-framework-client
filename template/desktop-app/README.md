@@ -33,9 +33,16 @@ SDL3/ImGui/ImPlot/imnodes/Lua/sol2/pybind11 are fetched automatically
 (FetchContent); pass `-DNXS_PREFER_SYSTEM_DEPS=ON` to prefer system packages.
 
 ```bash
-cmake --preset debug          # configures into builds/debug
+cmake --preset debug          # configures into ../../builds/framework/{{projectName}}/debug
 cmake --build --preset debug
-./builds/debug/{{projectName}}
+./../../builds/framework/{{projectName}}/debug/{{projectName}}
+```
+
+Explicit out-of-source configure (no presets):
+
+```bash
+cmake -B ../../builds/framework/{{projectName}}/debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build ../../builds/framework/{{projectName}}/debug
 ```
 
 ## Try it

@@ -6,7 +6,7 @@
       "name": "android-base",
       "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/builds/${presetName}",
+      "binaryDir": "${sourceDir}/../../builds/framework/{{projectName}}/${presetName}",
       "cacheVariables": {
         "CMAKE_CXX_STANDARD": "20",
         "CMAKE_SYSTEM_NAME": "Android",

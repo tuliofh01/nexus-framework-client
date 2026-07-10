@@ -31,8 +31,10 @@ Shared runtime (`NexusTheme`, `FontConfig`) lives in `template/shared/runtime/` 
 ```bash
 cmake --preset debug
 cmake --build --preset debug
-./builds/debug/{{projectName}}
+./../../builds/framework/{{projectName}}/debug/{{projectName}}
 ```
+
+Or: `cmake -B ../../builds/framework/{{projectName}}/debug -G Ninja -DCMAKE_BUILD_TYPE=Debug`
 
 Prerequisites: CMake ≥ 3.24, Ninja, C++20, Python 3.10+ dev headers, `pip install -r requirements.txt`.
 
