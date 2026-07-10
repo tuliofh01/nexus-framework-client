@@ -1,5 +1,6 @@
 package nexus.opensource.core.service
 
+import nexus.opensource.core.model.BlueprintJson
 import nexus.opensource.core.model.NexusConfigJson
 import nexus.opensource.core.model.ProjectSpec
 import java.nio.file.Files
@@ -17,6 +18,7 @@ data class GenerateOptions(
 class ProjectGenerator(
     private val repoRoot: Path,
     private val templateEngine: TemplateEngine = TemplateEngine(),
+    private val blueprintValidator: BlueprintValidator = BlueprintValidator(),
 ) {
     fun generate(
         spec: ProjectSpec,
@@ -62,9 +64,19 @@ class ProjectGenerator(
             writeScriptProtectionHeader(sharedDest, vars, onProgress)
         }
 
+        writeBlueprint(projectRoot, spec, vars, onProgress)
         validateRenderedConfig(projectRoot, onProgress)
+        validateRenderedBlueprint(projectRoot, onProgress)
         onProgress("Done: $projectRoot")
         return projectRoot
+    }
+
+    fun loadTemplateBlueprint(appType: nexus.opensource.core.model.AppType): nexus.opensource.core.model.BlueprintFile {
+        val path = repoRoot.resolve(TEMPLATE_DIR)
+            .resolve(appType.templateFolder)
+            .resolve(BlueprintJson.FILE_NAME)
+        require(Files.isRegularFile(path)) { "Missing template ${BlueprintJson.FILE_NAME}: $path" }
+        return BlueprintJson.read(Files.readString(path))
     }
 
     fun templateVars(spec: ProjectSpec): Map<String, String> {
@@ -126,6 +138,43 @@ class ProjectGenerator(
                 .forEach { Files.deleteIfExists(it) }
         }
         Files.createDirectories(projectRoot)
+    }
+
+    private fun writeBlueprint(
+        projectRoot: Path,
+        spec: ProjectSpec,
+        vars: Map<String, String>,
+        onProgress: (String) -> Unit,
+    ) {
+        val custom = spec.blueprint ?: return
+        blueprintValidator.requireValid(custom)
+        val path = projectRoot.resolve(BlueprintJson.FILE_NAME)
+        val rendered = templateEngine.render(BlueprintJson.write(custom), vars)
+        Files.writeString(path, rendered)
+        onProgress("Wrote custom ${BlueprintJson.FILE_NAME} (${custom.nodes.size} nodes, ${custom.edges.size} edges)")
+    }
+
+    private fun validateRenderedBlueprint(projectRoot: Path, onProgress: (String) -> Unit) {
+        val path = projectRoot.resolve(BlueprintJson.FILE_NAME)
+        if (!Files.isRegularFile(path)) {
+            onProgress("  [warn] missing ${BlueprintJson.FILE_NAME}")
+            return
+        }
+        try {
+            val blueprint = BlueprintJson.read(Files.readString(path))
+            val result = blueprintValidator.validate(blueprint)
+            if (!result.isValid) {
+                onProgress("  [warn] ${BlueprintJson.FILE_NAME}: ${result.errors.joinToString()}")
+                return
+            }
+            result.warnings.forEach { onProgress("  [blueprint] $it") }
+            onProgress(
+                "Validated ${BlueprintJson.FILE_NAME} " +
+                    "(${blueprint.nodes.size} nodes, ${blueprint.edges.size} edges)",
+            )
+        } catch (e: Exception) {
+            onProgress("  [warn] could not parse ${BlueprintJson.FILE_NAME}: ${e.message}")
+        }
     }
 
     private fun validateRenderedConfig(projectRoot: Path, onProgress: (String) -> Unit) {
