@@ -55,13 +55,13 @@ Layout de saída: [builds/README.md](builds/README.md) · Templates: [template/R
 ```
 Framework/
 ├── app/                 Cliente Compose Desktop (`:app`) — MVC em `nexus.opensource/`
+├── buildSrc/            Plugins Gradle de convenção (toolchain JVM 26) — **deve ficar na raiz**
 ├── misc/
 │   ├── core/            Pipeline de geração (`:core`) — ProjectGenerator, schema nxs_config
-│   └── cli/             Comando headless `generate` (`:cli`)
-├── buildSrc/            Plugins Gradle de convenção (toolchain JVM 26) — deve ficar na raiz
-├── docker/              Geração containerizada
-├── jenkins/             CI opcional — jenkins/README.md
-├── scripts/             Scripts auxiliares (ex.: generate-in-docker.sh)
+│   ├── cli/             Comando headless `generate` (`:cli`)
+│   ├── docker/          Geração containerizada opcional
+│   ├── jenkins/         Notas opcionais de setup Jenkins
+│   └── scripts/         Automação do repositório (ex.: generate-in-docker.sh)
 ├── client-setup/        Instaladores JDK 26 + Git na primeira execução
 ├── builds/              Cliente → builds/client/ · apps → builds/framework/<nome>/
 ├── template/
