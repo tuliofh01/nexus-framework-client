@@ -9,7 +9,7 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
+      .label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
       .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
@@ -25,31 +25,61 @@
   <rect width="1000" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
 
-  <rect x="80" y="200" width="150" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="92" y="222" class="icon">&#xf075;</text>
-  <text x="114" y="222" class="label">User Input</text>
-  <text x="92" y="254" class="desc">Natural language task from user</text>
-  <rect x="380" y="190" width="220" height="84" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="392" y="212" class="icon">&#xf544;</text>
-  <text x="414" y="212" class="label">Agent</text>
-  <text x="392" y="264" class="desc">ReAct / tool-calling LLM orchestrator</text>
-  <rect x="740" y="200" width="150" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="752" y="222" class="icon">&#xf075;</text>
-  <text x="774" y="222" class="label">Output</text>
-  <text x="752" y="254" class="desc">Synthesized final answer to user</text>
+  <rect x="80" y="200" width="220" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="94" y="226" class="icon">&#xf075;</text>
+  <text x="116" y="228" class="label">
+    <tspan x="116" dy="0">User Input</tspan>
+  </text>
+  <text x="94" y="247" class="desc">
+    <tspan x="94" dy="0">Natural language task from</tspan>
+    <tspan x="94" dy="14">user</tspan>
+  </text>
+  <rect x="380" y="190" width="257" height="88" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="394" y="216" class="icon">&#xf544;</text>
+  <text x="416" y="218" class="label">
+    <tspan x="416" dy="0">Agent</tspan>
+  </text>
+  <text x="394" y="237" class="desc">
+    <tspan x="394" dy="0">ReAct / tool-calling LLM</tspan>
+    <tspan x="394" dy="14">orchestrator</tspan>
+  </text>
+  <rect x="740" y="200" width="226" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="754" y="226" class="icon">&#xf075;</text>
+  <text x="776" y="228" class="label">
+    <tspan x="776" dy="0">Output</tspan>
+  </text>
+  <text x="754" y="247" class="desc">
+    <tspan x="754" dy="0">Synthesized final answer to</tspan>
+    <tspan x="754" dy="14">user</tspan>
+  </text>
 
-  <rect x="120" y="400" width="160" height="64" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="132" y="422" class="icon">&#xf013;</text>
-  <text x="154" y="422" class="label">Calculator</text>
-  <text x="132" y="454" class="desc">Arithmetic tool invocation</text>
-  <rect x="420" y="400" width="160" height="64" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="432" y="422" class="icon">&#xf002;</text>
-  <text x="454" y="422" class="label">Web Search</text>
-  <text x="432" y="454" class="desc">Live web lookup capability</text>
-  <rect x="720" y="400" width="160" height="64" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="732" y="422" class="icon">&#xe73c;</text>
-  <text x="754" y="422" class="label">Python REPL</text>
-  <text x="732" y="454" class="desc">Execute code snippets safely</text>
+  <rect x="120" y="400" width="189" height="78" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="134" y="426" class="icon">&#xf013;</text>
+  <text x="156" y="428" class="label">
+    <tspan x="156" dy="0">Calculator</tspan>
+  </text>
+  <text x="134" y="447" class="desc">
+    <tspan x="134" dy="0">Arithmetic tool</tspan>
+    <tspan x="134" dy="14">invocation</tspan>
+  </text>
+  <rect x="420" y="400" width="189" height="78" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="434" y="426" class="icon">&#xf002;</text>
+  <text x="456" y="428" class="label">
+    <tspan x="456" dy="0">Web Search</tspan>
+  </text>
+  <text x="434" y="447" class="desc">
+    <tspan x="434" dy="0">Live web lookup</tspan>
+    <tspan x="434" dy="14">capability</tspan>
+  </text>
+  <rect x="720" y="400" width="201" height="78" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="734" y="426" class="icon">&#xe73c;</text>
+  <text x="756" y="428" class="label">
+    <tspan x="756" dy="0">Python REPL</tspan>
+  </text>
+  <text x="734" y="447" class="desc">
+    <tspan x="734" dy="0">Execute code snippets</tspan>
+    <tspan x="734" dy="14">safely</tspan>
+  </text>
 
   <line x1="230" y1="232" x2="380" y2="232" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <line x1="600" y1="232" x2="740" y2="232" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>

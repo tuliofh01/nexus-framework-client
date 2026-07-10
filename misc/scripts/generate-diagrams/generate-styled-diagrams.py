@@ -27,6 +27,11 @@ LABEL_GAP = 8
 CHAR_W_LABEL = 7.4
 CHAR_W_DESC = 6.2
 
+# Layout — minimum edge-to-edge gap between node boxes (px)
+GAP_H = 48
+GAP_V = 48
+LANE = 10  # offset parallel arrows to avoid overlap
+
 # Nerd Font codepoints (Private Use Area)
 NF = {
     "gear": "&#xf013;",
@@ -189,13 +194,155 @@ def layer_box(x, y, w, h, fill, stroke, label, icon="") -> str:
   <text x="{x + 14}" y="{y + 24}" class="layer-label">{icon} {label}</text>"""
 
 
-def arrow(x1, y1, x2, y2, label="", dashed=False, color="#37474F") -> str:
+def _anchor(box: dict, side: str) -> tuple[int, int]:
+    x, y, bw, bh = box["x"], box["y"], box["w"], box["h"]
+    if side == "top":
+        return x + bw // 2, y
+    if side == "bottom":
+        return x + bw // 2, y + bh
+    if side == "left":
+        return x, y + bh // 2
+    if side == "right":
+        return x + bw, y + bh // 2
+    if side == "tl":
+        return x, y
+    if side == "tr":
+        return x + bw, y
+    if side == "bl":
+        return x, y + bh
+    if side == "br":
+        return x + bw, y + bh
+    return x + bw // 2, y + bh // 2
+
+
+def _measure(label: str, desc: str, w: int, h: int, has_icon: bool) -> tuple[int, int]:
+    bw, bh, *_ = _module_size(label, desc, w, h, has_icon)
+    return bw, bh
+
+
+def vstack(
+    x: int,
+    y: int,
+    items: list[tuple],
+    gap: int = GAP_V,
+) -> tuple[str, list[dict], int]:
+    parts: list[str] = []
+    boxes: list[dict] = []
+    cy = y
+    for item in items:
+        w, h, fill, stroke, icon, label, desc = item[:7]
+        mono = item[7] if len(item) > 7 else False
+        bw, bh = _measure(label, desc, w, h, bool(icon))
+        parts.append(module(x, cy, w, h, fill, stroke, icon, label, desc, mono))
+        boxes.append({"x": x, "y": cy, "w": bw, "h": bh})
+        cy += bh + gap
+    return "\n".join(parts), boxes, cy - gap
+
+
+def hstack(
+    x: int,
+    y: int,
+    items: list[tuple],
+    gap: int = GAP_H,
+) -> tuple[str, list[dict], int]:
+    parts: list[str] = []
+    boxes: list[dict] = []
+    cx = x
+    for item in items:
+        w, h, fill, stroke, icon, label, desc = item[:7]
+        mono = item[7] if len(item) > 7 else False
+        bw, bh = _measure(label, desc, w, h, bool(icon))
+        parts.append(module(cx, y, w, h, fill, stroke, icon, label, desc, mono))
+        boxes.append({"x": cx, "y": y, "w": bw, "h": bh})
+        cx += bw + gap
+    return "\n".join(parts), boxes, cx - gap
+
+
+def arrow(x1, y1, x2, y2, label="", dashed=False, color="#37474F", lane: int = 0) -> str:
     dash = ' stroke-dasharray="8,5"' if dashed else ""
     mid = ""
+    if lane:
+        x1 += lane
+        x2 += lane
     if label:
         mx, my = (x1 + x2) // 2, (y1 + y2) // 2 - 6
         mid = f'\n  <text x="{mx}" y="{my}" text-anchor="middle" class="small">{label}</text>'
     return f'  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"{dash}/>{mid}'
+
+
+def arrow_curve(
+    x1: int,
+    y1: int,
+    x2: int,
+    y2: int,
+    label: str = "",
+    dashed: bool = False,
+    color: str = "#37474F",
+    bend: int = 0,
+) -> str:
+    dash = ' stroke-dasharray="8,5"' if dashed else ""
+    cx = (x1 + x2) // 2 + bend
+    cy = (y1 + y2) // 2
+    mid = ""
+    if label:
+        mid = f'\n  <text x="{cx}" y="{cy - 8}" text-anchor="middle" class="small">{label}</text>'
+    return (
+        f'  <path d="M{x1},{y1} Q{cx},{cy} {x2},{y2}" fill="none" '
+        f'stroke="{color}" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"{dash}/>{mid}'
+    )
+
+
+def arrow_ortho(
+    x1: int,
+    y1: int,
+    x2: int,
+    y2: int,
+    via_y: int | None = None,
+    via_x: int | None = None,
+    label: str = "",
+    dashed: bool = False,
+    color: str = "#37474F",
+    lane: int = 0,
+) -> str:
+    dash = ' stroke-dasharray="8,5"' if dashed else ""
+    if via_y is not None:
+        path = f"M{x1},{y1} L{x1 + lane},{via_y} L{x2 + lane},{via_y} L{x2},{y2}"
+        lx, ly = (x1 + x2) // 2 + lane, via_y - 8
+    elif via_x is not None:
+        path = f"M{x1},{y1} L{via_x},{y1 + lane} L{via_x},{y2 + lane} L{x2},{y2}"
+        lx, ly = via_x - 8, (y1 + y2) // 2 + lane
+    else:
+        mid_x = (x1 + x2) // 2 + lane
+        path = f"M{x1},{y1} L{mid_x},{y1} L{mid_x},{y2} L{x2},{y2}"
+        lx, ly = mid_x, (y1 + y2) // 2 - 8
+    mid = ""
+    if label:
+        mid = f'\n  <text x="{lx}" y="{ly}" text-anchor="middle" class="small">{label}</text>'
+    return (
+        f'  <path d="{path}" fill="none" stroke="{color}" stroke-width="{ARROW_STROKE}" '
+        f'marker-end="url(#arrow)"{dash}/>{mid}'
+    )
+
+
+def arrow_between(
+    src: dict,
+    dst: dict,
+    src_side: str = "bottom",
+    dst_side: str = "top",
+    label: str = "",
+    dashed: bool = False,
+    curve_bend: int | None = None,
+    via_y: int | None = None,
+    via_x: int | None = None,
+    lane: int = 0,
+) -> str:
+    x1, y1 = _anchor(src, src_side)
+    x2, y2 = _anchor(dst, dst_side)
+    if curve_bend is not None:
+        return arrow_curve(x1, y1, x2, y2, label, dashed, bend=curve_bend + lane)
+    if via_y is not None or via_x is not None:
+        return arrow_ortho(x1, y1, x2, y2, via_y, via_x, label, dashed, lane=lane)
+    return arrow(x1, y1, x2, y2, label, dashed, lane=lane)
 
 
 def legend_box(x, y, w, h, items: list[tuple[str, str, str]], title="Legend") -> str:
@@ -229,25 +376,25 @@ def full_stack_architecture() -> str:
 {module(640, 294, 320, 72, "#FFFFFF", "#1565C0", NF["gear"], ":core ProjectGenerator", "Reads graph and emits native project tree")}
 
 {layer_box(24, 500, 760, 380, "#FFF8E1", "#F57F17", "Authoring — blueprint.json", NF["file"])}
-{module(44, 540, 180, 58, "#FFFFFF", "#F57F17", NF["python"], "python.module", "NumPy/analytics hooks evaluated at runtime")}
-{module(44, 618, 180, 58, "#FFFFFF", "#F57F17", NF["code"], "cpp.controller", "Routes commands between UI and model")}
-{module(44, 696, 180, 58, "#FFFFFF", "#F57F17", NF["database"], "cpp.model", "Holds domain state and sample cache")}
-{module(44, 774, 180, 58, "#FFFFFF", "#F57F17", NF["layer"], "ui.page", "ImGui screens wired via TS/XHTML DSL")}
-{module(260, 540, 180, 58, "#FFFFFF", "#F57F17", NF["terminal"], "lua.script", "sol2 panels and hot-reload scripts")}
-{module(480, 560, 280, 100, "#FFFDE7", "#F9A825", NF["branch"], "Langflow-style graph", "Edit blueprint in :app; edges wire data flow", mono=True)}
+{module(44, 540, 200, 72, "#FFFFFF", "#F57F17", NF["python"], "python.module", "NumPy/analytics hooks evaluated at runtime")}
+{module(44, 628, 200, 72, "#FFFFFF", "#F57F17", NF["code"], "cpp.controller", "Routes commands between UI and model")}
+{module(44, 716, 200, 72, "#FFFFFF", "#F57F17", NF["database"], "cpp.model", "Holds domain state and sample cache")}
+{module(44, 804, 200, 72, "#FFFFFF", "#F57F17", NF["layer"], "ui.page", "ImGui screens wired via TS/XHTML DSL")}
+{module(260, 540, 200, 72, "#FFFFFF", "#F57F17", NF["terminal"], "lua.script", "sol2 panels and hot-reload scripts")}
+{module(480, 560, 300, 110, "#FFFDE7", "#F9A825", NF["branch"], "Langflow-style graph", "Edit blueprint in :app; edges wire data flow", mono=True)}
 
 {layer_box(820, 500, 380, 380, "#F3E5F5", "#6A1B9A", "Generated app — C++ MVC", NF["box"])}
-{module(840, 540, 160, 58, "#FFFFFF", "#6A1B9A", NF["database"], "model/", "Generated C++ domain types and state")}
-{module(840, 618, 160, 58, "#FFFFFF", "#6A1B9A", NF["gear"], "controller/", "Command handlers from blueprint ports")}
-{module(840, 696, 340, 58, "#FFFFFF", "#6A1B9A", NF["chart"], "view/ ImGui + ImPlot", "Renders plots and UI from blueprint layout")}
+{module(840, 540, 180, 72, "#FFFFFF", "#6A1B9A", NF["database"], "model/", "Generated C++ domain types and state")}
+{module(840, 628, 180, 72, "#FFFFFF", "#6A1B9A", NF["gear"], "controller/", "Command handlers from blueprint ports")}
+{module(840, 716, 360, 72, "#FFFFFF", "#6A1B9A", NF["chart"], "view/ ImGui + ImPlot", "Renders plots and UI from blueprint layout")}
 
 {layer_box(1220, 500, 340, 200, "#E8F5E9", "#2E7D32", "Scripting &amp; UI", NF["code"])}
-{module(1240, 540, 140, 58, "#FFFFFF", "#2E7D32", NF["terminal"], "Lua 5.4 + sol2", "Embeds Lua runtime for scripting panels")}
-{module(1400, 540, 140, 58, "#FFFFFF", "#2E7D32", NF["file"], "TS/XHTML DSL", "Declarative UI markup compiled to ImGui")}
+{module(1240, 540, 160, 72, "#FFFFFF", "#2E7D32", NF["terminal"], "Lua 5.4 + sol2", "Embeds Lua runtime for scripting panels")}
+{module(1400, 540, 160, 72, "#FFFFFF", "#2E7D32", NF["file"], "TS/XHTML DSL", "Declarative UI markup compiled to ImGui")}
 
 {layer_box(820, 720, 380, 160, "#ECEFF1", "#455A64", "Runtime", NF["desktop"])}
-{module(840, 760, 160, 58, "#FFFFFF", "#455A64", NF["python"], "Python bridge", "Embeds CPython via pybind11 / Chaquopy")}
-{module(1020, 760, 160, 58, "#FFFFFF", "#455A64", NF["desktop"], "SDL3", "Cross-platform render loop and input")}
+{module(840, 760, 180, 72, "#FFFFFF", "#455A64", NF["python"], "Python bridge", "Embeds CPython via pybind11 / Chaquopy")}
+{module(1040, 760, 180, 72, "#FFFFFF", "#455A64", NF["desktop"], "SDL3", "Cross-platform render loop and input")}
 
 {arrow(800, 147, 800, 192, "Edit blueprint")}
 {arrow(800, 250, 800, 266, "validated graph")}
@@ -279,30 +426,30 @@ def full_stack_architecture() -> str:
 
 
 def generation_builds_flow() -> str:
-    w, h = 2100, 900
+    w, h = 2200, 980
     logo = "../nexus-logo.png"
     steps = [
         (80, 140, "Run misc/client-setup/", "Installs JDK 26 and Git before first build", "#E8F5E9", "#2E7D32"),
-        (80, 230, "source env.sh", "Activates toolchain for Gradle and CMake", "#E8F5E9", "#2E7D32"),
+        (80, 250, "source env.sh", "Activates toolchain for Gradle and CMake", "#E8F5E9", "#2E7D32"),
         (340, 140, "./gradlew :app:run", "Launches Compose Desktop scaffold client", "#E3F2FD", "#1565C0"),
-        (340, 230, "Generate Project screen", "Collects name, type, and output path", "#E3F2FD", "#1565C0"),
-        (340, 340, "Blueprint Editor?", "Optional visual edit of blueprint.json", "#FFF3E0", "#EF6C00"),
-        (340, 450, "BlueprintValidator", "Schema check before codegen proceeds", "#FFF3E0", "#EF6C00"),
-        (340, 540, "ProjectGenerator", "Orchestrates template copy and emit", "#FFF3E0", "#EF6C00"),
+        (340, 250, "Generate Project screen", "Collects name, type, and output path", "#E3F2FD", "#1565C0"),
+        (340, 370, "Blueprint Editor?", "Optional visual edit of blueprint.json", "#FFF3E0", "#EF6C00"),
+        (340, 490, "BlueprintValidator", "Schema check before codegen proceeds", "#FFF3E0", "#EF6C00"),
+        (340, 610, "ProjectGenerator", "Orchestrates template copy and emit", "#FFF3E0", "#EF6C00"),
         (620, 140, "Read template/", "desktop-app or android-app skeleton", "#F3E5F5", "#6A1B9A"),
-        (620, 230, "TemplateEngine", "Substitutes {{placeholders}} in files", "#F3E5F5", "#6A1B9A"),
-        (620, 320, "Validate blueprint.json", "Ensures graph nodes and edges are valid", "#F3E5F5", "#6A1B9A"),
-        (620, 410, "Copy template/shared/", "DSL, themes, and runtime helpers", "#F3E5F5", "#6A1B9A"),
-        (620, 500, "Write nxs_config.json", "Schema v2 project metadata on disk", "#F3E5F5", "#6A1B9A"),
-        (900, 320, "Emit builds/framework/", "Out-of-source native project tree", "#E0F7FA", "#00838F"),
-        (1180, 230, "Desktop?", "Branch on project type selection", "#ECEFF1", "#455A64"),
+        (620, 250, "TemplateEngine", "Substitutes {{placeholders}} in files", "#F3E5F5", "#6A1B9A"),
+        (620, 360, "Validate blueprint.json", "Ensures graph nodes and edges are valid", "#F3E5F5", "#6A1B9A"),
+        (620, 470, "Copy template/shared/", "DSL, themes, and runtime helpers", "#F3E5F5", "#6A1B9A"),
+        (620, 580, "Write nxs_config.json", "Schema v2 project metadata on disk", "#F3E5F5", "#6A1B9A"),
+        (900, 360, "Emit builds/framework/", "Out-of-source native project tree", "#E0F7FA", "#00838F"),
+        (1180, 250, "Desktop?", "Branch on project type selection", "#ECEFF1", "#455A64"),
         (1400, 140, "cmake --preset debug", "Configure CMake + Ninja build files", "#E3F2FD", "#1565C0"),
-        (1400, 230, "cmake --build", "Compile C++ sources and link binary", "#E3F2FD", "#1565C0"),
-        (1400, 320, "Run native binary", "SDL3 desktop app with pybind11", "#E3F2FD", "#1565C0"),
+        (1400, 250, "cmake --build", "Compile C++ sources and link binary", "#E3F2FD", "#1565C0"),
+        (1400, 360, "Run native binary", "SDL3 desktop app with pybind11", "#E3F2FD", "#1565C0"),
         (1620, 140, "assembleDebug", "Gradle builds Android APK via NDK", "#FCE4EC", "#C2185B"),
-        (1620, 230, "Djinni + Chaquopy", "JNI bridge and embedded Python", "#FCE4EC", "#C2185B"),
-        (1620, 320, "Install APK", "Deploy to device or emulator", "#FCE4EC", "#C2185B"),
-        (1860, 230, "deployToBuildsClient", "Copy client distro to builds/client/", "#E8EAF6", "#3949AB"),
+        (1620, 250, "Djinni + Chaquopy", "JNI bridge and embedded Python", "#FCE4EC", "#C2185B"),
+        (1620, 360, "Install APK", "Deploy to device or emulator", "#FCE4EC", "#C2185B"),
+        (1860, 250, "deployToBuildsClient", "Copy client distro to builds/client/", "#E8EAF6", "#3949AB"),
     ]
     icons = [NF["wrench"], NF["terminal"], NF["desktop"], NF["layer"], NF["branch"], NF["gear"],
              NF["rocket"], NF["package"], NF["code"], NF["file"], NF["box"], NF["file"],
@@ -310,7 +457,7 @@ def generation_builds_flow() -> str:
              NF["android"], NF["plug"], NF["phone"], NF["cloud"]]
     body = ""
     for i, (x, y, label, desc, fill, stroke) in enumerate(steps):
-        body += module(x, y, 220, 62, fill, stroke, icons[i], label, desc) + "\n"
+        body += module(x, y, 260, 72, fill, stroke, icons[i], label, desc) + "\n"
     # swimlane labels
     lanes = """
   <text x="190" y="110" text-anchor="middle" class="layer-label">First run</text>
@@ -319,37 +466,37 @@ def generation_builds_flow() -> str:
   <text x="990" y="110" text-anchor="middle" class="layer-label">Output</text>
   <text x="1300" y="110" text-anchor="middle" class="layer-label">Native build</text>
   <text x="1750" y="110" text-anchor="middle" class="layer-label">Optional</text>
-  <line x1="280" y1="120" x2="280" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="560" y1="120" x2="560" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="840" y1="120" x2="840" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="1120" y1="120" x2="1120" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="1360" y1="120" x2="1360" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <line x1="1780" y1="120" x2="1780" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="280" y1="120" x2="280" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="560" y1="120" x2="560" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="840" y1="120" x2="840" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="1120" y1="120" x2="1120" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="1360" y1="120" x2="1360" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
+  <line x1="1780" y1="120" x2="1780" y2="680" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
 """
     flows = f"""
-  <line x1="190" y1="202" x2="190" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="300" y1="171" x2="340" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="450" y1="202" x2="450" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="450" y1="292" x2="450" y2="340" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="450" y1="402" x2="450" y2="450" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="450" y1="512" x2="450" y2="540" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="560" y1="571" x2="620" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="730" y1="202" x2="730" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="730" y1="292" x2="730" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="730" y1="382" x2="730" y2="410" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="730" y1="472" x2="730" y2="500" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="840" y1="351" x2="900" y2="351" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1120" y1="351" x2="1180" y2="261" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1400" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1620" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="202" x2="1510" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="292" x2="1510" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="202" x2="1730" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="292" x2="1730" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <line x1="1680" y1="351" x2="1860" y2="261" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
-  <rect x="600" y="580" width="320" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
-  <text x="620" y="608" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
-  <text x="620" y="628" class="desc">Optional Docker path via misc/docker/</text>
+  <line x1="210" y1="220" x2="210" y2="250" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="340" y1="176" x2="340" y2="176" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="470" y1="220" x2="470" y2="250" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="470" y1="330" x2="470" y2="370" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="470" y1="450" x2="470" y2="490" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="470" y1="570" x2="470" y2="610" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="600" y1="646" x2="750" y2="220" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="750" y1="220" x2="750" y2="250" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="750" y1="330" x2="750" y2="360" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="750" y1="440" x2="750" y2="470" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="750" y1="550" x2="750" y2="580" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="880" y1="396" x2="900" y2="396" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1120" y1="396" x2="1180" y2="286" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="286" x2="1530" y2="220" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="286" x2="1750" y2="220" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1530" y1="220" x2="1530" y2="250" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1530" y1="330" x2="1530" y2="360" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1750" y1="220" x2="1750" y2="250" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1750" y1="330" x2="1750" y2="360" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1750" y1="430" x2="1990" y2="286" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <rect x="600" y="660" width="360" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
+  <text x="620" y="688" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
+  <text x="620" y="708" class="desc">Optional Docker path via misc/docker/</text>
 """
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
@@ -359,7 +506,7 @@ def generation_builds_flow() -> str:
 {lanes}
 {body}
 {flows}
-{legend_box(24, 680, 500, 120, [
+{legend_box(24, 760, 500, 120, [
     ("#E8F5E9", "#2E7D32", "Setup — JDK 26 + Git bootstrap"),
     ("#E3F2FD", "#1565C0", "Client — Compose Generate UI"),
     ("#F3E5F5", "#6A1B9A", "Core — template engine + emit"),
@@ -378,23 +525,23 @@ def desktop_vs_android() -> str:
 {header(logo, w)}
 
 {layer_box(420, 78, 480, 340, "#F3E5F5", "#6A1B9A", "Shared (both templates)", NF["layer"])}
-{module(440, 118, 200, 62, "#FFFFFF", "#6A1B9A", NF["file"], "blueprint.json", "Loads blueprint.json at generate time")}
-{module(660, 118, 220, 62, "#FFFFFF", "#6A1B9A", NF["terminal"], "Lua 5.4 + sol2", "Scripting layer shared across targets")}
-{module(440, 200, 440, 62, "#FFFFFF", "#6A1B9A", NF["code"], "C++20 MVC", "model · controller · view from graph")}
-{module(440, 282, 200, 62, "#FFFFFF", "#6A1B9A", NF["chart"], "ImGui + ImPlot", "Immediate-mode UI and plotting")}
-{module(660, 282, 220, 62, "#FFFFFF", "#6A1B9A", NF["desktop"], "SDL3 render loop", "Cross-platform graphics and input")}
+{module(440, 118, 220, 72, "#FFFFFF", "#6A1B9A", NF["file"], "blueprint.json", "Loads blueprint.json at generate time")}
+{module(660, 118, 240, 72, "#FFFFFF", "#6A1B9A", NF["terminal"], "Lua 5.4 + sol2", "Scripting layer shared across targets")}
+{module(440, 210, 460, 72, "#FFFFFF", "#6A1B9A", NF["code"], "C++20 MVC", "model · controller · view from graph")}
+{module(440, 302, 220, 72, "#FFFFFF", "#6A1B9A", NF["chart"], "ImGui + ImPlot", "Immediate-mode UI and plotting")}
+{module(680, 302, 220, 72, "#FFFFFF", "#6A1B9A", NF["desktop"], "SDL3 render loop", "Cross-platform graphics and input")}
 
 {layer_box(24, 450, 520, 340, "#E3F2FD", "#1565C0", "Desktop runtime", NF["desktop"])}
-{module(44, 490, 220, 62, "#FFFFFF", "#1565C0", NF["gear"], "CMake + Ninja", "OpenGL 3.3 native build pipeline")}
-{module(280, 490, 240, 62, "#FFFFFF", "#1565C0", NF["python"], "pybind11 embed", "Embeds CPython via pybind11")}
-{module(44, 580, 220, 62, "#FFFFFF", "#1565C0", NF["file"], "python/functions.py", "In-process NumPy analytics module")}
-{module(280, 580, 240, 62, "#FFFFFF", "#1565C0", NF["box"], "Native binary", "Win · macOS · Linux executable")}
+{module(44, 490, 240, 72, "#FFFFFF", "#1565C0", NF["gear"], "CMake + Ninja", "OpenGL 3.3 native build pipeline")}
+{module(300, 490, 260, 72, "#FFFFFF", "#1565C0", NF["python"], "pybind11 embed", "Embeds CPython via pybind11")}
+{module(44, 582, 240, 72, "#FFFFFF", "#1565C0", NF["file"], "python/functions.py", "In-process NumPy analytics module")}
+{module(300, 582, 260, 72, "#FFFFFF", "#1565C0", NF["box"], "Native binary", "Win · macOS · Linux executable")}
 
 {layer_box(760, 450, 520, 340, "#FCE4EC", "#C2185B", "Android runtime", NF["phone"])}
-{module(780, 490, 220, 62, "#FFFFFF", "#C2185B", NF["android"], "Gradle + NDK", "APK build with native C++ libs")}
-{module(1020, 490, 240, 62, "#FFFFFF", "#C2185B", NF["desktop"], "SDL3 GLES", "Full-screen touch UI on GLES")}
-{module(780, 580, 220, 62, "#FFFFFF", "#C2185B", NF["plug"], "Djinni IDL", "C++ ↔ Kotlin JNI codegen")}
-{module(1020, 580, 240, 62, "#FFFFFF", "#C2185B", NF["python"], "Chaquopy", "app/src/main/python/ embedding")}
+{module(780, 490, 240, 72, "#FFFFFF", "#C2185B", NF["android"], "Gradle + NDK", "APK build with native C++ libs")}
+{module(1040, 490, 260, 72, "#FFFFFF", "#C2185B", NF["desktop"], "SDL3 GLES", "Full-screen touch UI on GLES")}
+{module(780, 582, 240, 72, "#FFFFFF", "#C2185B", NF["plug"], "Djinni IDL", "C++ ↔ Kotlin JNI codegen")}
+{module(1040, 582, 260, 72, "#FFFFFF", "#C2185B", NF["python"], "Chaquopy", "app/src/main/python/ embedding")}
 
 {arrow(540, 180, 540, 200, "wires nodes")}
 {arrow(770, 149, 660, 200)}
@@ -432,9 +579,9 @@ def langflow_vs_n8n() -> str:
 
 {layer_box(24, 88, 360, 420, "#E8F5E9", "#2E7D32", "Langflow", NF["robot"])}
   <text x="204" y="130" text-anchor="middle" class="desc">ML / LLM flow DAG · Runtime execution</text>
-{module(64, 150, 120, 58, "#FFFFFF", "#2E7D32", NF["comment"], "Prompt", "User text input to the flow")}
-{module(224, 150, 120, 58, "#FFFFFF", "#1565C0", NF["robot"], "LLM", "Inference node calls model API")}
-{module(144, 240, 120, 58, "#FFFFFF", "#EF6C00", NF["code"], "Parser", "Structured output extraction")}
+{module(64, 150, 140, 72, "#FFFFFF", "#2E7D32", NF["comment"], "Prompt", "User text input to the flow")}
+{module(224, 150, 140, 72, "#FFFFFF", "#1565C0", NF["robot"], "LLM", "Inference node calls model API")}
+{module(144, 250, 140, 72, "#FFFFFF", "#EF6C00", NF["code"], "Parser", "Structured output extraction")}
   <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="44" y="330" class="small">• Typed nodes (model, tool, memory)</text>
@@ -443,9 +590,9 @@ def langflow_vs_n8n() -> str:
 
 {layer_box(420, 88, 360, 420, "#FCE4EC", "#C2185B", "n8n", NF["plug"])}
   <text x="600" y="130" text-anchor="middle" class="desc">Workflow automation · Runtime execution</text>
-{module(460, 150, 120, 58, "#FFFFFF", "#C2185B", NF["cloud"], "Webhook", "HTTP trigger starts workflow")}
-{module(620, 150, 120, 58, "#FFFFFF", "#3949AB", NF["plug"], "HTTP Request", "Calls external REST APIs")}
-{module(540, 240, 120, 58, "#FFFFFF", "#00695C", NF["comment"], "Slack", "Posts message to channel")}
+{module(460, 150, 140, 72, "#FFFFFF", "#C2185B", NF["cloud"], "Webhook", "HTTP trigger starts workflow")}
+{module(620, 150, 140, 72, "#FFFFFF", "#3949AB", NF["plug"], "HTTP Request", "Calls external REST APIs")}
+{module(540, 250, 140, 72, "#FFFFFF", "#00695C", NF["comment"], "Slack", "Posts message to channel")}
   <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="440" y="330" class="small">• Triggers + integration steps</text>
@@ -454,11 +601,11 @@ def langflow_vs_n8n() -> str:
 
 {layer_box(816, 88, 400, 420, "#F3E5F5", "#6A1B9A", "Nexus blueprint.json", NF["file"])}
   <text x="1016" y="130" text-anchor="middle" class="badge">Design-time codegen</text>
-{module(836, 150, 110, 52, "#FFFFFF", "#2E7D32", NF["python"], "python.module", "Analytics hooks in blueprint")}
-{module(966, 150, 110, 52, "#FFFFFF", "#1565C0", NF["database"], "cpp.model", "Domain state node type")}
-{module(896, 218, 110, 52, "#FFFFFF", "#6A1B9A", NF["gear"], "cpp.controller", "Command routing layer")}
-{module(1026, 218, 110, 52, "#FFFFFF", "#EF6C00", NF["layer"], "ui.page", "ImGui screen definition")}
-{module(966, 286, 110, 52, "#FFFFFF", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings")}
+{module(836, 150, 150, 72, "#FFFFFF", "#2E7D32", NF["python"], "python.module", "Analytics hooks in blueprint")}
+{module(1006, 150, 150, 72, "#FFFFFF", "#1565C0", NF["database"], "cpp.model", "Domain state node type")}
+{module(896, 240, 150, 72, "#FFFFFF", "#6A1B9A", NF["gear"], "cpp.controller", "Command routing layer")}
+{module(1066, 240, 150, 72, "#FFFFFF", "#EF6C00", NF["layer"], "ui.page", "ImGui screen definition")}
+{module(986, 330, 150, 72, "#FFFFFF", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings")}
   <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
@@ -472,25 +619,25 @@ def langflow_vs_n8n() -> str:
 
 
 def langflow_rag_chatbot() -> str:
-    w, h = 1520, 460
+    w, h = 1620, 500
     logo = "../nexus-logo.png"
     nodes = [
         (40, 120, "Chat Input", "User-facing message entry point", "#E8F5E9", "#2E7D32", NF["comment"]),
-        (200, 120, "PDF Loader", "Ingests documents into pipeline", "#E3F2FD", "#1565C0", NF["file"]),
-        (360, 120, "Text Splitter", "Chunks text for embedding", "#F3E5F5", "#7B1FA2", NF["code"]),
-        (520, 120, "Embeddings", "Vectorizes text chunks", "#FFF3E0", "#EF6C00", NF["chart"]),
-        (680, 120, "Vector Store", "Persists vectors for retrieval", "#FCE4EC", "#C2185B", NF["database"]),
-        (840, 120, "Retriever", "Similarity search at query time", "#E0F7FA", "#00838F", NF["search"]),
-        (1000, 120, "LLM", "Generates answer from context", "#E8EAF6", "#3949AB", NF["robot"]),
-        (1160, 120, "Chat Output", "Returns response to user", "#E8F5E9", "#2E7D32", NF["comment"]),
+        (220, 120, "PDF Loader", "Ingests documents into pipeline", "#E3F2FD", "#1565C0", NF["file"]),
+        (400, 120, "Text Splitter", "Chunks text for embedding", "#F3E5F5", "#7B1FA2", NF["code"]),
+        (580, 120, "Embeddings", "Vectorizes text chunks", "#FFF3E0", "#EF6C00", NF["chart"]),
+        (760, 120, "Vector Store", "Persists vectors for retrieval", "#FCE4EC", "#C2185B", NF["database"]),
+        (940, 120, "Retriever", "Similarity search at query time", "#E0F7FA", "#00838F", NF["search"]),
+        (1120, 120, "LLM", "Generates answer from context", "#E8EAF6", "#3949AB", NF["robot"]),
+        (1280, 120, "Chat Output", "Returns response to user", "#E8F5E9", "#2E7D32", NF["comment"]),
     ]
     body = ""
     for x, y, label, desc, fill, stroke, icon in nodes:
-        body += module(x, y, 140, 64, fill, stroke, icon, label, desc) + "\n"
+        body += module(x, y, 168, 72, fill, stroke, icon, label, desc) + "\n"
     edges = ""
-    xs = [180, 340, 500, 660, 820, 980, 1140, 1300]
+    xs = [208, 388, 568, 748, 928, 1108, 1288, 1448]
     for i in range(len(xs) - 1):
-        edges += f'  <line x1="{xs[i]}" y1="152" x2="{xs[i+1]-140}" y2="152" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
+        edges += f'  <line x1="{xs[i]}" y1="156" x2="{xs[i+1]-168}" y2="156" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
     edges += f'  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="{ARROW_STROKE}" stroke-dasharray="8,5" marker-end="url(#arrow)"/>\n'
     edges += '  <text x="510" y="258" text-anchor="middle" class="desc">user query shortcut at chat time</text>\n'
     return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -519,13 +666,13 @@ def langflow_agent_tools() -> str:
 {defs(logo)}
 {header(logo, w)}
 
-{module(80, 200, 150, 64, "#E8F5E9", "#2E7D32", NF["comment"], "User Input", "Natural language task from user")}
-{module(380, 190, 220, 84, "#E8EAF6", "#3949AB", NF["robot"], "Agent", "ReAct / tool-calling LLM orchestrator")}
-{module(740, 200, 150, 64, "#E8F5E9", "#2E7D32", NF["comment"], "Output", "Synthesized final answer to user")}
+{module(80, 200, 170, 72, "#E8F5E9", "#2E7D32", NF["comment"], "User Input", "Natural language task from user")}
+{module(380, 190, 240, 88, "#E8EAF6", "#3949AB", NF["robot"], "Agent", "ReAct / tool-calling LLM orchestrator")}
+{module(740, 200, 170, 72, "#E8F5E9", "#2E7D32", NF["comment"], "Output", "Synthesized final answer to user")}
 
-{module(120, 400, 160, 64, "#FFF3E0", "#EF6C00", NF["gear"], "Calculator", "Arithmetic tool invocation")}
-{module(420, 400, 160, 64, "#E3F2FD", "#1565C0", NF["search"], "Web Search", "Live web lookup capability")}
-{module(720, 400, 160, 64, "#F3E5F5", "#7B1FA2", NF["python"], "Python REPL", "Execute code snippets safely")}
+{module(120, 400, 180, 72, "#FFF3E0", "#EF6C00", NF["gear"], "Calculator", "Arithmetic tool invocation")}
+{module(420, 400, 180, 72, "#E3F2FD", "#1565C0", NF["search"], "Web Search", "Live web lookup capability")}
+{module(720, 400, 180, 72, "#F3E5F5", "#7B1FA2", NF["python"], "Python REPL", "Execute code snippets safely")}
 
   <line x1="230" y1="232" x2="380" y2="232" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="600" y1="232" x2="740" y2="232" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
@@ -559,11 +706,11 @@ def nexus_blueprint_app_structure() -> str:
 
 {layer_box(60, 110, 1020, 280, "#FAFAFA", "#B0BEC5", "blueprint.json graph (author in :app Blueprint Editor)", NF["branch"])}
 
-{module(100, 170, 160, 68, "#E8F5E9", "#2E7D32", NF["layer"], "ui.page", "ImGui screens via TS/XHTML DSL", mono=True)}
-{module(310, 170, 180, 68, "#E3F2FD", "#1565C0", NF["gear"], "cpp.controller", "Routes commands and data ports", mono=True)}
-{module(540, 170, 160, 68, "#FFF3E0", "#EF6C00", NF["database"], "cpp.model", "Domain state and business logic", mono=True)}
-{module(760, 140, 180, 68, "#F3E5F5", "#7B1FA2", NF["python"], "python.module", "ML samples and glue code", mono=True)}
-{module(760, 230, 180, 68, "#E0F7FA", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings", mono=True)}
+{module(100, 170, 180, 80, "#E8F5E9", "#2E7D32", NF["layer"], "ui.page", "ImGui screens via TS/XHTML DSL", mono=True)}
+{module(320, 170, 200, 80, "#E3F2FD", "#1565C0", NF["gear"], "cpp.controller", "Routes commands and data ports", mono=True)}
+{module(560, 170, 180, 80, "#FFF3E0", "#EF6C00", NF["database"], "cpp.model", "Domain state and business logic", mono=True)}
+{module(780, 140, 200, 80, "#F3E5F5", "#7B1FA2", NF["python"], "python.module", "ML samples and glue code", mono=True)}
+{module(780, 240, 200, 80, "#E0F7FA", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings", mono=True)}
 
   <line x1="260" y1="204" x2="310" y2="204" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="285" y="194" text-anchor="middle" class="desc">events</text>
@@ -579,7 +726,7 @@ def nexus_blueprint_app_structure() -> str:
   <line x1="570" y1="390" x2="570" y2="420" stroke="#1565C0" stroke-width="{ARROW_STROKE_ACCENT}" marker-end="url(#arrow-blue)"/>
   <text x="570" y="412" text-anchor="middle" class="badge">:core ProjectGenerator</text>
 
-{module(380, 430, 380, 58, "#E8EAF6", "#3949AB", NF["box"], "builds/framework/&lt;name&gt;/", "Compiled SDL3 desktop or Android APK")}
+{module(380, 430, 400, 72, "#E8EAF6", "#3949AB", NF["box"], "builds/framework/&lt;name&gt;/", "Compiled SDL3 desktop or Android APK")}
 
 {legend_box(60, 510, 1020, 70, [
     ("#E8F5E9", "#2E7D32", "ui.page — screens and DSL layout"),
@@ -600,23 +747,23 @@ def python_desktop_vs_android_flow() -> str:
 {defs(logo)}
 {header(logo, w)}
 
-{module(440, 56, 400, 58, "#FFF8E1", "#F57F17", NF["file"], "blueprint.json", "python.module port evaluate", mono=True)}
+{module(440, 56, 420, 72, "#FFF8E1", "#F57F17", NF["file"], "blueprint.json", "python.module port evaluate", mono=True)}
 
-{layer_box(40, 150, 560, 420, "#E3F2FD", "#1565C0", "Desktop path", NF["desktop"])}
-{module(80, 200, 240, 58, "#FFFFFF", "#1565C0", NF["python"], "python/functions.py", "NumPy curve sampling source")}
-{module(360, 200, 220, 58, "#FFFFFF", "#1565C0", NF["gear"], "CMake: pack_python_dat", "Build step packs PYAC archive")}
-{module(80, 290, 240, 58, "#FFFFFF", "#1565C0", NF["box"], "misc/python.dat (PYAC)", "Encrypted script pack in misc/")}
-{module(360, 290, 220, 58, "#FFFFFF", "#1565C0", NF["python"], "PythonEngine", "pybind11 embed in controller/")}
+{layer_box(40, 150, 580, 440, "#E3F2FD", "#1565C0", "Desktop path", NF["desktop"])}
+{module(80, 200, 260, 72, "#FFFFFF", "#1565C0", NF["python"], "python/functions.py", "NumPy curve sampling source")}
+{module(360, 200, 240, 72, "#FFFFFF", "#1565C0", NF["gear"], "CMake: pack_python_dat", "Build step packs PYAC archive")}
+{module(80, 300, 260, 72, "#FFFFFF", "#1565C0", NF["box"], "misc/python.dat (PYAC)", "Encrypted script pack in misc/")}
+{module(360, 300, 240, 72, "#FFFFFF", "#1565C0", NF["python"], "PythonEngine", "pybind11 embed in controller/")}
 
-{layer_box(680, 150, 560, 420, "#FCE4EC", "#C2185B", "Android path", NF["phone"])}
-{module(720, 200, 280, 58, "#FFFFFF", "#C2185B", NF["python"], "app/src/main/python/", "functions.py in APK tree")}
-{module(1020, 200, 200, 58, "#FFFFFF", "#C2185B", NF["android"], "Gradle + Chaquopy", "No python.dat — sources in APK")}
-{module(720, 290, 500, 58, "#FFFFFF", "#C2185B", NF["plug"], "ChaquopyPythonBridge (Djinni)", "Type-safe C++ ↔ Kotlin JNI bridge")}
+{layer_box(680, 150, 580, 440, "#FCE4EC", "#C2185B", "Android path", NF["phone"])}
+{module(720, 200, 300, 72, "#FFFFFF", "#C2185B", NF["python"], "app/src/main/python/", "functions.py in APK tree")}
+{module(1040, 200, 200, 72, "#FFFFFF", "#C2185B", NF["android"], "Gradle + Chaquopy", "No python.dat — sources in APK")}
+{module(720, 300, 520, 80, "#FFFFFF", "#C2185B", NF["plug"], "ChaquopyPythonBridge (Djinni)", "Type-safe C++ ↔ Kotlin JNI bridge")}
 
-{layer_box(200, 500, 880, 120, "#F3E5F5", "#6A1B9A", "Shared MVC output (both templates)", NF["chart"])}
-{module(240, 540, 220, 58, "#FFFFFF", "#6A1B9A", NF["gear"], "PlotController", "Routes evaluate to model cache")}
-{module(500, 540, 220, 58, "#FFFFFF", "#6A1B9A", NF["database"], "FunctionRegistry", "Active curves and samples")}
-{module(760, 540, 260, 58, "#FFFFFF", "#6A1B9A", NF["chart"], "ImPlot draw", "Renders curves each frame")}
+{layer_box(200, 520, 880, 130, "#F3E5F5", "#6A1B9A", "Shared MVC output (both templates)", NF["chart"])}
+{module(240, 560, 240, 72, "#FFFFFF", "#6A1B9A", NF["gear"], "PlotController", "Routes evaluate to model cache")}
+{module(520, 560, 240, 72, "#FFFFFF", "#6A1B9A", NF["database"], "FunctionRegistry", "Active curves and samples")}
+{module(800, 560, 260, 72, "#FFFFFF", "#6A1B9A", NF["chart"], "ImPlot draw", "Renders curves each frame")}
 
 {arrow(640, 114, 200, 150, "Desktop")}
 {arrow(640, 114, 960, 150, "Android")}
@@ -652,7 +799,7 @@ def tsxhtml_lowering_pipeline() -> str:
     ]
     body = ""
     for x, y, label, desc, fill, stroke, icon in nodes:
-        body += module(x, y, 200 if x < 280 else (220 if x < 1000 else 180), 64, fill, stroke, icon, label, desc) + "\n"
+        body += module(x, y, 220 if x < 1000 else 200, 72, fill, stroke, icon, label, desc) + "\n"
     edges = f"""
   <line x1="240" y1="152" x2="280" y2="176" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="240" y1="242" x2="280" y2="208" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
@@ -691,20 +838,20 @@ def blueprint_vs_flows_layers() -> str:
 
 {layer_box(40, 88, 520, 380, "#FFF8E1", "#F57F17", "Design-time — blueprint.json", NF["file"])}
   <text x="300" y="130" text-anchor="middle" class="desc">Langflow-style MVC wiring · consumed at generation</text>
-{module(80, 160, 200, 58, "#FFFFFF", "#F57F17", NF["python"], "python.module", "Analytics and glue modules")}
-{module(300, 160, 200, 58, "#FFFFFF", "#F57F17", NF["database"], "cpp.model", "Domain state and caches")}
-{module(80, 240, 200, 58, "#FFFFFF", "#F57F17", NF["gear"], "cpp.controller", "Command routing layer")}
-{module(300, 240, 200, 58, "#FFFFFF", "#F57F17", NF["layer"], "ui.page", "ImGui screens and DSL layout")}
-{module(180, 320, 240, 58, "#FFFFFF", "#6A1B9A", NF["rocket"], ":core ProjectGenerator", "Validates graph · emits src/ tree")}
+{module(80, 160, 220, 72, "#FFFFFF", "#F57F17", NF["python"], "python.module", "Analytics and glue modules")}
+{module(320, 160, 220, 72, "#FFFFFF", "#F57F17", NF["database"], "cpp.model", "Domain state and caches")}
+{module(80, 252, 220, 72, "#FFFFFF", "#F57F17", NF["gear"], "cpp.controller", "Command routing layer")}
+{module(320, 252, 220, 72, "#FFFFFF", "#F57F17", NF["layer"], "ui.page", "ImGui screens and DSL layout")}
+{module(180, 344, 280, 72, "#FFFFFF", "#6A1B9A", NF["rocket"], ":core ProjectGenerator", "Validates graph · emits src/ tree")}
   <line x1="180" y1="218" x2="300" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="280" y1="298" x2="280" y2="320" stroke="#1565C0" stroke-width="{ARROW_STROKE_ACCENT}" marker-end="url(#arrow-blue)"/>
 
 {layer_box(640, 88, 520, 380, "#E8F5E9", "#2E7D32", "Runtime — flows/flows.json", NF["branch"])}
   <text x="900" y="130" text-anchor="middle" class="desc">Optional in-app services · loaded at app startup</text>
-{module(680, 160, 200, 58, "#FFFFFF", "#2E7D32", NF["cog"], "background flows", "interval loops while app is alive")}
-{module(900, 160, 220, 58, "#FFFFFF", "#2E7D32", NF["comment"], "triggered flows", "event · startup · manual · hotkey")}
-{module(680, 240, 440, 58, "#FFFFFF", "#2E7D32", NF["terminal"], "steps[] invoke", "nxs.* · python.* · lua.* targets")}
-{module(780, 320, 240, 58, "#FFFFFF", "#00838F", NF["gear"], "FlowRunner", "Registers triggers from flows.json")}
+{module(680, 160, 220, 72, "#FFFFFF", "#2E7D32", NF["cog"], "background flows", "interval loops while app is alive")}
+{module(920, 160, 240, 72, "#FFFFFF", "#2E7D32", NF["comment"], "triggered flows", "event · startup · manual · hotkey")}
+{module(680, 252, 480, 72, "#FFFFFF", "#2E7D32", NF["terminal"], "steps[] invoke", "nxs.* · python.* · lua.* targets")}
+{module(780, 344, 280, 72, "#FFFFFF", "#00838F", NF["gear"], "FlowRunner", "Registers triggers from flows.json")}
   <line x1="780" y1="218" x2="900" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <line x1="900" y1="298" x2="900" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
 
@@ -733,11 +880,11 @@ def langflow_adoption_workflow() -> str:
     ]
     body = ""
     for x, y, label, desc, fill, stroke, icon in steps:
-        body += module(x, y, 190, 64, fill, stroke, icon, label, desc) + "\n"
+        body += module(x, y, 210, 72, fill, stroke, icon, label, desc) + "\n"
     edges = ""
-    xs = [230, 450, 670, 890, 1110, 1330]
+    xs = [250, 470, 690, 910, 1130, 1350]
     for i in range(len(xs) - 1):
-        edges += f'  <line x1="{xs[i]}" y1="152" x2="{xs[i+1]-190}" y2="152" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
+        edges += f'  <line x1="{xs[i]}" y1="156" x2="{xs[i+1]-210}" y2="156" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
   <title>Langflow adoption workflow</title>

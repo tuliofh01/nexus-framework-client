@@ -9,7 +9,7 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
+      .label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
       .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
@@ -25,59 +25,103 @@
   <rect width="1280" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
 
-  <rect x="440" y="56" width="400" height="58" class="node" fill="#FFF8E1" stroke="#F57F17"/>
-  <text x="452" y="78" class="icon">&#xf15b;</text>
-  <text x="474" y="78" class="mono">blueprint.json</text>
-  <text x="452" y="104" class="desc">python.module port evaluate</text>
+  <rect x="440" y="56" width="420" height="72" class="node" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="454" y="82" class="icon">&#xf15b;</text>
+  <text x="476" y="84" class="mono">
+    <tspan x="476" dy="0">blueprint.json</tspan>
+  </text>
+  <text x="454" y="103" class="desc">
+    <tspan x="454" dy="0">python.module port evaluate</tspan>
+  </text>
 
-  <rect x="40" y="150" width="560" height="420" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
+  <rect x="40" y="150" width="580" height="440" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
   <text x="54" y="174" class="layer-label">&#xf108; Desktop path</text>
-  <rect x="80" y="200" width="240" height="58" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="92" y="222" class="icon">&#xe73c;</text>
-  <text x="114" y="222" class="label">python/functions.py</text>
-  <text x="92" y="248" class="desc">NumPy curve sampling source</text>
-  <rect x="360" y="200" width="220" height="58" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="372" y="222" class="icon">&#xf013;</text>
-  <text x="394" y="222" class="label">CMake: pack_python_dat</text>
-  <text x="372" y="248" class="desc">Build step packs PYAC archive</text>
-  <rect x="80" y="290" width="240" height="58" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="92" y="312" class="icon">&#xf466;</text>
-  <text x="114" y="312" class="label">misc/python.dat (PYAC)</text>
-  <text x="92" y="338" class="desc">Encrypted script pack in misc/</text>
-  <rect x="360" y="290" width="220" height="58" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="372" y="312" class="icon">&#xe73c;</text>
-  <text x="394" y="312" class="label">PythonEngine</text>
-  <text x="372" y="338" class="desc">pybind11 embed in controller/</text>
+  <rect x="80" y="200" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="94" y="226" class="icon">&#xe73c;</text>
+  <text x="116" y="228" class="label">
+    <tspan x="116" dy="0">python/functions.py</tspan>
+  </text>
+  <text x="94" y="247" class="desc">
+    <tspan x="94" dy="0">NumPy curve sampling source</tspan>
+  </text>
+  <rect x="360" y="200" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="374" y="226" class="icon">&#xf013;</text>
+  <text x="396" y="228" class="label">
+    <tspan x="396" dy="0">CMake: pack_python_dat</tspan>
+  </text>
+  <text x="374" y="247" class="desc">
+    <tspan x="374" dy="0">Build step packs PYAC archive</tspan>
+  </text>
+  <rect x="80" y="300" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="94" y="326" class="icon">&#xf466;</text>
+  <text x="116" y="328" class="label">
+    <tspan x="116" dy="0">misc/python.dat (PYAC)</tspan>
+  </text>
+  <text x="94" y="347" class="desc">
+    <tspan x="94" dy="0">Encrypted script pack in misc/</tspan>
+  </text>
+  <rect x="360" y="300" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="374" y="326" class="icon">&#xe73c;</text>
+  <text x="396" y="328" class="label">
+    <tspan x="396" dy="0">PythonEngine</tspan>
+  </text>
+  <text x="374" y="347" class="desc">
+    <tspan x="374" dy="0">pybind11 embed in controller/</tspan>
+  </text>
 
-  <rect x="680" y="150" width="560" height="420" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <rect x="680" y="150" width="580" height="440" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
   <text x="694" y="174" class="layer-label">&#xf3cd; Android path</text>
-  <rect x="720" y="200" width="280" height="58" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="732" y="222" class="icon">&#xe73c;</text>
-  <text x="754" y="222" class="label">app/src/main/python/</text>
-  <text x="732" y="248" class="desc">functions.py in APK tree</text>
-  <rect x="1020" y="200" width="200" height="58" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="1032" y="222" class="icon">&#xf17b;</text>
-  <text x="1054" y="222" class="label">Gradle + Chaquopy</text>
-  <text x="1032" y="248" class="desc">No python.dat — sources in APK</text>
-  <rect x="720" y="290" width="500" height="58" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="732" y="312" class="icon">&#xf1e6;</text>
-  <text x="754" y="312" class="label">ChaquopyPythonBridge (Djinni)</text>
-  <text x="732" y="338" class="desc">Type-safe C++ ↔ Kotlin JNI bridge</text>
+  <rect x="720" y="200" width="300" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="734" y="226" class="icon">&#xe73c;</text>
+  <text x="756" y="228" class="label">
+    <tspan x="756" dy="0">app/src/main/python/</tspan>
+  </text>
+  <text x="734" y="247" class="desc">
+    <tspan x="734" dy="0">functions.py in APK tree</tspan>
+  </text>
+  <rect x="1040" y="200" width="214" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="1054" y="226" class="icon">&#xf17b;</text>
+  <text x="1076" y="228" class="label">
+    <tspan x="1076" dy="0">Gradle + Chaquopy</tspan>
+  </text>
+  <text x="1054" y="247" class="desc">
+    <tspan x="1054" dy="0">No python.dat — sources in APK</tspan>
+  </text>
+  <rect x="720" y="300" width="520" height="80" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="734" y="326" class="icon">&#xf1e6;</text>
+  <text x="756" y="328" class="label">
+    <tspan x="756" dy="0">ChaquopyPythonBridge (Djinni)</tspan>
+  </text>
+  <text x="734" y="347" class="desc">
+    <tspan x="734" dy="0">Type-safe C++ ↔ Kotlin JNI bridge</tspan>
+  </text>
 
-  <rect x="200" y="500" width="880" height="120" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
-  <text x="214" y="524" class="layer-label">&#xf080; Shared MVC output (both templates)</text>
-  <rect x="240" y="540" width="220" height="58" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="252" y="562" class="icon">&#xf013;</text>
-  <text x="274" y="562" class="label">PlotController</text>
-  <text x="252" y="588" class="desc">Routes evaluate to model cache</text>
-  <rect x="500" y="540" width="220" height="58" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="512" y="562" class="icon">&#xf1c0;</text>
-  <text x="534" y="562" class="label">FunctionRegistry</text>
-  <text x="512" y="588" class="desc">Active curves and samples</text>
-  <rect x="760" y="540" width="260" height="58" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="772" y="562" class="icon">&#xf080;</text>
-  <text x="794" y="562" class="label">ImPlot draw</text>
-  <text x="772" y="588" class="desc">Renders curves each frame</text>
+  <rect x="200" y="520" width="880" height="130" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
+  <text x="214" y="544" class="layer-label">&#xf080; Shared MVC output (both templates)</text>
+  <rect x="240" y="560" width="240" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="254" y="586" class="icon">&#xf013;</text>
+  <text x="276" y="588" class="label">
+    <tspan x="276" dy="0">PlotController</tspan>
+  </text>
+  <text x="254" y="607" class="desc">
+    <tspan x="254" dy="0">Routes evaluate to model cache</tspan>
+  </text>
+  <rect x="520" y="560" width="240" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="534" y="586" class="icon">&#xf1c0;</text>
+  <text x="556" y="588" class="label">
+    <tspan x="556" dy="0">FunctionRegistry</tspan>
+  </text>
+  <text x="534" y="607" class="desc">
+    <tspan x="534" dy="0">Active curves and samples</tspan>
+  </text>
+  <rect x="800" y="560" width="260" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="814" y="586" class="icon">&#xf080;</text>
+  <text x="836" y="588" class="label">
+    <tspan x="836" dy="0">ImPlot draw</tspan>
+  </text>
+  <text x="814" y="607" class="desc">
+    <tspan x="814" dy="0">Renders curves each frame</tspan>
+  </text>
 
   <line x1="640" y1="114" x2="200" y2="150" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="420" y="126" text-anchor="middle" class="small">Desktop</text>

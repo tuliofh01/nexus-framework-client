@@ -9,7 +9,7 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
+      .label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
       .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
@@ -24,38 +24,74 @@
   </defs>
   <rect width="1480" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
-  <rect x="40" y="120" width="200" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="52" y="142" class="icon">&#xf15b;</text>
-  <text x="74" y="142" class="label">ui/ui.xhtml</text>
-  <text x="52" y="174" class="desc">Declarative markup — panels, plots, sliders</text>
-  <rect x="40" y="210" width="200" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="52" y="232" class="icon">&#xf121;</text>
-  <text x="74" y="232" class="label">ui/ui.ts</text>
-  <text x="52" y="264" class="desc">state(), native(), invoke() bindings</text>
-  <rect x="280" y="160" width="220" height="64" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="292" y="182" class="icon">&#xf5fd;</text>
-  <text x="314" y="182" class="label">shared/dsl/</text>
-  <text x="292" y="214" class="desc">tags.ts · components.ts · core.ts</text>
-  <rect x="520" y="160" width="220" height="64" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="532" y="182" class="icon">&#xf013;</text>
-  <text x="554" y="182" class="label">Lowering pass</text>
-  <text x="532" y="214" class="desc">Maps ComponentTag → draw calls</text>
-  <rect x="760" y="160" width="220" height="64" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="772" y="182" class="icon">&#xf120;</text>
-  <text x="794" y="182" class="label">panels.lua equiv.</text>
-  <text x="772" y="214" class="desc">nxs.register_panel definitions</text>
-  <rect x="1000" y="160" width="180" height="64" class="node" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="1012" y="182" class="icon">&#xf120;</text>
-  <text x="1034" y="182" class="label">sol2 runtime</text>
-  <text x="1012" y="214" class="desc">LuaPanels walks tree each frame</text>
-  <rect x="1240" y="120" width="180" height="64" class="node" fill="#ECEFF1" stroke="#455A64"/>
-  <text x="1252" y="142" class="icon">&#xf108;</text>
-  <text x="1274" y="142" class="label">Dear ImGui</text>
-  <text x="1252" y="174" class="desc">window, button, slider, …</text>
-  <rect x="1240" y="210" width="180" height="64" class="node" fill="#ECEFF1" stroke="#455A64"/>
-  <text x="1252" y="232" class="icon">&#xf080;</text>
-  <text x="1274" y="232" class="label">ImPlot / imnodes</text>
-  <text x="1252" y="264" class="desc">plot-line, node-editor tags</text>
+  <rect x="40" y="120" width="294" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="54" y="146" class="icon">&#xf15b;</text>
+  <text x="76" y="148" class="label">
+    <tspan x="76" dy="0">ui/ui.xhtml</tspan>
+  </text>
+  <text x="54" y="167" class="desc">
+    <tspan x="54" dy="0">Declarative markup — panels, plots,</tspan>
+    <tspan x="54" dy="14">sliders</tspan>
+  </text>
+  <rect x="40" y="210" width="251" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="54" y="236" class="icon">&#xf121;</text>
+  <text x="76" y="238" class="label">
+    <tspan x="76" dy="0">ui/ui.ts</tspan>
+  </text>
+  <text x="54" y="257" class="desc">
+    <tspan x="54" dy="0">state(), native(), invoke()</tspan>
+    <tspan x="54" dy="14">bindings</tspan>
+  </text>
+  <rect x="280" y="160" width="232" height="78" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="294" y="186" class="icon">&#xf5fd;</text>
+  <text x="316" y="188" class="label">
+    <tspan x="316" dy="0">shared/dsl/</tspan>
+  </text>
+  <text x="294" y="207" class="desc">
+    <tspan x="294" dy="0">tags.ts · components.ts ·</tspan>
+    <tspan x="294" dy="14">core.ts</tspan>
+  </text>
+  <rect x="520" y="160" width="220" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="534" y="186" class="icon">&#xf013;</text>
+  <text x="556" y="188" class="label">
+    <tspan x="556" dy="0">Lowering pass</tspan>
+  </text>
+  <text x="534" y="207" class="desc">
+    <tspan x="534" dy="0">Maps ComponentTag → draw calls</tspan>
+  </text>
+  <rect x="760" y="160" width="220" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="774" y="186" class="icon">&#xf120;</text>
+  <text x="796" y="188" class="label">
+    <tspan x="796" dy="0">panels.lua equiv.</tspan>
+  </text>
+  <text x="774" y="207" class="desc">
+    <tspan x="774" dy="0">nxs.register_panel definitions</tspan>
+  </text>
+  <rect x="1000" y="160" width="220" height="78" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="1014" y="186" class="icon">&#xf120;</text>
+  <text x="1036" y="188" class="label">
+    <tspan x="1036" dy="0">sol2 runtime</tspan>
+  </text>
+  <text x="1014" y="207" class="desc">
+    <tspan x="1014" dy="0">LuaPanels walks tree each</tspan>
+    <tspan x="1014" dy="14">frame</tspan>
+  </text>
+  <rect x="1240" y="120" width="200" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1254" y="146" class="icon">&#xf108;</text>
+  <text x="1276" y="148" class="label">
+    <tspan x="1276" dy="0">Dear ImGui</tspan>
+  </text>
+  <text x="1254" y="167" class="desc">
+    <tspan x="1254" dy="0">window, button, slider, …</tspan>
+  </text>
+  <rect x="1240" y="210" width="200" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1254" y="236" class="icon">&#xf080;</text>
+  <text x="1276" y="238" class="label">
+    <tspan x="1276" dy="0">ImPlot / imnodes</tspan>
+  </text>
+  <text x="1254" y="257" class="desc">
+    <tspan x="1254" dy="0">plot-line, node-editor tags</tspan>
+  </text>
 
 
   <line x1="240" y1="152" x2="280" y2="176" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
