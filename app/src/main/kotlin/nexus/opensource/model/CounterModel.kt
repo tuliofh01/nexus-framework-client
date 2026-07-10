@@ -1,4 +1,4 @@
-package nexus.opensource.app.model
+package nexus.opensource.model
 
 /**
  * Model layer: plain immutable data, no UI or framework types.

@@ -1,4 +1,4 @@
-package nexus.opensource.utils
+package nexus.opensource.model
 
 /**
  * Shared branding helpers used by the client application.

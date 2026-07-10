@@ -1,4 +1,4 @@
-package nexus.opensource.app.view
+package nexus.opensource.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,8 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import nexus.opensource.app.controller.CounterController
-import nexus.opensource.app.model.CounterModel
+import nexus.opensource.controller.CounterController
+import nexus.opensource.model.CounterModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**

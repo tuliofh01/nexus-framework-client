@@ -1,4 +1,4 @@
-package nexus.opensource.utils
+package nexus.opensource.model
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

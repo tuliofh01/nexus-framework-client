@@ -65,7 +65,9 @@ Um diagrama cobre o cliente scaffold, camadas de autoria, MVC C++ no SDL3, ponte
 | **Python** | **pybind11** (desktop) · **Chaquopy** + **Djinni** (Android) |
 | **Cliente scaffold** | **Compose Desktop** Kotlin MVC (`app/`) |
 
-### Assistente de criação
+### Assistente de criação (roadmap v1)
+
+Fluxo planejado — ainda não implementado no cliente:
 
 ![Fluxo do assistente — cliente Compose, wizard de 6 passos, editor blueprint imnodes, emissão do template, build e execução](docs/assets/diagrams/app-creation-wizard-flow.svg)
 
@@ -94,42 +96,62 @@ Cada projeto inclui `nxs_config.json`, `blueprint.json`, **temas** compartilhado
 ## Estrutura do repositório
 
 ```
-├── app/                 Cliente Compose Desktop (UI wizard MVC)
-├── utils/               Helpers compartilhados (NexusBranding)
+Framework/
+├── app/                 Cliente Compose Desktop (`:app`) — MVC em `nexus.opensource/`
+├── buildSrc/            Plugins Gradle de convenção (toolchain JVM 26)
 ├── template/
-│   ├── desktop-app/     Saída Desktop App
-│   ├── android-app/     Saída Android App
+│   ├── desktop-app/     Template de saída Desktop (plotter C++/CMake)
+│   ├── android-app/     Template de saída Android (Gradle/Djinni/Chaquopy)
 │   └── shared/          DSL, assets, temas, runtime (NexusTheme, FontConfig)
 └── docs/                Hub de documentação → docs/README.md
 ```
 
+Cliente Gradle de módulo único — não usa o layout multi-módulo `:core` / `:cli` / `:client-desktop` de outros repositórios.
+
 ## Pré-requisitos
 
-- **JDK 21** (toolchain Kotlin/Compose Desktop)
+- **JDK 26** (exigido pelo `buildSrc`; o resolver Foojay pode baixá-lo automaticamente)
 - Git
 - Apps **Desktop** gerados: CMake 3.24+, Ninja, C++20, Python 3.10+
 - Apps **Android** gerados: Android SDK, NDK, JDK 17+
 
 ## Início rápido
 
+Executar o cliente Compose Desktop (demo de contador MVC hoje):
+
 ```bash
 ./gradlew :app:run
 ```
 
-Tela inicial → **Create Desktop App** ou **Create Android App** → assistente de 6 passos (inclui editor blueprint imnodes) → projeto gerado.
-
-Build do template desktop:
+Compilar e testar:
 
 ```bash
+./gradlew :app:compileKotlin :app:test
+```
+
+Build do **template desktop** diretamente (templates ainda não são emitidos pelo cliente):
+
+```bash
+cd template/desktop-app
 cmake --preset debug && cmake --build --preset debug
 ```
 
+Veja [template/README.md](template/README.md) para notas de build Android.
+
 ## Status de desenvolvimento
 
-**Foco v1:** Cliente Compose Desktop, templates Desktop + Android com plotter estilo Desmos, glue Djinni + Chaquopy, temas e DSL compartilhados.
+**Neste repositório hoje**
 
-**Adiado:** catálogo remoto, ofuscação `python.dat`, polimento do runner SDL3 Android.
+- `:app` — demo MVC de contador Compose Desktop (`model/`, `view/`, `controller/`)
+- `template/desktop-app`, `template/android-app`, `template/shared` — amostras plotter, temas, DSL, stubs de runtime
+- `docs/` — hub, páginas de template, guias, dois SVGs de arquitetura
 
-## Licença
+**Roadmap v1 (cliente)**
 
-Licenciado sob a [Apache License, Version 2.0](LICENSE).
+- Tela inicial e assistente de criação em 6 passos (ver diagrama acima)
+- Cópia / emissão de templates a partir do cliente
+- Editor blueprint imnodes ligado à geração
+
+**Adiado**
+
+- Catálogo remoto de templates, ofuscação `python.dat`, polimento do runner SDL3 Android, template iOS

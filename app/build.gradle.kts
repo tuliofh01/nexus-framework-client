@@ -10,20 +10,19 @@ plugins {
 }
 
 dependencies {
-    // Project "app" depends on project "utils" (the Model layer support library).
-    implementation(project(":utils"))
-
     // Compose Desktop runtime for the current OS (includes desktop @Preview tooling support).
     implementation(compose.desktop.currentOs)
 
     // Multiplatform @Preview annotation so the IDE's Compose UI designer/preview panel works.
     implementation(compose.components.uiToolingPreview)
+
+    testImplementation(kotlin("test"))
 }
 
 compose.desktop {
     application {
         // Entry point that wires the MVC layers together.
-        // (Kotlin compiles `App.kt` to a class with FQN `nexus.opensource.app.AppKt`.)
-        mainClass = "nexus.opensource.app.AppKt"
+        // (Kotlin compiles `App.kt` to a class with FQN `nexus.opensource.AppKt`.)
+        mainClass = "nexus.opensource.AppKt"
     }
 }

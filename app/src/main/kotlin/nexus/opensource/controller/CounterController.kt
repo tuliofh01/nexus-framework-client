@@ -1,9 +1,9 @@
-package nexus.opensource.app.controller
+package nexus.opensource.controller
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import nexus.opensource.app.model.CounterModel
+import nexus.opensource.model.CounterModel
 
 /**
  * Controller layer: owns the mutable state and exposes the actions the view can invoke.

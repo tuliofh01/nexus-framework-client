@@ -65,7 +65,9 @@ One diagram covers the scaffold client, authoring layers, C++ MVC on SDL3, Pytho
 | **Python** | **pybind11** (desktop) · **Chaquopy** + **Djinni** (Android) |
 | **Scaffold client** | Kotlin **Compose Desktop** MVC (`app/`) |
 
-### App creation wizard
+### App creation wizard (v1 roadmap)
+
+Planned flow — not implemented in the client yet:
 
 ![Wizard flow — Compose client, six-step wizard, imnodes blueprint editor, template emit, build and run](docs/assets/diagrams/app-creation-wizard-flow.svg)
 
@@ -94,42 +96,62 @@ Each project includes `nxs_config.json`, `blueprint.json`, shared **themes** (`n
 ## Repository layout
 
 ```
-├── app/                 Compose Desktop client (MVC wizard UI)
-├── utils/               Shared helpers (NexusBranding)
+Framework/
+├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
+├── buildSrc/            Gradle convention plugins (JVM toolchain 26)
 ├── template/
-│   ├── desktop-app/     Desktop App output
-│   ├── android-app/     Android App output
+│   ├── desktop-app/     Desktop output template (C++/CMake plotter sample)
+│   ├── android-app/     Android output template (Gradle/Djinni/Chaquopy)
 │   └── shared/          DSL, assets, themes, runtime (NexusTheme, FontConfig)
 └── docs/                Documentation hub → docs/README.md
 ```
 
+This is a single-module Gradle client — not the multi-module `:core` / `:cli` / `:client-desktop` layout used elsewhere.
+
 ## Prerequisites
 
-- **JDK 21** (Kotlin/Compose Desktop toolchain)
+- **JDK 26** (required by `buildSrc`; the Foojay resolver can auto-download it)
 - Git
-- Generated **Desktop** apps: CMake 3.24+, Ninja, C++20, Python 3.10+
-- Generated **Android** apps: Android SDK, NDK, JDK 17+
+- **Generated Desktop** apps: CMake 3.24+, Ninja, C++20, Python 3.10+
+- **Generated Android** apps: Android SDK, NDK, JDK 17+
 
 ## Quick start
+
+Run the Compose Desktop client (counter MVC demo today):
 
 ```bash
 ./gradlew :app:run
 ```
 
-Home screen → **Create Desktop App** or **Create Android App** → 6-step wizard (includes imnodes blueprint editor) → generated project.
-
-Build a desktop template:
+Compile and test:
 
 ```bash
+./gradlew :app:compileKotlin :app:test
+```
+
+Build the **desktop template** directly (templates are not emitted by the client yet):
+
+```bash
+cd template/desktop-app
 cmake --preset debug && cmake --build --preset debug
 ```
 
+See [template/README.md](template/README.md) for Android build notes.
+
 ## Development status
 
-**v1 focus:** Compose Desktop client, Desktop + Android templates with Desmos-style plotter sample, Djinni + Chaquopy Android glue, shared themes and DSL.
+**In this repo today**
 
-**Deferred:** remote catalog, `python.dat` pack obfuscation, SDL3 Android runner polish.
+- `:app` — Compose Desktop MVC counter demo (`model/`, `view/`, `controller/`)
+- `template/desktop-app`, `template/android-app`, `template/shared` — plotter samples, themes, DSL, runtime stubs
+- `docs/` — hub, template pages, guides, two architecture SVGs
 
-## License
+**v1 roadmap (client)**
 
-Licensed under the [Apache License, Version 2.0](LICENSE).
+- Home screen and 6-step creation wizard (see wizard diagram above)
+- Template copy / emit from the client
+- imnodes blueprint editor wired to generation
+
+**Deferred**
+
+- Remote template catalog, `python.dat` pack obfuscation, SDL3 Android runner polish, iOS template
