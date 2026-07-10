@@ -408,3 +408,55 @@ That strength becomes a limitation when the quick fix is supposed to *be* the pr
 See the [full-stack architecture](docs/assets/diagrams/full-stack-architecture.svg) and [generation → builds flow](docs/assets/diagrams/generation-builds-flow.svg) for how the design-time graph becomes runtime code.
 
 **Honest caveat:** Nexus is **not** a drop-in replacement for Power Automate or n8n when the problem is purely **cloud webhook orchestration** between SaaS APIs. Use those tools for integration glue; use Nexus when the quick-fix flow should graduate into shipped software — a native surface, testable modules, and room to grow beyond the next node patch.
+
+---
+
+## Road to MVP
+
+When every box below is checked, Nexus Framework is **MVP-ready**: scaffold native apps, edit blueprints/flows, generate, and ship a documented desktop/Android project.
+
+### Client / scaffolder
+
+- [ ] Compose 6-step wizard *(v1 ships 2-screen Generate + editors — sufficient for MVP)*
+- [x] Generate desktop + android from templates
+- [x] Blueprint editor (Compose)
+- [x] Flows editor UI (list, enable/disable, JSON preview)
+- [x] ProjectGenerator + validators
+
+### Templates
+
+- [x] General-purpose desktop + android templates
+- [ ] End-to-end desktop binary build verified in CI
+- [ ] End-to-end Android APK build verified in CI
+- [x] `blueprint.json` + optional `flows.json` structure
+- [x] TS/XHTML DSL stubs, Lua, Python paths
+
+### Runtime / generated apps
+
+- [ ] Desktop pybind11 embed fully wired in generated app (Phase 2 — blueprint-driven codegen)
+- [x] `python.dat` / `lua.dat` pack parity
+- [ ] Android Chaquopy bridge E2E tested on device
+- [ ] TS/XHTML → Lua lowering compiler *(manual `panels.lua` path documented today)*
+
+### Docs / DX
+
+- [x] README architecture + comparison sections
+- [x] Template `AGENTS.md` guides
+- [ ] CLI `debug validate --all` or equivalent template validation in CI
+- [x] `client-setup` scripts (JDK 26)
+
+### Release
+
+- [ ] CI pipeline green on `main`
+- [ ] Published client binary (`builds/client/`)
+- [ ] Version tag `v1.0.0`
+
+### Post-MVP (v1.1+)
+
+Not required for MVP — track separately:
+
+- imnodes native blueprint panel (same `blueprint.json` schema)
+- Visual flows canvas editor
+- Remote template catalog · iOS template
+- HTTP/webhook step types in `flows.json`
+- SDL3 Android runner polish

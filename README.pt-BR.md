@@ -409,3 +409,55 @@ O **Nexus** mantém o mesmo modelo mental em **design-time** — nós e arestas 
 Veja a [arquitetura completa](docs/assets/diagrams/full-stack-architecture.svg) e o [fluxo geração → builds](docs/assets/diagrams/generation-builds-flow.svg) para entender como o grafo de design-time vira código de runtime.
 
 **Ressalva honesta:** o Nexus **não** substitui Power Automate ou n8n quando o problema é puramente **orquestração de webhooks na cloud** entre APIs SaaS. Use essas ferramentas para cola de integração; use o Nexus quando o fluxo-conserto-rápido deve virar software entregue — superfície nativa, módulos testáveis e espaço para crescer além do próximo remendo de nó.
+
+---
+
+## Rumo ao MVP
+
+Quando todas as caixas abaixo estiverem marcadas, o Nexus Framework estará **pronto para MVP**: scaffold de apps nativos, edição de blueprints/fluxos, geração e entrega de um projeto desktop/Android documentado.
+
+### Cliente / scaffolder
+
+- [ ] Assistente Compose em 6 passos *(v1 entrega Generate em 2 telas + editores — suficiente para MVP)*
+- [x] Gerar desktop + android a partir dos templates
+- [x] Editor de blueprint (Compose)
+- [x] Editor de fluxos (lista, ativar/desativar, preview JSON)
+- [x] ProjectGenerator + validadores
+
+### Templates
+
+- [x] Templates desktop + android de propósito geral
+- [ ] Build binário desktop ponta a ponta verificado no CI
+- [ ] Build APK Android ponta a ponta verificado no CI
+- [x] Estrutura `blueprint.json` + `flows.json` opcional
+- [x] Stubs TS/XHTML DSL, caminhos Lua e Python
+
+### Runtime / apps gerados
+
+- [ ] pybind11 desktop totalmente integrado no app gerado (Fase 2 — codegen guiado por blueprint)
+- [x] Paridade de packs `python.dat` / `lua.dat`
+- [ ] Ponte Chaquopy Android testada E2E em dispositivo
+- [ ] Compilador TS/XHTML → Lua *(caminho manual via `panels.lua` documentado hoje)*
+
+### Docs / DX
+
+- [x] Seções de arquitetura e comparação no README
+- [x] Guias `AGENTS.md` dos templates
+- [ ] CLI `debug validate --all` ou validação equivalente de templates no CI
+- [x] Scripts `client-setup` (JDK 26)
+
+### Release
+
+- [ ] Pipeline CI verde em `main`
+- [ ] Binário do cliente publicado (`builds/client/`)
+- [ ] Tag de versão `v1.0.0`
+
+### Pós-MVP (v1.1+)
+
+Não obrigatório para MVP — acompanhar separadamente:
+
+- Painel imnodes nativo de blueprint (mesmo schema `blueprint.json`)
+- Canvas visual do editor de fluxos
+- Catálogo remoto de templates · template iOS
+- Tipos de passo HTTP/webhook em `flows.json`
+- Polimento do runner SDL3 no Android
