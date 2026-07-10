@@ -1,5 +1,7 @@
 package nexus.opensource.core.service
 
+import nexus.opensource.core.RepoRoot
+import nexus.opensource.core.model.AppType
 import nexus.opensource.core.model.BlueprintEdge
 import nexus.opensource.core.model.BlueprintFile
 import nexus.opensource.core.model.BlueprintJson
@@ -19,6 +21,19 @@ class BlueprintValidatorTest {
         val blueprint = BlueprintJson.samplePlotter("TestApp", nexus.opensource.core.model.AppType.DESKTOP)
         val result = validator.validate(blueprint)
         assertTrue(result.isValid, result.errors.joinToString())
+    }
+
+    @Test
+    fun bundledTemplateBlueprintsAreValid() {
+        val repoRoot = RepoRoot.resolve()
+        val generator = ProjectGenerator(repoRoot)
+        for (appType in AppType.entries) {
+            val blueprint = generator.loadTemplateBlueprint(appType)
+            val result = validator.validate(blueprint)
+            assertTrue(result.isValid, "${appType.label}: ${result.errors.joinToString()}")
+            val types = blueprint.nodes.map { it.type }.toSet()
+            assertEquals(BlueprintNodeType.ALL.map { it.id }.toSet(), types)
+        }
     }
 
     @Test
