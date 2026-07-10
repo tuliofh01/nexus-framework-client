@@ -1,47 +1,36 @@
 # builds/
 
-Central output directory for this repository. Generated artifacts are git-ignored;
-only this README and the `.gitkeep` placeholders are tracked.
+Central output directory. Generated artifacts are git-ignored; only this README and `.gitkeep` placeholders are tracked.
 
 ## Layout
 
 ```
 builds/
-├── client/      # Kotlin Compose Desktop client (:app) deploy artifacts
-└── framework/   # Native apps scaffolded from templates, one folder per project
-                 # e.g. builds/framework/MyTradingApp/debug/
+├── client/      Kotlin Compose Desktop client deploy artifacts
+└── framework/   Native apps scaffolded from templates — one folder per project
+                 e.g. builds/framework/MyApp/debug/
 ```
 
 ## Client (`builds/client/`)
 
-Populated by the Gradle `deployToBuildsClient` task (runs after `createDistributable`):
+| Task | Output |
+|------|--------|
+| `./gradlew :app:deployToBuildsClient` | Runnable distribution → `builds/client/app/` |
+| `./gradlew :app:deployPackageToBuildsClient` | OS packages (`.deb`, `.rpm`, …) → `builds/client/packages/` |
 
-```bash
-./gradlew :app:deployToBuildsClient
-```
-
-Runnable distribution lands in `builds/client/app/`. OS packages (`.deb`, `.rpm`, etc.)
-from `packageDistributionForCurrentOS` are copied to `builds/client/packages/` when
-you run `./gradlew :app:deployPackageToBuildsClient`.
+Gradle still writes intermediates under `app/build/`; deploy tasks copy finished artifacts here.
 
 ## Framework (`builds/framework/`)
 
-Generated desktop and Android projects configure CMake presets to build out-of-source
-into `../../builds/framework/<projectName>/` relative to the project root (substituted
-at scaffold time). Example for a project named `MyTradingApp`:
+Generated projects configure CMake presets to build into `builds/framework/<projectName>/`:
 
 ```bash
-cd path/to/MyTradingApp
+cd path/to/MyApp
 cmake --preset debug
 cmake --build --preset debug
-./../../builds/framework/MyTradingApp/debug/MyTradingApp
-```
-
-Or explicitly:
-
-```bash
-cmake -B ../../builds/framework/MyTradingApp/debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake --build ../../builds/framework/MyTradingApp/debug
+./../../builds/framework/MyApp/debug/MyApp
 ```
 
 See `nxs_config.json` → `build.outputDir` in generated projects for the resolved path.
+
+Related: [../README.md](../README.md) · [../template/README.md](../template/README.md)
