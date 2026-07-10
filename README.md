@@ -13,6 +13,36 @@
 
 If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScript) or **Tauri** (OS WebView + Rust) — Nexus is a different bet: native C++ runtime, immediate-mode widgets, and in-process Lua/Python instead of HTML layout engines. Those tools excel when DOM/CSS is the product surface; Nexus excels when throughput, binary size, and a shared SDL3 stack across desktop and Android field hardware matter more.
 
+## Blueprint graph (`blueprint.json`)
+
+Nexus ships a **Langflow-style app graph** at the project root. Nodes declare modules (`python.module`, `cpp.model`, `ui.page`, …); edges wire data and command flow inside the generated MVC app. The **`:core` generator** validates and consumes the graph when materializing `builds/framework/<name>/`.
+
+| Node type | Role |
+|-----------|------|
+| `python.module` | Python sampling / analytics (`python/functions.py`) |
+| `cpp.model` | C++ domain state (`FunctionRegistry`, caches) |
+| `cpp.controller` | Commands + orchestration (`PlotController`) |
+| `ui.page` | TS/XHTML page (`ui/ui.ts`, `ui/ui.xhtml`) |
+| `lua.script` | Runtime Lua panels (`scripts/panels.lua`) |
+
+**Edit in the client:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (Compose canvas + JSON inspector in v1; native **imnodes** panel planned for v1.1 — same schema). Samples: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md).
+
+### Langflow-style nodes vs n8n
+
+Both tools use a **node-and-edge mental model**, but they solve different problems. Nexus `blueprint.json` is closer to **Langflow** (typed in-app graph) than to **n8n** (external workflow automation). Nexus does **not** replace n8n; the two can coexist. For when a flow should graduate into shipped native software — not just ops glue — see [Beyond quick-fix automation](#beyond-quick-fix-automation-from-flows-to-real-applications) below.
+
+| | **Nexus `blueprint.json`** (Langflow-style) | **n8n** |
+|---|---------------------------------------------|---------|
+| **Purpose** | Author **in-app structure** — which C++/Python/Lua/UI modules connect and how data flows inside your native app | Automate **external workflows** — webhooks, REST APIs, schedules, SaaS integrations |
+| **Node types** | `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script` | HTTP Request, Webhook, Cron, Slack, Postgres, … |
+| **Execution model** | Graph is consumed at **generation**; runtime is compiled C++/Lua/Python on SDL3 | Server-side workflow engine runs steps on triggers or schedules |
+| **Where it runs** | Inside the generated desktop binary or Android APK | n8n instance (cloud or self-hosted) |
+| **When to use** | Rewiring plotter MVC, adding screens, mapping Python samples → controller → UI | Ops automation, ETL, alerting, glue between third-party services |
+
+**Coexistence:** a generated Nexus app can call an n8n webhook from Python or Lua (e.g. post telemetry, trigger a downstream pipeline) while `blueprint.json` stays focused on **internal** app wiring — the same separation Langflow uses for LLM chains vs. what n8n uses for integration flows.
+
+**Client mapping:** **Edit blueprint** in `:app` mirrors the Langflow canvas — drag nodes, connect ports, preview JSON. v1.1 embeds **imnodes** natively with the same file; no schema migration planned.
+
 ## What this repo is
 
 | Today | Roadmap (v1.1+) |
@@ -210,6 +240,7 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 | [docs/README.md](docs/README.md) | Documentation hub |
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes |
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
+| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` — Langflow-style nodes vs n8n |
 | [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | AI agent onboarding |
 | [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Architecture risks |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
@@ -223,3 +254,30 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 **Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
 
 **Branch:** active development on **`main`** (`origin/main`).
+
+---
+
+## Beyond quick-fix automation: from flows to real applications
+
+**Power Automate**, **n8n**, and similar workflow tools occupy a clear sweet spot: glue scripts, webhook chains, SaaS integrations, and one-off “quick fixes” that keep operations moving. They excel at ops automation — connecting Slack to Postgres, fanning out webhooks, scheduled ETL — without anyone shipping a product binary.
+
+That strength becomes a limitation when the quick fix is supposed to *be* the product. Flow canvases offer no native UI/runtime beyond the vendor shell, weak packaging for offline or field use, and a cloud dependency that makes a deployable desktop or mobile binary an afterthought. Growing a flow into a multi-feature application usually means patching nodes forever: brittle, hard to test, and expensive to version like real software.
+
+**Nexus** keeps the same **design-time** mental model — nodes and edges in [`blueprint.json`](docs/templates/blueprint-schema.md) (see [Langflow-style nodes vs n8n](#langflow-style-nodes-vs-n8n) above) — but the `:core` generator emits a **real native application**: C++/SDL3 windowing, Lua and Python logic layers, ImGui + TS/XHTML DSL pages, encrypted script packs (`lua.dat` / `python.dat`), and Android/desktop binaries from one scaffold. The graph is authored like Langflow; the artifact is compiled MVC on SDL3, not a server-side workflow engine.
+
+**Migration path:** start where you already think — wire modules in the blueprint editor → generate with `:cli` or **Generate Project** → iterate in normal code layers (`cpp.model`, `python.module`, `ui.page`, Lua panels) instead of stacking flow patches. An n8n or Power Automate webhook can remain at the edge for ops glue while the app owns state, UI, and offline behavior in-process.
+
+**Capabilities beyond flows:**
+
+| Area | Flow tools (typical) | Nexus output |
+|------|----------------------|--------------|
+| **Runtime** | Server-side step engine, browser admin UI | Native desktop binary or Android APK |
+| **Offline / field** | Requires connectivity to the workflow host | Offline-first SDL3 app; script packs in the bundle |
+| **Performance** | HTTP round-trips between steps | Game-loop-friendly C++; in-process Python/numpy |
+| **UI surface** | Vendor dashboard or none | ImGui + DSL pages; [Desmos-style plotter](docs/templates/desktop-app.md) sample |
+| **Cross-platform** | Separate integrations per target | One [`blueprint.json`](docs/templates/blueprint-schema.md) wires [desktop + Android](docs/assets/diagrams/desktop-vs-android-runtime.svg) |
+| **Authoring UX** | n8n / Power Automate canvas | Compose blueprint editor today; native **imnodes** panel (v1.1) on the same schema |
+
+See the [full-stack architecture](docs/assets/diagrams/full-stack-architecture.svg) and [generation → builds flow](docs/assets/diagrams/generation-builds-flow.svg) for how the design-time graph becomes runtime code.
+
+**Honest caveat:** Nexus is **not** a drop-in replacement for Power Automate or n8n when the problem is purely **cloud webhook orchestration** between SaaS APIs. Use those tools for integration glue; use Nexus when the quick-fix flow should graduate into shipped software — a native surface, testable modules, and room to grow beyond the next node patch.
