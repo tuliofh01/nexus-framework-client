@@ -65,3 +65,4 @@ Compose plugins (version catalog `gradle/libs.versions.toml`): `org.jetbrains.ko
 
 - EN: [README.md](README.md) · pt-BR: [README.pt-BR.md](README.pt-BR.md)
 - Hub: [docs/README.md](docs/README.md) — architecture, templates, guides
+- Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) — doc/code mismatches and onboarding checklist

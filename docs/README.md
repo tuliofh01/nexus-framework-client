@@ -5,6 +5,7 @@ Documentation for **The Nexus Framework** scaffold: the Compose Desktop client t
 | Doc | What it covers |
 |-----|----------------|
 | [Architecture overview](architecture/overview.md) | Full-stack + wizard diagrams, layers, themes |
+| [Agent readiness](architecture/agent-readiness.md) | AI agent onboarding score (44/100), gaps, fixes |
 | [Desktop App template](templates/desktop-app.md) | `template/desktop-app/` — MVC, pybind11, plotter |
 | [Android App template](templates/android-app.md) | `template/android-app/` — Djinni, Chaquopy |
 | [Shared DSL](templates/shared-dsl.md) | `template/shared/dsl/` — TS + XHTML |
