@@ -1,92 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 420" width="1480" height="420">
-  <title>Langflow Example  RAG Chatbot</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1520 460" width="1520" height="460">
+  <title>Langflow Example — RAG Chatbot</title>
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#37474F"/>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title { font: bold 20px Verdana, sans-serif; fill: #1a1a1a; }
-      .subtitle { font: 13px Verdana, sans-serif; fill: #455A64; }
-      .label { font: 12px Verdana, sans-serif; fill: #263238; }
-      .small { font: 10px Verdana, sans-serif; fill: #546E7A; }
-      .legend-title { font: bold 11px Verdana, sans-serif; fill: #37474F; }
-      .node { rx: 8; stroke-width: 1.5; }
-      .legend-box { rx: 4; stroke-width: 1; }
+      .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
+      .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
+      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
+      .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
+      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
+      .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .node { rx: 10; stroke-width: 2.5; }
+      .panel { rx: 12; stroke-width: 2.5; }
+      .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
+  <rect width="1520" height="100%" fill="#f8f9fa"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
+  <text x="760" y="38" text-anchor="middle" class="title">Langflow Example — RAG Chatbot</text>
+  <text x="760" y="58" text-anchor="middle" class="subtitle">Classic retrieval-augmented generation pipeline (runtime LLM flow)</text>
+  <rect x="40" y="120" width="140" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="52" y="142" class="icon">&#xf075;</text>
+  <text x="74" y="142" class="label">Chat Input</text>
+  <text x="52" y="174" class="desc">User-facing message entry point</text>
+  <rect x="200" y="120" width="140" height="64" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="212" y="142" class="icon">&#xf15b;</text>
+  <text x="234" y="142" class="label">PDF Loader</text>
+  <text x="212" y="174" class="desc">Ingests documents into pipeline</text>
+  <rect x="360" y="120" width="140" height="64" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="372" y="142" class="icon">&#xf121;</text>
+  <text x="394" y="142" class="label">Text Splitter</text>
+  <text x="372" y="174" class="desc">Chunks text for embedding</text>
+  <rect x="520" y="120" width="140" height="64" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="532" y="142" class="icon">&#xf080;</text>
+  <text x="554" y="142" class="label">Embeddings</text>
+  <text x="532" y="174" class="desc">Vectorizes text chunks</text>
+  <rect x="680" y="120" width="140" height="64" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="692" y="142" class="icon">&#xf1c0;</text>
+  <text x="714" y="142" class="label">Vector Store</text>
+  <text x="692" y="174" class="desc">Persists vectors for retrieval</text>
+  <rect x="840" y="120" width="140" height="64" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="852" y="142" class="icon">&#xf002;</text>
+  <text x="874" y="142" class="label">Retriever</text>
+  <text x="852" y="174" class="desc">Similarity search at query time</text>
+  <rect x="1000" y="120" width="140" height="64" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="1012" y="142" class="icon">&#xf544;</text>
+  <text x="1034" y="142" class="label">LLM</text>
+  <text x="1012" y="174" class="desc">Generates answer from context</text>
+  <rect x="1160" y="120" width="140" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="1172" y="142" class="icon">&#xf075;</text>
+  <text x="1194" y="142" class="label">Chat Output</text>
+  <text x="1172" y="174" class="desc">Returns response to user</text>
 
-  <rect width="1480" height="420" fill="#FFFFFF"/>
-  <text x="740" y="34" text-anchor="middle" class="title">Langflow Example  RAG Chatbot</text>
-  <text x="740" y="56" text-anchor="middle" class="subtitle">Classic retrieval-augmented generation pipeline (runtime LLM flow)</text>
+  <line x1="180" y1="152" x2="200" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="340" y1="152" x2="360" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="500" y1="152" x2="520" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="660" y1="152" x2="680" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="820" y1="152" x2="840" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="980" y1="152" x2="1000" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="1140" y1="152" x2="1160" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+  <text x="510" y="258" text-anchor="middle" class="desc">user query shortcut at chat time</text>
 
-  <!-- Main flow nodes -->
-  <rect x="40" y="120" width="130" height="52" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="105" y="144" text-anchor="middle" class="label">Chat Input</text>
-  <text x="105" y="160" text-anchor="middle" class="small">I/O</text>
-
-  <rect x="210" y="120" width="130" height="52" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="275" y="144" text-anchor="middle" class="label">PDF Loader</text>
-  <text x="275" y="160" text-anchor="middle" class="small">Loader</text>
-
-  <rect x="380" y="120" width="130" height="52" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="445" y="144" text-anchor="middle" class="label">Text Splitter</text>
-  <text x="445" y="160" text-anchor="middle" class="small">Processor</text>
-
-  <rect x="550" y="120" width="130" height="52" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="615" y="144" text-anchor="middle" class="label">Embeddings</text>
-  <text x="615" y="160" text-anchor="middle" class="small">Model</text>
-
-  <rect x="720" y="120" width="130" height="52" class="node" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="785" y="144" text-anchor="middle" class="label">Vector Store</text>
-  <text x="785" y="160" text-anchor="middle" class="small">Memory</text>
-
-  <rect x="890" y="120" width="130" height="52" class="node" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="955" y="144" text-anchor="middle" class="label">Retriever</text>
-  <text x="955" y="160" text-anchor="middle" class="small">Retriever</text>
-
-  <rect x="1060" y="120" width="130" height="52" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="1125" y="144" text-anchor="middle" class="label">LLM</text>
-  <text x="1125" y="160" text-anchor="middle" class="small">Model</text>
-
-  <rect x="1230" y="120" width="130" height="52" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="1295" y="144" text-anchor="middle" class="label">Chat Output</text>
-  <text x="1295" y="160" text-anchor="middle" class="small">I/O</text>
-
-  <!-- Flow edges -->
-  <line x1="170" y1="146" x2="210" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="340" y1="146" x2="380" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="510" y1="146" x2="550" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="680" y1="146" x2="720" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="850" y1="146" x2="890" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1020" y1="146" x2="1060" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1190" y1="146" x2="1230" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-  <!-- Query shortcut: Chat Input to Retriever -->
-  <path d="M105,172 Q105,220 955,220 955,172" fill="none" stroke="#90A4AE" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
-  <text x="530" y="238" text-anchor="middle" class="small">user query (at chat time)</text>
-
-  <!-- Legend -->
-  <rect x="40" y="290" width="1400" height="100" fill="#FAFAFA" stroke="#B0BEC5" stroke-width="1.2" rx="8"/>
-  <text x="60" y="314" class="legend-title">Legend  node categories</text>
-
-  <rect x="60" y="328" width="14" height="14" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="82" y="339" class="small">I/O  user-facing input and output</text>
-
-  <rect x="60" y="352" width="14" height="14" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="82" y="363" class="small">Loader  ingest documents (PDF, web, files)</text>
-
-  <rect x="380" y="328" width="14" height="14" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="402" y="339" class="small">Processor  chunk and transform text</text>
-
-  <rect x="380" y="352" width="14" height="14" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="402" y="363" class="small">Model  embeddings and LLM inference</text>
-
-  <rect x="700" y="328" width="14" height="14" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="722" y="339" class="small">Memory  vector database persistence</text>
-
-  <rect x="700" y="352" width="14" height="14" class="legend-box" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="722" y="363" class="small">Retriever  similarity search over stored vectors</text>
-
-  <text x="1100" y="352" class="small">Dashed edge = secondary path at query time</text>
+  <rect x="40" y="300" width="1440" height="110" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="56" y="322" class="legend-title">Node categories</text>
+  <rect x="56" y="324" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="78" y="336" class="small">I/O — user-facing input and output</text>
+  <rect x="776" y="324" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="798" y="336" class="small">Loader — ingest documents</text>
+  <rect x="56" y="346" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="78" y="358" class="small">Model — embeddings and LLM inference</text>
+  <rect x="776" y="346" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="798" y="358" class="small">Memory — vector database persistence</text>
+  <rect x="56" y="368" width="16" height="16" class="legend-box" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="78" y="380" class="small">Retriever — similarity search</text>
 </svg>

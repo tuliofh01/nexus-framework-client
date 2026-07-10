@@ -1,107 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 580" width="1240" height="580">
   <title>Langflow vs n8n vs Nexus blueprint.json</title>
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#37474F"/>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title { font: bold 20px Verdana, sans-serif; fill: #1a1a1a; }
-      .subtitle { font: 13px Verdana, sans-serif; fill: #455A64; }
-      .label { font: 12px Verdana, sans-serif; fill: #263238; }
-      .small { font: 10px Verdana, sans-serif; fill: #546E7A; }
-      .node { rx: 6; stroke-width: 1.5; }
-      .panel { fill: #FAFAFA; stroke: #B0BEC5; stroke-width: 1.2; rx: 8; }
-      .timing { font: bold 11px Verdana, sans-serif; fill: #1565C0; }
+      .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
+      .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
+      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
+      .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
+      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
+      .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .node { rx: 10; stroke-width: 2.5; }
+      .panel { rx: 12; stroke-width: 2.5; }
+      .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
+  <rect width="1240" height="100%" fill="#f8f9fa"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
+  <text x="620" y="38" text-anchor="middle" class="title">Blueprint paradigms — Langflow · n8n · Nexus</text>
+  <text x="620" y="58" text-anchor="middle" class="subtitle">Same visual wiring metaphor; different purpose and execution timing</text>
 
-  <rect width="1200" height="520" fill="#FFFFFF"/>
-  <text x="600" y="34" text-anchor="middle" class="title">Blueprint paradigms  Langflow � n8n � Nexus</text>
-  <text x="600" y="56" text-anchor="middle" class="subtitle">Same visual wiring metaphor; different purpose and execution timing</text>
+  <rect x="24" y="88" width="360" height="420" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
+  <text x="38" y="112" class="layer-label">&#xf544; Langflow</text>
+  <text x="204" y="130" text-anchor="middle" class="desc">ML / LLM flow DAG · Runtime execution</text>
+  <rect x="64" y="150" width="120" height="58" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="76" y="172" class="icon">&#xf075;</text>
+  <text x="98" y="172" class="label">Prompt</text>
+  <text x="76" y="198" class="desc">User text input to the flow</text>
+  <rect x="224" y="150" width="120" height="58" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="236" y="172" class="icon">&#xf544;</text>
+  <text x="258" y="172" class="label">LLM</text>
+  <text x="236" y="198" class="desc">Inference node calls model API</text>
+  <rect x="144" y="240" width="120" height="58" class="node" fill="#FFFFFF" stroke="#EF6C00"/>
+  <text x="156" y="262" class="icon">&#xf121;</text>
+  <text x="178" y="262" class="label">Parser</text>
+  <text x="156" y="288" class="desc">Structured output extraction</text>
+  <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <text x="44" y="330" class="small">• Typed nodes (model, tool, memory)</text>
+  <text x="44" y="350" class="small">• Runs when user invokes the flow</text>
+  <text x="44" y="370" class="desc">Output: inference / chat response</text>
 
-  <!-- Langflow column -->
-  <rect x="24" y="76" width="360" height="420" class="panel"/>
-  <text x="204" y="104" text-anchor="middle" class="title" font-size="16">Langflow</text>
-  <text x="204" y="124" text-anchor="middle" class="subtitle">ML / LLM flow DAG</text>
-  <text x="204" y="148" text-anchor="middle" class="timing">Runtime execution</text>
+  <rect x="420" y="88" width="360" height="420" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <text x="434" y="112" class="layer-label">&#xf1e6; n8n</text>
+  <text x="600" y="130" text-anchor="middle" class="desc">Workflow automation · Runtime execution</text>
+  <rect x="460" y="150" width="120" height="58" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="472" y="172" class="icon">&#xf0c2;</text>
+  <text x="494" y="172" class="label">Webhook</text>
+  <text x="472" y="198" class="desc">HTTP trigger starts workflow</text>
+  <rect x="620" y="150" width="120" height="58" class="node" fill="#FFFFFF" stroke="#3949AB"/>
+  <text x="632" y="172" class="icon">&#xf1e6;</text>
+  <text x="654" y="172" class="label">HTTP Request</text>
+  <text x="632" y="198" class="desc">Calls external REST APIs</text>
+  <rect x="540" y="240" width="120" height="58" class="node" fill="#FFFFFF" stroke="#00695C"/>
+  <text x="552" y="262" class="icon">&#xf075;</text>
+  <text x="574" y="262" class="label">Slack</text>
+  <text x="552" y="288" class="desc">Posts message to channel</text>
+  <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <text x="440" y="330" class="small">• Triggers + integration steps</text>
+  <text x="440" y="350" class="small">• Runs on schedule or webhook</text>
+  <text x="440" y="370" class="desc">Output: side effects (API calls)</text>
 
-  <rect x="64" y="168" width="120" height="44" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="124" y="194" text-anchor="middle" class="label">Prompt</text>
+  <rect x="816" y="88" width="400" height="420" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
+  <text x="830" y="112" class="layer-label">&#xf15b; Nexus blueprint.json</text>
+  <text x="1016" y="130" text-anchor="middle" class="badge">Design-time codegen</text>
+  <rect x="836" y="150" width="110" height="52" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="848" y="172" class="icon">&#xe73c;</text>
+  <text x="870" y="172" class="label">python.module</text>
+  <text x="848" y="192" class="desc">Analytics hooks in blueprint</text>
+  <rect x="966" y="150" width="110" height="52" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="978" y="172" class="icon">&#xf1c0;</text>
+  <text x="1000" y="172" class="label">cpp.model</text>
+  <text x="978" y="192" class="desc">Domain state node type</text>
+  <rect x="896" y="218" width="110" height="52" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="908" y="240" class="icon">&#xf013;</text>
+  <text x="930" y="240" class="label">cpp.controller</text>
+  <text x="908" y="260" class="desc">Command routing layer</text>
+  <rect x="1026" y="218" width="110" height="52" class="node" fill="#FFFFFF" stroke="#EF6C00"/>
+  <text x="1038" y="240" class="icon">&#xf5fd;</text>
+  <text x="1060" y="240" class="label">ui.page</text>
+  <text x="1038" y="260" class="desc">ImGui screen definition</text>
+  <rect x="966" y="286" width="110" height="52" class="node" fill="#FFFFFF" stroke="#00838F"/>
+  <text x="978" y="308" class="icon">&#xf120;</text>
+  <text x="1000" y="308" class="label">lua.script</text>
+  <text x="978" y="328" class="desc">sol2 panel bindings</text>
+  <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <text x="836" y="360" class="small">• Langflow-style typed DAG (not n8n triggers)</text>
+  <text x="836" y="380" class="small">• Consumed at generate time (:core)</text>
+  <text x="836" y="400" class="desc">Output: C++/Lua/Python/UI project tree</text>
 
-  <rect x="224" y="168" width="120" height="44" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="284" y="194" text-anchor="middle" class="label">LLM</text>
-
-  <rect x="144" y="248" width="120" height="44" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="204" y="274" text-anchor="middle" class="label">Parser</text>
-
-  <line x1="184" y1="212" x2="224" y2="190" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="284" y1="212" x2="204" y2="248" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-  <text x="44" y="320" class="small">" Typed nodes (model, tool, memory)</text>
-  <text x="44" y="338" class="small">" Edges = data between components</text>
-  <text x="44" y="356" class="small">" Runs when user invokes the flow</text>
-  <text x="44" y="374" class="small">" Output: inference / chat response</text>
-
-  <!-- n8n column -->
-  <rect x="420" y="76" width="360" height="420" class="panel"/>
-  <text x="600" y="104" text-anchor="middle" class="title" font-size="16">n8n</text>
-  <text x="600" y="124" text-anchor="middle" class="subtitle">Workflow automation</text>
-  <text x="600" y="148" text-anchor="middle" class="timing">Runtime execution</text>
-
-  <rect x="460" y="168" width="120" height="44" class="node" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="520" y="188" text-anchor="middle" class="label">Webhook</text>
-  <text x="520" y="202" text-anchor="middle" class="small">trigger</text>
-
-  <rect x="620" y="168" width="120" height="44" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="680" y="194" text-anchor="middle" class="label">HTTP Request</text>
-
-  <rect x="540" y="248" width="120" height="44" class="node" fill="#E0F2F1" stroke="#00695C"/>
-  <text x="600" y="274" text-anchor="middle" class="label">Slack</text>
-
-  <line x1="580" y1="190" x2="620" y2="190" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="680" y1="212" x2="600" y2="248" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-  <text x="440" y="320" class="small">" Triggers + integration steps</text>
-  <text x="440" y="338" class="small">" Edges = event / payload routing</text>
-  <text x="440" y="356" class="small">" Runs on schedule or webhook</text>
-  <text x="440" y="374" class="small">" Output: side effects (API calls)</text>
-
-  <!-- Nexus column -->
-  <rect x="816" y="76" width="360" height="420" class="panel"/>
-  <text x="996" y="104" text-anchor="middle" class="title" font-size="16">Nexus blueprint.json</text>
-  <text x="996" y="124" text-anchor="middle" class="subtitle">Native app structure graph</text>
-  <text x="996" y="148" text-anchor="middle" class="timing" fill="#6A1B9A">Design-time codegen</text>
-
-  <rect x="856" y="168" width="100" height="36" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="906" y="190" text-anchor="middle" class="small">python.module</text>
-
-  <rect x="976" y="168" width="100" height="36" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="1026" y="190" text-anchor="middle" class="small">cpp.model</text>
-
-  <rect x="916" y="218" width="100" height="36" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="966" y="240" text-anchor="middle" class="small">cpp.controller</text>
-
-  <rect x="1036" y="218" width="100" height="36" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="1086" y="240" text-anchor="middle" class="small">ui.page</text>
-
-  <rect x="976" y="268" width="100" height="36" class="node" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="1026" y="290" text-anchor="middle" class="small">lua.script</text>
-
-  <line x1="906" y1="204" x2="966" y2="218" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="966" y1="254" x2="1026" y2="204" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1026" y1="254" x2="1086" y2="236" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1026" y1="286" x2="966" y2="254" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-  <text x="836" y="330" class="small">" Langflow-style typed DAG (not n8n triggers)</text>
-  <text x="836" y="348" class="small">" Edges = MVC data / command ports</text>
-  <text x="836" y="366" class="small">" Consumed at generate time (:core)</text>
-  <text x="836" y="384" class="small">" Output: C++/Lua/Python/UI project tree</text>
-  <text x="836" y="410" class="small">" Edit: :app � Generate Project � Edit blueprint</text>
-
-  <!-- Bottom legend -->
-  <rect x="24" y="468" width="1152" height="36" fill="#ECEFF1" stroke="#CFD8DC" rx="6"/>
-  <text x="600" y="490" text-anchor="middle" class="label">
-    Nexus maps the Langflow mental model (typed nodes + edges) to native app codegen  not runtime webhook automation. Future n8n-style hooks are optional roadmap.
-  </text>
+  <rect x="24" y="520" width="1192" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="620" y="548" text-anchor="middle" class="small">Nexus maps Langflow mental model (typed nodes + edges) to native app codegen — not runtime webhook automation.</text>
 </svg>
