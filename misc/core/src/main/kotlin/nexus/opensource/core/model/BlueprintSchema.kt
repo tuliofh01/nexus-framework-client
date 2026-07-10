@@ -6,8 +6,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.add
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
+
+private const val BLUEPRINT_SCHEMA_URL = "https://nexus.dev/schemas/blueprint-1.json"
 
 /**
  * Langflow-style app graph consumed by the generator and runtime tooling.
@@ -15,7 +18,7 @@ import kotlinx.serialization.json.putJsonArray
  */
 @Serializable
 data class BlueprintFile(
-    @SerialName("\$schema") val schema: String = SCHEMA_URL,
+    @SerialName("\$schema") val schema: String = BLUEPRINT_SCHEMA_URL,
     val name: String = "App flow",
     val description: String = "",
     val editor: BlueprintEditorMeta = BlueprintEditorMeta(),
@@ -188,7 +191,7 @@ object BlueprintJson {
         )
     }
 
-    const val SCHEMA_URL = "https://nexus.dev/schemas/blueprint-1.json"
+    const val SCHEMA_URL = BLUEPRINT_SCHEMA_URL
     const val FILE_NAME = "blueprint.json"
 }
 
