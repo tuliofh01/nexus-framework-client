@@ -98,7 +98,11 @@ Each project includes `nxs_config.json`, `blueprint.json`, shared **themes** (`n
 ```
 Framework/
 ├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
+├── core/                Generation pipeline (`:core`) — ProjectGenerator, TemplateEngine, nxs_config schema
+├── cli/                 Headless `generate` command (`:cli`)
+├── client-setup/        First-run JDK 26 + Git installers → client-setup/README.md
 ├── buildSrc/            Gradle convention plugins (JVM toolchain 26)
+├── builds/              Deploy output — client to `builds/client/`, generated apps to `builds/framework/<name>/`
 ├── template/
 │   ├── desktop-app/     Desktop output template (C++/CMake plotter sample)
 │   ├── android-app/     Android output template (Gradle/Djinni/Chaquopy)
@@ -106,30 +110,61 @@ Framework/
 └── docs/                Documentation hub → docs/README.md
 ```
 
-This is a single-module Gradle client — not the multi-module `:core` / `:cli` / `:client-desktop` layout used elsewhere.
+Multi-module Gradle project: `:core` (generator), `:cli` (headless), `:app` (Compose UI). This is **not** the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
+
+Agent onboarding and risks: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) · [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
 
 ## Prerequisites
 
-- **JDK 26** (required by `buildSrc`; the Foojay resolver can auto-download it)
+- **JDK 26** (required by `buildSrc`; install via [client-setup/](client-setup/README.md) — Foojay can auto-download but system JDK is recommended)
 - Git
-- **Generated Desktop** apps: CMake 3.24+, Ninja, C++20, Python 3.10+
+- **Generated Desktop** apps: CMake 3.24+, Ninja, C++20, Python 3.10+ (optional for the Compose client)
 - **Generated Android** apps: Android SDK, NDK, JDK 17+
+
+## First run
+
+Run **one** platform setup script, source the generated env file, then start the client:
+
+| Platform | Setup | Env |
+|----------|-------|-----|
+| Linux | `./client-setup/linux/setup.sh` | `source client-setup/env.sh` |
+| macOS | `./client-setup/macos/setup.sh` | `source client-setup/env.sh` |
+| Windows | `client-setup\windows\setup.bat` | `call client-setup\env.bat` |
+
+See [client-setup/README.md](client-setup/README.md) for the platform matrix and troubleshooting.
 
 ## Quick start
 
-Run the Compose Desktop client (counter MVC demo today):
+Run the Compose Desktop client (Counter MVC demo + **Generate Project** screen today; full 6-step wizard is v1 roadmap):
 
 ```bash
+source client-setup/env.sh   # after first-run setup
 ./gradlew :app:run
 ```
+
+Headless generation (optional):
+
+```bash
+./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
+./gradlew :cli:run --args="generate --type desktop --name MyApp"
+```
+
+Generated native apps build under `builds/framework/<projectName>/` — see [builds/README.md](builds/README.md).
 
 Compile and test:
 
 ```bash
-./gradlew :app:compileKotlin :app:test
+./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test
 ```
 
-Build the **desktop template** directly (templates are not emitted by the client yet):
+Deploy the client distribution:
+
+```bash
+./gradlew :app:deployToBuildsClient          # → builds/client/app/
+./gradlew :app:deployPackageToBuildsClient    # → builds/client/packages/
+```
+
+Build the **desktop template** directly (without generating):
 
 ```bash
 cd template/desktop-app
@@ -142,16 +177,20 @@ See [template/README.md](template/README.md) for Android build notes.
 
 **In this repo today**
 
-- `:app` — Compose Desktop MVC counter demo (`model/`, `view/`, `controller/`)
+- `:app` — Compose Desktop MVC counter demo + **Generate Project** screen (`model/`, `view/`, `controller/`)
+- `:core` / `:cli` — template copy / emit pipeline (`ProjectGenerator`, headless `generate`)
 - `template/desktop-app`, `template/android-app`, `template/shared` — plotter samples, themes, DSL, runtime stubs
-- `docs/` — hub, template pages, guides, two architecture SVGs
+- `builds/` — client deploy (`builds/client/`) and generated native output (`builds/framework/<name>/`)
+- `client-setup/` — first-run JDK 26 + Git installers
+- `docs/` — hub, template pages, guides, architecture SVGs, agent-readiness + risk analysis
 
-**v1 roadmap (client)**
+**v1 roadmap (client UI)**
 
 - Home screen and 6-step creation wizard (see wizard diagram above)
-- Template copy / emit from the client
 - imnodes blueprint editor wired to generation
 
 **Deferred**
 
 - Remote template catalog, `python.dat` pack obfuscation, SDL3 Android runner polish, iOS template
+
+**Branch:** active development is on **`master`** (`origin/master`). Some remotes still default to `origin/main`; use `git checkout master` if your tree looks stale.
