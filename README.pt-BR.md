@@ -509,21 +509,24 @@ O mapa ponta a ponta do scaffolder Compose pela geração em `:core` até apps C
 
 Rastreia o caminho do setup inicial de JDK pela geração em `:app`/`:cli` até templates emitidos em `builds/framework/`. Use ao depurar falhas de geração ou explicar o layout de deploy. Paradas-chave: `client-setup`, `ProjectGenerator` e o passo de build nativo.
 
-![Fluxo de geração e builds](docs/assets/diagrams/generation-builds-flow.svg)
+<!-- Diagrama: fluxo de geração e builds -->
+![Fluxo de geração e builds — client-setup, módulos Gradle, ProjectGenerator e saída builds/framework](docs/assets/diagrams/generation-builds-flow.svg)
 
 ### Runtime Desktop vs Android
 *MVC compartilhado no SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
 
 Mostra como o mesmo grafo de nós do blueprint compila para desktop (pybind11, `python.dat`) vs Android (Chaquopy, Djinni). Consulte ao escolher template ou ligar `python.module` entre plataformas. Observe o caminho compartilhado controller/model e onde a ponte Python diverge.
 
-![Runtime Desktop vs Android](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+<!-- Diagrama: runtime Desktop vs Android -->
+![Runtime Desktop vs Android — MVC compartilhado no SDL3/ImGui com pybind11 vs Chaquopy e Djinni](docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
 ### Langflow vs n8n vs blueprint Nexus
 *DAG tipado in-app vs automação de workflow em runtime vs codegen em design-time*
 
 Contrasta Langflow (fluxos LLM em runtime), n8n (automação externa) e `blueprint.json` do Nexus (estrutura em build-time). Leia antes de editar blueprints ou explicar por que o Nexus não substitui o n8n. Tipos como `python.module` e `ui.page` mapeiam para artefatos gerados, não passos de webhook.
 
-![Langflow vs n8n vs blueprint Nexus](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
+<!-- Diagrama: Langflow vs n8n vs blueprint Nexus (seção arquitetura) -->
+![Langflow vs n8n vs blueprint Nexus — DAG tipado in-app vs automação em runtime vs codegen em design-time](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md) · Tooling do scaffold: [O diretório `misc/`](#o-diretório-misc) · Divisão Python: [Python: Desktop vs Android](#python-desktop-vs-android) · Autoria UI: [TypeScript + DSL XHTML](#typescript--dsl-xhtml)
 
@@ -630,3 +633,29 @@ Não obrigatório para MVP — acompanhar separadamente:
 - Catálogo remoto de templates · template iOS
 - Tipos de passo HTTP/webhook em `flows.json`
 - Polimento do runner SDL3 no Android
+
+## Veja também
+
+### Ecossistema e dependências
+
+| Tecnologia | Site oficial |
+|------------|--------------|
+| [SDL3](https://www.libsdl.org/) | Janela, input e superfícies GPU multiplataforma |
+| [Dear ImGui](https://github.com/ocornut/imgui) | Widgets de UI immediate-mode |
+| [ImPlot](https://github.com/epezent/implot) | Extensão de gráficos para ImGui |
+| [sol2](https://github.com/ThePhD/sol2) | Bindings C++ ↔ Lua |
+| [pybind11](https://pybind11.readthedocs.io/) | Embedding C++ ↔ Python (desktop) |
+| [Chaquopy](https://chaquo.com/chaquopy/) | Python no Android (JVM) |
+| [Djinni](https://github.com/dropbox/djinni) | Ponte type-safe C++ ↔ Kotlin/Java |
+| [Langflow](https://github.com/langflow-ai/langflow) | Editor visual de DAG para fluxos LLM (autoria opcional) |
+| [n8n](https://n8n.io/) | Automação de workflows (cola de ops externa) |
+| [Kotlin](https://kotlinlang.org/) | Cliente scaffolder Compose Desktop |
+| [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | UI multiplataforma para `:app` |
+
+<!-- Mantenedor: considere tópicos do repositório GitHub — native-app, scaffolder, sdl3, imgui, kotlin-compose, cpp, lua, python, android, blueprint, langflow, open-source -->
+
+### Repositórios relacionados
+
+| Repositório | Papel |
+|-------------|-------|
+| [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Distribuição separada do wizard `:client-desktop` |
