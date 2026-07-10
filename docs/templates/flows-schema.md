@@ -127,6 +127,10 @@ Add several objects to the `flows` array — each with a unique `id`. Background
 }
 ```
 
+## Langflow adoption (v1)
+
+You can author automation graphs in [Langflow](https://github.com/langflow-ai/langflow) and adopt them into Nexus — Nexus does **not** run the Langflow runtime. Export flow JSON from Langflow (UI export or API), then manually map components to `steps[]` with `type: invoke`, edges to ordered steps, and triggers to `trigger.type` (`event`, `interval`, `startup`, `manual`, `hotkey`). Structural wiring (screens, controllers) belongs in [`blueprint.json`](blueprint-schema.md); runtime automation belongs here. Place the translated file at `flows/flows.json`, enable in `nxs_config.json`, and **FlowRunner** registers triggers at startup. An automatic Langflow importer is planned for v1.1; until then, LLM nodes become `invoke` stubs backed by `python.module` implementations. See [README § Using Langflow to author flows](../../README.md#using-langflow-to-author-flows) for the full mapping table and adoption workflow.
+
 ## Adoption paths
 
 | Path | What you ship |
@@ -134,6 +138,7 @@ Add several objects to the `flows` array — each with a unique `id`. Background
 | **No flows** | Delete `flows/flows.json` or set `"flows": { "enabled": false }` — full custom app, zero automation layer |
 | **Flows as helpers** | Small background/triggered services inside a larger MVC app |
 | **Hybrid** | Blueprint-driven MVC + optional `flows.json` for timers and events |
+| **Langflow export** | Design in Langflow → translate JSON → `flows.json` (manual v1; importer v1.1) |
 
 ## Runtime implementation
 

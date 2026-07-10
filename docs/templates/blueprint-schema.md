@@ -20,6 +20,8 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 
 **Nexus does not replace n8n.** Use `blueprint.json` for **internal** app structure (Langflow mental model). Use n8n when the generated app must trigger external automation — e.g. call an n8n webhook from `python/functions.py` or `scripts/panels.lua` while the blueprint stays focused on MVC edges (`evaluate` → `sampleCache` → `commands`).
 
+**Structure vs automation:** Langflow exports that wire screens, controllers, and Python modules map here. Runtime automation (timers, event hooks, background loops) maps to [`flows.json`](flows-schema.md) instead — see [Langflow adoption](flows-schema.md#langflow-adoption-v1) and [README § Using Langflow to author flows](../../README.md#using-langflow-to-author-flows).
+
 **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema. All v1 node types use `editor.paradigm: "langflow"`; future **n8n-style** automation nodes may use `"n8n"` — not shipped in v1.
 
 
