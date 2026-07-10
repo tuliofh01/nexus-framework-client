@@ -37,6 +37,7 @@ If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScrip
 - [Modern C++ in Nexus](#modern-c-in-nexus)
 - [Architecture](#architecture)
 - [Documentation](#documentation)
+- [Adding dependencies after setup](#adding-dependencies-after-setup)
 - [Development status and limitations](#development-status-and-limitations)
 - [Beyond quick-fix automation: from flows to real applications](#beyond-quick-fix-automation-from-flows-to-real-applications)
 - [Road to MVP](#road-to-mvp)
@@ -570,6 +571,19 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) 
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
 | [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) | Generated desktop app — pybind11, Lua, TS/XHTML |
 | [template/android-app/AGENTS.md](template/android-app/AGENTS.md) | Generated Android app — Chaquopy, Djinni |
+| [docs/guides/adding-dependencies.md](docs/guides/adding-dependencies.md) | C++, Lua, Python packages after client-setup |
+
+## Adding dependencies after setup
+
+After [client-setup](misc/client-setup/README.md) (JDK 26 + Git) and **Generate Project**, native dependencies are added in the **generated app** under `builds/framework/<ProjectName>/` — not in the Compose scaffolder modules. The scaffolder only emits templates; CMake, Gradle, pip, and `scripts/` edits happen in that output tree.
+
+**C++ (desktop):** install CMake, Ninja, and SDL3 system libs if needed, then extend the project `CMakeLists.txt` with `FetchContent` (Nexus default for SDL3, ImGui, sol2, pybind11) or optional vcpkg. Link new targets into `src/` and rebuild with `cmake --build --preset debug`. **C++ (Android):** same `CMakeLists.txt` is driven by `app/build.gradle.kts` `externalNativeBuild`; see [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
+
+**Python:** desktop uses pybind11 — `pip install -r requirements.txt`, edit `python/`, rebuild (CMake runs `pack_python_dat`). Android uses Chaquopy — add wheels in `app/build.gradle.kts` `chaquopy { pip { install("numpy") } }` and sources in `app/src/main/python/`, then `./gradlew :app:assembleDebug`. Mirror packages in `nxs_config.json` → `features.python.packages` on Android.
+
+**Lua:** drop `.lua` files in `scripts/` and `require` them from `panels.lua`; rebuild repacks `lua.dat`. No package manager — sol2 loads from the archive at runtime.
+
+Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android rebuild table: **[docs/guides/adding-dependencies.md](docs/guides/adding-dependencies.md)**. Optional smoke-test stubs after changes: [misc/scripts/test-gen/](misc/scripts/test-gen/README.md).
 
 ## Development status and limitations
 
