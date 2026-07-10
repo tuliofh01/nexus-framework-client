@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560">
+  <title>Langflow Example  Agent with Tools</title>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#37474F"/>
+    </marker>
+    <style>
+      .title { font: bold 20px Verdana, sans-serif; fill: #1a1a1a; }
+      .subtitle { font: 13px Verdana, sans-serif; fill: #455A64; }
+      .label { font: 12px Verdana, sans-serif; fill: #263238; }
+      .small { font: 10px Verdana, sans-serif; fill: #546E7A; }
+      .legend-title { font: bold 11px Verdana, sans-serif; fill: #37474F; }
+      .node { rx: 8; stroke-width: 1.5; }
+      .legend-box { rx: 4; stroke-width: 1; }
+      .agent { rx: 10; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="960" height="560" fill="#FFFFFF"/>
+  <text x="480" y="34" text-anchor="middle" class="title">Langflow Example  Agent with Tools</text>
+  <text x="480" y="56" text-anchor="middle" class="subtitle">LLM agent selects tools at runtime based on user intent</text>
+
+  <!-- User Input -->
+  <rect x="80" y="200" width="140" height="56" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="150" y="224" text-anchor="middle" class="label">User Input</text>
+  <text x="150" y="242" text-anchor="middle" class="small">I/O</text>
+
+  <!-- Agent (center hub) -->
+  <rect x="380" y="180" width="200" height="96" class="agent" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="480" y="218" text-anchor="middle" class="label" font-weight="bold">Agent</text>
+  <text x="480" y="238" text-anchor="middle" class="small">ReAct / tool-calling LLM</text>
+  <text x="480" y="256" text-anchor="middle" class="small">plans ’ invokes ’ synthesizes</text>
+
+  <!-- Output -->
+  <rect x="740" y="200" width="140" height="56" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="810" y="224" text-anchor="middle" class="label">Output</text>
+  <text x="810" y="242" text-anchor="middle" class="small">I/O</text>
+
+  <!-- Tool branches -->
+  <rect x="120" y="380" width="150" height="52" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="195" y="404" text-anchor="middle" class="label">Calculator</text>
+  <text x="195" y="420" text-anchor="middle" class="small">Tool</text>
+
+  <rect x="405" y="380" width="150" height="52" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="480" y="404" text-anchor="middle" class="label">Web Search</text>
+  <text x="480" y="420" text-anchor="middle" class="small">Tool</text>
+
+  <rect x="690" y="380" width="150" height="52" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="765" y="404" text-anchor="middle" class="label">Python REPL</text>
+  <text x="765" y="420" text-anchor="middle" class="small">Tool</text>
+
+  <!-- Main flow -->
+  <line x1="220" y1="228" x2="380" y2="228" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="580" y1="228" x2="740" y2="228" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Agent to tools (bidirectional feel: down for invoke, up for result) -->
+  <line x1="420" y1="276" x2="195" y2="380" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="480" y1="276" x2="480" y2="380" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="276" x2="765" y2="380" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Tool results back to agent -->
+  <path d="M195,380 Q195,320 420,276" fill="none" stroke="#90A4AE" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <path d="M480,380 Q480,330 480,276" fill="none" stroke="#90A4AE" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <path d="M765,380 Q765,320 540,276" fill="none" stroke="#90A4AE" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+
+  <text x="300" y="340" class="small">tool result</text>
+  <text x="520" y="340" class="small">tool result</text>
+  <text x="660" y="340" class="small">tool result</text>
+
+  <!-- Legend -->
+  <rect x="40" y="470" width="880" height="70" fill="#FAFAFA" stroke="#B0BEC5" stroke-width="1.2" rx="8"/>
+  <text x="60" y="494" class="legend-title">Legend</text>
+
+  <rect x="60" y="506" width="14" height="14" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="82" y="517" class="small">I/O  user message in, final answer out</text>
+
+  <rect x="360" y="506" width="14" height="14" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="382" y="517" class="small">Agent  orchestrates tool calls via LLM reasoning</text>
+
+  <rect x="660" y="506" width="14" height="14" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="682" y="517" class="small">Tool  callable capability (math, search, code)</text>
+
+  <text x="60" y="532" class="small">Solid arrows = request flow · Dashed arrows = tool results returned to agent</text>
+</svg>

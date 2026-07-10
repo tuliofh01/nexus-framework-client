@@ -43,6 +43,8 @@ Ambas as ferramentas usam o **modelo mental de nós e arestas**, mas resolvem ca
 
 **Mapeamento no cliente:** **Edit blueprint** no `:app` espelha o canvas do Langflow — arrastar nós, conectar portas, pré-visualizar JSON. A v1.1 embute **imnodes** nativamente com o mesmo arquivo; sem migração de schema prevista.
 
+**Exemplos visuais:** Veja [chatbot RAG](docs/assets/examples/langflow-rag-chatbot.svg), [agente com ferramentas](docs/assets/examples/langflow-agent-tools.svg) e [estrutura de app no blueprint Nexus](docs/assets/examples/nexus-blueprint-app-structure.svg) para grafos estilo Langflow e como o Nexus traduz o mesmo modelo mental para `blueprint.json` em design-time.
+
 ## O que é este repositório
 
 | Camada | Hoje | Roadmap (v1.1+) |

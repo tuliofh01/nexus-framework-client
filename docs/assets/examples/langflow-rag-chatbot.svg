@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 420" width="1480" height="420">
+  <title>Langflow Example  RAG Chatbot</title>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#37474F"/>
+    </marker>
+    <style>
+      .title { font: bold 20px Verdana, sans-serif; fill: #1a1a1a; }
+      .subtitle { font: 13px Verdana, sans-serif; fill: #455A64; }
+      .label { font: 12px Verdana, sans-serif; fill: #263238; }
+      .small { font: 10px Verdana, sans-serif; fill: #546E7A; }
+      .legend-title { font: bold 11px Verdana, sans-serif; fill: #37474F; }
+      .node { rx: 8; stroke-width: 1.5; }
+      .legend-box { rx: 4; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect width="1480" height="420" fill="#FFFFFF"/>
+  <text x="740" y="34" text-anchor="middle" class="title">Langflow Example  RAG Chatbot</text>
+  <text x="740" y="56" text-anchor="middle" class="subtitle">Classic retrieval-augmented generation pipeline (runtime LLM flow)</text>
+
+  <!-- Main flow nodes -->
+  <rect x="40" y="120" width="130" height="52" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="105" y="144" text-anchor="middle" class="label">Chat Input</text>
+  <text x="105" y="160" text-anchor="middle" class="small">I/O</text>
+
+  <rect x="210" y="120" width="130" height="52" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="275" y="144" text-anchor="middle" class="label">PDF Loader</text>
+  <text x="275" y="160" text-anchor="middle" class="small">Loader</text>
+
+  <rect x="380" y="120" width="130" height="52" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="445" y="144" text-anchor="middle" class="label">Text Splitter</text>
+  <text x="445" y="160" text-anchor="middle" class="small">Processor</text>
+
+  <rect x="550" y="120" width="130" height="52" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="615" y="144" text-anchor="middle" class="label">Embeddings</text>
+  <text x="615" y="160" text-anchor="middle" class="small">Model</text>
+
+  <rect x="720" y="120" width="130" height="52" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="785" y="144" text-anchor="middle" class="label">Vector Store</text>
+  <text x="785" y="160" text-anchor="middle" class="small">Memory</text>
+
+  <rect x="890" y="120" width="130" height="52" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="955" y="144" text-anchor="middle" class="label">Retriever</text>
+  <text x="955" y="160" text-anchor="middle" class="small">Retriever</text>
+
+  <rect x="1060" y="120" width="130" height="52" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="1125" y="144" text-anchor="middle" class="label">LLM</text>
+  <text x="1125" y="160" text-anchor="middle" class="small">Model</text>
+
+  <rect x="1230" y="120" width="130" height="52" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="1295" y="144" text-anchor="middle" class="label">Chat Output</text>
+  <text x="1295" y="160" text-anchor="middle" class="small">I/O</text>
+
+  <!-- Flow edges -->
+  <line x1="170" y1="146" x2="210" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="340" y1="146" x2="380" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="510" y1="146" x2="550" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="680" y1="146" x2="720" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="850" y1="146" x2="890" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1020" y1="146" x2="1060" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1190" y1="146" x2="1230" y2="146" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Query shortcut: Chat Input to Retriever -->
+  <path d="M105,172 Q105,220 955,220 955,172" fill="none" stroke="#90A4AE" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <text x="530" y="238" text-anchor="middle" class="small">user query (at chat time)</text>
+
+  <!-- Legend -->
+  <rect x="40" y="290" width="1400" height="100" fill="#FAFAFA" stroke="#B0BEC5" stroke-width="1.2" rx="8"/>
+  <text x="60" y="314" class="legend-title">Legend  node categories</text>
+
+  <rect x="60" y="328" width="14" height="14" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="82" y="339" class="small">I/O  user-facing input and output</text>
+
+  <rect x="60" y="352" width="14" height="14" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="82" y="363" class="small">Loader  ingest documents (PDF, web, files)</text>
+
+  <rect x="380" y="328" width="14" height="14" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="402" y="339" class="small">Processor  chunk and transform text</text>
+
+  <rect x="380" y="352" width="14" height="14" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="402" y="363" class="small">Model  embeddings and LLM inference</text>
+
+  <rect x="700" y="328" width="14" height="14" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="722" y="339" class="small">Memory  vector database persistence</text>
+
+  <rect x="700" y="352" width="14" height="14" class="legend-box" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="722" y="363" class="small">Retriever  similarity search over stored vectors</text>
+
+  <text x="1100" y="352" class="small">Dashed edge = secondary path at query time</text>
+</svg>

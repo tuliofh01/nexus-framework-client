@@ -43,6 +43,8 @@ Both tools use a **node-and-edge mental model**, but they solve different proble
 
 **Client mapping:** **Edit blueprint** in `:app` mirrors the Langflow canvas — drag nodes, connect ports, preview JSON. v1.1 embeds **imnodes** natively with the same file; no schema migration planned.
 
+**Visual examples:** See [RAG chatbot](docs/assets/examples/langflow-rag-chatbot.svg), [agent with tools](docs/assets/examples/langflow-agent-tools.svg), and [Nexus blueprint app structure](docs/assets/examples/nexus-blueprint-app-structure.svg) for Langflow-style node graphs and how Nexus maps the same mental model to design-time `blueprint.json`.
+
 ## What this repo is
 
 | Today | Roadmap (v1.1+) |
