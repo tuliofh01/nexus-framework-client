@@ -2,15 +2,16 @@
 
 Generated Nexus apps share one layered design. The scaffold client (`app/`) uses **MVC in Kotlin Compose**; generated C++ templates mirror it under `src/model/`, `src/controller/`, and `src/view/`.
 
-## Full stack (single diagram)
+## Full stack
 
-![Nexus full stack — scaffold client, TS/XHTML + blueprint authoring, Lua/sol2 scripting, C++ MVC on SDL3/ImGui, Python bridges, Desktop vs Android targets](../assets/diagrams/full-stack-architecture.svg)
+![Nexus full stack — Compose client, generation pipeline, TS/XHTML + blueprint, Lua/sol2, C++ MVC on SDL3/ImGui, Python bridges, Desktop vs Android](../assets/diagrams/full-stack-architecture.svg)
 
-This diagram replaces the previous per-use-case flowcharts (trading desk, CAD, scientific viz, etc.). Those workloads all compose the same layers; only the domain code in `model/` and `controller/` changes.
+This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewers, and scientific tools all compose the same layers; only domain code in `model/` and `controller/` changes.
 
 | Layer | Technology | Role |
 |-------|------------|------|
-| **Scaffold client** | Kotlin Compose MVC | Wizard, imnodes editor, project generation |
+| **Scaffold client** | Kotlin Compose MVC (`:app`) | Generate Project screen; v1 wizard + imnodes |
+| **Generation** | `:core`, `:cli` in `misc/` | Template emit → `builds/framework/<name>/` |
 | **Authoring** | TS/XHTML, `blueprint.json` | UI components and Langflow-style wiring |
 | **Scripting** | Lua 5.4 + **sol2** | Runtime panels, hotkeys |
 | **Domain** | C++20 MVC | Model, controller, ImGui/ImPlot view |
@@ -18,13 +19,17 @@ This diagram replaces the previous per-use-case flowcharts (trading desk, CAD, s
 | **Python** | pybind11 (desktop) / **Chaquopy** (Android) | numpy, analytics |
 | **Android bridge** | **Djinni** | C++ ↔ Kotlin/JVM |
 
-## App creation wizard
+## Generation and builds
 
-![Wizard flow — six steps from Compose client through template emit to build/run](../assets/diagrams/app-creation-wizard-flow.svg)
+![Generation flow — client-setup through :app/:cli to builds/framework and native binary](../assets/diagrams/generation-builds-flow.svg)
+
+## Desktop vs Android runtime
+
+![Desktop vs Android — shared MVC/ImGui/SDL3; pybind11 vs Chaquopy + Djinni](../assets/diagrams/desktop-vs-android-runtime.svg)
 
 ## Blueprint / imnodes
 
-`blueprint.json` at the template root wires Python modules, MVC classes, UI pages, and Lua scripts. Re-open in the wizard to rewire without CMake edits.
+`blueprint.json` at the template root wires Python modules, MVC classes, UI pages, and Lua scripts. Re-open in the wizard (v1) to rewire without CMake edits.
 
 ## Themes and fonts
 
