@@ -11,10 +11,10 @@
     <style>
       .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
       .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
-      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
       .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
       .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
       .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
@@ -128,26 +128,26 @@
   <text x="1872" y="282" class="desc">Copy client distro to builds/client/</text>
 
 
-  <line x1="190" y1="202" x2="190" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="300" y1="171" x2="340" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="202" x2="450" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="292" x2="450" y2="340" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="402" x2="450" y2="450" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="512" x2="450" y2="540" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="560" y1="571" x2="620" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="202" x2="730" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="292" x2="730" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="382" x2="730" y2="410" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="472" x2="730" y2="500" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="840" y1="351" x2="900" y2="351" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1120" y1="351" x2="1180" y2="261" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1400" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1620" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="202" x2="1510" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="292" x2="1510" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="202" x2="1730" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="292" x2="1730" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1680" y1="351" x2="1860" y2="261" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="190" y1="202" x2="190" y2="230" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="300" y1="171" x2="340" y2="171" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="202" x2="450" y2="230" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="292" x2="450" y2="340" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="402" x2="450" y2="450" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="512" x2="450" y2="540" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="560" y1="571" x2="620" y2="171" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="202" x2="730" y2="230" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="292" x2="730" y2="320" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="382" x2="730" y2="410" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="472" x2="730" y2="500" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="840" y1="351" x2="900" y2="351" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1120" y1="351" x2="1180" y2="261" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="261" x2="1400" y2="171" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="261" x2="1620" y2="171" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1510" y1="202" x2="1510" y2="230" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1510" y1="292" x2="1510" y2="320" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1730" y1="202" x2="1730" y2="230" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1730" y1="292" x2="1730" y2="320" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1680" y1="351" x2="1860" y2="261" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="600" y="580" width="320" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="620" y="608" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
   <text x="620" y="628" class="desc">Optional Docker path via misc/docker/</text>

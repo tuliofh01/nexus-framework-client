@@ -11,10 +11,10 @@
     <style>
       .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
       .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
-      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
       .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
       .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
       .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
@@ -61,14 +61,14 @@
   <text x="1194" y="142" class="label">Chat Output</text>
   <text x="1172" y="174" class="desc">Returns response to user</text>
 
-  <line x1="180" y1="152" x2="200" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="340" y1="152" x2="360" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="500" y1="152" x2="520" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="660" y1="152" x2="680" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="820" y1="152" x2="840" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="980" y1="152" x2="1000" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1140" y1="152" x2="1160" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+  <line x1="180" y1="152" x2="200" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="340" y1="152" x2="360" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="500" y1="152" x2="520" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="660" y1="152" x2="680" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="820" y1="152" x2="840" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="980" y1="152" x2="1000" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1140" y1="152" x2="1160" y2="152" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
   <text x="510" y="258" text-anchor="middle" class="desc">user query shortcut at chat time</text>
 
   <rect x="40" y="300" width="1440" height="110" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>

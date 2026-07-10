@@ -11,10 +11,10 @@
     <style>
       .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
       .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
-      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
       .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
       .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
       .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
@@ -90,18 +90,18 @@
   <text x="1054" y="602" class="label">Chaquopy</text>
   <text x="1032" y="632" class="desc">app/src/main/python/ embedding</text>
 
-  <line x1="540" y1="180" x2="540" y2="200" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="180" x2="540" y2="200" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="540" y="184" text-anchor="middle" class="small">wires nodes</text>
-  <line x1="770" y1="149" x2="660" y2="200" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="540" y1="262" x2="540" y2="282" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="540" y1="344" x2="154" y2="450" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="770" y1="149" x2="660" y2="200" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="262" x2="540" y2="282" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="344" x2="154" y2="450" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="347" y="391" text-anchor="middle" class="small">desktop</text>
-  <line x1="540" y1="344" x2="900" y2="450" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="344" x2="900" y2="450" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="720" y="391" text-anchor="middle" class="small">Android NDK</text>
-  <line x1="154" y1="552" x2="154" y2="580" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="400" y1="552" x2="280" y2="580" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="900" y1="552" x2="900" y2="580" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1020" y1="552" x2="890" y2="580" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="154" y1="552" x2="154" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="400" y1="552" x2="280" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="900" y1="552" x2="900" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1020" y1="552" x2="890" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="960" y="118" width="300" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="980" y="148" class="small">Same plotter template on both targets.</text>

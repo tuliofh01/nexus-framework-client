@@ -11,10 +11,10 @@
     <style>
       .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
       .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
-      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
       .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
       .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
       .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
@@ -44,8 +44,8 @@
   <text x="156" y="262" class="icon">&#xf121;</text>
   <text x="178" y="262" class="label">Parser</text>
   <text x="156" y="288" class="desc">Structured output extraction</text>
-  <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="44" y="330" class="small">• Typed nodes (model, tool, memory)</text>
   <text x="44" y="350" class="small">• Runs when user invokes the flow</text>
   <text x="44" y="370" class="desc">Output: inference / chat response</text>
@@ -65,8 +65,8 @@
   <text x="552" y="262" class="icon">&#xf075;</text>
   <text x="574" y="262" class="label">Slack</text>
   <text x="552" y="288" class="desc">Posts message to channel</text>
-  <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="440" y="330" class="small">• Triggers + integration steps</text>
   <text x="440" y="350" class="small">• Runs on schedule or webhook</text>
   <text x="440" y="370" class="desc">Output: side effects (API calls)</text>
@@ -94,9 +94,9 @@
   <text x="978" y="308" class="icon">&#xf120;</text>
   <text x="1000" y="308" class="label">lua.script</text>
   <text x="978" y="328" class="desc">sol2 panel bindings</text>
-  <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="836" y="360" class="small">• Langflow-style typed DAG (not n8n triggers)</text>
   <text x="836" y="380" class="small">• Consumed at generate time (:core)</text>
   <text x="836" y="400" class="desc">Output: C++/Lua/Python/UI project tree</text>

@@ -11,10 +11,10 @@
     <style>
       .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
       .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
-      .label { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
+      .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
       .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
       .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
       .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
@@ -108,37 +108,37 @@
   <text x="1054" y="782" class="label">SDL3</text>
   <text x="1032" y="808" class="desc">Cross-platform render loop and input</text>
 
-  <line x1="800" y1="147" x2="800" y2="192" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="147" x2="800" y2="192" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="800" y="163" text-anchor="middle" class="small">Edit blueprint</text>
-  <line x1="800" y1="250" x2="800" y2="266" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="250" x2="800" y2="266" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="800" y="252" text-anchor="middle" class="small">validated graph</text>
-  <line x1="960" y1="147" x2="960" y2="266" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="960" y1="147" x2="960" y2="266" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="960" y="200" text-anchor="middle" class="small">Generate</text>
-  <line x1="780" y1="324" x2="404" y2="500" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
+  <line x1="780" y1="324" x2="404" y2="500" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
   <text x="592" y="406" text-anchor="middle" class="small">emit blueprint.json</text>
-  <line x1="960" y1="324" x2="1010" y2="500" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="960" y1="324" x2="1010" y2="500" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="985" y="406" text-anchor="middle" class="small">emit src/</text>
-  <line x1="224" y1="598" x2="224" y2="618" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="224" y1="598" x2="224" y2="618" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="224" y="602" text-anchor="middle" class="small">evaluate</text>
-  <line x1="134" y1="676" x2="134" y2="696" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="134" y1="676" x2="134" y2="696" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="134" y="680" text-anchor="middle" class="small">sampleCache</text>
-  <line x1="134" y1="754" x2="134" y2="774" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="134" y1="754" x2="134" y2="774" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="134" y="758" text-anchor="middle" class="small">activeCurves</text>
-  <line x1="224" y1="774" x2="224" y2="676" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="224" y1="774" x2="224" y2="676" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="224" y="719" text-anchor="middle" class="small">commands</text>
-  <line x1="350" y1="569" x2="224" y2="618" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="350" y1="569" x2="224" y2="618" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
   <text x="287" y="587" text-anchor="middle" class="small">commands</text>
-  <line x1="760" y1="520" x2="920" y2="540" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
+  <line x1="760" y1="520" x2="920" y2="540" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
   <text x="840" y="524" text-anchor="middle" class="small">declares</text>
-  <line x1="760" y1="647" x2="920" y2="647" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
+  <line x1="760" y1="647" x2="920" y2="647" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
   <text x="840" y="641" text-anchor="middle" class="small">declares</text>
-  <line x1="760" y1="725" x2="920" y2="725" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
+  <line x1="760" y1="725" x2="920" y2="725" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
   <text x="840" y="719" text-anchor="middle" class="small">declares</text>
-  <line x1="1240" y1="569" x2="1000" y2="647" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1470" y1="569" x2="1010" y2="725" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1010" y1="754" x2="1100" y2="789" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="920" y1="676" x2="920" y2="696" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="920" y1="754" x2="1100" y2="789" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="1240" y1="569" x2="1000" y2="647" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1470" y1="569" x2="1010" y2="725" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1010" y1="754" x2="1100" y2="789" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="920" y1="676" x2="920" y2="696" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="920" y1="754" x2="1100" y2="789" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <rect x="1220" y="720" width="340" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
   <text x="1236" y="742" class="legend-title">Layer colors</text>

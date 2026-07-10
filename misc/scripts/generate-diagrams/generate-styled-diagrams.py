@@ -10,6 +10,8 @@ EXAMPLES = ROOT / "docs/assets/examples"
 FONT = '"JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif'
 MONO = '"JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace'
 BG = "#f8f9fa"
+ARROW_STROKE = "1.5"  # relationship linkers (not module borders)
+ARROW_STROKE_ACCENT = "2"  # highlighted codegen arrow
 
 # Nerd Font codepoints (Private Use Area)
 NF = {
@@ -50,10 +52,10 @@ def defs(logo_href: str) -> str:
     <style>
       .title {{ font: bold 22px {FONT}; fill: #1a1a2e; }}
       .subtitle {{ font: 13px {FONT}; fill: #455A64; }}
-      .label {{ font: 13px {FONT}; fill: #263238; }}
+      .label {{ font: bold 13px {FONT}; fill: #263238; font-weight: 700; }}
       .desc {{ font: italic 11px {FONT}; fill: #78909C; }}
       .small {{ font: 11px {FONT}; fill: #546E7A; }}
-      .mono {{ font: 12px {MONO}; fill: #263238; }}
+      .mono {{ font: bold 12px {MONO}; fill: #263238; font-weight: 700; }}
       .legend-title {{ font: bold 12px {FONT}; fill: #37474F; }}
       .layer-label {{ font: bold 14px {FONT}; fill: #263238; }}
       .badge {{ font: bold 11px {FONT}; fill: #1565C0; }}
@@ -93,7 +95,7 @@ def arrow(x1, y1, x2, y2, label="", dashed=False, color="#37474F") -> str:
     if label:
         mx, my = (x1 + x2) // 2, (y1 + y2) // 2 - 6
         mid = f'\n  <text x="{mx}" y="{my}" text-anchor="middle" class="small">{label}</text>'
-    return f'  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="3.5" marker-end="url(#arrow)"{dash}/>{mid}'
+    return f'  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"{dash}/>{mid}'
 
 
 def legend_box(x, y, w, h, items: list[tuple[str, str, str]], title="Legend") -> str:
@@ -224,27 +226,27 @@ def generation_builds_flow() -> str:
   <line x1="1360" y1="120" x2="1360" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="1780" y1="120" x2="1780" y2="620" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
 """
-    flows = """
-  <line x1="190" y1="202" x2="190" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="300" y1="171" x2="340" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="202" x2="450" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="292" x2="450" y2="340" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="402" x2="450" y2="450" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="450" y1="512" x2="450" y2="540" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="560" y1="571" x2="620" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="202" x2="730" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="292" x2="730" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="382" x2="730" y2="410" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="730" y1="472" x2="730" y2="500" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="840" y1="351" x2="900" y2="351" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1120" y1="351" x2="1180" y2="261" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1400" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1290" y1="261" x2="1620" y2="171" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="202" x2="1510" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1510" y1="292" x2="1510" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="202" x2="1730" y2="230" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1730" y1="292" x2="1730" y2="320" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1680" y1="351" x2="1860" y2="261" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+    flows = f"""
+  <line x1="190" y1="202" x2="190" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="300" y1="171" x2="340" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="450" y1="202" x2="450" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="450" y1="292" x2="450" y2="340" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="450" y1="402" x2="450" y2="450" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="450" y1="512" x2="450" y2="540" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="560" y1="571" x2="620" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="730" y1="202" x2="730" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="730" y1="292" x2="730" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="730" y1="382" x2="730" y2="410" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="730" y1="472" x2="730" y2="500" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="840" y1="351" x2="900" y2="351" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1120" y1="351" x2="1180" y2="261" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="261" x2="1400" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1290" y1="261" x2="1620" y2="171" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1510" y1="202" x2="1510" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1510" y1="292" x2="1510" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1730" y1="202" x2="1730" y2="230" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1730" y1="292" x2="1730" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1680" y1="351" x2="1860" y2="261" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <rect x="600" y="580" width="320" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="620" y="608" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
   <text x="620" y="628" class="desc">Optional Docker path via misc/docker/</text>
@@ -333,8 +335,8 @@ def langflow_vs_n8n() -> str:
 {module(64, 150, 120, 58, "#FFFFFF", "#2E7D32", NF["comment"], "Prompt", "User text input to the flow")}
 {module(224, 150, 120, 58, "#FFFFFF", "#1565C0", NF["robot"], "LLM", "Inference node calls model API")}
 {module(144, 240, 120, 58, "#FFFFFF", "#EF6C00", NF["code"], "Parser", "Structured output extraction")}
-  <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="184" y1="208" x2="224" y2="179" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="284" y1="208" x2="204" y2="240" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="44" y="330" class="small">• Typed nodes (model, tool, memory)</text>
   <text x="44" y="350" class="small">• Runs when user invokes the flow</text>
   <text x="44" y="370" class="desc">Output: inference / chat response</text>
@@ -344,8 +346,8 @@ def langflow_vs_n8n() -> str:
 {module(460, 150, 120, 58, "#FFFFFF", "#C2185B", NF["cloud"], "Webhook", "HTTP trigger starts workflow")}
 {module(620, 150, 120, 58, "#FFFFFF", "#3949AB", NF["plug"], "HTTP Request", "Calls external REST APIs")}
 {module(540, 240, 120, 58, "#FFFFFF", "#00695C", NF["comment"], "Slack", "Posts message to channel")}
-  <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="580" y1="179" x2="620" y2="179" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="680" y1="208" x2="600" y2="240" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="440" y="330" class="small">• Triggers + integration steps</text>
   <text x="440" y="350" class="small">• Runs on schedule or webhook</text>
   <text x="440" y="370" class="desc">Output: side effects (API calls)</text>
@@ -357,9 +359,9 @@ def langflow_vs_n8n() -> str:
 {module(896, 218, 110, 52, "#FFFFFF", "#6A1B9A", NF["gear"], "cpp.controller", "Command routing layer")}
 {module(1026, 218, 110, 52, "#FFFFFF", "#EF6C00", NF["layer"], "ui.page", "ImGui screen definition")}
 {module(966, 286, 110, 52, "#FFFFFF", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings")}
-  <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="891" y1="176" x2="951" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="951" y1="270" x2="1021" y2="202" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1081" y1="244" x2="1026" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="836" y="360" class="small">• Langflow-style typed DAG (not n8n triggers)</text>
   <text x="836" y="380" class="small">• Consumed at generate time (:core)</text>
   <text x="836" y="400" class="desc">Output: C++/Lua/Python/UI project tree</text>
@@ -388,8 +390,8 @@ def langflow_rag_chatbot() -> str:
     edges = ""
     xs = [180, 340, 500, 660, 820, 980, 1140, 1300]
     for i in range(len(xs) - 1):
-        edges += f'  <line x1="{xs[i]}" y1="152" x2="{xs[i+1]-140}" y2="152" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>\n'
-    edges += '  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>\n'
+        edges += f'  <line x1="{xs[i]}" y1="152" x2="{xs[i+1]-140}" y2="152" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
+    edges += f'  <path d="M110,184 Q110,240 910,240 910,184" fill="none" stroke="#90A4AE" stroke-width="{ARROW_STROKE}" stroke-dasharray="8,5" marker-end="url(#arrow)"/>\n'
     edges += '  <text x="510" y="258" text-anchor="middle" class="desc">user query shortcut at chat time</text>\n'
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
@@ -425,14 +427,14 @@ def langflow_agent_tools() -> str:
 {module(420, 400, 160, 64, "#E3F2FD", "#1565C0", NF["search"], "Web Search", "Live web lookup capability")}
 {module(720, 400, 160, 64, "#F3E5F5", "#7B1FA2", NF["python"], "Python REPL", "Execute code snippets safely")}
 
-  <line x1="230" y1="232" x2="380" y2="232" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="600" y1="232" x2="740" y2="232" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="420" y1="274" x2="200" y2="400" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="490" y1="274" x2="500" y2="400" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <line x1="560" y1="274" x2="800" y2="400" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
-  <path d="M200,400 Q200,330 420,274" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
-  <path d="M500,400 Q500,340 490,274" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
-  <path d="M800,400 Q800,330 560,274" fill="none" stroke="#90A4AE" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+  <line x1="230" y1="232" x2="380" y2="232" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="600" y1="232" x2="740" y2="232" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="420" y1="274" x2="200" y2="400" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="490" y1="274" x2="500" y2="400" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="560" y1="274" x2="800" y2="400" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <path d="M200,400 Q200,330 420,274" fill="none" stroke="#90A4AE" stroke-width="{ARROW_STROKE}" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+  <path d="M500,400 Q500,340 490,274" fill="none" stroke="#90A4AE" stroke-width="{ARROW_STROKE}" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
+  <path d="M800,400 Q800,330 560,274" fill="none" stroke="#90A4AE" stroke-width="{ARROW_STROKE}" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
   <text x="300" y="340" class="desc">tool result</text>
 
 {legend_box(40, 490, 920, 90, [
@@ -463,18 +465,18 @@ def nexus_blueprint_app_structure() -> str:
 {module(760, 140, 180, 68, "#F3E5F5", "#7B1FA2", NF["python"], "python.module", "ML samples and glue code", mono=True)}
 {module(760, 230, 180, 68, "#E0F7FA", "#00838F", NF["terminal"], "lua.script", "sol2 panel bindings", mono=True)}
 
-  <line x1="260" y1="204" x2="310" y2="204" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="260" y1="204" x2="310" y2="204" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="285" y="194" text-anchor="middle" class="desc">events</text>
-  <line x1="490" y1="204" x2="540" y2="204" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="490" y1="204" x2="540" y2="204" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="515" y="194" text-anchor="middle" class="desc">commands</text>
-  <line x1="700" y1="190" x2="760" y2="174" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="700" y1="190" x2="760" y2="174" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
   <text x="730" y="168" class="desc">data</text>
-  <line x1="700" y1="218" x2="760" y2="264" stroke="#37474F" stroke-width="3.5" marker-end="url(#arrow)"/>
+  <line x1="700" y1="218" x2="760" y2="264" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
 
   <rect x="100" y="320" width="360" height="40" fill="#FFFFFF" stroke="#90A4AE" stroke-width="2" stroke-dasharray="6,4" rx="8"/>
   <text x="280" y="345" text-anchor="middle" class="desc">Not shown: external n8n webhooks (ops glue at app edge)</text>
 
-  <line x1="570" y1="390" x2="570" y2="420" stroke="#1565C0" stroke-width="4" marker-end="url(#arrow-blue)"/>
+  <line x1="570" y1="390" x2="570" y2="420" stroke="#1565C0" stroke-width="{ARROW_STROKE_ACCENT}" marker-end="url(#arrow-blue)"/>
   <text x="570" y="412" text-anchor="middle" class="badge">:core ProjectGenerator</text>
 
 {module(380, 430, 380, 58, "#E8EAF6", "#3949AB", NF["box"], "builds/framework/&lt;name&gt;/", "Compiled SDL3 desktop or Android APK")}
