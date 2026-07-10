@@ -67,6 +67,15 @@ FetchContent_MakeAvailable(sol2)
 # ---- Shared native library (loaded by MainActivity) -----------------------
 set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
+# Host-only packer for Gradle packLuaDat (Android APK assets).
+if(NOT ANDROID)
+    add_executable(pack_archive
+        ${NXS_SHARED_DIR}/tools/pack_archive.cpp
+        ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp
+        ${NXS_SHARED_DIR}/runtime/ScriptCrypto.cpp)
+    target_include_directories(pack_archive PRIVATE ${NXS_SHARED_DIR}/runtime ${NXS_SHARED_DIR}/tools)
+endif()
+
 add_library({{projectName}} SHARED
     src/main.cpp
     src/model/FunctionRegistry.cpp
@@ -76,6 +85,8 @@ add_library({{projectName}} SHARED
     src/view/LuaPanels.cpp
     ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
     ${NXS_SHARED_DIR}/runtime/FontConfig.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptCrypto.cpp
     djinni-generated/jni/NativePythonBridge.cpp)
 
 target_include_directories({{projectName}} PRIVATE

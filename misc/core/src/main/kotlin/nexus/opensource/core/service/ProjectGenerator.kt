@@ -5,6 +5,8 @@ import nexus.opensource.core.model.ProjectSpec
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.time.Instant
+import java.util.UUID
 
 data class GenerateOptions(
     val dryRun: Boolean = false,
@@ -38,6 +40,14 @@ class ProjectGenerator(
                 }
                 onProgress("  ${file.relativePath}$unresolved")
             }
+            engine.dryRunRender(sharedDir, vars).forEach { file ->
+                val unresolved = if (file.unresolvedPlaceholders.isNotEmpty()) {
+                    " [UNRESOLVED: ${file.unresolvedPlaceholders.joinToString()}]"
+                } else {
+                    ""
+                }
+                onProgress("  shared/${file.relativePath}$unresolved")
+            }
             return projectRoot
         }
 
@@ -49,6 +59,7 @@ class ProjectGenerator(
         if (Files.isDirectory(sharedDir)) {
             onProgress("Copying shared/ → $sharedDest")
             engine.copyTree(sharedDir, sharedDest, vars, onProgress)
+            writeScriptProtectionHeader(sharedDest, vars, onProgress)
         }
 
         validateRenderedConfig(projectRoot, onProgress)
@@ -56,14 +67,37 @@ class ProjectGenerator(
         return projectRoot
     }
 
-    fun templateVars(spec: ProjectSpec): Map<String, String> = mapOf(
-        "projectName" to spec.projectName,
-        "project_name" to spec.projectName.lowercase(),
-        "windowTitle" to spec.windowTitle,
-        "license" to spec.license,
-        "cppStandard" to spec.cppStandard,
-        "appType" to spec.appType.id,
-    )
+    fun templateVars(spec: ProjectSpec): Map<String, String> {
+        val createdAt = Instant.now().toString()
+        val salt = if (spec.scriptProtectionEnabled) UUID.randomUUID().toString() else ""
+        return mapOf(
+            "projectName" to spec.projectName,
+            "project_name" to spec.projectName.lowercase(),
+            "windowTitle" to spec.windowTitle,
+            "license" to spec.license,
+            "cppStandard" to spec.cppStandard,
+            "appType" to spec.appType.id,
+            "createdAt" to createdAt,
+            "scriptProtectionEnabled" to spec.scriptProtectionEnabled.toString(),
+            "scriptProtectionSalt" to salt,
+        )
+    }
+
+    private fun writeScriptProtectionHeader(
+        sharedDest: Path,
+        vars: Map<String, String>,
+        onProgress: (String) -> Unit,
+    ) {
+        val templatePath = sharedDest.resolve(SCRIPT_PROTECTION_TEMPLATE)
+        if (!Files.isRegularFile(templatePath)) {
+            onProgress("  [warn] missing $SCRIPT_PROTECTION_TEMPLATE")
+            return
+        }
+        val rendered = templateEngine.render(Files.readString(templatePath), vars)
+        val outPath = sharedDest.resolve(SCRIPT_PROTECTION_HEADER)
+        Files.writeString(outPath, rendered)
+        onProgress("  ${SHARED_DIR}/runtime/ScriptProtectionConfig.hpp")
+    }
 
     private fun validate(spec: ProjectSpec) {
         require(spec.projectName.matches(PROJECT_NAME_PATTERN)) {
@@ -108,7 +142,11 @@ class ProjectGenerator(
             require(config.project.name.isNotBlank()) {
                 "Invalid nxs_config.json: project.name is blank after render"
             }
-            onProgress("Validated $CONFIG_FILE (schema v${config.nexus.configVersion}, project=${config.project.name})")
+            val protection = config.scriptProtection?.enabled == true
+            onProgress(
+                "Validated $CONFIG_FILE (schema v${config.nexus.configVersion}, " +
+                    "project=${config.project.name}, scriptProtection=$protection)",
+            )
         } catch (e: Exception) {
             onProgress("  [warn] could not parse $CONFIG_FILE: ${e.message}")
         }
@@ -119,6 +157,8 @@ class ProjectGenerator(
         const val SHARED_DIR = "shared"
         const val CONFIG_FILE = "nxs_config.json"
         const val DEFAULT_OUTPUT_PARENT = "builds/framework"
+        const val SCRIPT_PROTECTION_TEMPLATE = "runtime/ScriptProtectionConfig.hpp.in"
+        const val SCRIPT_PROTECTION_HEADER = "runtime/ScriptProtectionConfig.hpp"
         val PROJECT_NAME_PATTERN = Regex("[A-Za-z][A-Za-z0-9_-]*")
 
         fun defaultOutputPath(projectName: String): String =

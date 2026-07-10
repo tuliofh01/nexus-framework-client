@@ -6,7 +6,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 
 | Doc | What it covers |
 |-----|----------------|
-| [Architecture overview](architecture/overview.md) | Full-stack layers, themes, wizard roadmap |
+| [Architecture overview](architecture/overview.md) | Full-stack layers, generation flow, Desktop vs Android |
 | [Agent readiness](architecture/agent-readiness.md) | AI agent onboarding score, gaps, fixes |
 | [Risk analysis](architecture/risk-analysis.md) | Architecture risks and mitigations |
 | [Desktop App template](templates/desktop-app.md) | `template/desktop-app/` — MVC, pybind11, plotter |
@@ -19,14 +19,16 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 
 ![Full stack architecture](assets/diagrams/full-stack-architecture.svg)
 
-![App creation wizard (v1 roadmap)](assets/diagrams/app-creation-wizard-flow.svg)
+![Generation and builds flow](assets/diagrams/generation-builds-flow.svg)
+
+![Desktop vs Android runtime](assets/diagrams/desktop-vs-android-runtime.svg)
 
 ## Related READMEs
 
 | Path | Purpose |
 |------|---------|
 | [../README.md](../README.md) · [../README.pt-BR.md](../README.pt-BR.md) | Project overview (EN / pt-BR) |
-| [../client-setup/README.md](../client-setup/README.md) | First-run JDK 26 + Git setup |
+| [../misc/client-setup/README.md](../misc/client-setup/README.md) | First-run JDK 26 + Git setup |
 | [../builds/README.md](../builds/README.md) | `builds/client/` and `builds/framework/` layout |
 | [../template/README.md](../template/README.md) | Output templates index |
 | [../misc/README.md](../misc/README.md) | Generation pipeline modules, Docker, Jenkins, scripts |
@@ -35,7 +37,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 ## Quick commands
 
 ```bash
-source ../client-setup/env.sh
+source ../misc/client-setup/env.sh
 ./gradlew :app:run
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ```

@@ -13,10 +13,18 @@ import kotlinx.serialization.json.JsonObject
 data class NexusConfigFile(
     val nexus: NexusMeta = NexusMeta(),
     val project: NexusProject = NexusProject(),
+    val scriptProtection: ScriptProtectionSpec? = null,
     val targets: Map<String, JsonObject> = emptyMap(),
     val features: Map<String, JsonElement> = emptyMap(),
     val blueprint: Map<String, String> = emptyMap(),
     val build: NexusBuild = NexusBuild(),
+)
+
+@Serializable
+data class ScriptProtectionSpec(
+    val enabled: Boolean = true,
+    val salt: String = "",
+    val algorithm: String = "nxs-v1",
 )
 
 @Serializable
@@ -33,6 +41,7 @@ data class NexusProject(
     val version: String = "0.1.0",
     val cppStandard: String = "20",
     val applicationId: String? = null,
+    val createdAt: String = "",
 )
 
 @Serializable

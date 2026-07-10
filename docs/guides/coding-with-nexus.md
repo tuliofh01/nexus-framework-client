@@ -17,7 +17,7 @@ Nexus has a steeper ramp than Electron or Tauri, but the generated plotter gives
 | 3 | Add Python sampling in `python/functions.py` | Python, numpy |
 | 4 | Script panels in `scripts/panels.lua` — hotkeys, quick-add buttons | Lua, sol2 |
 | 5 | Author UI in `ui/ui.xhtml` + `ui/ui.ts` | TypeScript, XHTML DSL |
-| 6 | Rewire `blueprint.json` in the wizard imnodes editor | Visual flow authoring |
+| 6 | Rewire `blueprint.json` in the Compose blueprint editor (`:app`) | Visual flow authoring (imnodes native panel in v1.1) |
 | 7 | Apply themes and Nerd Font icons | JSON presets, font assets |
 
 **Honest take:** web-only teams will move faster in Electron/Tauri. Nexus pays off when you need native throughput, small binaries, SDL3 cross-platform parity, or Android field tablets without a WebView.
@@ -89,7 +89,11 @@ Add a feature:
 - **Nodes:** `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script`
 - **Edges:** data ports (`sampleCache`, `activeCurves`) and command ports (`commands`)
 
-Open the blueprint in the creation wizard to rewire without editing CMake. The generator consumes the same JSON on regen.
+Open **Generate Project → Edit blueprint** in the Compose client to rewire without editing CMake. The generator validates and emits the same JSON on regen.
+
+Schema reference: [blueprint-schema.md](../templates/blueprint-schema.md)
+
+**v1:** Compose Canvas graph + JSON preview. **v1.1 (planned):** imnodes native panel using the same schema.
 
 ---
 

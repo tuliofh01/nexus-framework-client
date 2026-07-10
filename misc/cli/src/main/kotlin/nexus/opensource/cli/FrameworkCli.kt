@@ -41,6 +41,7 @@ private fun runGenerate(args: List<String>) {
     val dryRun = flags["dry-run"] == "true" || args.contains("--dry-run")
     val verbose = flags["verbose"] == "true" || TemplateEngine.isDebugEnabled()
     val force = flags["force"] == "true"
+    val scriptProtection = flags["script-protection"]?.let { it != "false" } ?: true
 
     val spec = ProjectSpec(
         projectName = name,
@@ -49,6 +50,7 @@ private fun runGenerate(args: List<String>) {
         windowTitle = flags["window-title"] ?: NexusBranding.windowTitle(name),
         cppStandard = flags["cpp-standard"] ?: "20",
         license = flags["license"] ?: "Apache-2.0",
+        scriptProtectionEnabled = scriptProtection,
     )
 
     val repoRoot = RepoRoot.resolve()
@@ -123,6 +125,7 @@ private fun printUsage() {
           --window-title TITLE       Window title override
           --cpp-standard 20          C++ standard (default: 20)
           --license Apache-2.0       License identifier
+          --script-protection true   Encrypt lua.dat / python.dat (default: true)
           --dry-run                  Preview rendered paths without writing
           --force                    Overwrite non-empty output directory
           --verbose                  Verbose template engine logging

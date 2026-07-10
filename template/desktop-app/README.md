@@ -34,4 +34,6 @@ cmake --build --preset debug
 
 Build output goes to `../../builds/framework/{{projectName}}/` (see [builds/README.md](../../builds/README.md)).
 
+CMake builds `misc/lua.dat` and `misc/python.dat` automatically (`pack_lua_dat`, `pack_python_dat`). Set `"scriptProtection": { "enabled": false }` in `nxs_config.json` for plaintext archives during development.
+
 Docs: [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)

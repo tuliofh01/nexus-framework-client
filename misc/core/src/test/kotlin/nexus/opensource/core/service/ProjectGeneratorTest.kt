@@ -22,6 +22,20 @@ class ProjectGeneratorTest {
     }
 
     @Test
+    fun templateVarsIncludeScriptProtectionFields() {
+        val spec = ProjectSpec(
+            projectName = "MyApp",
+            outputPath = "builds/framework",
+            appType = AppType.DESKTOP,
+            scriptProtectionEnabled = true,
+        )
+        val vars = ProjectGenerator(java.nio.file.Paths.get(".")).templateVars(spec)
+        assertEquals("true", vars["scriptProtectionEnabled"])
+        assertTrue(vars["scriptProtectionSalt"]!!.isNotEmpty())
+        assertTrue(vars["createdAt"]!!.isNotEmpty())
+    }
+
+    @Test
     fun defaultOutputPathIncludesProjectName() {
         assertEquals("builds/framework/DemoApp", ProjectGenerator.defaultOutputPath("DemoApp"))
     }

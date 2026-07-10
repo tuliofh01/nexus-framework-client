@@ -1,5 +1,5 @@
-// The code in this file is a convention plugin - a Gradle mechanism for sharing reusable build logic.
-// `buildSrc` is a Gradle-recognized directory and every plugin there will be easily available in the rest of the build.
+// Convention plugin shared by :core, :cli, and :app via the misc/build-logic included build.
+// Plugin id: buildsrc.convention.kotlin-jvm (package name preserved for compatibility).
 package buildsrc.convention
 
 import org.gradle.api.tasks.testing.logging.TestLogEvent

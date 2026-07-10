@@ -6,6 +6,10 @@ plugins {
 
 val templateRoot = rootProject.projectDir
 val generatedAssets = layout.buildDirectory.dir("generated/nxs-assets")
+val hostPackDir = layout.buildDirectory.dir("host-pack")
+val packExe = hostPackDir.map { it.file("pack_archive") }
+val luaOut = layout.buildDirectory.file("assets/lua.dat")
+val nxsConfig = file("$templateRoot/nxs_config.json")
 
 android {
     namespace = "com.nexus.plotter"
@@ -59,6 +63,7 @@ android {
                 "$templateRoot/djinni-generated/kotlin",
             )
             assets.srcDirs(
+                layout.buildDirectory.dir("assets"),
                 "$templateRoot/scripts",
                 "$templateRoot/ui",
                 generatedAssets,
@@ -94,6 +99,45 @@ tasks.register<Copy>("copyBlueprintAsset") {
     into(generatedAssets)
 }
 
+tasks.register<Exec>("packLuaDat") {
+    group = "nexus"
+    description = "Pack Lua scripts into build/assets/lua.dat before APK merge"
+    workingDir = templateRoot
+    inputs.dir(file("$templateRoot/scripts"))
+    if (nxsConfig.exists()) {
+        inputs.file(nxsConfig)
+    }
+    outputs.file(luaOut)
+
+    doFirst {
+        luaOut.get().asFile.parentFile.mkdirs()
+        if (!packExe.get().asFile.exists()) {
+            exec {
+                commandLine(
+                    "cmake", "-B", hostPackDir.get().asFile.absolutePath,
+                    "-S", templateRoot.absolutePath,
+                )
+            }
+            exec {
+                commandLine(
+                    "cmake", "--build", hostPackDir.get().asFile.absolutePath,
+                    "--target", "pack_archive", "-j",
+                )
+            }
+        }
+        val args = mutableListOf(
+            packExe.get().asFile.absolutePath,
+            "lua",
+            file("$templateRoot/scripts").absolutePath,
+            luaOut.get().asFile.absolutePath,
+        )
+        if (nxsConfig.exists()) {
+            args.add(nxsConfig.absolutePath)
+        }
+        commandLine(args)
+    }
+}
+
 tasks.named("preBuild") {
-    dependsOn("copyBlueprintAsset")
+    dependsOn("copyBlueprintAsset", "packLuaDat")
 }

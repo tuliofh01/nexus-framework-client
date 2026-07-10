@@ -15,7 +15,7 @@ WORKDIR /workspace
 # Copy Gradle wrapper and build files first for layer caching.
 COPY gradlew gradlew.bat settings.gradle.kts gradle.properties build.gradle.kts ./
 COPY gradle/ gradle/
-COPY buildSrc/ buildSrc/
+COPY misc/build-logic/ misc/build-logic/
 COPY misc/core/ misc/core/
 COPY misc/cli/ misc/cli/
 COPY template/ template/
