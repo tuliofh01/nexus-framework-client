@@ -1,6 +1,6 @@
 plugins {
     // Apply the shared build logic from a convention plugin.
-    // The shared code is located in `buildSrc/src/main/kotlin/kotlin-jvm.gradle.kts`.
+    // The shared code is located in `misc/build-logic/src/main/kotlin/kotlin-jvm.gradle.kts`.
     id("buildsrc.convention.kotlin-jvm")
 
     // Jetpack Compose (Compose Multiplatform for Desktop) + the Kotlin Compose compiler plugin.

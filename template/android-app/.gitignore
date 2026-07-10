@@ -22,7 +22,12 @@ __pycache__/
 *.pyc
 
 # Packed script archives (generated)
+# Packed script archives (generated)
+misc/lua.dat
+misc/python.dat
 lua.dat
+python.dat
+build/assets/lua.dat
 
 # Keystores — never commit signing material
 *.jks

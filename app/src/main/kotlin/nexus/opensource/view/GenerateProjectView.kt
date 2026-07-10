@@ -29,6 +29,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun GenerateProjectScreen(
     controller: GenerateController,
     onBack: () -> Unit,
+    onEditBlueprint: () -> Unit,
 ) {
     var typeMenuExpanded by remember { mutableStateOf(false) }
 
@@ -47,7 +48,10 @@ fun GenerateProjectScreen(
 
         OutlinedTextField(
             value = controller.projectName,
-            onValueChange = { controller.projectName = it },
+            onValueChange = {
+                controller.projectName = it
+                controller.syncBlueprintContext()
+            },
             label = { Text("Project name") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
@@ -62,6 +66,7 @@ fun GenerateProjectScreen(
                 for (type in AppType.entries) {
                     DropdownMenuItem(onClick = {
                         controller.appType = type
+                        controller.syncBlueprintContext()
                         typeMenuExpanded = false
                     }) {
                         Text(type.label)
@@ -75,11 +80,27 @@ fun GenerateProjectScreen(
             style = MaterialTheme.typography.caption,
         )
 
-        Button(
-            onClick = { controller.generate() },
-            enabled = !controller.isGenerating && controller.projectName.isNotBlank(),
-        ) {
-            Text(if (controller.isGenerating) "Generating…" else "Generate")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = {
+                controller.syncBlueprintContext()
+                onEditBlueprint()
+            }) {
+                Text("Edit blueprint")
+            }
+            Button(
+                onClick = { controller.generate() },
+                enabled = !controller.isGenerating && controller.projectName.isNotBlank(),
+            ) {
+                Text(if (controller.isGenerating) "Generating…" else "Generate")
+            }
+        }
+
+        if (controller.blueprintEditor.validationErrors.isNotEmpty()) {
+            Text(
+                "Blueprint: ${controller.blueprintEditor.validationErrors.first()}",
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+            )
         }
 
         if (controller.statusMessage.isNotBlank()) {
@@ -92,6 +113,6 @@ fun GenerateProjectScreen(
 @Composable
 fun GenerateProjectScreenPreview() {
     MaterialTheme {
-        GenerateProjectScreen(controller = remember { GenerateController() }, onBack = {})
+        GenerateProjectScreen(controller = remember { GenerateController() }, onBack = {}, onEditBlueprint = {})
     }
 }

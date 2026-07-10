@@ -28,7 +28,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | Path | Purpose |
 |------|---------|
 | [../README.md](../README.md) · [../README.pt-BR.md](../README.pt-BR.md) | Project overview (EN / pt-BR) |
-| [../client-setup/README.md](../client-setup/README.md) | First-run JDK 26 + Git setup |
+| [../misc/client-setup/README.md](../misc/client-setup/README.md) | First-run JDK 26 + Git setup |
 | [../builds/README.md](../builds/README.md) | `builds/client/` and `builds/framework/` layout |
 | [../template/README.md](../template/README.md) | Output templates index |
 | [../misc/README.md](../misc/README.md) | Generation pipeline modules, Docker, Jenkins, scripts |
@@ -37,7 +37,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 ## Quick commands
 
 ```bash
-source ../client-setup/env.sh
+source ../misc/client-setup/env.sh
 ./gradlew :app:run
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ```

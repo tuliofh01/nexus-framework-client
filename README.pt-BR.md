@@ -13,13 +13,28 @@
 
 Se você está avaliando stacks **web-shell** — **Electron** (Chromium + JavaScript) ou **Tauri** (WebView do SO + Rust) — o Nexus aposta em outro caminho: runtime C++ nativo, widgets immediate-mode e Lua/Python in-process em vez de motores de layout HTML. Essas ferramentas brilham quando DOM/CSS é a superfície do produto; o Nexus brilha quando throughput, tamanho de binário e uma pilha SDL3 compartilhada entre desktop e tablets Android de campo importam mais.
 
+## Automações via `blueprint.json`
+
+O Nexus inclui um **grafo de app estilo Langflow** na raiz do projeto — o mesmo modelo mental de conectar nós no Langflow ou n8n, mas voltado a apps MVC nativos. O grafo fica em **`blueprint.json`**: nós declaram módulos, arestas declaram fluxo de dados, e a **geração em `:core` consome o grafo** ao materializar `builds/framework/<nome>/`.
+
+| Tipo de nó | Papel |
+|------------|-------|
+| `python.module` | Amostragem / analytics Python (`python/functions.py`) |
+| `cpp.model` | Estado de domínio C++ (`FunctionRegistry`, caches) |
+| `cpp.controller` | Comandos + orquestração (`PlotController`) |
+| `ui.page` | Página TS/XHTML (`ui/ui.ts`, `ui/ui.xhtml`) |
+| `lua.script` | Painéis Lua em runtime (`scripts/panels.lua`) |
+
+**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (canvas Compose + inspetor JSON na v1; painel nativo **imnodes** previsto na v1.1 — mesmo schema). Amostras: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md).
+
 ## O que é este repositório
 
-| Hoje | Roadmap (v1) |
-|------|----------------|
-| Cliente Compose Desktop (`:app`) — demo MVC de contador + tela **Generate Project** | Tela inicial e assistente de criação em 6 passos |
-| Pipeline de geração (`:core`, `:cli` em `misc/`) — emite templates em `builds/framework/<nome>/` | Editor blueprint imnodes ligado à geração |
-| Templates incluídos — plotter desktop, plotter Android, DSL/temas compartilhados | Catálogo remoto, packs `python.dat` / `lua.dat`, template iOS |
+| Camada | Hoje | Roadmap (v1.1+) |
+|--------|------|-----------------|
+| **Cliente (`:app`)** | Compose Desktop — demo MVC + **Generate Project** + **Blueprint Editor** (grafo `blueprint.json`) | Assistente em 6 passos, painel imnodes nativo |
+| **Geração (`misc/core`, `misc/cli`)** | `ProjectGenerator` + `BlueprintValidator` → `builds/framework/<nome>/` | Catálogo remoto, packs `python.dat` / `lua.dat` |
+| **Templates** | Plotter desktop + Android com `blueprint.json` compartilhado | Template iOS |
+| **Autoria** | JSON de nós estilo Langflow + TS/XHTML + Lua | Packs de script criptografados |
 
 Este é o monorepo **Framework** (`:app`, `:core`, `:cli`). Não é o repositório separado [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) (wizard `:client-desktop` lá).
 
@@ -57,8 +72,8 @@ Layout de saída: [builds/README.md](builds/README.md) · Templates: [template/R
 ```
 Framework/
 ├── app/                 Cliente Compose Desktop (`:app`) — MVC em `nexus.opensource/`
-├── buildSrc/            Plugins Gradle de convenção (toolchain JVM 26) — **deve ficar na raiz**
 ├── misc/
+│   ├── build-logic/     Plugins Gradle de convenção (included build, toolchain JVM 26)
 │   ├── core/            Pipeline de geração (`:core`) — ProjectGenerator, schema nxs_config
 │   ├── cli/             Comando headless `generate` (`:cli`)
 │   ├── client-setup/    Instaladores JDK 26 + Git na primeira execução
@@ -155,7 +170,7 @@ O Nexus tem rampa real — CMake, C++20 e UI immediate-mode fazem parte — mas 
 | 2 | Ajustar um comportamento visível | Hotkey em `panels.lua` | Novo campo no model | Botão em `ui.xhtml` | Nova função em `functions.py` | Rastrear ponte Djinni |
 | 3 | Ligar MVC ponta a ponta | Lua → chamada controller | Comando no controller | Handler TS → C++ | Refresh C++ a partir de Python | Kotlin ↔ eval C++ |
 | 4 | Estender autoria | Misturar Lua + XHTML | Nova série ImPlot | Painel lateral completo | Caminho numpy → ImPlot | API Lua `android.*` |
-| 5 | Fluxo blueprint | Editar `blueprint.json` | Religar módulos | Reabrir no wizard (v1) | Proteger com `.dat` (roadmap) | Mesmo MVC compartilhado |
+| 5 | Fluxo blueprint | **Edit blueprint** no `:app` | Religar nós do `blueprint.json` | Conectar arestas no editor | Mesmo grafo, nós Python | Mesmo MVC compartilhado |
 
 Guia completo: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 
@@ -208,17 +223,19 @@ Referência de camadas: [docs/architecture/overview.md](docs/architecture/overvi
 | Doc | Descrição |
 |-----|-----------|
 | [docs/README.md](docs/README.md) | Hub de documentação |
+| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | Tipos de nó, arestas e validação do `blueprint.json` |
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, temas |
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
+| [docs/architecture/overview.md](docs/architecture/overview.md) | Diagramas de camadas + autoria blueprint |
 | [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | Onboarding de agentes IA |
 | [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Riscos de arquitetura |
 | [AGENTS.md](AGENTS.md) | Comandos de build para assistentes de código |
 
 ## Status de desenvolvimento e limitações
 
-**Entregue:** `:app` (Counter + Generate Project), `:core` / `:cli` (emissão de templates), `template/*`, `builds/`, `misc/client-setup/`, `docs/`.
+**Entregue:** `:app` (Counter + Generate Project + Blueprint Editor), `:core` / `:cli` (emissão + `BlueprintValidator`), `template/*`, `builds/`, `misc/client-setup/`, `docs/`.
 
-**Ainda não:** UI completa do wizard, integração do editor imnodes, catálogo remoto, template iOS, polimento do runner SDL3 Android, packs `python.dat` / `lua.dat`.
+**Ainda não:** wizard completo em 6 passos, painel **imnodes nativo** (v1 usa editor Compose JSON), catálogo remoto, template iOS, polimento SDL3 Android, packs `python.dat` / `lua.dat`.
 
 **Limitações (v1):** apenas scaffolder Compose Desktop; estética ImGui utilitária; Chaquopy aumenta o APK no Android; sem iOS nesta toolchain hoje.
 

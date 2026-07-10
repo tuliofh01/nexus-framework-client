@@ -29,6 +29,8 @@ plugins {
 }
 
 // Multi-module Framework repo: generation pipeline + Compose client.
+includeBuild("misc/build-logic")
+
 include(":core", ":cli", ":app")
 project(":core").projectDir = file("misc/core")
 project(":cli").projectDir = file("misc/cli")

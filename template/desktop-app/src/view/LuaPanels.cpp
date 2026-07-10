@@ -1,6 +1,12 @@
 #include "view/LuaPanels.hpp"
 
+#include "Paths.hpp"
+#include "ScriptArchive.hpp"
+
 #include <imgui.h>
+
+#include <filesystem>
+#include <iostream>
 
 namespace nxs::view {
 
@@ -12,7 +18,6 @@ LuaPanels::LuaPanels(controller::PlotController& controller) : m_controller(cont
 void LuaPanels::bindApi() {
     sol::table nxs = m_lua.create_named_table("nxs");
 
-    // ---- app-level commands (same surface the view uses) ---------------
     nxs.set_function("add_function",
                      [this](const std::string& id) { m_controller.addFunction(id); });
     nxs.set_function("remove_function",
@@ -24,7 +29,6 @@ void LuaPanels::bindApi() {
         m_controller.settings().logScaleY = !m_controller.settings().logScaleY;
     });
 
-    // ---- panel / hotkey registration ------------------------------------
     nxs.set_function("register_panel", [this](const std::string& title, sol::protected_function fn) {
         m_panels.push_back({title, std::move(fn)});
     });
@@ -32,16 +36,12 @@ void LuaPanels::bindApi() {
         m_hotkeys.push_back({imguiKey, std::move(fn)});
     });
 
-    // ---- minimal ImGui DSL for panel bodies -----------------------------
-    // Scripts get a curated subset, not raw ImGui: enough for tool panels
-    // without letting scripts corrupt frame state.
     sol::table ui = m_lua.create_named_table("ui");
     ui.set_function("text", [](const std::string& s) { ImGui::TextUnformatted(s.c_str()); });
     ui.set_function("button", [](const std::string& label) { return ImGui::Button(label.c_str()); });
     ui.set_function("separator", []() { ImGui::Separator(); });
     ui.set_function("same_line", []() { ImGui::SameLine(); });
 
-    // Key constants scripts are likely to want (values from ImGuiKey).
     sol::table keys = m_lua.create_named_table("keys");
     keys["F1"] = static_cast<int>(ImGuiKey_F1);
     keys["F2"] = static_cast<int>(ImGuiKey_F2);
@@ -51,11 +51,34 @@ void LuaPanels::bindApi() {
 void LuaPanels::loadScripts(const std::string& scriptDir) {
     m_panels.clear();
     m_hotkeys.clear();
+
+    const std::string archivePath = runtime::Paths::luaArchive();
+    if (std::filesystem::exists(archivePath)) {
+        runtime::ScriptArchive archive(runtime::ScriptArchive::MAGIC_LUA);
+        if (archive.load(archivePath)) {
+            std::string source;
+            if (archive.getSource("panels", source)) {
+                sol::protected_function_result result =
+                    m_lua.safe_script(source, sol::script_pass_on_error);
+                if (!result.valid()) {
+                    m_lastError = sol::error(result).what();
+                } else {
+                    m_lastError.clear();
+                }
+                return;
+            }
+            m_lastError = "lua.dat missing entry: panels";
+            return;
+        }
+        m_lastError = "Failed to load lua.dat";
+        return;
+    }
+
+    // Dev fallback: load plaintext scripts/panels.lua when archive not staged.
     sol::protected_function_result result =
         m_lua.safe_script_file(scriptDir + "/panels.lua", sol::script_pass_on_error);
     if (!result.valid()) {
-        sol::error err = result;
-        m_lastError = err.what();
+        m_lastError = sol::error(result).what();
     } else {
         m_lastError.clear();
     }

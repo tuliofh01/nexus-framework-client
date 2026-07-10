@@ -8,7 +8,7 @@ The Framework repo scaffolds native C++/Lua/Python projects from bundled templat
 |--------|------|
 | `:core` | `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
 | `:cli` | Headless `generate` command |
-| `:app` | Compose Desktop client with a minimal **Generate Project** screen |
+| `:app` | Compose Desktop client — **Generate Project** + **Blueprint Editor** (v1 JSON graph) |
 
 ## Pipeline stages
 
@@ -19,6 +19,7 @@ The Framework repo scaffolds native C++/Lua/Python projects from bundled templat
 | **Render template** | Copy `template/desktop-app/` or `template/android-app/` with `{{placeholder}}` substitution |
 | **Copy shared** | Copy `template/shared/` to `outputPath/shared/` (sibling — required by CMake `../shared`) |
 | **Validate config** | Parse rendered `nxs_config.json` (schema v2) |
+| **Validate blueprint** | Parse `blueprint.json` via `BlueprintValidator` |
 
 ## Template selection
 
@@ -36,6 +37,38 @@ The Framework repo scaffolds native C++/Lua/Python projects from bundled templat
 | `{{cppStandard}}` | `20` |
 | `{{license}}` | `Apache-2.0` |
 | `{{appType}}` | `desktop` / `android` |
+| `{{createdAt}}` | ISO-8601 timestamp (script protection key material) |
+| `{{scriptProtectionEnabled}}` | `true` / `false` |
+| `{{scriptProtectionSalt}}` | UUID salt when protection enabled |
+
+## Script archives (`lua.dat` / `python.dat`)
+
+Desktop templates pack `scripts/` and `python/` into binary archives beside the executable under `misc/`. Android packs Lua into APK `assets/lua.dat` via Gradle `packLuaDat` (Python stays on Chaquopy paths — no `python.dat` on Android).
+
+| Archive | Magic | Source | Desktop output | Android output |
+|---------|-------|--------|----------------|----------------|
+| `lua.dat` | `LUAC` | `scripts/**/*.lua` | `misc/lua.dat` | `build/assets/lua.dat` |
+| `python.dat` | `PYAC` | `python/**/*.py` | `misc/python.dat` | N/A (Chaquopy) |
+
+**Format:** 32-byte header (magic, version, count, reserved). Version 2 sets `reserved[0] |= 0x01` and stores a 16-byte nonce; payloads use **nxs-v1** stream obfuscation (`SHA256(projectName + salt + createdAt)` XOR stream). This is obfuscation, not DRM.
+
+`nxs_config.json` keys:
+
+```json
+"scriptProtection": { "enabled": true, "salt": "…", "algorithm": "nxs-v1" },
+"project": { "createdAt": "…" }
+```
+
+The generator also renders `shared/runtime/ScriptProtectionConfig.hpp` from `ScriptProtectionConfig.hpp.in`.
+
+**Gradle validation tasks** (host CMake required):
+
+```bash
+./gradlew :core:packTemplateLuaDat
+./gradlew :core:packTemplatePythonDat
+```
+
+Disable encryption for local iteration: `./gradlew :cli:run --args="generate --type desktop --name MyApp --script-protection false"`
 
 ## CLI usage
 
@@ -57,7 +90,11 @@ Short flags: `-t desktop -n MyApp -o builds/framework`
 
 ## Compose client (v1)
 
-Run `./gradlew :app:run`, click **Generate Project** on the counter screen, enter a name, pick a template, and generate.
+Run `./gradlew :app:run`, click **Generate Project**, enter a name, pick a template, optionally **Edit blueprint** (Compose graph editor), then generate.
+
+Custom blueprints from the editor are written to the output project as `blueprint.json` (template placeholders like `{{projectName}}` are substituted).
+
+Schema: [blueprint-schema.md](../templates/blueprint-schema.md)
 
 ## Docker (optional)
 

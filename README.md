@@ -15,11 +15,11 @@ If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScrip
 
 ## What this repo is
 
-| Today | Roadmap (v1) |
-|-------|----------------|
-| Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** screen | Home screen and 6-step creation wizard |
-| Generation pipeline (`:core`, `:cli` in `misc/`) — emit templates to `builds/framework/<name>/` | imnodes blueprint editor wired to generation |
-| Bundled templates — desktop plotter, Android plotter, shared DSL/themes | Remote template catalog, `python.dat` / `lua.dat` packs, iOS template |
+| Today | Roadmap (v1.1+) |
+|-------|-----------------|
+| Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** + **Blueprint Editor** (JSON graph) | Full 6-step wizard, imnodes native panel |
+| Generation pipeline (`:core`, `:cli` in `misc/`) — emit templates to `builds/framework/<name>/` | Remote template catalog, iOS template |
+| Script archive packs — `lua.dat` + `python.dat` (desktop), `lua.dat` in APK assets (Android) | Chaquopy `python.dat` (not applicable — sources ship in APK) |
 
 This is the **Framework** monorepo (`:app`, `:core`, `:cli`). It is not the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
 
@@ -57,8 +57,8 @@ Output layout: [builds/README.md](builds/README.md) · Templates: [template/READ
 ```
 Framework/
 ├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
-├── buildSrc/            Gradle convention plugins (JVM toolchain 26) — **must stay at repo root**
 ├── misc/
+│   ├── build-logic/     Gradle convention plugins (included build, JVM toolchain 26)
 │   ├── core/            Generation pipeline (`:core`) — ProjectGenerator, nxs_config schema
 │   ├── cli/             Headless `generate` command (`:cli`)
 │   ├── client-setup/    First-run JDK 26 + Git installers
@@ -105,7 +105,7 @@ Nexus is built for **throughput, footprint, and field deployment** — not for r
 | **Native memory for arrays** | Meshes, order books, and numpy buffers stay in the C++ heap; Python via pybind11/Chaquopy without marshaling through JS | Web shells copy or serialize data across JS boundaries |
 | **SDL3 cross-platform** | Same windowing/input layer on Windows, macOS, Linux, and Android GLES | Mobile is secondary or a separate toolchain in most web-shell stacks |
 | **sol2 + Lua hot-reload** | Edit `panels.lua`, repack optional `lua.dat` — runtime UI panels without recompiling C++ | Frontend HMR helps, but still an HTML/CSS/JS round-trip |
-| **`python.dat` / `lua.dat` protection** | Roadmap encrypted packs ship logic without loose `.py`/`.lua` on disk | Not a first-class concern in typical Electron/Tauri asset models |
+| **`python.dat` / `lua.dat` protection** | Optional v2 encrypted packs ship logic without loose `.py`/`.lua` on disk (desktop `misc/`; Android `lua.dat` in APK assets) | Not a first-class concern in typical Electron/Tauri asset models |
 | **Sub-ms ImGui refresh** | Immediate-mode UI targets **<1 ms** per Dear ImGui guidance; no layout thrash | WebView layout + paint cycles dominate steady-state CPU |
 | **Field tablet APK** | Android template: full-screen SDL3/GLES ImGui + Chaquopy Python on rugged devices — no WebView | Electron Android is not primary; Tauri Mobile remains WebView-based |
 | **Same blueprint, desktop + Android** | One `blueprint.json` / imnodes workflow wires MVC on both templates | Separate web + mobile pipelines are common |
@@ -155,7 +155,7 @@ Nexus has a real ramp — CMake, C++20, and immediate-mode UI are part of the de
 | 2 | Tweak one visible behavior | Hotkey in `panels.lua` | New model field | Button in `ui.xhtml` | New function in `functions.py` | Trace Djinni bridge |
 | 3 | Wire MVC end-to-end | Lua → controller call | Controller command | TS handler → C++ | C++ refresh from Python | Kotlin ↔ C++ eval |
 | 4 | Extend authoring | Mix Lua + XHTML | Add ImPlot series | Full sidebar panel | numpy → ImPlot path | `android.*` Lua API |
-| 5 | Blueprint workflow | Edit `blueprint.json` | Rewire modules | Re-open in wizard (v1) | Protect with `.dat` (roadmap) | Same shared MVC |
+| 5 | Blueprint workflow | Edit in Compose editor (v1) | Rewire modules | imnodes panel (v1.1) | Protect with `.dat` (roadmap) | Same shared MVC |
 
 Full guide: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 
@@ -216,9 +216,9 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 
 ## Development status and limitations
 
-**Shipped:** `:app` (Counter + Generate Project), `:core` / `:cli` (template emit), `template/*`, `builds/`, `misc/client-setup/`, `docs/`.
+**Shipped:** `:app` (Counter + Generate Project + Blueprint Editor), `:core` / `:cli` (template emit + `BlueprintValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
 
-**Not yet:** full wizard UI, imnodes editor integration, remote catalog, iOS template, SDL3 Android runner polish, `python.dat` / `lua.dat` packs.
+**Not yet:** full 6-step wizard, imnodes **native** panel (v1 ships Compose JSON graph editor), remote catalog, iOS template, SDL3 Android runner polish.
 
 **Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
 

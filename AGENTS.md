@@ -12,7 +12,7 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `:cli` | Headless `generate` command — sources in `misc/cli/` |
 | `:app` | Compose Desktop client — **MVC** under `nexus.opensource` (`model/`, `view/`, `controller/`) |
 | `misc/` | Generation pipeline (`:core`, `:cli`), Docker, Jenkins, scripts — see [misc/README.md](misc/README.md) |
-| `client-setup/` | First-run JDK 26 + Git installers — run **before** first `./gradlew :app:run` ([client-setup/README.md](client-setup/README.md)) |
+| `misc/client-setup/` | First-run JDK 26 + Git installers — run **before** first `./gradlew :app:run` ([misc/client-setup/README.md](misc/client-setup/README.md)) |
 | `template/desktop-app/` | Desktop output (SDL3 + pybind11 path) |
 | `template/android-app/` | Android output (Chaquopy + Djinni) |
 | `template/shared/` | Shared DSL, themes, runtime helpers |
@@ -23,11 +23,11 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 ## First run (human or agent)
 
 ```bash
-./client-setup/linux/setup.sh    # or macos/setup.sh / windows/setup.bat
-source client-setup/env.sh       # Windows: call client-setup\env.bat
+./misc/client-setup/linux/setup.sh    # or macos/setup.sh / windows/setup.bat
+source misc/client-setup/env.sh       # Windows: call misc\client-setup\env.bat
 ```
 
-JDK **26** is required (`buildSrc` `jvmToolchain(26)`). Do not assume JDK 21.
+JDK **26** is required (`misc/build-logic` `jvmToolchain(26)`). Do not assume JDK 21.
 
 ## Build / run
 
@@ -72,7 +72,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 
 ## Conventions
 
-- **JDK / toolchain**: Java 26 via Foojay in `buildSrc` convention plugin.
+- **JDK / toolchain**: Java 26 via Foojay in `misc/build-logic` convention plugin.
 - **Kotlin**: 2.4.0.
 - **Window title**: `NexusBranding.windowTitle(...)` → `{projectName} - built with The Nexus Framework`.
 - **Template placeholders**: `{{projectName}}`, `{{windowTitle}}`, `{{cppStandard}}`, etc.
@@ -91,7 +91,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 | Android template | `template/android-app/` |
 | Docker generation | `misc/docker/`, `misc/scripts/generate-in-docker.sh` |
 | Jenkins (optional) | `Jenkinsfile`, `misc/jenkins/README.md` |
-| `misc/` layout + `buildSrc` exception | `misc/README.md` |
+| `misc/` layout + `build-logic` included build | `misc/README.md` |
 
 ## Docs
 
@@ -99,4 +99,4 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 - Generation: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
 - Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
-- Client setup: [client-setup/README.md](client-setup/README.md)
+- Client setup: [misc/client-setup/README.md](misc/client-setup/README.md)

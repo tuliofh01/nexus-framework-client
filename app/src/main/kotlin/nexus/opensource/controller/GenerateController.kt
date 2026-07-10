@@ -14,16 +14,23 @@ class GenerateController {
     var appType: AppType = AppType.DESKTOP
     var statusMessage: String = ""
     var isGenerating: Boolean = false
+    val blueprintEditor: BlueprintEditorController = BlueprintEditorController()
+
+    fun syncBlueprintContext() {
+        blueprintEditor.syncContext(projectName, appType)
+    }
 
     fun generate(onProgress: (String) -> Unit = {}): String? {
         if (isGenerating) return "Generation already in progress"
         isGenerating = true
         statusMessage = ""
         return try {
+            syncBlueprintContext()
             val spec = ProjectSpec(
                 projectName = projectName,
                 outputPath = ProjectGenerator.defaultOutputPath(projectName),
                 appType = appType,
+                blueprint = blueprintEditor.blueprint,
             )
             val repoRoot = RepoRoot.resolve()
             val generator = ProjectGenerator(repoRoot)
