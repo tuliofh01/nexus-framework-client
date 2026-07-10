@@ -1,7 +1,7 @@
 # The Nexus Company's Framework For Native Applications Development
 
 <p align="center">
-  <img src="docs/assets/nexus-logo.png" alt="🧩 Nexus Framework — native C++/Lua/Python scaffolder logo" width="240" />
+  <img src="docs/assets/nexus-logo.png" alt="🧩 Nexus Framework — native C++/Lua/Python project generator logo" width="240" />
 </p>
 
 <p align="center"><strong>🧩 Native apps, not browser tabs</strong> — ship SDL3 binaries from a blueprint graph.</p>
@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache 2.0 open source license" /></a>
-  <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin 2.4 Compose Desktop scaffolder" /></a>
+  <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin 2.4 Compose Desktop project generator" /></a>
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3 desktop and Android" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/Dear%20ImGui-immediate--mode-orange?style=flat-square" alt="Dear ImGui immediate-mode UI" /></a>
 </p>
@@ -21,9 +21,9 @@
 > [!TIP]
 > **Welcome aboard.** Run [first-run setup](#first-run), then `./gradlew :app:run` — you'll have a Compose client, a blueprint editor, and a path to `builds/framework/<name>/` in minutes. No Chromium download required.
 
-**The Nexus Framework** is an **open source native app scaffolder**: it generates **C++**, **Lua**, and **Python** applications for **desktop** (Windows, macOS, Linux) and **Android** from a [Langflow](https://github.com/langflow-ai/langflow)-style [`blueprint.json`](#blueprint-nodes-langflow-style-vs-n8n) and optional [`flows.json`](#optional-runtime-flows-services). The **Kotlin Compose** Desktop client (`:app`) authors graphs; [`misc/core`](#the-misc-directory) validates and emits [`template/`](#repository-layout) projects with **SDL3** windowing, **Dear ImGui** widgets, sol2 scripting, TypeScript + XHTML UI authoring, and embedded **Python** (pybind11 on desktop, Chaquopy + Djinni on Android). ImPlot charts render without a browser engine.
+**The Nexus Framework** is an **open source native app builder**: it generates **C++**, **Lua**, and **Python** applications for **desktop** (Windows, macOS, Linux) and **Android** from a [Langflow](https://github.com/langflow-ai/langflow)-style [`blueprint.json`](#blueprint-nodes-langflow-style-vs-n8n) and optional [`flows.json`](#optional-runtime-flows-services). The **Kotlin Compose** Desktop client (`:app`) authors graphs; [`misc/core`](#the-misc-directory) validates and writes out [`template/`](#repository-layout) projects with **SDL3** windowing, **Dear ImGui** widgets, sol2 scripting, TypeScript + XHTML UI authoring, and built-in **Python** (pybind11 on desktop, Chaquopy + Djinni on Android). ImPlot charts render without a browser engine.
 
-*Think of it as a codegen pipeline with opinions — and a plotter sample that actually runs.*
+*Think of it as a code generation flow with opinions — and a plotter sample that actually runs.*
 
 If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScript) or **Tauri** (OS WebView + Rust) — Nexus is a different bet: native **C++** runtime, immediate-mode widgets, and in-process Lua/Python instead of HTML layout engines. Those tools excel when DOM/CSS is the product surface; Nexus excels when throughput, binary size, and a shared SDL3 stack across desktop and Android field hardware matter more.
 
@@ -47,9 +47,9 @@ If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScrip
 - [Adding dependencies after setup](#adding-dependencies-after-setup)
 - [Development status and limitations](#development-status-and-limitations)
 - [Beyond quick-fix automation: from flows to real applications](#beyond-quick-fix-automation-from-flows-to-real-applications)
-- [Road to MVP](#road-to-mvp)
 - [Copyright and license](#copyright-and-license)
 - [See also](#see-also)
+- [Road to MVP](#road-to-mvp)
 
 ---
 
@@ -58,49 +58,39 @@ If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScrip
 Nexus ships a **Langflow-style app graph** at the project root via [`blueprint.json`](docs/templates/blueprint-schema.md). Nodes declare modules (`python.module`, `cpp.model`, `ui.page`, …); edges wire data and command flow inside the generated MVC app. The **[`:core` generator](#the-misc-directory)** validates and consumes the graph when materializing `builds/framework/<name>/`.
 
 <!-- Diagram: Langflow vs n8n vs Nexus blueprint comparison -->
-![📊 Langflow vs n8n vs Nexus blueprint — typed DAG vs workflow automation vs design-time codegen](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
+![📊 Langflow vs n8n vs Nexus blueprint — connected steps vs workflow automation vs build-time codegen](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 | Node type | Role |
 |-----------|------|
 | `python.module` | Python sampling / analytics (`python/functions.py`) |
 | `cpp.model` | C++ domain state (`FunctionRegistry`, caches) |
-| `cpp.controller` | Commands + orchestration (`PlotController`) |
+| `cpp.controller` | Commands + wiring (`PlotController`) |
 | `ui.page` | TS/XHTML page (`ui/ui.ts`, `ui/ui.xhtml`) |
 | `lua.script` | Runtime Lua panels (`scripts/panels.lua`) |
 
 | | **[Langflow](https://github.com/langflow-ai/langflow)** | **[n8n](https://n8n.io/)** | **Nexus [`blueprint.json`](docs/templates/blueprint-schema.md)** |
 |---|-------------|---------|---------------------------|
-| **Purpose** | ML / LLM flow authoring | Workflow automation (triggers, HTTP, integrations) | **Build-time** native app structure |
+| **Purpose** | ML / LLM flow authoring | Workflow automation (triggers, HTTP, integrations) | **At build time** — native app structure |
 | **Node model** | Typed components (model, tool, memory) | Steps + triggers (webhook, cron, Slack, …) | Typed modules (`python.module`, `cpp.model`, …) |
 | **Edges** | Data between components | Event / payload routing | MVC ports (`evaluate`, `sampleCache`, `commands`, …) |
-| **Execution** | **Runtime** — user runs the flow | **Runtime** — schedule or webhook fires | **Design-time** — `ProjectGenerator` validates + emits |
+| **Execution** | **Runtime** — user runs the flow | **Runtime** — schedule or webhook fires | **At build time** — `ProjectGenerator` validates + writes out |
 
 **Edit in the client:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (Compose canvas + JSON inspector in v1; native **imnodes** panel planned for v1.1 — same schema). Samples: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md).
 
 ### Langflow-style nodes vs n8n
 
-Both tools use a **node-and-edge mental model**, but they solve different problems. Nexus [`blueprint.json`](docs/templates/blueprint-schema.md) is closer to **[Langflow](#langflow-style-examples)** (typed in-app graph) than to **[n8n](#langflow-style-nodes-vs-n8n)** (external workflow automation). Nexus does **not** replace n8n; the two can coexist. For when a flow should graduate into shipped native software — not just ops glue — see [Beyond quick-fix automation](#beyond-quick-fix-automation-from-flows-to-real-applications) below.
+Nexus [`blueprint.json`](docs/templates/blueprint-schema.md) is closer to **[Langflow](#langflow-style-examples)** (typed in-app graph) than to **n8n** (external workflow automation) — see the comparison table above. Nexus does **not** replace n8n; a generated app can call n8n webhooks from Python/Lua while `blueprint.json` stays focused on **internal** MVC wiring. For when a flow should graduate into shipped native software, see [Beyond quick-fix automation](#beyond-quick-fix-automation-from-flows-to-real-applications).
 
-| | **Nexus `blueprint.json`** (Langflow-style) | **n8n** |
-|---|---------------------------------------------|---------|
-| **Purpose** | Author **in-app structure** — which C++/Python/Lua/UI modules connect and how data flows inside your native app | Automate **external workflows** — webhooks, REST APIs, schedules, SaaS integrations |
-| **Node types** | `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script` | HTTP Request, Webhook, Cron, Slack, Postgres, … |
-| **Execution model** | Graph is consumed at **generation**; runtime is compiled C++/Lua/Python on SDL3 | Server-side workflow engine runs steps on triggers or schedules |
-| **Where it runs** | Inside the generated desktop binary or Android APK | n8n instance (cloud or self-hosted) |
-| **When to use** | Rewiring plotter MVC, adding screens, mapping Python samples → controller → UI | Ops automation, ETL, alerting, glue between third-party services |
-
-**Coexistence:** a generated Nexus app can call an n8n webhook from Python or Lua (e.g. post telemetry, trigger a downstream pipeline) while `blueprint.json` stays focused on **internal** app wiring — the same separation Langflow uses for LLM chains vs. what n8n uses for integration flows. Optional **n8n-style automation hooks** inside the blueprint schema are roadmap only; v1 node types are all Langflow-style (`editor.paradigm: langflow`).
-
-**Client mapping:** **Edit blueprint** in `:app` mirrors the Langflow canvas — drag nodes, connect ports, preview JSON. v1.1 embeds **imnodes** natively with the same file; no schema migration planned.
+**Edit blueprint** in `:app` mirrors the Langflow canvas (v1.1 adds native **imnodes** on the same schema).
 
 ### Langflow-style examples
 
-These diagrams show how Langflow authors runtime AI flows — and how Nexus adopts the same node-and-edge mental model for **design-time** native app structure in `blueprint.json`.
+These diagrams show how Langflow authors runtime AI flows — and how Nexus adopts the same node-and-edge mental model for **at-build-time** native app structure in `blueprint.json`.
 
 #### RAG chatbot flow
 *Langflow runtime — retrieval, model, and chat output*
 
-A typical Langflow graph chains document loading, embedding, vector retrieval, and an LLM into a chat response. Use this as a reference for how typed nodes and data edges work in Langflow authoring. Nexus does not execute this flow; it mirrors the **visual pattern** when you wire `python.module` → `cpp.controller` → `ui.page` in a blueprint.
+Reference for typed nodes and data edges in Langflow — Nexus mirrors the **visual pattern** in `blueprint.json`, not the runtime.
 
 <!-- Example: Langflow RAG chatbot runtime flow -->
 ![Langflow RAG chatbot example — document loader, embedding, vector retrieval, and LLM chat nodes](docs/assets/examples/langflow-rag-chatbot.svg)
@@ -108,7 +98,7 @@ A typical Langflow graph chains document loading, embedding, vector retrieval, a
 #### Agent with tools
 *Langflow runtime — LLM, memory, and tool nodes*
 
-Shows an agent loop where the model calls external tools and retains conversation memory — the Langflow pattern for interactive AI apps. When adopting the idea in Nexus, map each logical module to blueprint node types (`python.module`, `cpp.controller`, …) that `:core` validates and emits as C++/Python/Lua sources at generation time.
+Agent loop with tools and memory — map each logical module to blueprint node types (`python.module`, `cpp.controller`, …) that `:core` emits at generation time.
 
 <!-- Example: Langflow agent with tools and memory -->
 ![Langflow agent with tools example — LLM, memory, and external tool nodes in an agent loop](docs/assets/examples/langflow-agent-tools.svg)
@@ -116,7 +106,7 @@ Shows an agent loop where the model calls external tools and retains conversatio
 #### Nexus blueprint app structure
 *Design-time codegen — MVC modules from `blueprint.json`*
 
-The Nexus equivalent: typed nodes for Python sampling, C++ model/controller, UI page, and Lua panels — connected by MVC ports, not HTTP webhooks. Consult this when editing **Edit blueprint** in `:app` or reading [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json). The graph is consumed once by `ProjectGenerator`, not run as a server-side workflow.
+The Nexus equivalent: `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, and `lua.script` wired by MVC ports — consumed once by `ProjectGenerator`. Sample: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json).
 
 <!-- Example: Nexus blueprint MVC app structure -->
 ![Nexus blueprint app structure example — python.module, cpp.model, cpp.controller, ui.page, and lua.script nodes](docs/assets/examples/nexus-blueprint-app-structure.svg)
@@ -160,10 +150,7 @@ Add multiple flows by appending objects to the `flows` array in [`flows.json`](d
 
 ### Using Langflow to author flows
 
-> [!NOTE]
-> **Langflow is an authoring tool, not a runtime here.** Nexus does not bundle Langflow's server-side graph engine in v1 — export JSON, map to `flows.json`, and run native C++/Lua/Python on SDL3 instead.
-
-[Langflow](https://github.com/langflow-ai/langflow) is a visual DAG editor for LLM chains, tools, retrievers, and agents. Nexus does **not** embed the Langflow runtime in v1 — you can use Langflow as an **optional external authoring tool**, export its flow JSON, and **adopt** the graph as native `flows.json` services inside the generated app. For how Langflow relates to `blueprint.json` (structure) vs n8n (ops automation), see [Langflow-style nodes vs n8n](#langflow-style-nodes-vs-n8n) above.
+[Langflow](https://github.com/langflow-ai/langflow) is an optional **external authoring tool** — export flow JSON and adopt it as native `flows.json` services. Structure graphs map to [`blueprint.json`](docs/templates/blueprint-schema.md); automation graphs map to **`flows.json`** (see [Blueprint vs flows layers](#blueprint-vs-flows-layers) above). Langflow/n8n distinctions: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n).
 
 #### Step A — Design in Langflow (optional external tool)
 
@@ -182,31 +169,22 @@ Nexus adopts the graph as **in-process automation** — not a hosted Langflow se
 | Long-running / polling loop | `mode: background` |
 | On-demand / user-initiated run | `mode: triggered` |
 
-**`blueprint.json` vs `flows.json`:** Langflow graphs that wire **app structure** (screens, controllers, Python modules) map better to [`blueprint.json`](docs/templates/blueprint-schema.md). Graphs that express **runtime automation** (timers, event hooks, background tasks) map to **`flows.json`**. A single Langflow canvas may split across both files after translation.
-
 #### Step C — Adoption workflow
 
-Export from Langflow, translate into the Nexus schema, ship in `flows/`, enable in config, and let FlowRunner register triggers at startup.
+Export from Langflow → translate to Nexus schema → ship in `flows/` → FlowRunner registers triggers at startup.
 
 ![Langflow export to flows.json adoption workflow](docs/assets/diagrams/langflow-adoption-workflow.svg)
 
-1. **Export** JSON from Langflow.
-2. **Translate** field names into the Nexus `flows.json` schema ([docs/templates/flows-schema.md](docs/templates/flows-schema.md)) — manual in v1; a Langflow importer is planned for v1.1.
-3. **Place** the result in `flows/flows.json` in the generated project, or paste it in the client **Edit flows** screen (`./gradlew :app:run` → **Generate Project** → **Edit flows**).
-4. **Enable** in `nxs_config.json` → `"flows": { "enabled": true }`.
-5. At app startup, **FlowRunner** loads `flows.json` and registers triggers (intervals, events, startup hooks).
-6. **Custom handlers** — you can author `flows.json` entirely by hand or from Python/Lua without ever opening Langflow.
+1. **Export** JSON from Langflow → **translate** to [flows schema](docs/templates/flows-schema.md) (manual v1; importer v1.1).
+2. **Place** in `flows/flows.json` or paste in **Edit flows** (`./gradlew :app:run` → **Generate Project** → **Edit flows**).
+3. **Enable** in `nxs_config.json` → `"flows": { "enabled": true }`. Custom handlers work without Langflow.
 
 #### Honest limits (v1)
 
-- **No automatic Langflow importer** — export → manual mapping today; importer targeted for v1.1.
-- **No cloud webhook / SaaS orchestration** — unlike n8n-style flows; call external APIs from Python/Lua `invoke` targets when needed.
-- **LLM nodes become stubs** — Langflow LLM/Agent components map to `invoke` steps; the actual model call must live in a `python.module` (or future dedicated step type).
-- **Langflow runtime not bundled** — Nexus runs native C++/Lua/Python on SDL3; it does not execute Langflow's server-side graph engine.
+- No automatic Langflow importer; no bundled Langflow runtime; LLM nodes become `invoke` stubs (model call lives in `python.module`).
+- Flows are **local, in-process** — not cloud webhook orchestration ([n8n](#langflow-style-nodes-vs-n8n)). HTTP/webhook step types planned v1.1.
 
-**Not n8n in v1:** flows are **local, in-process** services inside the native app. They do not replace cloud webhook orchestration ([n8n](#langflow-style-nodes-vs-n8n), [Power Automate](#beyond-quick-fix-automation-from-flows-to-real-applications)). Call external webhooks from Python/Lua when needed; use [`flows.json`](docs/templates/flows-schema.md) for timers and app events. HTTP/webhook step types are planned for v1.1.
-
-Sample template: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json) (interval resample stub + event on curve add).
+Sample: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json).
 
 ---
 
@@ -313,15 +291,7 @@ Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipel
 
 ### Initial setup scripts (`misc/client-setup/`)
 
-Run **once** before your first `./gradlew :app:run`. Platform installers under [misc/client-setup/](misc/client-setup/) provision **JDK 26** and **Git** (plus recommended build tools on Linux). After setup, source the generated env file so Gradle picks up `JAVA_HOME`:
-
-```bash
-./misc/client-setup/linux/setup.sh   # or macos/setup.sh / windows/setup.bat
-source misc/client-setup/env.sh      # Windows: call misc\client-setup\env.bat
-./gradlew :app:run
-```
-
-Per-distro Linux helpers (`setup-arch.sh`, `setup-debian.sh`, `setup-fedora.sh`) and troubleshooting: [misc/client-setup/README.md](misc/client-setup/README.md).
+Run **once** before first `./gradlew :app:run` — same flow as [First run](#first-run). Per-distro helpers and troubleshooting: [misc/client-setup/README.md](misc/client-setup/README.md).
 
 ### Automated tests & test generation (`misc/scripts/test-gen/`)
 
@@ -448,9 +418,7 @@ Full guide: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 | iOS from this repo today | Not shipped yet — wait for v1 iOS template or use platform-native Swift |
 | Greenfield safety-critical with compile-time memory proofs | Rust — see [Modern C++ in Nexus](#modern-c-in-nexus) below |
 
-**Worth the Nexus ramp when:** you need native throughput, small binaries, SDL3 parity across desktop and Android field tablets, in-process Python/numpy, or blueprint-driven rewiring without a browser engine.
-
-If you're weighing a full rewrite in Rust or another language, see [Incremental evolution — not a greenfield rewrite](#incremental-evolution--not-a-greenfield-rewrite) below.
+**Worth the Nexus ramp when:** you need native throughput, small binaries, SDL3 parity across desktop and Android field tablets, in-process Python/numpy, or blueprint-driven rewiring — see [Why Nexus performs better](#why-nexus-performs-better). For incremental migration vs full rewrite, see [Modern C++ in Nexus](#modern-c-in-nexus).
 
 </details>
 
@@ -476,7 +444,7 @@ The diagram traces how one blueprint edge fans out into desktop pybind11 + `pyth
 
 ![Python desktop vs Android embedding flow](docs/assets/diagrams/python-desktop-vs-android-flow.svg)
 
-Both paths honor the same blueprint edge: Python `evaluate` → controller `sampleCache` → model caches → ImPlot draw. Desktop favors a single native binary with optional encrypted script packs; Android favors JVM-managed Python with type-safe JNI via Djinni. See also [Desktop vs Android runtime](docs/assets/diagrams/desktop-vs-android-runtime.svg).
+Same blueprint edge on both paths: Python `evaluate` → controller `sampleCache` → ImPlot. See also [Desktop vs Android runtime](#architecture).
 
 ---
 
@@ -555,36 +523,19 @@ That compatibility is **backwards compatible-ish**, not ABI magic. New blueprint
 ### 📊 Nexus full-stack architecture
 *Client, generation pipeline, templates, and native runtimes*
 
-The end-to-end map from the Compose scaffolder through `:core` generation into C++/Lua/Python apps on SDL3. Consult this first when onboarding or explaining how blueprint authoring, template emit, and runtime layers connect. Notice `:app`, `:core`/`:cli`, `blueprint.json`, and the Python/Djinni bridges.
-
-<!-- Diagram: Nexus full-stack architecture -->
 ![📊 Nexus full-stack architecture — Compose client → :core pipeline → SDL3 runtimes (your app, not a browser tab)](docs/assets/diagrams/full-stack-architecture.svg)
 
 ### 📊 Generation and builds flow
 *From client-setup and Gradle modules to `builds/framework/<name>/`*
 
-Traces the path from first-run JDK setup through `:app`/`:cli` generation into emitted templates under `builds/framework/`. Use it when debugging generation failures or explaining deploy layout. Key stops: `client-setup`, `ProjectGenerator`, and the native build step.
-
-<!-- Diagram: Generation and builds flow -->
 ![📊 Generation and builds flow — JDK setup → Gradle → ProjectGenerator → builds/framework/<name>/](docs/assets/diagrams/generation-builds-flow.svg)
 
 ### 📊 Desktop vs Android runtime
 *Shared MVC on SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
 
-Shows how the same blueprint node graph compiles to desktop (pybind11, `python.dat`) vs Android (Chaquopy, Djinni). Consult when choosing a template or wiring `python.module` across platforms. Watch the shared controller/model path and where the Python bridge diverges.
-
-<!-- Diagram: Desktop vs Android runtime -->
 ![Desktop vs Android runtime — shared MVC on SDL3/ImGui with pybind11 vs Chaquopy and Djinni bridges](docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
-### Langflow vs n8n vs Nexus blueprint
-*Typed in-app DAG vs runtime workflow automation vs design-time codegen*
-
-Contrasts Langflow (runtime LLM flows), n8n (external automation), and Nexus `blueprint.json` (build-time structure). Read before editing blueprints or explaining why Nexus is not an n8n replacement. Node types like `python.module` and `ui.page` map to generated artifacts, not webhook steps.
-
-<!-- Diagram: Langflow vs n8n vs Nexus blueprint (architecture section) -->
-![📊 Langflow vs n8n vs Nexus — runtime LLM flows vs ops automation vs design-time codegen](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
-
-Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Scaffold tooling: [The `misc/` directory](#the-misc-directory) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
+Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) (diagram there). Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Scaffold tooling: [The `misc/` directory](#the-misc-directory) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
 
 ## Documentation
 
@@ -618,25 +569,19 @@ Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android r
 
 **Shipped:** `:app` (Counter + Generate Project + Blueprint Editor + Flows Editor), `:core` / `:cli` (template emit + `BlueprintValidator` + `FlowsValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
 
-**Not yet:** full 6-step wizard, imnodes **native** panel (v1 ships Compose JSON graph editor), remote catalog, iOS template, SDL3 Android runner polish.
+**Not yet:** see [Road to MVP](#road-to-mvp) for the full checklist (v1 ships 2-screen Generate + Compose editors).
 
 **Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
 
 **Branch:** active development on **`main`** (`origin/main`).
 
----
-
----
-
 > *"The first rule of any technology used in a business is that automation applied to an efficient operation will magnify the efficiency."* — Bill Gates
 
 ## 🔄 Beyond quick-fix automation: from flows to real applications
 
-**Power Automate**, **n8n**, and similar workflow tools occupy a clear sweet spot: glue scripts, webhook chains, SaaS integrations, and one-off “quick fixes” that keep operations moving. They excel at ops automation — connecting Slack to Postgres, fanning out webhooks, scheduled ETL — without anyone shipping a product binary.
+**Power Automate**, **n8n**, and similar tools excel at ops glue — webhooks, SaaS integrations, scheduled ETL. That breaks down when the quick fix *is* the product: no native UI, weak offline packaging, cloud dependency.
 
-That strength becomes a limitation when the quick fix is supposed to *be* the product. Flow canvases offer no native UI/runtime beyond the vendor shell, weak packaging for offline or field use, and a cloud dependency that makes a deployable desktop or mobile binary an afterthought. Growing a flow into a multi-feature application usually means patching nodes forever: brittle, hard to test, and expensive to version like real software.
-
-**Nexus** keeps the same **design-time** mental model — nodes and edges in [`blueprint.json`](docs/templates/blueprint-schema.md) (see [Langflow-style nodes vs n8n](#langflow-style-nodes-vs-n8n) above) — but the `:core` generator emits a **real native application**: C++/SDL3 windowing, Lua and Python logic layers, ImGui + TS/XHTML DSL pages, encrypted script packs (`lua.dat` / `python.dat`), and Android/desktop binaries from one scaffold. The graph is authored like Langflow; the artifact is compiled MVC on SDL3, not a server-side workflow engine.
+**Nexus** keeps the node-and-edge mental model in [`blueprint.json`](docs/templates/blueprint-schema.md) but emits a **real native app** — C++/SDL3, Lua/Python, ImGui + TS/XHTML, script packs, desktop/Android binaries. See [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) for how this differs from n8n.
 
 **Migration path:** start where you already think — wire modules in the blueprint editor → generate with `:cli` or **Generate Project** → iterate in normal code layers (`cpp.model`, `python.module`, `ui.page`, Lua panels) instead of stacking flow patches. An n8n or Power Automate webhook can remain at the edge for ops glue while the app owns state, UI, and offline behavior in-process.
 
@@ -651,73 +596,10 @@ That strength becomes a limitation when the quick fix is supposed to *be* the pr
 | **Cross-platform** | Separate integrations per target | One [`blueprint.json`](docs/templates/blueprint-schema.md) wires [desktop + Android](docs/assets/diagrams/desktop-vs-android-runtime.svg) |
 | **Authoring UX** | n8n / Power Automate canvas | Compose blueprint editor today; native **imnodes** panel (v1.1) on the same schema |
 
-See the [full-stack architecture](docs/assets/diagrams/full-stack-architecture.svg) and [generation → builds flow](docs/assets/diagrams/generation-builds-flow.svg) for how the design-time graph becomes runtime code.
-
-**Honest caveat:** Nexus is **not** a drop-in replacement for Power Automate or n8n when the problem is purely **cloud webhook orchestration** between SaaS APIs. Use those tools for integration glue; use Nexus when the quick-fix flow should graduate into shipped software — a native surface, testable modules, and room to grow beyond the next node patch.
-
----
+Diagrams: [full-stack architecture](docs/assets/diagrams/full-stack-architecture.svg) · [generation → builds](docs/assets/diagrams/generation-builds-flow.svg)
 
 > [!WARNING]
-> **Nexus is not n8n or Power Automate.** Use those tools for cloud webhook orchestration between SaaS APIs. Use Nexus when the quick-fix flow should graduate into shipped software — a native surface, testable modules, and room to grow beyond the next node patch.
-
----
-
-> *"If you are not embarrassed by the first version of your product, you've launched too late."* — Reid Hoffman
-
-## 🏁 Road to MVP
-
-When every box below is checked, Nexus Framework is **MVP-ready**: scaffold native apps, edit blueprints/flows, generate, and ship a documented desktop/Android project.
-
-### Client / scaffolder
-
-- [ ] Compose 6-step wizard *(v1 ships 2-screen Generate + editors — sufficient for MVP)*
-- [x] Generate desktop + android from templates
-- [x] Blueprint editor (Compose)
-- [x] Flows editor UI (list, enable/disable, JSON preview)
-- [x] ProjectGenerator + validators
-
-### Templates
-
-- [x] General-purpose desktop + android templates
-- [ ] End-to-end desktop binary build verified in CI
-- [ ] End-to-end Android APK build verified in CI
-- [x] `blueprint.json` + optional `flows.json` structure
-- [x] TS/XHTML DSL stubs, Lua, Python paths
-
-### Runtime / generated apps
-
-- [ ] Desktop pybind11 embed fully wired in generated app (Phase 2 — blueprint-driven codegen)
-- [x] `python.dat` / `lua.dat` pack parity
-- [ ] Android Chaquopy bridge E2E tested on device
-- [ ] TS/XHTML → Lua lowering compiler *(manual `panels.lua` path documented today)*
-
-### Docs / DX
-
-- [x] README architecture + comparison sections
-- [x] Template `AGENTS.md` guides
-- [ ] CLI `debug validate --all` or equivalent template validation in CI
-- [x] `client-setup` scripts (JDK 26)
-
-### Release
-
-- [ ] CI pipeline green on `main`
-- [ ] Published client binary (`builds/client/`)
-- [ ] Version tag `v1.0.0`
-
-### Post-MVP (v1.1+)
-
-<details>
-<summary><strong>Post-MVP roadmap (v1.1+) — click to expand</strong></summary>
-
-Not required for MVP — track separately:
-
-- imnodes native blueprint panel (same `blueprint.json` schema)
-- Visual flows canvas editor
-- Remote template catalog · iOS template
-- HTTP/webhook step types in `flows.json`
-- SDL3 Android runner polish
-
-</details>
+> **Nexus is not n8n or Power Automate.** Use those for cloud SaaS orchestration; use Nexus when the flow should graduate into shipped software.
 
 ## 📜 Copyright and license
 
@@ -769,15 +651,48 @@ Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/lice
 | Repo | Role |
 |------|------|
 | [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Separate `:client-desktop` wizard distribution |
-ub.com/langflow-ai/langflow) | Visual DAG editor for LLM flows (optional authoring) |
-| [n8n](https://n8n.io/) | Workflow automation (external ops glue) |
-| [Kotlin](https://kotlinlang.org/) | Compose Desktop scaffolder client |
-| [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | Multiplatform UI for `:app` |
 
-<!-- Maintainer: consider GitHub repo topics — native-app, scaffolder, sdl3, imgui, kotlin-compose, cpp, lua, python, android, blueprint, langflow, open-source -->
+## 🏁 Road to MVP
 
-### Related repositories
+When every row is ✅, Nexus Framework is **MVP-ready**: scaffold native apps, edit blueprints/flows, generate, and ship a documented desktop/Android project.
 
-| Repo | Role |
-|------|------|
-| [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Separate `:client-desktop` wizard distribution |
+> *"If you are not embarrassed by the first version of your product, you've launched too late."* — Reid Hoffman
+
+| Area | Item | Status |
+|------|------|--------|
+| Client / scaffolder | Compose 6-step wizard *(v1 ships 2-screen Generate + editors — sufficient for MVP)* | ⬜ |
+| Client / scaffolder | Generate desktop + android from templates | ✅ |
+| Client / scaffolder | Blueprint editor (Compose) | ✅ |
+| Client / scaffolder | Flows editor UI (list, enable/disable, JSON preview) | ✅ |
+| Client / scaffolder | ProjectGenerator + validators | ✅ |
+| Templates | General-purpose desktop + android templates | ✅ |
+| Templates | End-to-end desktop binary build verified in CI | ⬜ |
+| Templates | End-to-end Android APK build verified in CI | ⬜ |
+| Templates | `blueprint.json` + optional `flows.json` structure | ✅ |
+| Templates | TS/XHTML DSL stubs, Lua, Python paths | ✅ |
+| Runtime | Desktop pybind11 embed fully wired in generated app (Phase 2 — blueprint-driven codegen) | ⬜ |
+| Runtime | `python.dat` / `lua.dat` pack parity | ✅ |
+| Runtime | Android Chaquopy bridge E2E tested on device | ⬜ |
+| Runtime | TS/XHTML → Lua lowering compiler *(manual `panels.lua` path documented today)* | ⬜ |
+| Docs / DX | README architecture + comparison sections | ✅ |
+| Docs / DX | Template `AGENTS.md` guides | ✅ |
+| Docs / DX | CLI `debug validate --all` or equivalent template validation in CI | ⬜ |
+| Docs / DX | `client-setup` scripts (JDK 26) | ✅ |
+| Release | CI pipeline green on `main` | ⬜ |
+| Release | Published client binary (`builds/client/`) | ⬜ |
+| Release | Version tag `v1.0.0` | ⬜ |
+
+<details>
+<summary><strong>Post-MVP roadmap (v1.1+) — click to expand</strong></summary>
+
+Not required for MVP — track separately:
+
+| Item |
+|------|
+| imnodes native blueprint panel (same `blueprint.json` schema) |
+| Visual flows canvas editor |
+| Remote template catalog · iOS template |
+| HTTP/webhook step types in `flows.json` |
+| SDL3 Android runner polish |
+
+</details>
