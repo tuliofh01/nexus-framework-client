@@ -83,6 +83,45 @@ O Nexus separa **estrutura em design-time** de **automação em runtime**:
 
 Adicione vários fluxos no array `flows` de `flows.json` (cada um com `id` único). Desabilite globalmente com `nxs_config.json` → `"flows": { "enabled": false }` ou por fluxo com `"enabled": false`.
 
+### Usando o Langflow para autoria de fluxos
+
+O [Langflow](https://github.com/langflow-ai/langflow) é um editor visual de DAG para cadeias LLM, ferramentas, retrievers e agentes. O Nexus **não** embute o runtime do Langflow na v1 — você pode usar o Langflow como **ferramenta externa opcional de autoria**, exportar o JSON do fluxo e **adotar** o grafo como serviços nativos em `flows.json` dentro do app gerado. Para como o Langflow se relaciona com `blueprint.json` (estrutura) vs n8n (automação de ops), veja [Nós estilo Langflow vs n8n](#nós-estilo-langflow-vs-n8n) acima.
+
+#### Passo A — Projetar no Langflow (ferramenta externa opcional)
+
+1. Monte um DAG visual no Langflow: nós (LLM, Prompt, Tool, Retriever, Agent, …), arestas e parâmetros por nó.
+2. Exporte o fluxo como JSON — em geral via **Export flow** ou pela API do Langflow (`/api/v1/flows/{id}`). A exportação é um documento de definição de fluxo (nós, arestas, payloads `data`, posições). Nomes de campo e aninhamento **diferem** do `flows.json` do Nexus; trate a exportação como artefato de design, não como arquivo plug-and-play.
+
+#### Passo B — Mapear para `flows.json` do Nexus
+
+O Nexus adota o grafo como **automação in-process** — não como servidor Langflow hospedado.
+
+| Conceito Langflow | Nexus `flows.json` |
+|-------------------|-------------------|
+| Componente Langflow (LLM, Tool, Agent, …) | `steps[]` com `type: invoke` apontando para `nxs.*`, `python.*` ou `lua.*` |
+| Arestas / ordem de execução | Array `steps` ordenado; ramificações via `condition` (v1.1) |
+| Gatilho (chat, webhook, agendamento) | `trigger.type`: `event`, `interval`, `startup`, `manual`, `hotkey` |
+| Loop contínuo / polling | `mode: background` |
+| Execução sob demanda / iniciada pelo usuário | `mode: triggered` |
+
+**`blueprint.json` vs `flows.json`:** grafos Langflow que ligam **estrutura do app** (telas, controllers, módulos Python) mapeiam melhor para [`blueprint.json`](docs/templates/blueprint-schema.md). Grafos de **automação em runtime** (timers, hooks de evento, tarefas em background) mapeiam para **`flows.json`**. Um único canvas Langflow pode ser dividido nos dois arquivos após a tradução.
+
+#### Passo C — Fluxo de adoção
+
+1. **Exportar** JSON do Langflow.
+2. **Traduzir** nomes de campo para o schema Nexus `flows.json` ([docs/templates/flows-schema.md](docs/templates/flows-schema.md)) — manual na v1; importador Langflow previsto para v1.1.
+3. **Colocar** o resultado em `flows/flows.json` no projeto gerado, ou colar na tela **Edit flows** do cliente (`./gradlew :app:run` → **Generate Project** → **Edit flows**).
+4. **Habilitar** em `nxs_config.json` → `"flows": { "enabled": true }`.
+5. Na inicialização do app, o **FlowRunner** carrega `flows.json` e registra gatilhos (intervalos, eventos, hooks de startup).
+6. **Handlers customizados** — você pode escrever `flows.json` à mão ou a partir de Python/Lua sem abrir o Langflow.
+
+#### Limites honestos (v1)
+
+- **Sem importador automático do Langflow** — exportação → mapeamento manual hoje; importador alvo da v1.1.
+- **Sem orquestração de webhooks SaaS na cloud** — diferente de fluxos estilo n8n; chame APIs externas via alvos `invoke` em Python/Lua quando precisar.
+- **Nós LLM viram stubs** — componentes LLM/Agent do Langflow mapeiam para passos `invoke`; a chamada real ao modelo deve ficar em um `python.module` (ou tipo de passo dedicado futuro).
+- **Runtime Langflow não incluído** — o Nexus roda C++/Lua/Python nativo no SDL3; não executa o motor de grafo server-side do Langflow.
+
 **Não é n8n na v1:** fluxos são serviços **locais, in-process** dentro do app nativo. Não substituem orquestração de webhooks na nuvem (n8n, Power Automate). Chame webhooks externos via Python/Lua quando precisar; use `flows.json` para timers e eventos do app. Passos HTTP/webhook estão previstos para v1.1.
 
 Amostra: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json).
@@ -427,13 +466,33 @@ Projetos gerados usam **C++20** com convenções que endereçam dores clássicas
 
 ## Arquitetura
 
-![Pilha completa do Nexus — cliente Compose, pipeline de geração, TS/XHTML + blueprint, Lua/sol2, MVC C++ no SDL3/ImGui/ImPlot, pontes Python, Djinni](docs/assets/diagrams/full-stack-architecture.svg)
+### Arquitetura full-stack do Nexus
+*Cliente, pipeline de geração, templates e runtimes nativos*
 
-![Fluxo de geração e builds — client-setup → :app/:cli → builds/framework/&lt;nome&gt; → app nativo](docs/assets/diagrams/generation-builds-flow.svg)
+O mapa ponta a ponta do scaffolder Compose pela geração em `:core` até apps C++/Lua/Python no SDL3. Consulte primeiro no onboarding ou ao explicar como autoria de blueprint, emissão de template e camadas de runtime se conectam. Observe `:app`, `:core`/`:cli`, `blueprint.json` e as pontes Python/Djinni.
 
-![Runtime Desktop vs Android — MVC/ImGui/SDL3 compartilhados, pybind11 vs Chaquopy+Djinni](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+![Arquitetura full-stack do Nexus](docs/assets/diagrams/full-stack-architecture.svg)
 
-![Langflow vs n8n vs blueprint Nexus — DAG tipado vs automação vs codegen em design-time](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
+### Fluxo de geração e builds
+*De client-setup e módulos Gradle até `builds/framework/<nome>/`*
+
+Rastreia o caminho do setup inicial de JDK pela geração em `:app`/`:cli` até templates emitidos em `builds/framework/`. Use ao depurar falhas de geração ou explicar o layout de deploy. Paradas-chave: `client-setup`, `ProjectGenerator` e o passo de build nativo.
+
+![Fluxo de geração e builds](docs/assets/diagrams/generation-builds-flow.svg)
+
+### Runtime Desktop vs Android
+*MVC compartilhado no SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
+
+Mostra como o mesmo grafo de nós do blueprint compila para desktop (pybind11, `python.dat`) vs Android (Chaquopy, Djinni). Consulte ao escolher template ou ligar `python.module` entre plataformas. Observe o caminho compartilhado controller/model e onde a ponte Python diverge.
+
+![Runtime Desktop vs Android](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+
+### Langflow vs n8n vs blueprint Nexus
+*DAG tipado in-app vs automação de workflow em runtime vs codegen em design-time*
+
+Contrasta Langflow (fluxos LLM em runtime), n8n (automação externa) e `blueprint.json` do Nexus (estrutura em build-time). Leia antes de editar blueprints ou explicar por que o Nexus não substitui o n8n. Tipos como `python.module` e `ui.page` mapeiam para artefatos gerados, não passos de webhook.
+
+![Langflow vs n8n vs blueprint Nexus](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md) · Tooling do scaffold: [O diretório `misc/`](#o-diretório-misc) · Divisão Python: [Python: Desktop vs Android](#python-desktop-vs-android) · Autoria UI: [TypeScript + DSL XHTML](#typescript--dsl-xhtml)
 

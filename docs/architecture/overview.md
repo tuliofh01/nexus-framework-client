@@ -4,7 +4,17 @@ Generated Nexus apps share one layered design. The scaffold client (`app/`) uses
 
 ## Full stack + blueprint authoring
 
-![Nexus full stack — Compose client, blueprint.json graph, generation, C++ MVC on SDL3/ImGui, Python bridges](../assets/diagrams/full-stack-architecture.svg)
+### Nexus full-stack architecture
+*Client, generation pipeline, templates, and native runtimes*
+
+End-to-end view from the Compose scaffolder (`:app`) through `:core` generation into C++/Lua/Python on SDL3. Start here when explaining how blueprint nodes become runtime modules.
+
+![Nexus full-stack architecture](../assets/diagrams/full-stack-architecture.svg)
+
+### Langflow vs n8n vs Nexus blueprint
+*Typed in-app DAG vs runtime workflow automation vs design-time codegen*
+
+Clarifies why `blueprint.json` is build-time structure (Langflow-style) rather than n8n-style runtime automation.
 
 ![Langflow vs n8n vs Nexus blueprint](../assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
@@ -57,13 +67,23 @@ Full comparison table: [blueprint-schema.md § Langflow vs n8n](../templates/blu
 
 ## Generation and builds
 
-![Generation flow — client-setup through :app/:cli to builds/framework and native binary](../assets/diagrams/generation-builds-flow.svg)
+### Generation and builds flow
+*From client-setup and Gradle modules to `builds/framework/<name>/`*
+
+Pipeline from first-run setup through `:app`/`:cli` into emitted templates; validates `blueprint.json` and optional `flows/flows.json` after emit.
+
+![Generation and builds flow](../assets/diagrams/generation-builds-flow.svg)
 
 The pipeline validates `blueprint.json` and optional `flows/flows.json` after template emit. Custom graphs from the Compose editors are passed via `ProjectSpec.blueprint` and `ProjectSpec.flows`.
 
 ## Desktop vs Android runtime
 
-![Desktop vs Android — shared MVC/ImGui/SDL3; pybind11 vs Chaquopy + Djinni](../assets/diagrams/desktop-vs-android-runtime.svg)
+### Desktop vs Android runtime
+*Shared MVC on SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
+
+Same `blueprint.json` node graph on both templates; only the Python bridge and OS host differ at runtime.
+
+![Desktop vs Android runtime](../assets/diagrams/desktop-vs-android-runtime.svg)
 
 Both templates share the same `blueprint.json` node graph; only the Python bridge and OS host differ at runtime.
 
