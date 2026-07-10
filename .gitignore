@@ -72,13 +72,17 @@ __pycache__/
 ### Cursor local plans (optional agent artifacts) ###
 .cursor/plans/
 
+### Central build outputs (keep structure + docs) ###
+builds/client/*
+!builds/client/.gitkeep
+builds/framework/*
+!builds/framework/.gitkeep
+!builds/README.md
+
 ### Secrets / local env (never commit) ###
 .env
 *.env
 !.env.example
-
-### Generated doc exports (source stays in .md) ###
-docs/architecture/risk-analysis.html
 
 ### Local build outputs under template builds/ (keep README + .gitkeep) ###
 template/*/builds/*
