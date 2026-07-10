@@ -92,7 +92,7 @@ Sample template: [template/desktop-app/flows/flows.json](template/desktop-app/fl
 |-------|-----------------|
 | Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** + **Blueprint Editor** (JSON graph) | Full 6-step wizard, imnodes native panel |
 | Compose **Flows Editor** — optional runtime `flows.json` (list, enable/disable, JSON preview) | Visual flows canvas (v1.1) |
-| Generation pipeline (`:core`, `:cli` in `misc/`) — emit templates to `builds/framework/<name>/` | Remote template catalog, iOS template |
+| Generation pipeline ([`:core`, `:cli` in `misc/`](#the-misc-directory)) — emit templates to `builds/framework/<name>/` | Remote template catalog, iOS template |
 | Script archive packs — `lua.dat` + `python.dat` (desktop), `lua.dat` in APK assets (Android) | Chaquopy `python.dat` (not applicable — sources ship in APK) |
 
 This is the **Framework** monorepo (`:app`, `:core`, `:cli`). It is not the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
@@ -131,22 +131,58 @@ Output layout: [builds/README.md](builds/README.md) · Templates: [template/READ
 ```
 Framework/
 ├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
-├── misc/
-│   ├── build-logic/     Gradle convention plugins (included build, JVM toolchain 26)
-│   ├── core/            Generation pipeline (`:core`) — ProjectGenerator, nxs_config schema
-│   ├── cli/             Headless `generate` command (`:cli`)
-│   ├── client-setup/    First-run JDK 26 + Git installers
-│   ├── docker/          Optional containerized generation
-│   ├── jenkins/         Optional Jenkins setup notes
-│   └── scripts/         Repo automation (e.g. `generate-in-docker.sh`)
+├── misc/                Tooling + generation pipeline — see [The `misc/` directory](#the-misc-directory)
 ├── builds/              Client → builds/client/ · apps → builds/framework/<name>/
-├── template/
-│   ├── desktop-app/     Desktop output (C++/CMake plotter)
-│   ├── android-app/     Android output (Gradle/Djinni/Chaquopy)
-│   └── shared/          DSL, assets, themes, runtime
+├── template/            desktop-app · android-app · shared
 ├── docs/                Documentation hub → docs/README.md
-└── Jenkinsfile          Optional pipeline entry
+└── Jenkinsfile          Optional pipeline entry (→ misc/jenkins/)
 ```
+
+## The `misc/` directory
+
+The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, convention plugins, first-run setup, container images, CI notes, and helper scripts. None of this ships inside generated native apps under `builds/framework/<name>/`; it only builds and runs the scaffolder.
+
+| Path | Gradle / role |
+|------|----------------|
+| [misc/core/](misc/core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
+| [misc/cli/](misc/cli/) | `:cli` — headless `generate` command |
+| [misc/build-logic/](misc/build-logic/) | Included build (formerly root `buildSrc`) — JVM toolchain 26, convention plugins |
+| [misc/client-setup/](misc/client-setup/) | First-run JDK 26 + Git installers and env scripts |
+| [misc/scripts/](misc/scripts/) | Repo automation — [dev/](misc/scripts/dev/) (local workflow, Docker gen), [test-gen/](misc/scripts/test-gen/) (smoke tests for `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (docs SVGs) |
+| [misc/docker/](misc/docker/) | `Dockerfile` + compose for containerized generation |
+| [misc/jenkins/](misc/jenkins/) | Optional Jenkins setup — see [misc/jenkins/README.md](misc/jenkins/README.md) |
+
+Gradle exposes `:core` and `:cli` at the repo root while their sources live under `misc/` — see [settings.gradle.kts](settings.gradle.kts):
+
+```kotlin
+includeBuild("misc/build-logic")
+include(":core", ":cli", ":app")
+project(":core").projectDir = file("misc/core")
+project(":cli").projectDir = file("misc/cli")
+```
+
+The included build at `misc/build-logic/` replaces a root `buildSrc/` directory (Gradle only auto-discovers `buildSrc/` at the repository root).
+
+**Not in `misc/`** — these top-level paths serve different roles:
+
+| Path | Role |
+|------|------|
+| [app/](app/) | Compose Desktop scaffolder (`:app`) — Generate Project, blueprint/flows editors |
+| [template/](template/) | Source templates copied into `builds/framework/<name>/` |
+| [builds/](builds/) | Deploy outputs — client under `builds/client/`, generated apps under `builds/framework/` |
+| [docs/](docs/) | Documentation hub |
+
+**Quick commands** (paths under `misc/`):
+
+```bash
+./misc/client-setup/linux/setup.sh && source misc/client-setup/env.sh
+./gradlew :core:compileKotlin
+./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
+./misc/scripts/dev/nexus-dev.sh compile
+./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+```
+
+Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 
 ## Use cases — what Nexus is built for
 
@@ -355,7 +391,7 @@ Generated projects use **C++20** with conventions that address common legacy C++
 
 ![Langflow vs n8n vs Nexus blueprint — design-time typed DAG vs runtime automation](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
-Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
+Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Scaffold tooling: [The `misc/` directory](#the-misc-directory) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
 
 ## Documentation
 
