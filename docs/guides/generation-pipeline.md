@@ -103,7 +103,7 @@ Schema: [blueprint-schema.md](../templates/blueprint-schema.md)
 docker compose -f misc/docker/docker-compose.yml build
 
 # Generate inside container
-./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
 ```
 
 Image entrypoint: `./gradlew :cli:run`. Override with `--args="generate …"`.

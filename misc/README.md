@@ -12,7 +12,7 @@ Supporting modules and tooling for the Framework scaffold client. Gradle modules
 | [client-setup/](client-setup/) | First-run JDK 26 + Git installers |
 | [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
 | [jenkins/](jenkins/) | Optional Jenkins setup — see [jenkins/README.md](jenkins/README.md) |
-| [scripts/](scripts/) | Helper scripts — e.g. `generate-in-docker.sh` |
+| [scripts/](scripts/) | Repo automation by function — `dev/`, `test-gen/`, `generate-diagrams/` (see [scripts/README.md](scripts/README.md)) |
 
 Root [Jenkinsfile](../Jenkinsfile) points at this repo for optional CI.
 
@@ -40,7 +40,9 @@ The precompiled plugin `buildsrc.convention.kotlin-jvm` (JVM toolchain 26, JUnit
 ```bash
 ./gradlew :core:compileKotlin
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
-./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/dev/nexus-dev.sh compile
+./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 
 Docs: [docs/guides/generation-pipeline.md](../docs/guides/generation-pipeline.md) · [../AGENTS.md](../AGENTS.md)

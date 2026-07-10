@@ -180,9 +180,22 @@ The included build at `misc/build-logic/` replaces a root `buildSrc/` directory 
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ./misc/scripts/dev/nexus-dev.sh compile
 ./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 
 Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
+
+### Development scripts
+
+Repo automation lives under [misc/scripts/](misc/scripts/) by function:
+
+| Family | Entry point | Purpose |
+|--------|-------------|---------|
+| `dev/` | `./misc/scripts/dev/nexus-dev.sh compile` | Local Gradle workflow + Docker generation |
+| `test-gen/` | `./misc/scripts/test-gen/linux/generic.sh --project MyApp` | Smoke-test stubs for apps in `builds/framework/` |
+| `generate-diagrams/` | `python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py` | Regenerate docs SVGs |
+
+Client first-run setup stays at [misc/client-setup/](misc/client-setup/). See [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md) for per-distro usage.
 
 ## Use cases — what Nexus is built for
 

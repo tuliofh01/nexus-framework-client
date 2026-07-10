@@ -1,0 +1,30 @@
+{
+  "nexus": {
+    "configVersion": 2,
+    "generatedBy": "nexus-framework",
+    "template": "desktop-app"
+  },
+  "project": {
+    "name": "_fixture",
+    "windowTitle": "_fixture - built with The Nexus Framework",
+    "version": "0.1.0",
+    "cppStandard": "20",
+    "createdAt": "2026-01-01T00:00:00Z"
+  },
+  "targets": {
+    "desktop": {
+      "backend": "sdl3",
+      "renderer": "opengl3",
+      "minCMake": "3.24"
+    }
+  },
+  "features": {
+    "imgui": true,
+    "lua": { "enabled": true, "binding": "sol2", "scriptDir": "scripts" },
+    "python": { "enabled": true, "embedding": "pybind11", "sourceDir": "python" }
+  },
+  "build": {
+    "outputDir": "../../builds/framework/_fixture",
+    "presets": "CMakePresets.json"
+  }
+}

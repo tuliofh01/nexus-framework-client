@@ -70,7 +70,6 @@ __pycache__/
 .cursor/plans/
 
 ### Generated scaffold output ###
-builds/framework/
 builds/client/
 
 ### Central build outputs (keep structure + docs) ###
@@ -78,6 +77,8 @@ builds/client/*
 !builds/client/.gitkeep
 builds/framework/*
 !builds/framework/.gitkeep
+!builds/framework/_fixture/
+!builds/framework/_fixture/**
 !builds/README.md
 
 ### Secrets / local env (never commit) ###

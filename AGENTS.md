@@ -91,7 +91,9 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 | Compose UI | `app/.../view/`, `app/.../controller/` |
 | Desktop template | `template/desktop-app/` |
 | Android template | `template/android-app/` |
-| Docker generation | `misc/docker/`, `misc/scripts/generate-in-docker.sh` |
+| Docker generation | `misc/docker/`, `misc/scripts/dev/generate-in-docker.sh` |
+| Test generation (built apps) | `misc/scripts/test-gen/` — smoke tests under `builds/framework/<name>/` |
+| Repo scripts index | `misc/scripts/README.md` — `dev/`, `test-gen/`, `generate-diagrams/` |
 | Jenkins (optional) | `Jenkinsfile`, `misc/jenkins/README.md` |
 | `misc/` layout + `build-logic` included build | `misc/README.md` |
 

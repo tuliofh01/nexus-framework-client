@@ -35,7 +35,7 @@ Generate a desktop app into `builds/framework/MyApp/`:
 For containerized generation (no Jenkins agent setup):
 
 ```bash
-./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
 ```
 
 See [docs/guides/generation-pipeline.md](../docs/guides/generation-pipeline.md).
