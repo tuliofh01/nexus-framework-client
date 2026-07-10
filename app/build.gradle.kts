@@ -26,3 +26,25 @@ compose.desktop {
         mainClass = "nexus.opensource.AppKt"
     }
 }
+
+// Repo-root builds/client/ — see builds/README.md
+val buildsClientDir = rootProject.layout.projectDirectory.dir("builds/client")
+val composeBinariesDir = layout.buildDirectory.dir("compose/binaries/main")
+
+tasks.register<Sync>("deployToBuildsClient") {
+    group = "distribution"
+    description = "Copy the Compose Desktop distributable into builds/client/app/"
+    dependsOn("createDistributable")
+    from(composeBinariesDir.map { it.dir("app") })
+    into(buildsClientDir.dir("app"))
+}
+
+tasks.register<Sync>("deployPackageToBuildsClient") {
+    group = "distribution"
+    description = "Copy OS packages from packageDistributionForCurrentOS into builds/client/packages/"
+    dependsOn("packageDistributionForCurrentOS")
+    from(composeBinariesDir) {
+        include("**/*.deb", "**/*.rpm", "**/*.dmg", "**/*.msi", "**/*.exe", "**/*.pkg")
+    }
+    into(buildsClientDir.dir("packages"))
+}
