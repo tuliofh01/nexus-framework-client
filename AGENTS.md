@@ -94,7 +94,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 | Docker generation | `misc/docker/`, `misc/scripts/dev/generate-in-docker.sh` |
 | Test generation (built apps) | `misc/scripts/test-gen/` — smoke tests under `builds/framework/<name>/` |
 | Repo scripts index | `misc/scripts/README.md` — `dev/`, `test-gen/`, `generate-diagrams/` |
-| Jenkins (optional) | `Jenkinsfile`, `misc/jenkins/README.md` |
+| Jenkins (optional) | `misc/jenkins/Jenkinsfile`, `misc/jenkins/README.md` |
 | `misc/` layout + `build-logic` included build | `misc/README.md` |
 
 ## Docs

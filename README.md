@@ -6,9 +6,11 @@
 
 <p align="center"><strong>🧩 Native apps, not browser tabs</strong> — ship SDL3 binaries from a blueprint graph.</p>
 
+<p align="center">🇧🇷 <a href="misc/translations/README.pt-BR.md">Versão em português</a></p>
+
 <p align="center">
   <a href="README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
-  <a href="README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
+  <a href="misc/translations/README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
 </p>
 
 <p align="center">
@@ -238,8 +240,7 @@ Framework/
 ├── misc/                Tooling + generation flow — see [The `misc/` directory](#the-misc-directory)
 ├── builds/              Client → builds/client/ · apps → builds/framework/<name>/
 ├── template/            desktop-app · android-app · shared
-├── docs/                Documentation hub → docs/README.md
-└── Jenkinsfile          Optional CI entry (→ misc/jenkins/)
+└── docs/                Documentation hub → docs/README.md
 ```
 
 ## 🧰 The `misc/` directory
@@ -254,7 +255,8 @@ The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, c
 | [misc/client-setup/](misc/client-setup/) | First-run installers (Linux/macOS/Windows) for JDK 26 + Git; `env.sh` / `env.bat` set `JAVA_HOME` before Gradle |
 | [misc/scripts/](misc/scripts/) | Repo automation — [dev/](misc/scripts/dev/) (build/validate/run client), [test-gen/](misc/scripts/test-gen/) (smoke/instrumented stubs for `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (docs SVGs) |
 | [misc/docker/](misc/docker/) | `Dockerfile` + compose for containerized generation |
-| [misc/jenkins/](misc/jenkins/) | Optional Jenkins setup — see [misc/jenkins/README.md](misc/jenkins/README.md) |
+| [misc/jenkins/](misc/jenkins/) | Optional Jenkins CI — [Jenkinsfile](misc/jenkins/Jenkinsfile) · [setup](misc/jenkins/README.md) |
+| [misc/translations/](misc/translations/) | Localized READMEs — [pt-BR](misc/translations/README.pt-BR.md) |
 
 Gradle exposes `:core` and `:cli` at the repo root while their sources live under `misc/` — see [settings.gradle.kts](settings.gradle.kts):
 

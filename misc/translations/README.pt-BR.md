@@ -1,13 +1,15 @@
 # O Framework da Nexus Company para Desenvolvimento de Aplicações Nativas
 
 <p align="center">
-  <img src="docs/assets/nexus-logo.png" alt="🧩 Nexus Framework — logo do gerador de projetos nativo C++/Lua/Python" width="240" />
+  <img src="../../docs/assets/nexus-logo.png" alt="🧩 Nexus Framework — logo do gerador de projetos nativo C++/Lua/Python" width="240" />
 </p>
 
 <p align="center"><strong>🧩 Apps nativos, não abas de browser</strong> — entregue binários SDL3 a partir de um grafo blueprint.</p>
 
+<p align="center">🇧🇷 Versão em português · <a href="../../README.md">English README</a></p>
+
 <p align="center">
-  <a href="README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
+  <a href="../../README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
   <a href="README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
 </p>
 
@@ -55,12 +57,12 @@ Se você está avaliando stacks **web-shell** — **Electron** (Chromium + JavaS
 
 ## 🧩 Blueprint nodes: Langflow-style vs n8n
 
-O Nexus inclui um **grafo de app estilo Langflow** na raiz do projeto via [`blueprint.json`](docs/templates/blueprint-schema.md). Nós declaram módulos (`python.module`, `cpp.model`, `ui.page`, …); arestas ligam fluxo de dados e comandos dentro do app MVC gerado. A **geração em [`:core`](#o-diretório-misc)** valida e consome o grafo ao materializar `builds/framework/<nome>/`.
+O Nexus inclui um **grafo de app estilo Langflow** na raiz do projeto via [`blueprint.json`](../../docs/templates/blueprint-schema.md). Nós declaram módulos (`python.module`, `cpp.model`, `ui.page`, …); arestas ligam fluxo de dados e comandos dentro do app MVC gerado. A **geração em [`:core`](#o-diretório-misc)** valida e consome o grafo ao materializar `builds/framework/<nome>/`.
 
 <!-- Diagrama: comparação Langflow vs n8n vs blueprint Nexus -->
-![📊 Langflow vs n8n vs blueprint Nexus — passos conectados vs automação vs geração em tempo de build](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
+![📊 Langflow vs n8n vs blueprint Nexus — passos conectados vs automação vs geração em tempo de build](../../docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
-| | **[Langflow](https://github.com/langflow-ai/langflow)** | **[n8n](https://n8n.io/)** | **Nexus [`blueprint.json`](docs/templates/blueprint-schema.md)** |
+| | **[Langflow](https://github.com/langflow-ai/langflow)** | **[n8n](https://n8n.io/)** | **Nexus [`blueprint.json`](../../docs/templates/blueprint-schema.md)** |
 |---|-------------|---------|---------------------------|
 | **Propósito** | Autoria de fluxos ML/LLM | Automação (gatilhos, HTTP, integrações) | Estrutura de app nativo **em tempo de build** |
 | **Modelo de nó** | Componentes tipados (modelo, ferramenta, memória) | Passos + gatilhos (webhook, cron, Slack, …) | Módulos tipados (`python.module`, `cpp.model`, …) |
@@ -76,13 +78,13 @@ O Nexus inclui um **grafo de app estilo Langflow** na raiz do projeto via [`blue
 | `ui.page` | Página TS/XHTML (`ui/ui.ts`, `ui/ui.xhtml`) |
 | `lua.script` | Painéis Lua em runtime (`scripts/panels.lua`) |
 
-**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (canvas Compose + inspetor JSON na v1; painel nativo **imnodes** previsto na v1.1 — mesmo schema). Amostras: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md).
+**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (canvas Compose + inspetor JSON na v1; painel nativo **imnodes** previsto na v1.1 — mesmo schema). Amostras: [template/desktop-app/blueprint.json](../../template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](../../template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md).
 
 ### Nós estilo Langflow vs n8n
 
-O [`blueprint.json`](docs/templates/blueprint-schema.md) do Nexus é mais próximo do **Langflow** (grafo tipado in-app) do que do **n8n** (automação externa) — veja a tabela acima. O Nexus **não substitui** o n8n; um app gerado pode chamar webhooks n8n via Python/Lua enquanto o blueprint cuida da fiação **interna**. Para quando um fluxo deve virar software nativo entregue, veja [Além da automação rápida](#além-da-automação-rápida-de-fluxos-para-aplicações-reais).
+O [`blueprint.json`](../../docs/templates/blueprint-schema.md) do Nexus é mais próximo do **Langflow** (grafo tipado in-app) do que do **n8n** (automação externa) — veja a tabela acima. O Nexus **não substitui** o n8n; um app gerado pode chamar webhooks n8n via Python/Lua enquanto o blueprint cuida da fiação **interna**. Para quando um fluxo deve virar software nativo entregue, veja [Além da automação rápida](#além-da-automação-rápida-de-fluxos-para-aplicações-reais).
 
-**Exemplos visuais:** [chatbot RAG](docs/assets/examples/langflow-rag-chatbot.svg) · [agente com ferramentas](docs/assets/examples/langflow-agent-tools.svg) · [estrutura blueprint Nexus](docs/assets/examples/nexus-blueprint-app-structure.svg)
+**Exemplos visuais:** [chatbot RAG](../../docs/assets/examples/langflow-rag-chatbot.svg) · [agente com ferramentas](../../docs/assets/examples/langflow-agent-tools.svg) · [estrutura blueprint Nexus](../../docs/assets/examples/nexus-blueprint-app-structure.svg)
 
 ---
 
@@ -92,17 +94,17 @@ O Nexus separa **estrutura do app em tempo de build** de **automações que roda
 
 | Camada | Arquivo | Propósito |
 |--------|---------|-----------|
-| Estrutura do app | [`blueprint.json`](docs/templates/blueprint-schema.md) | Fiação MVC estilo Langflow (módulos, portas, telas) |
-| Fluxos de runtime | [`flows/flows.json`](docs/templates/flows-schema.md) | Serviços opcionais in-app — loops em background, gatilhos por evento, agendamentos |
+| Estrutura do app | [`blueprint.json`](../../docs/templates/blueprint-schema.md) | Fiação MVC estilo Langflow (módulos, portas, telas) |
+| Fluxos de runtime | [`flows/flows.json`](../../docs/templates/flows-schema.md) | Serviços opcionais in-app — loops em background, gatilhos por evento, agendamentos |
 
 ### Blueprint vs fluxos — duas camadas
 *Estrutura em tempo de build vs automações opcionais no app*
 
 O `blueprint.json` define a fiação MVC consumida uma vez pelo `:core`; o `flows.json` registra gatilhos in-process carregados pelo FlowRunner na inicialização. Um único canvas Langflow pode ser dividido nos dois arquivos após a tradução.
 
-![blueprint.json vs flows.json — modelo de duas camadas](docs/assets/diagrams/blueprint-vs-flows-layers.svg)
+![blueprint.json vs flows.json — modelo de duas camadas](../../docs/assets/diagrams/blueprint-vs-flows-layers.svg)
 
-**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — listar fluxos, habilitar/desabilitar, pré-visualizar JSON (editor visual na v1.1). Schema: [docs/templates/flows-schema.md](docs/templates/flows-schema.md).
+**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — listar fluxos, habilitar/desabilitar, pré-visualizar JSON (editor visual na v1.1). Schema: [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md).
 
 ### Caminhos de adoção
 
@@ -119,11 +121,11 @@ Três formas de adotar fluxos de runtime — escolha o peso certo para o seu app
 | `background` | Enquanto o app está vivo | `interval` a cada 5000 ms |
 | `triggered` | Só na condição | `event` `curve.added`, `startup`, `manual` |
 
-Adicione vários fluxos no array `flows` de [`flows.json`](docs/templates/flows-schema.md) (cada um com `id` único). Desabilite globalmente com `nxs_config.json` → `"flows": { "enabled": false }` ou por fluxo com `"enabled": false`.
+Adicione vários fluxos no array `flows` de [`flows.json`](../../docs/templates/flows-schema.md) (cada um com `id` único). Desabilite globalmente com `nxs_config.json` → `"flows": { "enabled": false }` ou por fluxo com `"enabled": false`.
 
 ### Usando o Langflow para autoria de fluxos
 
-[Langflow](https://github.com/langflow-ai/langflow) é ferramenta **externa opcional** — exporte JSON e adote como serviços nativos em `flows.json`. Grafos de estrutura → [`blueprint.json`](docs/templates/blueprint-schema.md); automação → **`flows.json`** (veja [Blueprint vs fluxos](#blueprint-vs-fluxos--duas-camadas)). Langflow/n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n).
+[Langflow](https://github.com/langflow-ai/langflow) é ferramenta **externa opcional** — exporte JSON e adote como serviços nativos em `flows.json`. Grafos de estrutura → [`blueprint.json`](../../docs/templates/blueprint-schema.md); automação → **`flows.json`** (veja [Blueprint vs fluxos](#blueprint-vs-fluxos--duas-camadas)). Langflow/n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n).
 
 #### Passo A — Projetar no Langflow (ferramenta externa opcional)
 
@@ -144,7 +146,7 @@ O Nexus adota o grafo como **automação in-process** — não como servidor Lan
 
 #### Passo C — Fluxo de adoção
 
-1. **Exportar** JSON do Langflow → **traduzir** para [schema flows](docs/templates/flows-schema.md) (manual v1; importador v1.1).
+1. **Exportar** JSON do Langflow → **traduzir** para [schema flows](../../docs/templates/flows-schema.md) (manual v1; importador v1.1).
 2. **Colocar** em `flows/flows.json` ou colar em **Edit flows** (`./gradlew :app:run` → **Generate Project** → **Edit flows**).
 3. **Habilitar** em `nxs_config.json` → `"flows": { "enabled": true }`. Handlers customizados funcionam sem Langflow.
 
@@ -153,7 +155,7 @@ O Nexus adota o grafo como **automação in-process** — não como servidor Lan
 - Sem importador Langflow automático; sem runtime Langflow embutido; nós LLM viram stubs `invoke` (chamada real em `python.module`).
 - Fluxos são **locais, in-process** — não integração de webhooks na nuvem ([n8n](#nós-estilo-langflow-vs-n8n)). Passos HTTP/webhook previstos v1.1.
 
-Amostra: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json).
+Amostra: [template/desktop-app/flows/flows.json](../../template/desktop-app/flows/flows.json).
 
 ---
 
@@ -180,7 +182,7 @@ Execute um script de setup da plataforma, carregue o arquivo de ambiente e use o
 | macOS | `./misc/client-setup/macos/setup.sh` | `source misc/client-setup/env.sh` |
 | Windows | `misc\client-setup\windows\setup.bat` | `call misc\client-setup\env.bat` |
 
-Exige **JDK 26** e Git — veja [misc/client-setup/README.md](misc/client-setup/README.md).
+Exige **JDK 26** e Git — veja [misc/client-setup/README.md](../client-setup/README.md).
 
 ## Início rápido
 
@@ -193,11 +195,11 @@ source misc/client-setup/env.sh          # após setup na primeira execução
 
 Compilar e testar: `./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test`
 
-Deploy do cliente: `./gradlew :app:deployToBuildsClient` → [builds/client/app/](builds/client/app/)
+Deploy do cliente: `./gradlew :app:deployToBuildsClient` → [builds/client/app/](../../builds/client/app/)
 
 Build do template desktop: `cd template/desktop-app && cmake --preset debug && cmake --build --preset debug`
 
-Layout de saída: [builds/README.md](builds/README.md) · Templates: [template/README.md](template/README.md) · Progresso MVP: [Rumo ao MVP](#rumo-ao-mvp)
+Layout de saída: [builds/README.md](../../builds/README.md) · Templates: [template/README.md](../../template/README.md) · Progresso MVP: [Rumo ao MVP](#rumo-ao-mvp)
 
 ## 📁 Estrutura do repositório
 
@@ -207,8 +209,7 @@ Framework/
 ├── misc/                Ferramentas + fluxo de geração — veja [O diretório `misc/`](#o-diretório-misc)
 ├── builds/              Cliente → builds/client/ · apps → builds/framework/<nome>/
 ├── template/            desktop-app · android-app · shared
-├── docs/                Hub de documentação → docs/README.md
-└── Jenkinsfile          Entrada opcional de CI (→ misc/jenkins/)
+└── docs/                Hub de documentação → ../../docs/README.md
 ```
 
 ## 🧰 O diretório `misc/`
@@ -217,15 +218,16 @@ A pasta `misc/` consolida **ferramentas do repositório Framework** — módulos
 
 | Caminho | Gradle / papel |
 |---------|----------------|
-| [misc/core/](misc/core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, schema `nxs_config.json` (v2) |
-| [misc/cli/](misc/cli/) | `:cli` — comando headless `generate` |
-| [misc/build-logic/](misc/build-logic/) | Included build (antes `buildSrc` na raiz) — toolchain JVM 26, plugins de convenção |
-| [misc/client-setup/](misc/client-setup/) | Instaladores na primeira execução (Linux/macOS/Windows) para JDK 26 + Git; `env.sh` / `env.bat` definem `JAVA_HOME` antes do Gradle |
-| [misc/scripts/](misc/scripts/) | Automação do repo — [dev/](misc/scripts/dev/) (build/validação/execução do client), [test-gen/](misc/scripts/test-gen/) (stubs smoke/instrumentados em `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (SVGs de docs) |
-| [misc/docker/](misc/docker/) | `Dockerfile` + compose para geração containerizada |
-| [misc/jenkins/](misc/jenkins/) | Setup Jenkins opcional — veja [misc/jenkins/README.md](misc/jenkins/README.md) |
+| [misc/core/](../core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, schema `nxs_config.json` (v2) |
+| [misc/cli/](../cli/) | `:cli` — comando headless `generate` |
+| [misc/build-logic/](../build-logic/) | Included build (antes `buildSrc` na raiz) — toolchain JVM 26, plugins de convenção |
+| [misc/client-setup/](../client-setup/) | Instaladores na primeira execução (Linux/macOS/Windows) para JDK 26 + Git; `env.sh` / `env.bat` definem `JAVA_HOME` antes do Gradle |
+| [misc/scripts/](../scripts/) | Automação do repo — [dev/](../scripts/dev/) (build/validação/execução do client), [test-gen/](../scripts/test-gen/) (stubs smoke/instrumentados em `builds/framework/`), [generate-diagrams/](../scripts/generate-diagrams/) (SVGs de docs) |
+| [misc/docker/](../docker/) | `Dockerfile` + compose para geração containerizada |
+| [misc/jenkins/](../jenkins/) | CI Jenkins opcional — [Jenkinsfile](../jenkins/Jenkinsfile) · [setup](../jenkins/README.md) |
+| [misc/translations/](README.pt-BR.md) | READMEs traduzidos — [pt-BR](README.pt-BR.md) |
 
-O Gradle expõe `:core` e `:cli` na raiz do repo enquanto os fontes ficam em `misc/` — veja [settings.gradle.kts](settings.gradle.kts):
+O Gradle expõe `:core` e `:cli` na raiz do repo enquanto os fontes ficam em `misc/` — veja [settings.gradle.kts](../../settings.gradle.kts):
 
 ```kotlin
 includeBuild("misc/build-logic")
@@ -240,10 +242,10 @@ O included build em `misc/build-logic/` substitui um diretório `buildSrc/` na r
 
 | Caminho | Papel |
 |---------|-------|
-| [app/](app/) | Gerador de projetos Compose Desktop (`:app`) — Generate Project, editores de blueprint/fluxos |
-| [template/](template/) | Templates-fonte copiados para `builds/framework/<nome>/` |
-| [builds/](builds/) | Saídas de deploy — cliente em `builds/client/`, apps gerados em `builds/framework/` |
-| [docs/](docs/) | Hub de documentação |
+| [app/](../../app/) | Gerador de projetos Compose Desktop (`:app`) — Generate Project, editores de blueprint/fluxos |
+| [template/](../../template/) | Templates-fonte copiados para `builds/framework/<nome>/` |
+| [builds/](../../builds/) | Saídas de deploy — cliente em `builds/client/`, apps gerados em `builds/framework/` |
+| [docs/](../../docs/) | Hub de documentação |
 
 **Comandos rápidos** (caminhos em `misc/`):
 
@@ -256,17 +258,17 @@ O included build em `misc/build-logic/` substitui um diretório `buildSrc/` na r
 ./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 
-Hub: [misc/README.md](misc/README.md) · fluxo de geração: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
+Hub: [misc/README.md](../README.md) · fluxo de geração: [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md)
 
 ### Scripts de setup inicial (`misc/client-setup/`)
 
-Execute **uma vez** antes do primeiro `./gradlew :app:run` — mesmo fluxo de [Primeira execução](#primeira-execução). Helpers por distro e troubleshooting: [misc/client-setup/README.md](misc/client-setup/README.md).
+Execute **uma vez** antes do primeiro `./gradlew :app:run` — mesmo fluxo de [Primeira execução](#primeira-execução). Helpers por distro e troubleshooting: [misc/client-setup/README.md](../client-setup/README.md).
 
 ### Testes automatizados e geração de testes (`misc/scripts/test-gen/`)
 
-[test-gen/](misc/scripts/test-gen/) gera stubs de smoke e testes instrumentados para **apps já gerados** em `builds/framework/<projeto>/` — não para o gerador de projetos em si. Lê `nxs_config.json`, detecta desktop vs Android e grava arquivos idempotentes (smoke C++ desktop via CTest; stubs Kotlin `androidTest`). A geração é idempotente; use `--force` para sobrescrever.
+[test-gen/](../scripts/test-gen/) gera stubs de smoke e testes instrumentados para **apps já gerados** em `builds/framework/<projeto>/` — não para o gerador de projetos em si. Lê `nxs_config.json`, detecta desktop vs Android e grava arquivos idempotentes (smoke C++ desktop via CTest; stubs Kotlin `androidTest`). A geração é idempotente; use `--force` para sobrescrever.
 
-Os entry points por plataforma envolvem o núcleo compartilhado em [test-gen/common/generate-tests.sh](misc/scripts/test-gen/common/generate-tests.sh):
+Os entry points por plataforma envolvem o núcleo compartilhado em [test-gen/common/generate-tests.sh](../scripts/test-gen/common/generate-tests.sh):
 
 | Plataforma | Script |
 |------------|--------|
@@ -283,7 +285,7 @@ Os entry points por plataforma envolvem o núcleo compartilhado em [test-gen/com
 ./gradlew :core:test   # testes Gradle do gerador de projetos (:core, :cli, :app)
 ```
 
-Para build/validação/execução local do client Compose, use [misc/scripts/dev/nexus-dev.sh](misc/scripts/dev/nexus-dev.sh) (`compile`, `generate`, `docker`, …). Uso completo: [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md).
+Para build/validação/execução local do client Compose, use [misc/scripts/dev/nexus-dev.sh](../scripts/dev/nexus-dev.sh) (`compile`, `generate`, `docker`, …). Uso completo: [misc/scripts/test-gen/README.md](../scripts/test-gen/README.md).
 
 ### Outros scripts do repo
 
@@ -308,7 +310,7 @@ O Nexus mira **ferramentas nativas, com uso intenso de dados ou implantadas em c
 | Painel de robótica / teleoperação | ImGui touch; bindings Lua `android.*` | Android |
 | HMI embarcado | Mesma pilha SDL3 no desktop e Android | Ambos |
 
-Exemplo principal: **plotter estilo Desmos** — Python amostra curvas, C++ possui o modelo, ImGui desenha. [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
+Exemplo principal: **plotter estilo Desmos** — Python amostra curvas, C++ possui o modelo, ImGui desenha. [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md) · [docs/templates/android-app.md](../../docs/templates/android-app.md)
 
 ---
 
@@ -375,7 +377,7 @@ O Nexus tem rampa real — CMake, C++20 e UI immediate-mode fazem parte — mas 
 | 4 | Estender autoria | Misturar Lua + XHTML | Nova série ImPlot | Painel lateral completo | Caminho numpy → ImPlot | API Lua `android.*` |
 | 5 | Fluxo blueprint | **Edit blueprint** no `:app` | Religar nós do `blueprint.json` | Conectar arestas no editor | Mesmo grafo, nós Python | Mesmo MVC compartilhado |
 
-Guia completo: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
+Guia completo: [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)
 
 <details>
 <summary><strong>Quando outra stack pode encaixar melhor</strong> (ressalva honesta)</summary>
@@ -395,7 +397,7 @@ Guia completo: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.
 
 ## 🐍 Python: Desktop vs Android
 
-O mesmo nó `python.module` no [`blueprint.json`](docs/templates/blueprint-schema.md) liga amostragem de curvas nos **dois** templates — só mudam a forma de integrar Python, o empacotamento e a fronteira C++↔Python. Guias dos projetos gerados: [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) · [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
+O mesmo nó `python.module` no [`blueprint.json`](../../docs/templates/blueprint-schema.md) liga amostragem de curvas nos **dois** templates — só mudam a forma de integrar Python, o empacotamento e a fronteira C++↔Python. Guias dos projetos gerados: [template/desktop-app/AGENTS.md](../../template/desktop-app/AGENTS.md) · [template/android-app/AGENTS.md](../../template/android-app/AGENTS.md).
 
 | | **Desktop** | **Android** |
 |---|-------------|-------------|
@@ -447,14 +449,14 @@ end)
 
 ### TS/XHTML declarativo (`ui/`)
 
-[`ui/ui.xhtml`](template/desktop-app/ui/ui.xhtml) + [`ui/ui.ts`](template/desktop-app/ui/ui.ts) descrevem a mesma sidebar e o gráfico em markup e TypeScript. A toolchain desce para definições de painel Lua equivalentes a `panels.lua` — **não** Node nem WebView.
+[`ui/ui.xhtml`](../../template/desktop-app/ui/ui.xhtml) + [`ui/ui.ts`](../../template/desktop-app/ui/ui.ts) descrevem a mesma sidebar e o gráfico em markup e TypeScript. A toolchain desce para definições de painel Lua equivalentes a `panels.lua` — **não** Node nem WebView.
 
 ### Fluxo de lowering TS/XHTML
 *Markup declarativo e TypeScript → painéis Lua → widgets nativos*
 
 O DSL compartilhado em `template/shared/dsl/` mapeia cada tag XHTML para chamadas Dear ImGui, ImPlot ou imnodes. A saída equivale a `nxs.register_panel` escrito à mão — sem motor de browser.
 
-![Pipeline de lowering TS/XHTML → Lua → ImGui](docs/assets/diagrams/tsxhtml-lowering-pipeline.svg)
+![Pipeline de lowering TS/XHTML → Lua → ImGui](../../docs/assets/diagrams/tsxhtml-lowering-pipeline.svg)
 
 | Mecanismo | TS/XHTML | Desce para |
 |-----------|----------|------------|
@@ -464,7 +466,7 @@ O DSL compartilhado em `template/shared/dsl/` mapeia cada tag XHTML para chamada
 
 ### `ComponentTag` → widgets nativos
 
-[`template/shared/dsl/tags.ts`](template/shared/dsl/tags.ts) mapeia cada tag XHTML para chamada Dear ImGui, ImPlot ou imnodes. [`components.ts`](template/shared/dsl/components.ts) fornece classes tipadas por tag; [`core.ts`](template/shared/dsl/core.ts) define a base `Component`, props de estilo e callbacks de evento percorridos pelo runtime nativo a cada frame.
+[`template/shared/dsl/tags.ts`](../../template/shared/dsl/tags.ts) mapeia cada tag XHTML para chamada Dear ImGui, ImPlot ou imnodes. [`components.ts`](../../template/shared/dsl/components.ts) fornece classes tipadas por tag; [`core.ts`](../../template/shared/dsl/core.ts) define a base `Component`, props de estilo e callbacks de evento percorridos pelo runtime nativo a cada frame.
 
 | Tag (exemplos) | API nativa |
 |----------------|------------|
@@ -474,7 +476,7 @@ O DSL compartilhado em `template/shared/dsl/` mapeia cada tag XHTML para chamada
 
 Widgets-chave do plotter: **Window**, **Panel**, **Button**, **Slider**, **Plot**, **PlotLine**. O futuro painel **imnodes** do blueprint (v1.1) reutiliza a mesma tag `NodeEditor` no mesmo schema.
 
-**Por onde começar:** [template/shared/dsl/](template/shared/dsl/) · markup de exemplo [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml) · [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
+**Por onde começar:** [template/shared/dsl/](../../template/shared/dsl/) · markup de exemplo [template/desktop-app/ui/ui.xhtml](../../template/desktop-app/ui/ui.xhtml) · [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)
 
 ---
 
@@ -498,7 +500,7 @@ Projetos gerados usam **C++20** com convenções que endereçam dores clássicas
 
 ### Crescer passo a passo — não é reconstruir do zero
 
-O Nexus gera apps **C++/SDL3** pensados para crescer camada a camada. Você não precisa descartar um core binário existente e redesenhar toda a infraestrutura em Rust, Go ou outra linguagem só para perseguir performance nativa. Suas libs C/C++, presets CMake, SDKs de fornecedores e cola **Lua**/**Python** in-process continuam de primeira classe: troque superfícies de UI (páginas TS/XHTML, novos painéis ImGui), ligue serviços [`flows.json`](docs/templates/flows-schema.md) ou estenda o grafo [`blueprint.json`](docs/templates/blueprint-schema.md) sem jogar fora `src/` escrito à mão ou `panels.lua` legado.
+O Nexus gera apps **C++/SDL3** pensados para crescer camada a camada. Você não precisa descartar um core binário existente e redesenhar toda a infraestrutura em Rust, Go ou outra linguagem só para perseguir performance nativa. Suas libs C/C++, presets CMake, SDKs de fornecedores e cola **Lua**/**Python** in-process continuam de primeira classe: troque superfícies de UI (páginas TS/XHTML, novos painéis ImGui), ligue serviços [`flows.json`](../../docs/templates/flows-schema.md) ou estenda o grafo [`blueprint.json`](../../docs/templates/blueprint-schema.md) sem jogar fora `src/` escrito à mão ou `panels.lua` legado.
 
 Dá para acrescentar peças novas sem jogar o código antigo fora — não é mágica de ABI. Novos nós de blueprint, flows em runtime e telas autoria em XHTML podem conviver com scripts Lua antigos e módulos C++ sob medida no mesmo processo. Times presos em Electron ou Tauri costumam enfrentar um garfo: aceitar overhead de web-shell ou apostar em rewrite completo da stack. O Nexus oferece um terceiro caminho — manter o C++ crítico de performance que você já pagou, modernizar a autoria passo a passo e fazer profile antes de reescrever qualquer coisa em outra linguagem.
 
@@ -513,47 +515,47 @@ Dá para acrescentar peças novas sem jogar o código antigo fora — não é m�
 ### 📊 Arquitetura full-stack do Nexus
 *Cliente, fluxo de geração, templates e runtimes nativos*
 
-![📊 Arquitetura full-stack — cliente Compose → fluxo de geração :core → runtimes SDL3 (seu app, não uma aba de browser)](docs/assets/diagrams/full-stack-architecture.svg)
+![📊 Arquitetura full-stack — cliente Compose → fluxo de geração :core → runtimes SDL3 (seu app, não uma aba de browser)](../../docs/assets/diagrams/full-stack-architecture.svg)
 
 ### 📊 Fluxo de geração e builds
 *De client-setup e módulos Gradle até `builds/framework/<nome>/`*
 
-![📊 Fluxo de geração e builds — setup JDK → Gradle → ProjectGenerator → builds/framework/<nome>/](docs/assets/diagrams/generation-builds-flow.svg)
+![📊 Fluxo de geração e builds — setup JDK → Gradle → ProjectGenerator → builds/framework/<nome>/](../../docs/assets/diagrams/generation-builds-flow.svg)
 
 ### 📊 Runtime Desktop vs Android
 *MVC compartilhado no SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
 
-![📊 Runtime Desktop vs Android — MVC compartilhado; pybind11 ↔ Chaquopy + Djinni](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+![📊 Runtime Desktop vs Android — MVC compartilhado; pybind11 ↔ Chaquopy + Djinni](../../docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
-Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) (diagrama lá). Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md) · Ferramentas do gerador: [O diretório `misc/`](#o-diretório-misc) · Python: [Python: Desktop vs Android](#python-desktop-vs-android) · UI: [TypeScript + DSL XHTML](#typescript--dsl-xhtml)
+Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) (diagrama lá). Referência de camadas: [docs/architecture/overview.md](../../docs/architecture/overview.md) · Ferramentas do gerador: [O diretório `misc/`](#o-diretório-misc) · Python: [Python: Desktop vs Android](#python-desktop-vs-android) · UI: [TypeScript + DSL XHTML](#typescript--dsl-xhtml)
 
 ## 📖 Documentação
 
 | Doc | Descrição |
 |-----|-----------|
-| [docs/README.md](docs/README.md) | Hub de documentação |
-| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | Tipos de nó, arestas e validação do `blueprint.json` |
-| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, temas |
-| [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
-| [docs/architecture/overview.md](docs/architecture/overview.md) | Diagramas de camadas + autoria blueprint |
-| [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | Onboarding de agentes IA |
-| [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Riscos de arquitetura |
+| [docs/README.md](../../docs/README.md) | Hub de documentação |
+| [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | Tipos de nó, arestas e validação do `blueprint.json` |
+| [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, temas |
+| [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
+| [docs/architecture/overview.md](../../docs/architecture/overview.md) | Diagramas de camadas + autoria blueprint |
+| [docs/architecture/agent-readiness.md](../../docs/architecture/agent-readiness.md) | Onboarding de agentes IA |
+| [docs/architecture/risk-analysis.md](../../docs/architecture/risk-analysis.md) | Riscos de arquitetura |
 | [AGENTS.md](AGENTS.md) | Comandos de build para assistentes de código |
-| [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) | Plotter desktop gerado — pybind11, Lua, TS/XHTML |
-| [template/android-app/AGENTS.md](template/android-app/AGENTS.md) | Plotter Android gerado — Chaquopy, Djinni |
-| [docs/guides/adding-dependencies.md](docs/guides/adding-dependencies.md) | Pacotes C++, Lua e Python após client-setup |
+| [template/desktop-app/AGENTS.md](../../template/desktop-app/AGENTS.md) | Plotter desktop gerado — pybind11, Lua, TS/XHTML |
+| [template/android-app/AGENTS.md](../../template/android-app/AGENTS.md) | Plotter Android gerado — Chaquopy, Djinni |
+| [docs/guides/adding-dependencies.md](../../docs/guides/adding-dependencies.md) | Pacotes C++, Lua e Python após client-setup |
 
 ## 📎 Adicionando dependências após o setup
 
-Depois do [client-setup](misc/client-setup/README.md) (JDK 26 + Git) e **Generate Project**, dependências nativas entram no **app gerado** em `builds/framework/<ProjectName>/` — não nos módulos do gerador de projetos Compose. O gerador só escreve templates; CMake, Gradle, pip e `scripts/` são editados nessa árvore de saída.
+Depois do [client-setup](../client-setup/README.md) (JDK 26 + Git) e **Generate Project**, dependências nativas entram no **app gerado** em `builds/framework/<ProjectName>/` — não nos módulos do gerador de projetos Compose. O gerador só escreve templates; CMake, Gradle, pip e `scripts/` são editados nessa árvore de saída.
 
-**C++ (desktop):** instale CMake, Ninja e libs SDL3 do sistema se necessário; estenda o `CMakeLists.txt` do projeto com `FetchContent` (padrão Nexus para SDL3, ImGui, sol2, pybind11) ou vcpkg opcional. Ligue novos alvos em `src/` e recompile com `cmake --build --preset debug`. **C++ (Android):** o mesmo `CMakeLists.txt` é acionado por `externalNativeBuild` em `app/build.gradle.kts`; veja [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
+**C++ (desktop):** instale CMake, Ninja e libs SDL3 do sistema se necessário; estenda o `CMakeLists.txt` do projeto com `FetchContent` (padrão Nexus para SDL3, ImGui, sol2, pybind11) ou vcpkg opcional. Ligue novos alvos em `src/` e recompile com `cmake --build --preset debug`. **C++ (Android):** o mesmo `CMakeLists.txt` é acionado por `externalNativeBuild` em `app/build.gradle.kts`; veja [template/android-app/AGENTS.md](../../template/android-app/AGENTS.md).
 
 **Python:** no desktop, pybind11 — `pip install -r requirements.txt`, edite `python/`, recompile (CMake roda `pack_python_dat`). No Android, Chaquopy — adicione wheels em `chaquopy { pip { install("numpy") } }` em `app/build.gradle.kts` e fontes em `app/src/main/python/`, depois `./gradlew :app:assembleDebug`. Espelhe pacotes em `nxs_config.json` → `features.python.packages` no Android.
 
 **Lua:** coloque `.lua` em `scripts/` e `require` a partir de `panels.lua`; o rebuild empacota `lua.dat`. Sem gerenciador de pacotes — sol2 carrega do arquivo em runtime.
 
-Guia completo, exemplos apt/dnf/pacman por distro e tabela desktop vs Android: **[docs/guides/adding-dependencies.md](docs/guides/adding-dependencies.md)**. Stubs de smoke test opcionais: [misc/scripts/test-gen/](misc/scripts/test-gen/README.md).
+Guia completo, exemplos apt/dnf/pacman por distro e tabela desktop vs Android: **[docs/guides/adding-dependencies.md](../../docs/guides/adding-dependencies.md)**. Stubs de smoke test opcionais: [misc/scripts/test-gen/](../scripts/test-gen/README.md).
 
 ## 🚧 Status de desenvolvimento e limitações
 
@@ -571,7 +573,7 @@ Guia completo, exemplos apt/dnf/pacman por distro e tabela desktop vs Android: *
 
 **Power Automate**, **n8n** e ferramentas similares brilham em cola de ops — webhooks, integrações SaaS, ETL agendado. Isso quebra quando o conserto rápido *é* o produto: sem UI nativa, empacotamento offline fraco, dependência de cloud.
 
-O **Nexus** mantém o modelo mental de nós e arestas no [`blueprint.json`](docs/templates/blueprint-schema.md) mas gera uma **aplicação nativa real** — C++/SDL3, Lua/Python, ImGui + TS/XHTML, packs de script, apps desktop/Android. Veja [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) para como isso difere do n8n.
+O **Nexus** mantém o modelo mental de nós e arestas no [`blueprint.json`](../../docs/templates/blueprint-schema.md) mas gera uma **aplicação nativa real** — C++/SDL3, Lua/Python, ImGui + TS/XHTML, packs de script, apps desktop/Android. Veja [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) para como isso difere do n8n.
 
 **Caminho de migração:** comece onde você já pensa — ligue módulos no editor de blueprint → gere com `:cli` ou **Generate Project** → itere nas camadas de código normais (`cpp.model`, `python.module`, `ui.page`, painéis Lua) em vez de empilhar remendos no fluxo. Um webhook n8n ou Power Automate pode continuar na borda para cola de ops enquanto o app detém estado, UI e comportamento offline in-process.
 
@@ -582,11 +584,11 @@ O **Nexus** mantém o modelo mental de nós e arestas no [`blueprint.json`](docs
 | **Runtime** | Motor de passos no servidor, UI admin no browser | App desktop/mobile (programa de verdade) ou APK Android |
 | **Offline / campo** | Exige conectividade com o host do workflow | App SDL3 offline-first; packs de script no bundle |
 | **Performance** | Round-trips HTTP entre passos | C++ amigável a game loop; Python/numpy in-process |
-| **Superfície de UI** | Dashboard do vendor ou nenhuma | ImGui + páginas DSL; amostra [plotter estilo Desmos](docs/templates/desktop-app.md) |
-| **Cross-platform** | Integrações separadas por alvo | Um [`blueprint.json`](docs/templates/blueprint-schema.md) liga [desktop + Android](docs/assets/diagrams/desktop-vs-android-runtime.svg) |
+| **Superfície de UI** | Dashboard do vendor ou nenhuma | ImGui + páginas DSL; amostra [plotter estilo Desmos](../../docs/templates/desktop-app.md) |
+| **Cross-platform** | Integrações separadas por alvo | Um [`blueprint.json`](../../docs/templates/blueprint-schema.md) liga [desktop + Android](../../docs/assets/diagrams/desktop-vs-android-runtime.svg) |
 | **UX de autoria** | Canvas n8n / Power Automate | Editor Compose de blueprint hoje; painel **imnodes** nativo (v1.1) no mesmo schema |
 
-Diagramas: [arquitetura completa](docs/assets/diagrams/full-stack-architecture.svg) · [geração → builds](docs/assets/diagrams/generation-builds-flow.svg)
+Diagramas: [arquitetura completa](../../docs/assets/diagrams/full-stack-architecture.svg) · [geração → builds](../../docs/assets/diagrams/generation-builds-flow.svg)
 
 > [!WARNING]
 > **O Nexus não é n8n nem Power Automate.** Use essas ferramentas para integração SaaS na cloud; use o Nexus quando o fluxo deve virar software entregue.
@@ -639,7 +641,7 @@ Não obrigatório para MVP — acompanhar separadamente:
 ## 📜 Copyright e licença
 
 > [!IMPORTANT]
-> **Licença Apache 2.0** — uso comercial, modificação e distribuição são permitidos. Mantenha avisos de copyright e o arquivo [LICENSE](LICENSE) ao redistribuir. O código do app gerado é seu; trechos copiados dos templates devem preservar os avisos Apache.
+> **Licença Apache 2.0** — uso comercial, modificação e distribuição são permitidos. Mantenha avisos de copyright e o arquivo [LICENSE](../../LICENSE) ao redistribuir. O código do app gerado é seu; trechos copiados dos templates devem preservar os avisos Apache.
 
 ### Copyright
 
@@ -652,12 +654,12 @@ Não obrigatório para MVP — acompanhar separadamente:
 
 - **Uso permissivo:** uso comercial e privado, modificação e distribuição são permitidos
 - **Concessão de patentes:** contribuidores concedem direitos de patente necessários para usar o software
-- **Atribuição:** mantenha o aviso de copyright, inclua o arquivo [LICENSE](LICENSE) e note alterações ao redistribuir
+- **Atribuição:** mantenha o aviso de copyright, inclua o arquivo [LICENSE](../../LICENSE) e note alterações ao redistribuir
 - **Sem garantia:** o software é fornecido "no estado em que se encontra"
 - **Marca:** a licença não concede permissão para usar nomes ou marcas do projeto
 - **Saída de templates:** o gerador de projetos escreve seu app; você pode licenciar o código gerado como quiser; trechos copiados dos templates Nexus devem manter avisos conforme os termos Apache
 
-Texto completo: [Apache License 2.0](LICENSE) · [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Texto completo: [Apache License 2.0](../../LICENSE) · [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 🔗 Veja também
 

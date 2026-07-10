@@ -11,10 +11,11 @@ Supporting modules and tooling for the Framework scaffold client. Gradle modules
 | [cli/](cli/) | Headless CLI (`:cli`) — `generate` command |
 | [client-setup/](client-setup/) | First-run JDK 26 + Git installers — see [client-setup/README.md](client-setup/README.md) |
 | [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
-| [jenkins/](jenkins/) | Optional Jenkins setup — see [jenkins/README.md](jenkins/README.md) |
+| [jenkins/](jenkins/) | Optional Jenkins CI — [Jenkinsfile](jenkins/Jenkinsfile) · see [jenkins/README.md](jenkins/README.md) |
+| [translations/](translations/) | Localized READMEs — [pt-BR](translations/README.pt-BR.md) |
 | [scripts/](scripts/) | Repo automation — `dev/` (client workflow), `test-gen/` (smoke tests for `builds/framework/`), `generate-diagrams/` (see [scripts/test-gen/README.md](scripts/test-gen/README.md)) |
 
-Root [Jenkinsfile](../Jenkinsfile) points at this repo for optional CI.
+Pipeline definition: [jenkins/Jenkinsfile](jenkins/Jenkinsfile). Configure the job **Script Path** to `misc/jenkins/Jenkinsfile` — see [jenkins/README.md](jenkins/README.md).
 
 Gradle still exposes `:core` and `:cli` at the project root via `settings.gradle.kts`:
 

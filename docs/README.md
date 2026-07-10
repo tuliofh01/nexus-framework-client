@@ -29,7 +29,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 
 | Path | Purpose |
 |------|---------|
-| [../README.md](../README.md) · [../README.pt-BR.md](../README.pt-BR.md) | Project overview (EN / pt-BR) |
+| [../README.md](../README.md) · [../misc/translations/README.pt-BR.md](../misc/translations/README.pt-BR.md) | Project overview (EN / pt-BR) |
 | [../misc/client-setup/README.md](../misc/client-setup/README.md) | First-run JDK 26 + Git setup |
 | [../builds/README.md](../builds/README.md) | `builds/client/` and `builds/framework/` layout |
 | [../template/README.md](../template/README.md) | Output templates index |

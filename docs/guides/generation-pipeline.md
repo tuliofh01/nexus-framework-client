@@ -110,7 +110,7 @@ Image entrypoint: `./gradlew :cli:run`. Override with `--args="generate …"`.
 
 ## Jenkins (optional)
 
-See [misc/jenkins/README.md](../../misc/jenkins/README.md). The root `Jenkinsfile` parameterizes `PROJECT_NAME`, `TEMPLATE_TYPE`, and `OUTPUT_DIR`.
+See [misc/jenkins/README.md](../../misc/jenkins/README.md). The pipeline at [misc/jenkins/Jenkinsfile](../../misc/jenkins/Jenkinsfile) parameterizes `PROJECT_NAME`, `TEMPLATE_TYPE`, and `OUTPUT_DIR`.
 
 ## Output layout
 

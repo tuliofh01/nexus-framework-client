@@ -210,7 +210,7 @@ flowchart TD
 
 ## README accuracy — actionable corrections
 
-Use this table when editing `README.md`, `README.pt-BR.md`, and `docs/architecture/overview.md`:
+Use this table when editing `README.md`, `misc/translations/README.pt-BR.md`, and `docs/architecture/overview.md`:
 
 | Claim (current) | Reality | Suggested wording |
 |-----------------|---------|-------------------|
