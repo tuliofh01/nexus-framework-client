@@ -16,6 +16,8 @@ dependencies {
     // Multiplatform @Preview annotation so the IDE's Compose UI designer/preview panel works.
     implementation(compose.components.uiToolingPreview)
 
+    implementation(project(":core"))
+
     testImplementation(kotlin("test"))
 }
 

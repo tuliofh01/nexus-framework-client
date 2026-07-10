@@ -37,15 +37,23 @@ fun CounterView(model: CounterModel, onIncrement: () -> Unit, onDecrement: () ->
     }
 }
 
-/** Convenience overload wiring a controller straight into the stateless view. */
 @Composable
-fun CounterScreen(controller: CounterController) {
-    CounterView(
-        model = controller.model,
-        onIncrement = controller::increment,
-        onDecrement = controller::decrement,
-        onReset = controller::reset,
-    )
+fun CounterScreen(controller: CounterController, onOpenGenerate: (() -> Unit)? = null) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = "Count: ${controller.model.count}", style = MaterialTheme.typography.h4)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = controller::decrement) { Text("-") }
+            Button(onClick = controller::reset) { Text("Reset") }
+            Button(onClick = controller::increment) { Text("+") }
+        }
+        if (onOpenGenerate != null) {
+            Button(onClick = onOpenGenerate) { Text("Generate Project") }
+        }
+    }
 }
 
 /** Renders in the IDE's Compose preview panel. */
