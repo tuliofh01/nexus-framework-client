@@ -502,15 +502,15 @@ Generated projects use **C++20** with conventions that address common legacy C++
 | **UI / media stack** | ImGui, SDL3, sol2, pybind11, ImPlot — mature, battle-tested | No direct ImGui-first equivalent; egui/wgpu paths differ |
 | **Android NDK** | Djinni + SDL3 GLES — proven C++ on device | Possible via FFI, less turnkey for this stack |
 
-**Rust is often the better default** for greenfield safety-critical services, async web backends, or teams already standardized on `cargo` and `#![deny(unsafe_code)]`.
+**Rust is often the better default** for brand-new safety-critical services, async web backends, or teams already standardized on `cargo` and `#![deny(unsafe_code)]`.
 
 **Modern C++ + Nexus fits** when you already depend on C++ libraries (CAD kernels, codecs, exchange APIs), need ImGui immediate-mode tooling UX, want pybind11/Chaquopy in-process Python, or must ship the same SDL3 stack on desktop and Android without rewriting in a new language.
 
-### Incremental evolution — not a greenfield rewrite
+### Grow step by step — not a rebuild from scratch
 
 Nexus generates **C++/SDL3** apps meant to grow layer by layer. You do not need to throw away an existing binary core and redesign the whole infrastructure in Rust, Go, or another language just to chase native performance. Your C/C++ libraries, CMake presets, vendor SDKs, and in-process **Lua**/**Python** glue remain first-class: swap UI surfaces (TS/XHTML pages, new ImGui panels), wire [`flows.json`](docs/templates/flows-schema.md) services, or extend the [`blueprint.json`](docs/templates/blueprint-schema.md) graph without discarding hand-written `src/` or legacy `panels.lua`.
 
-That compatibility is **backwards compatible-ish**, not ABI magic. New blueprint nodes, runtime flows, and XHTML-authored screens can land alongside older Lua scripts and bespoke C++ modules in the same process. Teams stuck on Electron or Tauri often face a fork: accept web-shell overhead or commit to a full stack rewrite. Nexus offers a third path — keep the performance-critical C++ you've already paid for, modernize authoring incrementally, and profile before rewriting anything in another language.
+You can add new pieces without throwing away old code — not ABI magic. New blueprint nodes, runtime flows, and XHTML-authored screens can land alongside older Lua scripts and bespoke C++ modules in the same process. Teams stuck on Electron or Tauri often face a fork: accept web-shell overhead or commit to a full stack rewrite. Nexus offers a third path — keep the performance-critical C++ you've already paid for, modernize authoring step by step, and profile before rewriting anything in another language.
 
 > *"Make it work, make it right, make it fast — in that order."* — often attributed to Kent Beck
 
@@ -521,9 +521,9 @@ That compatibility is **backwards compatible-ish**, not ABI magic. New blueprint
 ## 🏗️ Architecture
 
 ### 📊 Nexus full-stack architecture
-*Client, generation pipeline, templates, and native runtimes*
+*Client, generation flow, templates, and native runtimes*
 
-![📊 Nexus full-stack architecture — Compose client → :core pipeline → SDL3 runtimes (your app, not a browser tab)](docs/assets/diagrams/full-stack-architecture.svg)
+![📊 Nexus full-stack architecture — Compose client → :core generation flow → SDL3 runtimes (your app, not a browser tab)](docs/assets/diagrams/full-stack-architecture.svg)
 
 ### 📊 Generation and builds flow
 *From client-setup and Gradle modules to `builds/framework/<name>/`*
@@ -535,7 +535,7 @@ That compatibility is **backwards compatible-ish**, not ABI magic. New blueprint
 
 ![Desktop vs Android runtime — shared MVC on SDL3/ImGui with pybind11 vs Chaquopy and Djinni bridges](docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
-Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) (diagram there). Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Scaffold tooling: [The `misc/` directory](#the-misc-directory) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
+Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) (diagram there). Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Project generator tooling: [The `misc/` directory](#the-misc-directory) · Python split: [Python: Desktop vs Android](#python-desktop-vs-android) · UI authoring: [TypeScript + XHTML DSL](#typescript--xhtml-dsl)
 
 ## Documentation
 
@@ -555,7 +555,7 @@ Blueprint vs Langflow vs n8n: [Blueprint nodes](#blueprint-nodes-langflow-style-
 
 ## 📎 Adding dependencies after setup
 
-After [client-setup](misc/client-setup/README.md) (JDK 26 + Git) and **Generate Project**, native dependencies are added in the **generated app** under `builds/framework/<ProjectName>/` — not in the Compose scaffolder modules. The scaffolder only emits templates; CMake, Gradle, pip, and `scripts/` edits happen in that output tree.
+After [client-setup](misc/client-setup/README.md) (JDK 26 + Git) and **Generate Project**, native dependencies are added in the **generated app** under `builds/framework/<ProjectName>/` — not in the Compose project generator modules. The project generator only writes out templates; CMake, Gradle, pip, and `scripts/` edits happen in that output tree.
 
 **C++ (desktop):** install CMake, Ninja, and SDL3 system libs if needed, then extend the project `CMakeLists.txt` with `FetchContent` (Nexus default for SDL3, ImGui, sol2, pybind11) or optional vcpkg. Link new targets into `src/` and rebuild with `cmake --build --preset debug`. **C++ (Android):** same `CMakeLists.txt` is driven by `app/build.gradle.kts` `externalNativeBuild`; see [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
 
@@ -567,11 +567,11 @@ Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android r
 
 ## 🚧 Development status and limitations
 
-**Shipped:** `:app` (Counter + Generate Project + Blueprint Editor + Flows Editor), `:core` / `:cli` (template emit + `BlueprintValidator` + `FlowsValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
+**Shipped:** `:app` (Counter + Generate Project + Blueprint Editor + Flows Editor), `:core` / `:cli` (template generation + `BlueprintValidator` + `FlowsValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
 
 **Not yet:** see [Road to MVP](#road-to-mvp) for the full checklist (v1 ships 2-screen Generate + Compose editors).
 
-**Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
+**Limitations (v1):** Compose Desktop project generator only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
 
 **Branch:** active development on **`main`** (`origin/main`).
 
@@ -581,7 +581,7 @@ Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android r
 
 **Power Automate**, **n8n**, and similar tools excel at ops glue — webhooks, SaaS integrations, scheduled ETL. That breaks down when the quick fix *is* the product: no native UI, weak offline packaging, cloud dependency.
 
-**Nexus** keeps the node-and-edge mental model in [`blueprint.json`](docs/templates/blueprint-schema.md) but emits a **real native app** — C++/SDL3, Lua/Python, ImGui + TS/XHTML, script packs, desktop/Android binaries. See [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) for how this differs from n8n.
+**Nexus** keeps the node-and-edge mental model in [`blueprint.json`](docs/templates/blueprint-schema.md) but generates a **real native app** — C++/SDL3, Lua/Python, ImGui + TS/XHTML, script packs, desktop/Android programs. See [Blueprint nodes](#blueprint-nodes-langflow-style-vs-n8n) for how this differs from n8n.
 
 **Migration path:** start where you already think — wire modules in the blueprint editor → generate with `:cli` or **Generate Project** → iterate in normal code layers (`cpp.model`, `python.module`, `ui.page`, Lua panels) instead of stacking flow patches. An n8n or Power Automate webhook can remain at the edge for ops glue while the app owns state, UI, and offline behavior in-process.
 
@@ -589,7 +589,7 @@ Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android r
 
 | Area | Flow tools (typical) | Nexus output |
 |------|----------------------|--------------|
-| **Runtime** | Server-side step engine, browser admin UI | Native desktop binary or Android APK |
+| **Runtime** | Server-side step engine, browser admin UI | Desktop/mobile app (real program) or Android APK |
 | **Offline / field** | Requires connectivity to the workflow host | Offline-first SDL3 app; script packs in the bundle |
 | **Performance** | HTTP round-trips between steps | Game-loop-friendly C++; in-process Python/numpy |
 | **UI surface** | Vendor dashboard or none | ImGui + DSL pages; [Desmos-style plotter](docs/templates/desktop-app.md) sample |
@@ -599,78 +599,27 @@ Full walkthrough, per-distro apt/dnf/pacman examples, and a desktop vs Android r
 Diagrams: [full-stack architecture](docs/assets/diagrams/full-stack-architecture.svg) · [generation → builds](docs/assets/diagrams/generation-builds-flow.svg)
 
 > [!WARNING]
-> **Nexus is not n8n or Power Automate.** Use those for cloud SaaS orchestration; use Nexus when the flow should graduate into shipped software.
-
-## 📜 Copyright and license
-
-> [!IMPORTANT]
-> **Apache License 2.0** — commercial use, modification, and distribution are allowed. Keep copyright notices and the [LICENSE](LICENSE) file when you redistribute. Generated app code is yours; copied template snippets should retain Apache notices.
-
-### Copyright
-
-- © 2026 Nexus Framework contributors — Nexus Framework Client and bundled templates/docs
-- **Generated projects:** you own the application code the scaffolder emits; portions copied from Nexus templates should keep the Apache 2.0 notice where those snippets appear
-
-### Apache License 2.0 — what it means (plain language)
-
-*This is a practical summary, not legal advice.*
-
-- **Permissive use:** commercial and private use, modification, and distribution are allowed
-- **Patent grant:** contributors grant patent rights needed to use the software
-- **Attribution:** keep the copyright notice, include the [LICENSE](LICENSE) file, and note changes when you redistribute
-- **No warranty:** the software is provided “as is”
-- **Trademark:** the license does not grant permission to use project names or trademarks
-- **Template output:** scaffolding generates your app; you may license generated code as you choose; copied Nexus template snippets should retain notices per Apache terms
-
-Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-## 🔗 See also
-
-*Blueprint your app, generate the tree, ship the binary — then iterate in real code layers. That's the Nexus loop.*
-
-### Ecosystem and dependencies
-
-| Technology | Official site |
-|------------|---------------|
-| [SDL3](https://www.libsdl.org/) | Cross-platform windowing, input, and GPU surfaces |
-| [Dear ImGui](https://github.com/ocornut/imgui) | Immediate-mode UI widgets |
-| [ImPlot](https://github.com/epezent/implot) | Plotting extension for ImGui |
-| [sol2](https://github.com/ThePhD/sol2) | C++ ↔ Lua bindings |
-| [pybind11](https://pybind11.readthedocs.io/) | C++ ↔ Python embedding (desktop) |
-| [Chaquopy](https://chaquo.com/chaquopy/) | Python on Android (JVM) |
-| [Djinni](https://github.com/dropbox/djinni) | Type-safe C++ ↔ Kotlin/Java bridge |
-| [Langflow](https://github.com/langflow-ai/langflow) | Visual DAG editor for LLM flows (optional authoring) |
-| [n8n](https://n8n.io/) | Workflow automation (external ops glue) |
-| [Kotlin](https://kotlinlang.org/) | Compose Desktop scaffolder client |
-| [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | Multiplatform UI for `:app` |
-
-<!-- Maintainer: consider GitHub repo topics — native-app, scaffolder, sdl3, imgui, kotlin-compose, cpp, lua, python, android, blueprint, langflow, open-source -->
-
-### Related repositories
-
-| Repo | Role |
-|------|------|
-| [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Separate `:client-desktop` wizard distribution |
+> **Nexus is not n8n or Power Automate.** Use those for cloud SaaS wiring; use Nexus when the flow should graduate into shipped software.
 
 ## 🏁 Road to MVP
 
-When every row is ✅, Nexus Framework is **MVP-ready**: scaffold native apps, edit blueprints/flows, generate, and ship a documented desktop/Android project.
+When every row is ✅, Nexus Framework is **MVP-ready**: generate native apps, edit blueprints/flows, write out projects, and ship a documented desktop/Android build.
 
 > *"If you are not embarrassed by the first version of your product, you've launched too late."* — Reid Hoffman
 
 | Area | Item | Status |
 |------|------|--------|
-| Client / scaffolder | Compose 6-step wizard *(v1 ships 2-screen Generate + editors — sufficient for MVP)* | ⬜ |
-| Client / scaffolder | Generate desktop + android from templates | ✅ |
-| Client / scaffolder | Blueprint editor (Compose) | ✅ |
-| Client / scaffolder | Flows editor UI (list, enable/disable, JSON preview) | ✅ |
-| Client / scaffolder | ProjectGenerator + validators | ✅ |
+| Client / project generator | Compose 6-step wizard *(v1 ships 2-screen Generate + editors — sufficient for MVP)* | ⬜ |
+| Client / project generator | Generate desktop + android from templates | ✅ |
+| Client / project generator | Blueprint editor (Compose) | ✅ |
+| Client / project generator | Flows editor UI (list, enable/disable, JSON preview) | ✅ |
+| Client / project generator | ProjectGenerator + validators | ✅ |
 | Templates | General-purpose desktop + android templates | ✅ |
-| Templates | End-to-end desktop binary build verified in CI | ⬜ |
+| Templates | End-to-end desktop app build verified in CI | ⬜ |
 | Templates | End-to-end Android APK build verified in CI | ⬜ |
 | Templates | `blueprint.json` + optional `flows.json` structure | ✅ |
 | Templates | TS/XHTML DSL stubs, Lua, Python paths | ✅ |
-| Runtime | Desktop pybind11 embed fully wired in generated app (Phase 2 — blueprint-driven codegen) | ⬜ |
+| Runtime | Desktop pybind11 built-in Python fully wired in generated app (Phase 2 — blueprint-driven codegen) | ⬜ |
 | Runtime | `python.dat` / `lua.dat` pack parity | ✅ |
 | Runtime | Android Chaquopy bridge E2E tested on device | ⬜ |
 | Runtime | TS/XHTML → Lua lowering compiler *(manual `panels.lua` path documented today)* | ⬜ |
@@ -678,7 +627,7 @@ When every row is ✅, Nexus Framework is **MVP-ready**: scaffold native apps, e
 | Docs / DX | Template `AGENTS.md` guides | ✅ |
 | Docs / DX | CLI `debug validate --all` or equivalent template validation in CI | ⬜ |
 | Docs / DX | `client-setup` scripts (JDK 26) | ✅ |
-| Release | CI pipeline green on `main` | ⬜ |
+| Release | CI build green on `main` | ⬜ |
 | Release | Published client binary (`builds/client/`) | ⬜ |
 | Release | Version tag `v1.0.0` | ⬜ |
 
@@ -696,3 +645,54 @@ Not required for MVP — track separately:
 | SDL3 Android runner polish |
 
 </details>
+
+## 📜 Copyright and license
+
+> [!IMPORTANT]
+> **Apache License 2.0** — commercial use, modification, and distribution are allowed. Keep copyright notices and the [LICENSE](LICENSE) file when you redistribute. Generated app code is yours; copied template snippets should retain Apache notices.
+
+### Copyright
+
+- © 2026 Nexus Framework contributors — Nexus Framework Client and bundled templates/docs
+- **Generated projects:** you own the application code the project generator writes out; portions copied from Nexus templates should keep the Apache 2.0 notice where those snippets appear
+
+### Apache License 2.0 — what it means (plain language)
+
+*This is a practical summary, not legal advice.*
+
+- **Permissive use:** commercial and private use, modification, and distribution are allowed
+- **Patent grant:** contributors grant patent rights needed to use the software
+- **Attribution:** keep the copyright notice, include the [LICENSE](LICENSE) file, and note changes when you redistribute
+- **No warranty:** the software is provided “as is”
+- **Trademark:** the license does not grant permission to use project names or trademarks
+- **Template output:** the project generator writes your app; you may license generated code as you choose; copied Nexus template snippets should retain notices per Apache terms
+
+Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## 🔗 See also
+
+*Blueprint your app, generate the tree, ship the binary — then iterate in real code layers. That's the Nexus loop.*
+
+### Ecosystem and dependencies
+
+| Technology | Official site |
+|------------|---------------|
+| [SDL3](https://www.libsdl.org/) | Cross-platform windowing, input, and GPU surfaces |
+| [Dear ImGui](https://github.com/ocornut/imgui) | Immediate-mode UI widgets |
+| [ImPlot](https://github.com/epezent/implot) | Plotting extension for ImGui |
+| [sol2](https://github.com/ThePhD/sol2) | C++ ↔ Lua bindings |
+| [pybind11](https://pybind11.readthedocs.io/) | Run Python inside C++ apps (desktop) |
+| [Chaquopy](https://chaquo.com/chaquopy/) | Python on Android (JVM) |
+| [Djinni](https://github.com/dropbox/djinni) | Type-safe C++ ↔ Kotlin/Java bridge |
+| [Langflow](https://github.com/langflow-ai/langflow) | Visual flow-chart editor for LLM flows (optional authoring) |
+| [n8n](https://n8n.io/) | Workflow automation (external ops glue) |
+| [Kotlin](https://kotlinlang.org/) | Compose Desktop project generator client |
+| [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | Multiplatform UI for `:app` |
+
+<!-- Maintainer: consider GitHub repo topics — native-app, scaffolder, sdl3, imgui, kotlin-compose, cpp, lua, python, android, blueprint, langflow, open-source -->
+
+### Related repositories
+
+| Repo | Role |
+|------|------|
+| [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Separate `:client-desktop` wizard distribution |
