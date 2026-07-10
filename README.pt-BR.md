@@ -395,6 +395,8 @@ Guia completo: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.
 
 **Vale a rampa do Nexus quando:** você precisa de throughput nativo, binários pequenos, paridade SDL3 entre desktop e tablets Android de campo, Python/numpy in-process ou rewiring via blueprint sem motor de browser.
 
+Se você está pesando um rewrite completo em Rust ou outra linguagem, veja [Evolução incremental — não é rewrite greenfield](#evolução-incremental--não-é-rewrite-greenfield) abaixo.
+
 </details>
 
 ---
@@ -492,6 +494,16 @@ Projetos gerados usam **C++20** com convenções que endereçam dores clássicas
 **Rust costuma ser o default melhor** para serviços greenfield safety-critical, backends web async ou times já padronizados em `cargo` e `#![deny(unsafe_code)]`.
 
 **C++ moderno + Nexus encaixa** quando você já depende de libs C++ (kernels CAD, codecs, APIs de exchange), precisa de UX ImGui immediate-mode, quer Python pybind11/Chaquopy in-process ou deve entregar a mesma pilha SDL3 no desktop e Android sem reescrever em outra linguagem.
+
+### Evolução incremental — não é rewrite greenfield
+
+O Nexus gera apps **C++/SDL3** pensados para crescer camada a camada. Você não precisa descartar um core binário existente e redesenhar toda a infraestrutura em Rust, Go ou outra linguagem só para perseguir performance nativa. Suas libs C/C++, presets CMake, SDKs de fornecedores e cola **Lua**/**Python** in-process continuam de primeira classe: troque superfícies de UI (páginas TS/XHTML, novos painéis ImGui), ligue serviços [`flows.json`](docs/templates/flows-schema.md) ou estenda o grafo [`blueprint.json`](docs/templates/blueprint-schema.md) sem jogar fora `src/` escrito à mão ou `panels.lua` legado.
+
+Essa compatibilidade é **backwards compatible-ish**, não mágica de ABI. Novos nós de blueprint, flows em runtime e telas autoria em XHTML podem conviver com scripts Lua antigos e módulos C++ sob medida no mesmo processo. Times presos em Electron ou Tauri costumam enfrentar um garfo: aceitar overhead de web-shell ou apostar em rewrite completo da stack. O Nexus oferece um terceiro caminho — manter o C++ crítico de performance que você já pagou, modernizar a autoria incrementalmente e fazer profile antes de reescrever qualquer coisa em outra linguagem.
+
+> *"Faça funcionar, faça certo, faça rápido — nessa ordem."* — frequentemente atribuído a Kent Beck
+
+**Ressalva honesta:** você ainda mantém código C++, persegue warnings do compilador e assume trade-offs de threading/memória que Rust pegaria em compile-time. O ganho é estratégico: você não é forçado a migrar a stack inteira para escapar de um web shell lento.
 
 ---
 
