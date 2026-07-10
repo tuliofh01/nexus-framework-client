@@ -30,7 +30,7 @@ This report captures an [API Readiness Analyzer](https://github.com/tuliofh01/ne
    - 6-step wizard + imnodes blueprint editor  
    **Reality:** `app/` is a **Counter demo** only (`App.kt` → `CounterScreen`). No generation, wizard, or template-copy code in Kotlin.
 
-2. **JDK prerequisite was wrong in README** — README + pt-BR previously said **JDK 21**; `buildSrc` uses `jvmToolchain(26)`. Build fails on JDK 21:
+2. **JDK prerequisite was wrong in README** — README + pt-BR previously said **JDK 21**; `misc/build-logic` uses `jvmToolchain(26)`. Build fails on JDK 21:
    > `Dependency requires at least JVM runtime version 26`  
    `AGENTS.md` and README (post-`c3f316c`) now correctly say Java 26.
 

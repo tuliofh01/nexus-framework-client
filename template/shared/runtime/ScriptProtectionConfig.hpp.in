@@ -1,0 +1,14 @@
+#pragma once
+
+// Generated at project creation — obfuscated key material for script archive decryption.
+// Do not edit manually; regenerate via Nexus Framework generator.
+
+namespace nxs::runtime::script_protection {
+
+constexpr bool ENABLED = {{scriptProtectionEnabled}};
+
+constexpr const char* PROJECT_NAME = "{{projectName}}";
+constexpr const char* SALT = "{{scriptProtectionSalt}}";
+constexpr const char* CREATED_AT = "{{createdAt}}";
+
+}  // namespace nxs::runtime::script_protection

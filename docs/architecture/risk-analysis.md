@@ -67,7 +67,7 @@ Auth routes are **N/A** — local desktop scaffold with no network surface.
 | Source | JDK |
 |--------|-----|
 | `README.md:108` | 21 |
-| `buildSrc/.../kotlin-jvm.gradle.kts:14` | **26** (Foojay auto-download) |
+| `misc/build-logic/.../kotlin-jvm.gradle.kts:14` | **26** (Foojay auto-download) |
 | `template/android-app/app/build.gradle.kts:45` | 17 |
 
 **Impact:** Wrong JDK installed by contributors; IDE/toolchain mismatch.
@@ -130,7 +130,7 @@ Errors surface as `EvalResult.ok = false`; UI may show blank plots without promi
 | ID | Area | Detail |
 |----|------|--------|
 | M1 | pybind11 system dependency | `find_package(Python3 3.10 REQUIRED COMPONENTS Development.Embed)` — fails without `python3-dev` |
-| M2 | JDK 26 early-adopter bet | Reverting touches `buildSrc`, CI, IDE docs |
+| M2 | JDK 26 early-adopter bet | Reverting touches `misc/build-logic`, CI, IDE docs |
 | M3 | Remote URL naming | `git remote` → `nexus-framework-client` while directory is `Framework` |
 | M4 | FetchContent supply chain | Tags are mutable; no SHA256 verification |
 
@@ -199,7 +199,7 @@ flowchart TD
 
 | Decision | Reversibility | Notes |
 |----------|---------------|-------|
-| **JDK 26 toolchain** | Medium | Foojay + `buildSrc` convention; downgrade to 21 is small diff but touches all contributor docs |
+| **JDK 26 toolchain** | Medium | Foojay + `misc/build-logic` convention; downgrade to 21 is small diff but touches all contributor docs |
 | **Dual-repo split** | **High** | Framework templates vs Client `ProjectGenerator`; merge cost grows monthly |
 | **FetchContent-over-vendor** | Medium | Switching to `vendor/` subtrees requires CMake refactor + LFS policy |
 | **SDL3 + ImGui (not Qt/web)** | **Very high** | Core product identity; affects all templates and docs |
@@ -228,7 +228,7 @@ Use this table when editing `README.md`, `README.pt-BR.md`, and `docs/architectu
 ### Fix today (&lt;1 hour)
 
 1. Remove duplicate classes in `MainActivity.kt` and `NexusApplication.kt`.
-2. Align JDK prerequisite in README with `buildSrc` (or downgrade toolchain to 21).
+2. Align JDK prerequisite in README with `misc/build-logic` (or downgrade toolchain to 21).
 3. Add “demo only” label to Quick Start for `:app:run`.
 
 ### This sprint

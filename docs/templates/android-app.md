@@ -43,6 +43,10 @@ Do not hand-edit `djinni-generated/cpp/` or `djinni-generated/jni/`.
 2. `MainActivity.onCreate` calls `PlotterCore.installPythonBridge(ChaquopyPythonBridge())`.
 3. SDL3 runs `SDL_main` in `src/main.cpp` — same MVC loop as desktop.
 
+### Python (Android)
+
+Android uses **Chaquopy** — Python sources live in `app/src/main/python/` and are bundled by Gradle. There is **no** `python.dat` on Android (unlike desktop pybind11 embed). Lua still packs to `assets/lua.dat` via Gradle `packLuaDat`.
+
 ## Build
 
 Open in Android Studio or:

@@ -9,7 +9,13 @@
     "applicationId": "com.nexus.plotter",
     "windowTitle": "{{projectName}} - built with The Nexus Framework",
     "version": "0.1.0",
-    "cppStandard": "20"
+    "cppStandard": "20",
+    "createdAt": "{{createdAt}}"
+  },
+  "scriptProtection": {
+    "enabled": {{scriptProtectionEnabled}},
+    "salt": "{{scriptProtectionSalt}}",
+    "algorithm": "nxs-v1"
   },
   "targets": {
     "android": {

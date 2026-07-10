@@ -87,8 +87,8 @@ builds/framework/*
 .env
 *.env
 !.env.example
-client-setup/env.sh
-client-setup/env.bat
+misc/client-setup/env.sh
+misc/client-setup/env.bat
 
 ### Local build outputs under template builds/ (keep README + .gitkeep) ###
 template/*/builds/*

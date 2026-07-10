@@ -2,29 +2,49 @@
 
 Generated Nexus apps share one layered design. The scaffold client (`app/`) uses **MVC in Kotlin Compose**; generated C++ templates mirror it under `src/model/`, `src/controller/`, and `src/view/`.
 
-## Full stack (single diagram)
+## Full stack + blueprint authoring
 
-![Nexus full stack — scaffold client, TS/XHTML + blueprint authoring, Lua/sol2 scripting, C++ MVC on SDL3/ImGui, Python bridges, Desktop vs Android targets](../assets/diagrams/full-stack-architecture.svg)
+![Nexus full stack — Compose client, blueprint.json graph, generation, C++ MVC on SDL3/ImGui, Python bridges](../assets/diagrams/full-stack-architecture.svg)
 
-This diagram replaces the previous per-use-case flowcharts (trading desk, CAD, scientific viz, etc.). Those workloads all compose the same layers; only the domain code in `model/` and `controller/` changes.
+This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewers, and scientific tools all compose the same layers; only domain code in `model/` and `controller/` changes.
 
 | Layer | Technology | Role |
 |-------|------------|------|
-| **Scaffold client** | Kotlin Compose MVC | Wizard, imnodes editor, project generation |
-| **Authoring** | TS/XHTML, `blueprint.json` | UI components and Langflow-style wiring |
-| **Scripting** | Lua 5.4 + **sol2** | Runtime panels, hotkeys |
-| **Domain** | C++20 MVC | Model, controller, ImGui/ImPlot view |
+| **Scaffold client** | Kotlin Compose MVC (`:app`) | **Generate Project** + **Edit blueprint** (v1 Compose graph editor) |
+| **Blueprint graph** | `blueprint.json` (imnodes schema) | Langflow-style nodes + edges — generation consumes the graph |
+| **Generation** | `:core`, `:cli` in `misc/` | `ProjectGenerator`, `BlueprintValidator` → `builds/framework/<name>/` |
+| **Authoring** | TS/XHTML, Lua, Python files | UI components and runtime panels referenced by blueprint nodes |
+| **Scripting** | Lua 5.4 + **sol2** | Runtime panels, hotkeys (`lua.script` nodes) |
+| **Domain** | C++20 MVC | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`) |
 | **Rendering** | ImGui + ImPlot on **SDL3** | Desktop OpenGL, Android GLES |
-| **Python** | pybind11 (desktop) / **Chaquopy** (Android) | numpy, analytics |
+| **Python** | pybind11 (desktop) / **Chaquopy** (Android) | `python.module` nodes — numpy, analytics |
 | **Android bridge** | **Djinni** | C++ ↔ Kotlin/JVM |
 
-## App creation wizard
+### Blueprint node types
 
-![Wizard flow — six steps from Compose client through template emit to build/run](../assets/diagrams/app-creation-wizard-flow.svg)
+| `type` | Generated artifact |
+|--------|-------------------|
+| `python.module` | `python/functions.py` — sampling, numpy |
+| `cpp.model` | `src/model/` — domain state |
+| `cpp.controller` | `src/controller/` — commands |
+| `ui.page` | `ui/ui.ts`, `ui/ui.xhtml` |
+| `lua.script` | `scripts/panels.lua` |
 
-## Blueprint / imnodes
+Edges wire data flow (e.g. `evaluate` → `sampleCache` → `activeCurves` → `commands`). See [blueprint-schema.md](../templates/blueprint-schema.md) and template samples under `template/*/blueprint.json`.
 
-`blueprint.json` at the template root wires Python modules, MVC classes, UI pages, and Lua scripts. Re-open in the wizard to rewire without CMake edits.
+**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1.1 adds a native imnodes panel using the same JSON.
+
+## Generation and builds
+
+![Generation flow — client-setup through :app/:cli to builds/framework and native binary](../assets/diagrams/generation-builds-flow.svg)
+
+The pipeline validates `blueprint.json` after template emit. A custom graph from the Compose editor is passed via `ProjectSpec.blueprint` and overrides the template stub.
+
+## Desktop vs Android runtime
+
+![Desktop vs Android — shared MVC/ImGui/SDL3; pybind11 vs Chaquopy + Djinni](../assets/diagrams/desktop-vs-android-runtime.svg)
+
+Both templates share the same `blueprint.json` node graph; only the Python bridge and OS host differ at runtime.
 
 ## Themes and fonts
 
@@ -34,6 +54,8 @@ This diagram replaces the previous per-use-case flowcharts (trading desk, CAD, s
 
 ## Related
 
+- [Blueprint schema](../templates/blueprint-schema.md)
 - [Coding with Nexus](../guides/coding-with-nexus.md)
+- [Generation pipeline](../guides/generation-pipeline.md)
 - [Desktop template](../templates/desktop-app.md)
 - [Android template](../templates/android-app.md)

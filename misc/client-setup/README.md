@@ -4,17 +4,17 @@ Run **one** platform script **before** your first `./gradlew :app:run`. Installs
 
 | Platform | Script | Env file |
 |----------|--------|----------|
-| **Linux** | [`linux/setup.sh`](linux/setup.sh) | `client-setup/env.sh` |
-| **macOS** | [`macos/setup.sh`](macos/setup.sh) | `client-setup/env.sh` |
-| **Windows** | [`windows/setup.bat`](windows/setup.bat) | `client-setup/env.bat` |
+| **Linux** | [`linux/setup.sh`](linux/setup.sh) | `misc/client-setup/env.sh` |
+| **macOS** | [`macos/setup.sh`](macos/setup.sh) | `misc/client-setup/env.sh` |
+| **Windows** | [`windows/setup.bat`](windows/setup.bat) | `misc/client-setup/env.bat` |
 
 ## Quick start
 
 **Linux**
 
 ```bash
-./client-setup/linux/setup.sh
-source client-setup/env.sh
+./misc/client-setup/linux/setup.sh
+source misc/client-setup/env.sh
 ./gradlew :app:run
 ```
 
@@ -28,12 +28,12 @@ Per-distro helpers: [`linux/setup-arch.sh`](linux/setup-arch.sh) · [`linux/setu
 
 | Component | Required for Compose client? | Notes |
 |-----------|------------------------------|-------|
-| **OpenJDK 26** | Yes | Matches `buildSrc` `jvmToolchain(26)` |
+| **OpenJDK 26** | Yes | Matches `misc/build-logic` `jvmToolchain(26)` |
 | **Git** | Yes | Clone, templates, version control |
 | **gcc/g++/make** (Linux) | Recommended | Native helpers |
 | **CMake / Ninja** | No | Only for **generated** C++ templates |
 
-Source `client-setup/env.sh` (or `env.bat`) in each new shell. Add exports to `~/.bashrc` or `~/.zshrc` to persist.
+Source `misc/client-setup/env.sh` (or `env.bat`) in each new shell. Add exports to `~/.bashrc` or `~/.zshrc` to persist.
 
 [Foojay Toolchains](https://github.com/gradle/foojay-toolchains-gradle-plugin) can download JDK 26 if missing, but a system JDK avoids slow first builds.
 

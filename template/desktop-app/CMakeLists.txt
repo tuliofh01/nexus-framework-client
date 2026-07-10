@@ -108,6 +108,34 @@ FetchContent_MakeAvailable(pybind11)
 # Application target — MVC layout under src/.
 # --------------------------------------------------------------------------
 set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+set(MISC_OUTPUT_DIR ${CMAKE_BINARY_DIR}/misc)
+
+# --------------------------------------------------------------------------
+# Script archive packer — builds misc/lua.dat and misc/python.dat (v2 optional
+# encryption when scriptProtection.enabled is true in nxs_config.json).
+# --------------------------------------------------------------------------
+add_executable(pack_archive
+    ${NXS_SHARED_DIR}/tools/pack_archive.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptCrypto.cpp)
+target_include_directories(pack_archive PRIVATE ${NXS_SHARED_DIR}/runtime ${NXS_SHARED_DIR}/tools)
+
+add_custom_target(pack_lua_dat ALL
+    COMMAND pack_archive lua
+        ${CMAKE_SOURCE_DIR}/scripts
+        ${CMAKE_BINARY_DIR}/misc/lua.dat
+        ${CMAKE_SOURCE_DIR}/nxs_config.json
+    DEPENDS pack_archive
+    BYPRODUCTS ${CMAKE_BINARY_DIR}/misc/lua.dat
+    COMMENT "Packing Lua scripts to misc/lua.dat")
+add_custom_target(pack_python_dat ALL
+    COMMAND pack_archive python
+        ${CMAKE_SOURCE_DIR}/python
+        ${CMAKE_BINARY_DIR}/misc/python.dat
+        ${CMAKE_SOURCE_DIR}/nxs_config.json
+    DEPENDS pack_archive
+    BYPRODUCTS ${CMAKE_BINARY_DIR}/misc/python.dat
+    COMMENT "Packing Python scripts to misc/python.dat")
 
 add_executable({{projectName}}
     src/main.cpp
@@ -117,7 +145,9 @@ add_executable({{projectName}}
     src/view/PlotterView.cpp
     src/view/LuaPanels.cpp
     ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
-    ${NXS_SHARED_DIR}/runtime/FontConfig.cpp)
+    ${NXS_SHARED_DIR}/runtime/FontConfig.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp
+    ${NXS_SHARED_DIR}/runtime/ScriptCrypto.cpp)
 
 target_include_directories({{projectName}} PRIVATE src ${NXS_SHARED_DIR}/runtime)
 target_link_libraries({{projectName}} PRIVATE
@@ -126,9 +156,19 @@ target_link_libraries({{projectName}} PRIVATE
     ${NXS_LUA_TARGET}
     pybind11::embed
     Python3::Python)
+add_dependencies({{projectName}} pack_lua_dat pack_python_dat)
 
-# Runtime assets: Lua scripts, Python sources, DSL files, blueprint.
-foreach(asset_dir scripts python ui)
+# Copy packed archives and runtime assets beside the executable.
+add_custom_command(TARGET {{projectName}} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:{{projectName}}>/misc
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${MISC_OUTPUT_DIR}/lua.dat $<TARGET_FILE_DIR:{{projectName}}>/misc/lua.dat
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${MISC_OUTPUT_DIR}/python.dat $<TARGET_FILE_DIR:{{projectName}}>/misc/python.dat
+    COMMENT "Staging misc/lua.dat and misc/python.dat")
+
+# Dev fallback: plain script trees + DSL (python/ omitted when using python.dat).
+foreach(asset_dir scripts ui)
     add_custom_command(TARGET {{projectName}} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/${asset_dir}
