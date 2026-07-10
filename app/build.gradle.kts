@@ -17,6 +17,7 @@ dependencies {
     implementation(compose.components.uiToolingPreview)
 
     implementation(project(":core"))
+    implementation(libs.kotlinxSerialization)
 
     testImplementation(kotlin("test"))
 }
