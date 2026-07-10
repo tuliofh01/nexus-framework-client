@@ -11,12 +11,22 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `:core` | `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
 | `:cli` | Headless `generate` command |
 | `:app` | Compose Desktop client — **MVC** under `nexus.opensource` (`model/`, `view/`, `controller/`) |
+| `client-setup/` | First-run JDK 26 + Git installers — run **before** first `./gradlew :app:run` ([client-setup/README.md](client-setup/README.md)) |
 | `template/desktop-app/` | Desktop output (SDL3 + pybind11 path) |
 | `template/android-app/` | Android output (Chaquopy + Djinni) |
 | `template/shared/` | Shared DSL, themes, runtime helpers |
 | `docs/assets/diagrams/` | Architecture SVGs referenced from README |
 
 **Generated-app stack** (see README): C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Djinni** + Chaquopy.
+
+## First run (human or agent)
+
+```bash
+./client-setup/linux/setup.sh    # or macos/setup.sh / windows/setup.bat
+source client-setup/env.sh       # Windows: call client-setup\env.bat
+```
+
+JDK **26** is required (`buildSrc` `jvmToolchain(26)`). Do not assume JDK 21.
 
 ## Build / run
 
@@ -86,3 +96,5 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 - Hub: [docs/README.md](docs/README.md)
 - Generation: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
+- Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
+- Client setup: [client-setup/README.md](client-setup/README.md)
