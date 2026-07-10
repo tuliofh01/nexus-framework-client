@@ -6,6 +6,7 @@ plugins {
 val repoRoot = rootProject.projectDir
 val templateDesktop = repoRoot.resolve("template/desktop-app")
 val templateShared = repoRoot.resolve("template/shared")
+val packToolsDir = templateShared.resolve("tools")
 val packBuildDir = layout.buildDirectory.dir("pack-tools")
 val packExeProvider = packBuildDir.map { it.file("pack_archive").asFile.absolutePath }
 
@@ -20,8 +21,7 @@ tasks.register("buildPackArchive") {
     val buildDir = packBuildDir.get().asFile
     val exe = buildDir.resolve("pack_archive")
     inputs.dir(templateShared.resolve("runtime"))
-    inputs.dir(templateShared.resolve("tools"))
-    inputs.file(templateDesktop.resolve("CMakeLists.txt"))
+    inputs.dir(packToolsDir)
     outputs.file(exe)
 
     doLast {
@@ -29,13 +29,13 @@ tasks.register("buildPackArchive") {
             fun run(vararg args: String) {
                 check(
                     ProcessBuilder(*args)
-                        .directory(templateDesktop)
+                        .directory(packToolsDir)
                         .inheritIO()
                         .start()
                         .waitFor() == 0,
                 ) { "Command failed: ${args.joinToString(" ")}" }
             }
-            run("cmake", "-B", buildDir.absolutePath, "-S", templateDesktop.absolutePath)
+            run("cmake", "-B", buildDir.absolutePath, "-S", packToolsDir.absolutePath)
             run("cmake", "--build", buildDir.absolutePath, "--target", "pack_archive", "-j")
         }
     }
@@ -52,7 +52,6 @@ tasks.register<Exec>("packTemplateLuaDat") {
         "lua",
         templateDesktop.resolve("scripts").absolutePath,
         out.get().asFile.absolutePath,
-        templateDesktop.resolve("nxs_config.json").absolutePath,
     )
 }
 
@@ -67,6 +66,5 @@ tasks.register<Exec>("packTemplatePythonDat") {
         "python",
         templateDesktop.resolve("python").absolutePath,
         out.get().asFile.absolutePath,
-        templateDesktop.resolve("nxs_config.json").absolutePath,
     )
 }
