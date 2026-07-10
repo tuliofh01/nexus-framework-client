@@ -33,6 +33,8 @@ JDK **26** is required (`misc/build-logic` `jvmToolchain(26)`). Do not assume JD
 
 ```bash
 ./gradlew :core:compileKotlin          # compile generator core
+./gradlew :core:packTemplateLuaDat     # host pack template lua.dat (LUAC)
+./gradlew :core:packTemplatePythonDat  # host pack template python.dat (PYAC)
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ./gradlew :cli:run --args="generate --type desktop --name MyApp"
 ./gradlew :app:run                    # Compose client (Generate Project button)

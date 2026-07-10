@@ -46,6 +46,6 @@ Source `misc/client-setup/env.sh` (or `env.bat`) in each new shell. Add exports 
 | macOS: `openjdk@26` missing | `brew install --cask temurin@26` |
 | Windows: setup exits with error 1 | Install JDK 26 + Git via printed commands; new terminal |
 | Template C++ build fails | Install CMake 3.24+ and Ninja separately |
-| Wrong branch | Active branch is **`master`** — `git checkout master` |
+| Wrong branch | Active branch is **`main`** — `git checkout main` |
 
 Related: [../README.md](../README.md) · [../AGENTS.md](../AGENTS.md)

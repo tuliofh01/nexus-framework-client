@@ -222,4 +222,4 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 
 **Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
 
-**Branch:** active development on **`master`** (`origin/master`). If your clone defaults to `main`, run `git checkout master`.
+**Branch:** active development on **`main`** (`origin/main`).
