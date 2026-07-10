@@ -218,6 +218,84 @@ Guia completo: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.
 
 ---
 
+## Python: Desktop vs Android
+
+O mesmo nó `python.module` no [`blueprint.json`](docs/templates/blueprint-schema.md) liga amostragem de curvas nos **dois** templates — só mudam o embed, o empacotamento e a fronteira C++↔Python. Guias dos projetos gerados: [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) · [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
+
+| | **Desktop** | **Android** |
+|---|-------------|-------------|
+| **Embedding** | pybind11 — CPython dentro do processo nativo | Chaquopy na JVM; Djinni `ChaquopyPythonBridge` |
+| **Árvore de fontes** | `python/` (ex.: `functions.py`) | `app/src/main/python/` |
+| **Arquivo** | `misc/python.dat` (PYAC) via CMake `pack_python_dat` | **Nenhum** — Gradle/Chaquopy empacota `.py` no APK |
+| **Loader em runtime** | `PythonEngine` em `src/controller/` | `PlotterCore` → Djinni → Kotlin `ChaquopyPythonBridge` |
+| **`nxs_config.json`** | `features.python.embedding = "pybind11"` | `features.python.embedding = "chaquopy"` |
+| **Rebuild típico** | `cmake --build` (atualiza `python.dat`) | `./gradlew :app:assembleDebug` |
+
+```
+blueprint.json  (python.module  →  porta "evaluate")
+        │
+        ├─ Desktop ───────────────────────────────────────────┐
+        │   python/functions.py                               │
+        │        │  CMake: pack_python_dat                    │
+        │        ▼                                            │
+        │   misc/python.dat (PYAC)                            │
+        │        │  PythonEngine (embed pybind11)             │
+        │        ▼                                            │
+        │   PlotController → FunctionRegistry → ImPlot        │
+        │                                                     │
+        └─ Android ───────────────────────────────────────────┤
+            app/src/main/python/functions.py                  │
+                 │  Gradle + Chaquopy (sem python.dat)       │
+                 ▼                                            │
+            ChaquopyPythonBridge (Djinni)                     │
+                 ▼                                            │
+            PlotController → FunctionRegistry → ImPlot  ◄─────┘
+```
+
+Ambos os caminhos respeitam a mesma aresta do blueprint: Python `evaluate` → controller `sampleCache` → caches do model → desenho ImPlot. Desktop favorece binário nativo único com packs de script criptografados opcionais; Android favorece Python gerenciado pela JVM com JNI type-safe via Djinni. Veja [Runtime Desktop vs Android](docs/assets/diagrams/desktop-vs-android-runtime.svg).
+
+---
+
+## TypeScript + DSL XHTML
+
+O Nexus expõe **duas camadas de autoria de UI** que descem para a mesma API ImGui/Lua — Lua imperativo para painéis rápidos, TS/XHTML declarativo quando o modelo mental de componentes encaixa melhor. Nenhum caminho usa motor de browser.
+
+### Lua imperativo (`panels.lua`)
+
+Painéis em runtime registram via sol2: `nxs.register_panel(...)` com `ui.button`, `ui.text`, `ui.separator` e `nxs.register_hotkey`. É a camada mais baixa — edite `scripts/panels.lua`, reempacote `lua.dat` opcionalmente, hot-reload sem recompilar C++.
+
+```lua
+nxs.register_panel("Quick add", function()
+    if ui.button("sin(x)") then nxs.add_function("sine") end
+end)
+```
+
+### TS/XHTML declarativo (`ui/`)
+
+[`ui/ui.xhtml`](template/desktop-app/ui/ui.xhtml) + [`ui/ui.ts`](template/desktop-app/ui/ui.ts) descrevem a mesma sidebar e o gráfico em markup e TypeScript. A toolchain desce para definições de painel Lua equivalentes a `panels.lua` — **não** Node nem WebView.
+
+| Mecanismo | TS/XHTML | Desce para |
+|-----------|----------|------------|
+| `state()` em `ui.ts` | `bind="sampleCount"` em `<slider>` | Estado two-way do widget ImGui |
+| `native()` em `ui.ts` | `items-source="activeCurves"` | Projeção read-only do model C++ (`FunctionRegistry`) |
+| `invoke("nxs.add_function", …)` | `on-click="addPending"` | Mesmos comandos `nxs.*` que Lua chama diretamente |
+
+### `ComponentTag` → widgets nativos
+
+[`template/shared/dsl/tags.ts`](template/shared/dsl/tags.ts) mapeia cada tag XHTML para chamada Dear ImGui, ImPlot ou imnodes. [`components.ts`](template/shared/dsl/components.ts) fornece classes tipadas por tag; [`core.ts`](template/shared/dsl/core.ts) define a base `Component`, props de estilo e callbacks de evento percorridos pelo runtime nativo a cada frame.
+
+| Tag (exemplos) | API nativa |
+|----------------|------------|
+| `window`, `panel`, `button`, `slider`, `checkbox` | Dear ImGui |
+| `plot`, `plot-line`, `plot-scatter`, `plot-bars` | ImPlot |
+| `node-editor` | imnodes (`BeginNodeEditor`) |
+
+Widgets-chave do plotter: **Window**, **Panel**, **Button**, **Slider**, **Plot**, **PlotLine**. O futuro painel **imnodes** do blueprint (v1.1) reutiliza a mesma tag `NodeEditor` no mesmo schema.
+
+**Por onde começar:** [template/shared/dsl/](template/shared/dsl/) · markup de exemplo [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml) · [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
+
+---
+
 ## C++ moderno no Nexus
 
 Projetos gerados usam **C++20** com convenções que endereçam dores clássicas de C++ legado. Rust ainda vence em garantias estáticas de segurança — trade-off honesto, não guerra de linguagens.
@@ -246,7 +324,7 @@ Projetos gerados usam **C++20** com convenções que endereçam dores clássicas
 
 ![Langflow vs n8n vs blueprint Nexus — DAG tipado vs automação vs codegen em design-time](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
-Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md)
+Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md) · Divisão Python: [Python: Desktop vs Android](#python-desktop-vs-android) · Autoria UI: [TypeScript + DSL XHTML](#typescript--dsl-xhtml)
 
 ## Documentação
 
@@ -260,6 +338,8 @@ Referência de camadas: [docs/architecture/overview.md](docs/architecture/overvi
 | [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | Onboarding de agentes IA |
 | [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Riscos de arquitetura |
 | [AGENTS.md](AGENTS.md) | Comandos de build para assistentes de código |
+| [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) | Plotter desktop gerado — pybind11, Lua, TS/XHTML |
+| [template/android-app/AGENTS.md](template/android-app/AGENTS.md) | Plotter Android gerado — Chaquopy, Djinni |
 
 ## Status de desenvolvimento e limitações
 
