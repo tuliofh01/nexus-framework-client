@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 820" width="1500" height="820">
-  <title>Nexus Generated App — Desktop vs Android Runtime</title>
+  <title>Desktop vs Android runtime</title>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
@@ -9,8 +9,8 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
-      .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
+      .title { font: 19px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; font-weight: 700; }
+      .subtitle { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #666666; font-weight: normal; }
       .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
@@ -26,8 +26,8 @@
   </defs>
   <rect width="1500" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
-  <text x="750" y="38" text-anchor="middle" class="title">Nexus Generated App — Desktop vs Android Runtime</text>
-  <text x="750" y="58" text-anchor="middle" class="subtitle">Shared blueprint graph; platform-specific runtime stacks</text>
+  <text x="750" y="38" text-anchor="middle" class="title">Desktop vs Android runtime</text>
+  <text x="750" y="58" text-anchor="middle" class="subtitle">pybind11/SDL3 vs Chaquopy/Djinni on the same blueprint</text>
 
   <rect x="420" y="78" width="480" height="340" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
   <text x="434" y="102" class="layer-label">&#xf5fd; Shared (both templates)</text>
@@ -107,7 +107,7 @@
   <text x="980" y="148" class="small">Same plotter template on both targets.</text>
   <text x="980" y="168" class="desc">blueprint.json declares the same node graph.</text>
 
-  <rect x="560, 680" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
+  <rect x="560" y="680" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="580" y="710" class="small">Lowest latency: Python runs in-process via pybind11.</text>
 
   <rect x="24" y="720" width="480" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>

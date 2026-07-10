@@ -50,8 +50,8 @@ def defs(logo_href: str) -> str:
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title {{ font: bold 22px {FONT}; fill: #1a1a2e; }}
-      .subtitle {{ font: 13px {FONT}; fill: #455A64; }}
+      .title {{ font: 19px {FONT}; fill: #1a1a2e; font-weight: 700; }}
+      .subtitle {{ font: 12px {FONT}; fill: #666666; font-weight: normal; }}
       .label {{ font: bold 13px {FONT}; fill: #263238; font-weight: 700; }}
       .desc {{ font: italic 11px {FONT}; fill: #78909C; }}
       .small {{ font: 11px {FONT}; fill: #546E7A; }}
@@ -115,13 +115,15 @@ def legend_box(x, y, w, h, items: list[tuple[str, str, str]], title="Legend") ->
 
 
 def full_stack_architecture() -> str:
+    TITLE = "Nexus full-stack architecture"
+    SUBTITLE = "Client, generation pipeline, templates, and native runtimes"
     w, h = 1580, 920
     logo = "../nexus-logo.png"
     s = f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Nexus Framework — Full Stack + Blueprint Authoring</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Nexus Framework — Full Stack + Blueprint Authoring", "Scaffold client, blueprint graph, and generated native app", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 
 {layer_box(620, 78, 360, 400, "#E8F4FD", "#1565C0", "Scaffold client (:app)", NF["desktop"])}
 {module(640, 118, 320, 58, "#FFFFFF", "#1565C0", NF["rocket"], "Generate Project", "Compose UI entry for project scaffolding")}
@@ -179,6 +181,8 @@ def full_stack_architecture() -> str:
 
 
 def generation_builds_flow() -> str:
+    TITLE = "Generation & builds flow"
+    SUBTITLE = "From client-setup to builds/framework output"
     w, h = 2100, 900
     logo = "../nexus-logo.png"
     steps = [
@@ -253,9 +257,9 @@ def generation_builds_flow() -> str:
 """
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Nexus — Generation &amp; Builds Flow</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Nexus — Generation &amp; Builds Flow", "From first-run setup through native build and optional client deploy", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 {lanes}
 {body}
 {flows}
@@ -269,13 +273,15 @@ def generation_builds_flow() -> str:
 
 
 def desktop_vs_android() -> str:
+    TITLE = "Desktop vs Android runtime"
+    SUBTITLE = "pybind11/SDL3 vs Chaquopy/Djinni on the same blueprint"
     w, h = 1500, 820
     logo = "../nexus-logo.png"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Nexus Generated App — Desktop vs Android Runtime</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Nexus Generated App — Desktop vs Android Runtime", "Shared blueprint graph; platform-specific runtime stacks", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 
 {layer_box(420, 78, 480, 340, "#F3E5F5", "#6A1B9A", "Shared (both templates)", NF["layer"])}
 {module(440, 118, 200, 62, "#FFFFFF", "#6A1B9A", NF["file"], "blueprint.json", "Loads blueprint.json at generate time")}
@@ -310,7 +316,7 @@ def desktop_vs_android() -> str:
   <text x="980" y="148" class="small">Same plotter template on both targets.</text>
   <text x="980" y="168" class="desc">blueprint.json declares the same node graph.</text>
 
-  <rect x="560, 680" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
+  <rect x="560" y="680" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="580" y="710" class="small">Lowest latency: Python runs in-process via pybind11.</text>
 
 {legend_box(24, 720, 480, 80, [
@@ -322,13 +328,15 @@ def desktop_vs_android() -> str:
 
 
 def langflow_vs_n8n() -> str:
+    TITLE = "Langflow, n8n, and Nexus blueprints"
+    SUBTITLE = "Design-time structure vs runtime automation"
     w, h = 1240, 580
     logo = "../nexus-logo.png"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Langflow vs n8n vs Nexus blueprint.json</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Blueprint paradigms — Langflow · n8n · Nexus", "Same visual wiring metaphor; different purpose and execution timing", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 
 {layer_box(24, 88, 360, 420, "#E8F5E9", "#2E7D32", "Langflow", NF["robot"])}
   <text x="204" y="130" text-anchor="middle" class="desc">ML / LLM flow DAG · Runtime execution</text>
@@ -372,6 +380,8 @@ def langflow_vs_n8n() -> str:
 
 
 def langflow_rag_chatbot() -> str:
+    TITLE = "Langflow: RAG chatbot flow"
+    SUBTITLE = "Retrieval-augmented generation DAG example"
     w, h = 1520, 460
     logo = "../nexus-logo.png"
     nodes = [
@@ -395,9 +405,9 @@ def langflow_rag_chatbot() -> str:
     edges += '  <text x="510" y="258" text-anchor="middle" class="desc">user query shortcut at chat time</text>\n'
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Langflow Example — RAG Chatbot</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Langflow Example — RAG Chatbot", "Classic retrieval-augmented generation pipeline (runtime LLM flow)", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 {body}
 {edges}
 {legend_box(40, 300, 1440, 120, [
@@ -411,13 +421,15 @@ def langflow_rag_chatbot() -> str:
 
 
 def langflow_agent_tools() -> str:
+    TITLE = "Langflow: agent with tools"
+    SUBTITLE = "ReAct-style tool-calling workflow"
     w, h = 1000, 600
     logo = "../nexus-logo.png"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Langflow Example — Agent with Tools</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Langflow Example — Agent with Tools", "LLM agent selects tools at runtime based on user intent", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 
 {module(80, 200, 150, 64, "#E8F5E9", "#2E7D32", NF["comment"], "User Input", "Natural language task from user")}
 {module(380, 190, 220, 84, "#E8EAF6", "#3949AB", NF["robot"], "Agent", "ReAct / tool-calling LLM orchestrator")}
@@ -446,13 +458,15 @@ def langflow_agent_tools() -> str:
 
 
 def nexus_blueprint_app_structure() -> str:
+    TITLE = "Nexus blueprint app structure"
+    SUBTITLE = "Typed nodes from UI to Python/Lua layers"
     w, h = 1140, 600
     logo = "../nexus-logo.png"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
-  <title>Nexus Blueprint - App Structure (Design-Time)</title>
+  <title>{TITLE}</title>
 {defs(logo)}
-{header("Nexus Blueprint — App Structure", "Langflow mental model translated to design-time MVC wiring", logo, w)}
+{header(TITLE, SUBTITLE, logo, w)}
 
   <rect x="380" y="72" width="380" height="28" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" rx="14"/>
   <text x="570" y="91" text-anchor="middle" class="badge">DESIGN-TIME — consumed at generation, not runtime webhooks</text>

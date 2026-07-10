@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1520 460" width="1520" height="460">
-  <title>Langflow Example — RAG Chatbot</title>
+  <title>Langflow: RAG chatbot flow</title>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
@@ -9,8 +9,8 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
-      .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
+      .title { font: 19px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; font-weight: 700; }
+      .subtitle { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #666666; font-weight: normal; }
       .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
@@ -26,8 +26,8 @@
   </defs>
   <rect width="1520" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
-  <text x="760" y="38" text-anchor="middle" class="title">Langflow Example — RAG Chatbot</text>
-  <text x="760" y="58" text-anchor="middle" class="subtitle">Classic retrieval-augmented generation pipeline (runtime LLM flow)</text>
+  <text x="760" y="38" text-anchor="middle" class="title">Langflow: RAG chatbot flow</text>
+  <text x="760" y="58" text-anchor="middle" class="subtitle">Retrieval-augmented generation DAG example</text>
   <rect x="40" y="120" width="140" height="64" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="52" y="142" class="icon">&#xf075;</text>
   <text x="74" y="142" class="label">Chat Input</text>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 600" width="1140" height="600">
-  <title>Nexus Blueprint - App Structure (Design-Time)</title>
+  <title>Nexus blueprint app structure</title>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
@@ -9,8 +9,8 @@
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .title { font: bold 22px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; }
-      .subtitle { font: 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #455A64; }
+      .title { font: 19px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1a1a2e; font-weight: 700; }
+      .subtitle { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #666666; font-weight: normal; }
       .label { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
       .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
       .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
@@ -26,8 +26,8 @@
   </defs>
   <rect width="1140" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
-  <text x="570" y="38" text-anchor="middle" class="title">Nexus Blueprint — App Structure</text>
-  <text x="570" y="58" text-anchor="middle" class="subtitle">Langflow mental model translated to design-time MVC wiring</text>
+  <text x="570" y="38" text-anchor="middle" class="title">Nexus blueprint app structure</text>
+  <text x="570" y="58" text-anchor="middle" class="subtitle">Typed nodes from UI to Python/Lua layers</text>
 
   <rect x="380" y="72" width="380" height="28" fill="#E3F2FD" stroke="#1565C0" stroke-width="2" rx="14"/>
   <text x="570" y="91" text-anchor="middle" class="badge">DESIGN-TIME — consumed at generation, not runtime webhooks</text>
