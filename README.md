@@ -9,121 +9,21 @@
   <a href="README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
 </p>
 
-This program is the Nexus Framework's Client. It scaffolds modern native applications in C++ for **Desktop** (Windows, macOS, Linux) and **Android**, using **SDL3** for cross-platform windowing, **sol2** for Lua scripting, **TypeScript + XHTML** for web-familiar UI authoring, and **Python** for embedded analytics. Android projects ship a **Djinni** C++↔Kotlin bridge and **Chaquopy** Python on the JVM side.
+**The Nexus Framework** scaffolds native C++/Lua/Python applications for **Desktop** (Windows, macOS, Linux) and **Android** — SDL3 windowing, sol2 scripting, TypeScript + XHTML UI authoring, and embedded Python (pybind11 on desktop, Chaquopy + Djinni on Android). ImGui + ImPlot render immediate-mode UIs without a browser engine.
 
-## What Nexus is built for
+## What this repo is
 
-Nexus fits **native, data-heavy, and field-deployed tools** where you need performance and a small footprint without shipping Chromium or a WebView.
+| Today | Roadmap (v1) |
+|-------|----------------|
+| Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** screen | Home screen and 6-step creation wizard |
+| Generation pipeline (`:core`, `:cli`) — copy/emit templates to `builds/framework/<name>/` | imnodes blueprint editor wired to generation |
+| Bundled templates — desktop plotter, Android plotter, shared DSL/themes | Remote template catalog, `python.dat` pack, iOS template |
 
-| Use case | Why Nexus | Template |
-|----------|-----------|----------|
-| **Trading / market-data desk** | Sub-ms UI refresh; C++ feed parsers; Python analytics in-process | Desktop |
-| **CAD / mesh / point-cloud viewer** | SDL3 GPU viewport + ImGui tool chrome; geometry stays in C++ | Desktop |
-| **Scientific visualization** | numpy via pybind11; large arrays in native memory; ImPlot charts | Desktop |
-| **Game dev tools** (editors, profilers, pipelines) | Immediate-mode UI like engine debug overlays; Lua hot-reload | Desktop |
-| **Audio / DSP workbench** | Low-latency C++ signal path; scriptable control surfaces | Desktop |
-| **DevOps / infra monitor** | Lightweight always-on dashboard; single native binary | Desktop |
-| **Android field tablet** (inspection, kiosk) | SDL3/GLES ImGui; Djinni bridge; Chaquopy Python | Android |
-| **Robotics / teleop panel** | Touch-friendly ImGui; `android.*` Lua bindings | Android |
-| **Embedded HMI / industrial panel** | Same SDL3 stack on desktop and Android | Both |
-
-Templates: [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
-
-The flagship sample is a **Desmos-style function plotter** — Python (numpy) samples curves, C++ owns the model, ImGui + ImPlot draw the page.
-
-## Learning curve
-
-Nexus asks for more upfront skill than a web shell, but generated projects run on day one.
-
-| Skill | Required? | Role |
-|-------|-----------|------|
-| **C++ / CMake** | Yes | Domain logic, MVC, build |
-| **SDL3 / ImGui** | Conceptual | Immediate-mode UI — redraw every frame, no DOM |
-| **Lua / sol2** | Optional → recommended | Runtime panels, hotkeys |
-| **TypeScript + XHTML** | Optional | Web-familiar component authoring |
-| **Python** | Optional | Desktop: pybind11 · Android: Chaquopy |
-| **Android / Djinni** | Android only | JNI-free bridge, APK packaging |
-
-**Recommended progression:** run the template → tweak MVC → add Python functions → script Lua panels → extend the TS/XHTML DSL → rewire `blueprint.json` in the imnodes editor.
-
-**Honest take:** Electron and Tauri are gentler for web-only teams. Nexus is worth the ramp when native throughput, binary size, or Android field deployment matter more than HTML layout flexibility. See [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md).
-
-## Architecture
-
-### Full stack
-
-One diagram covers the scaffold client, authoring layers, C++ MVC on SDL3, Python bridges, and Desktop vs Android targets:
-
-![Nexus full stack architecture — TS/XHTML + blueprint.json authoring, Lua/sol2 scripting, C++ MVC on SDL3/ImGui/ImPlot, pybind11 or Chaquopy+Djinni Python, Compose wizard client](docs/assets/diagrams/full-stack-architecture.svg)
-
-| Layer | Technology |
-|-------|------------|
-| **Authoring** | TypeScript + XHTML components, **imnodes** / `blueprint.json` (Langflow-style) |
-| **Scripting** | Lua ImGui DSL via **sol2** |
-| **Domain** | C++20 **MVC** — `model/`, `controller/`, `view/` |
-| **Rendering** | Dear ImGui + ImPlot on **SDL3** (OpenGL desktop, GLES Android) |
-| **Python** | **pybind11** (desktop) · **Chaquopy** + **Djinni** (Android) |
-| **Scaffold client** | Kotlin **Compose Desktop** MVC (`app/`) |
-
-### App creation wizard (v1 roadmap)
-
-Planned flow — not implemented in the client yet:
-
-![Wizard flow — Compose client, six-step wizard, imnodes blueprint editor, template emit, build and run](docs/assets/diagrams/app-creation-wizard-flow.svg)
-
-More detail: [docs/architecture/overview.md](docs/architecture/overview.md) · [docs/README.md](docs/README.md)
-
-## When to choose something else
-
-| You need… | Better fit |
-|-----------|------------|
-| Rich HTML/CSS or a large existing React/Vue codebase | Electron or Tauri |
-| **iOS** from the same toolchain today | Tauri 2 Mobile or native Swift/Kotlin |
-| Pixel-perfect OS-native widgets (HIG menus, system file pickers) | Qt, .NET MAUI, platform-native UI |
-| Designer-driven UI without code | Figma → web pipelines; ImGui is code-first |
-
-**Nexus limitations (v1):** Compose Desktop scaffolder only; no iOS template; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android.
-
-## What it does
-
-| App type | Stack | Guide |
-|----------|-------|-------|
-| **Desktop App** | C++ + Lua (sol2) + TS/XHTML + Python + ImGui on **SDL3** | [docs/templates/desktop-app.md](docs/templates/desktop-app.md) |
-| **Android App** | C++ + Lua + ImGui on **SDL3** + **Djinni** + **Chaquopy** | [docs/templates/android-app.md](docs/templates/android-app.md) |
-
-Each project includes `nxs_config.json`, `blueprint.json`, shared **themes** (`nexus-dark`, `nexus-light`, `nexus-field`), optional **Nerd Font** icon setup, and the Nexus logo in `assets/`.
-
-## Repository layout
-
-```
-Framework/
-├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
-├── core/                Generation pipeline (`:core`) — ProjectGenerator, TemplateEngine, nxs_config schema
-├── cli/                 Headless `generate` command (`:cli`)
-├── client-setup/        First-run JDK 26 + Git installers → client-setup/README.md
-├── buildSrc/            Gradle convention plugins (JVM toolchain 26)
-├── builds/              Deploy output — client to `builds/client/`, generated apps to `builds/framework/<name>/`
-├── template/
-│   ├── desktop-app/     Desktop output template (C++/CMake plotter sample)
-│   ├── android-app/     Android output template (Gradle/Djinni/Chaquopy)
-│   └── shared/          DSL, assets, themes, runtime (NexusTheme, FontConfig)
-└── docs/                Documentation hub → docs/README.md
-```
-
-Multi-module Gradle project: `:core` (generator), `:cli` (headless), `:app` (Compose UI). This is **not** the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
-
-Agent onboarding and risks: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) · [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
-
-## Prerequisites
-
-- **JDK 26** (required by `buildSrc`; install via [client-setup/](client-setup/README.md) — Foojay can auto-download but system JDK is recommended)
-- Git
-- **Generated Desktop** apps: CMake 3.24+, Ninja, C++20, Python 3.10+ (optional for the Compose client)
-- **Generated Android** apps: Android SDK, NDK, JDK 17+
+This is the **Framework** monorepo (`:app`, `:core`, `:cli`). It is not the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
 
 ## First run
 
-Run **one** platform setup script, source the generated env file, then start the client:
+Run one platform setup script, load the env file, then Gradle:
 
 | Platform | Setup | Env |
 |----------|-------|-----|
@@ -131,66 +31,103 @@ Run **one** platform setup script, source the generated env file, then start the
 | macOS | `./client-setup/macos/setup.sh` | `source client-setup/env.sh` |
 | Windows | `client-setup\windows\setup.bat` | `call client-setup\env.bat` |
 
-See [client-setup/README.md](client-setup/README.md) for the platform matrix and troubleshooting.
+Requires **JDK 26** and Git — see [client-setup/README.md](client-setup/README.md).
 
 ## Quick start
 
-Run the Compose Desktop client (Counter MVC demo + **Generate Project** screen today; full 6-step wizard is v1 roadmap):
-
 ```bash
-source client-setup/env.sh   # after first-run setup
-./gradlew :app:run
-```
-
-Headless generation (optional):
-
-```bash
+source client-setup/env.sh          # after first-run setup
+./gradlew :app:run                  # Compose client
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ./gradlew :cli:run --args="generate --type desktop --name MyApp"
 ```
 
-Generated native apps build under `builds/framework/<projectName>/` — see [builds/README.md](builds/README.md).
+Compile and test: `./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test`
 
-Compile and test:
+Deploy client: `./gradlew :app:deployToBuildsClient` → [builds/client/app/](builds/client/app/)
 
-```bash
-./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test
+Build desktop template: `cd template/desktop-app && cmake --preset debug && cmake --build --preset debug`
+
+Output layout: [builds/README.md](builds/README.md) · Templates: [template/README.md](template/README.md)
+
+## Repository layout
+
+```
+Framework/
+├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
+├── misc/
+│   ├── core/            Generation pipeline (`:core`) — ProjectGenerator, nxs_config schema
+│   └── cli/             Headless `generate` command (`:cli`)
+├── buildSrc/            Gradle convention plugins (JVM toolchain 26) — must stay at repo root
+├── docker/              Containerized generation
+├── jenkins/             Optional CI — jenkins/README.md
+├── scripts/             Helper scripts (e.g. generate-in-docker.sh)
+├── client-setup/        First-run JDK 26 + Git installers
+├── builds/              Client → builds/client/ · apps → builds/framework/<name>/
+├── template/
+│   ├── desktop-app/     Desktop output (C++/CMake plotter)
+│   ├── android-app/     Android output (Gradle/Djinni/Chaquopy)
+│   └── shared/          DSL, assets, themes, runtime
+├── docs/                Documentation hub → docs/README.md
+└── Jenkinsfile          Optional pipeline entry
 ```
 
-Deploy the client distribution:
+## Use cases
 
-```bash
-./gradlew :app:deployToBuildsClient          # → builds/client/app/
-./gradlew :app:deployPackageToBuildsClient    # → builds/client/packages/
-```
+Nexus fits **native, data-heavy, and field-deployed tools** where throughput and binary size matter more than HTML layout.
 
-Build the **desktop template** directly (without generating):
+| Use case | Why Nexus | Template |
+|----------|-----------|----------|
+| Trading / market-data desk | Sub-ms UI; C++ parsers; Python in-process | Desktop |
+| CAD / mesh / point-cloud viewer | SDL3 GPU viewport; geometry in C++ | Desktop |
+| Scientific visualization | numpy via pybind11; ImPlot charts | Desktop |
+| Game dev tools | Immediate-mode UI; Lua hot-reload | Desktop |
+| Audio / DSP workbench | Low-latency C++ signal path | Desktop |
+| DevOps / infra monitor | Lightweight single binary | Desktop |
+| Android field tablet | SDL3/GLES ImGui; Djinni; Chaquopy | Android |
+| Robotics / teleop panel | Touch ImGui; `android.*` Lua bindings | Android |
+| Embedded HMI | Same SDL3 stack on desktop and Android | Both |
 
-```bash
-cd template/desktop-app
-cmake --preset debug && cmake --build --preset debug
-```
+Flagship sample: **Desmos-style plotter** — Python samples curves, C++ owns the model, ImGui draws. [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
 
-See [template/README.md](template/README.md) for Android build notes.
+## Learning curve
 
-## Development status
+| Skill | Required? | Role |
+|-------|-----------|------|
+| C++ / CMake | Yes | Domain logic, MVC, build |
+| SDL3 / ImGui | Conceptual | Immediate-mode UI — no DOM |
+| Lua / sol2 | Optional → recommended | Runtime panels, hotkeys |
+| TypeScript + XHTML | Optional | Web-familiar UI authoring |
+| Python | Optional | pybind11 (desktop) · Chaquopy (Android) |
+| Android / Djinni | Android only | JNI-free bridge, APK |
 
-**In this repo today**
+Progression: run template → tweak MVC → add Python → script Lua → extend TS/XHTML → edit `blueprint.json`. [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 
-- `:app` — Compose Desktop MVC counter demo + **Generate Project** screen (`model/`, `view/`, `controller/`)
-- `:core` / `:cli` — template copy / emit pipeline (`ProjectGenerator`, headless `generate`)
-- `template/desktop-app`, `template/android-app`, `template/shared` — plotter samples, themes, DSL, runtime stubs
-- `builds/` — client deploy (`builds/client/`) and generated native output (`builds/framework/<name>/`)
-- `client-setup/` — first-run JDK 26 + Git installers
-- `docs/` — hub, template pages, guides, architecture SVGs, agent-readiness + risk analysis
+## Architecture
 
-**v1 roadmap (client UI)**
+![Nexus full stack — TS/XHTML + blueprint.json, Lua/sol2, C++ MVC on SDL3/ImGui/ImPlot, Python bridges, Compose client](docs/assets/diagrams/full-stack-architecture.svg)
 
-- Home screen and 6-step creation wizard (see wizard diagram above)
-- imnodes blueprint editor wired to generation
+![Wizard flow — planned 6-step Compose client (v1 roadmap)](docs/assets/diagrams/app-creation-wizard-flow.svg)
 
-**Deferred**
+Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 
-- Remote template catalog, `python.dat` pack obfuscation, SDL3 Android runner polish, iOS template
+## Documentation
 
-**Branch:** active development is on **`master`** (`origin/master`). Some remotes still default to `origin/main`; use `git checkout master` if your tree looks stale.
+| Doc | Description |
+|-----|-------------|
+| [docs/README.md](docs/README.md) | Documentation hub |
+| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes |
+| [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
+| [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | AI agent onboarding |
+| [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Architecture risks |
+| [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
+
+## Development status and limitations
+
+**Shipped:** `:app` (Counter + Generate Project), `:core` / `:cli` (template emit), `template/*`, `builds/`, `client-setup/`, `docs/`.
+
+**Not yet:** full wizard UI, imnodes editor integration, remote catalog, iOS template, SDL3 Android runner polish.
+
+**Limitations (v1):** Compose Desktop scaffolder only; ImGui aesthetics are utilitarian; Chaquopy adds APK size on Android; no iOS from this toolchain today.
+
+**Branch:** active development on **`master`** (`origin/master`). If your clone defaults to `main`, run `git checkout master`.
