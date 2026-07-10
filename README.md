@@ -98,13 +98,13 @@ Reference for typed nodes and data edges in Langflow — Nexus mirrors the **vis
 #### Agent with tools
 *Langflow runtime — LLM, memory, and tool nodes*
 
-Agent loop with tools and memory — map each logical module to blueprint node types (`python.module`, `cpp.controller`, …) that `:core` emits at generation time.
+Agent loop with tools and memory — map each logical module to blueprint node types (`python.module`, `cpp.controller`, …) that `:core` generates at generation time.
 
 <!-- Example: Langflow agent with tools and memory -->
 ![Langflow agent with tools example — LLM, memory, and external tool nodes in an agent loop](docs/assets/examples/langflow-agent-tools.svg)
 
 #### Nexus blueprint app structure
-*Design-time codegen — MVC modules from `blueprint.json`*
+*Build-time codegen — MVC modules from `blueprint.json`*
 
 The Nexus equivalent: `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, and `lua.script` wired by MVC ports — consumed once by `ProjectGenerator`. Sample: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json).
 
@@ -115,7 +115,7 @@ The Nexus equivalent: `python.module`, `cpp.model`, `cpp.controller`, `ui.page`,
 
 ## ⚡ Optional runtime flows (services)
 
-Nexus separates **design-time structure** from **runtime automation**:
+Nexus separates **app structure at build time** from **automations that run inside the app**:
 
 | Layer | File | Purpose |
 |-------|------|---------|
@@ -123,7 +123,7 @@ Nexus separates **design-time structure** from **runtime automation**:
 | Runtime flows | [`flows/flows.json`](docs/templates/flows-schema.md) | Optional in-app services — background loops, event triggers, schedules |
 
 ### Blueprint vs flows layers
-*Design-time codegen vs optional runtime automation*
+*Build-time structure vs optional in-app automations*
 
 `blueprint.json` wires MVC structure consumed once by `:core`; `flows.json` registers in-process triggers loaded by FlowRunner at startup. A single Langflow canvas may split across both files after translation.
 
@@ -154,7 +154,7 @@ Add multiple flows by appending objects to the `flows` array in [`flows.json`](d
 
 #### Step A — Design in Langflow (optional external tool)
 
-1. Build a visual DAG in Langflow: nodes (LLM, Prompt, Tool, Retriever, Agent, …), edges, and per-node parameters.
+1. Build a visual flow chart in Langflow: nodes (LLM, Prompt, Tool, Retriever, Agent, …), edges, and per-node parameters.
 2. Export the flow as JSON — typically via **Export flow** or the Langflow API (`/api/v1/flows/{id}`). The export is a flow-definition document (nodes, edges, `data` payloads, positions). Field names and nesting **differ from Nexus** `flows.json`; treat the export as a design artifact, not a drop-in file.
 
 #### Step B — Map to Nexus `flows.json`
@@ -182,7 +182,7 @@ Export from Langflow → translate to Nexus schema → ship in `flows/` → Flow
 #### Honest limits (v1)
 
 - No automatic Langflow importer; no bundled Langflow runtime; LLM nodes become `invoke` stubs (model call lives in `python.module`).
-- Flows are **local, in-process** — not cloud webhook orchestration ([n8n](#langflow-style-nodes-vs-n8n)). HTTP/webhook step types planned v1.1.
+- Flows are **local, in-process** — not cloud webhook wiring ([n8n](#langflow-style-nodes-vs-n8n)). HTTP/webhook step types planned v1.1.
 
 Sample: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json).
 
@@ -196,7 +196,7 @@ Sample: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows
 |-------|-----------------|
 | Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** + **Blueprint Editor** (JSON graph) | Full 6-step wizard, imnodes native panel |
 | Compose **Flows Editor** — optional runtime `flows.json` (list, enable/disable, JSON preview) | Visual flows canvas (v1.1) |
-| Generation pipeline ([`:core`, `:cli` in `misc/`](#the-misc-directory)) — emit [templates](template/README.md) to `builds/framework/<name>/` | Remote template catalog, iOS template |
+| Generation flow ([`:core`, `:cli` in `misc/`](#the-misc-directory)) — write out [templates](template/README.md) to `builds/framework/<name>/` | Remote template catalog, iOS template |
 | Script archive packs — `lua.dat` + `python.dat` (desktop), `lua.dat` in APK assets (Android) | Chaquopy `python.dat` (not applicable — sources ship in APK) |
 
 This is the **Framework** monorepo (`:app`, `:core`, `:cli`). It is not the separate [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) repo (`:client-desktop` wizard there).
@@ -235,16 +235,16 @@ Output layout: [builds/README.md](builds/README.md) · Templates: [template/READ
 ```
 Framework/
 ├── app/                 Compose Desktop client (`:app`) — MVC under `nexus.opensource/`
-├── misc/                Tooling + generation pipeline — see [The `misc/` directory](#the-misc-directory)
+├── misc/                Tooling + generation flow — see [The `misc/` directory](#the-misc-directory)
 ├── builds/              Client → builds/client/ · apps → builds/framework/<name>/
 ├── template/            desktop-app · android-app · shared
 ├── docs/                Documentation hub → docs/README.md
-└── Jenkinsfile          Optional pipeline entry (→ misc/jenkins/)
+└── Jenkinsfile          Optional CI entry (→ misc/jenkins/)
 ```
 
 ## 🧰 The `misc/` directory
 
-The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, convention plugins, first-run setup, container images, CI notes, and helper scripts. None of this ships inside generated native apps under `builds/framework/<name>/`; it only builds and runs the scaffolder.
+The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, convention plugins, first-run setup, container images, CI notes, and helper scripts. None of this ships inside generated native apps under `builds/framework/<name>/`; it only builds and runs the project generator.
 
 | Path | Gradle / role |
 |------|----------------|
@@ -271,7 +271,7 @@ The included build at `misc/build-logic/` replaces a root `buildSrc/` directory 
 
 | Path | Role |
 |------|------|
-| [app/](app/) | Compose Desktop scaffolder (`:app`) — Generate Project, blueprint/flows editors |
+| [app/](app/) | Compose Desktop project generator (`:app`) — Generate Project, blueprint/flows editors |
 | [template/](template/) | Source templates copied into `builds/framework/<name>/` |
 | [builds/](builds/) | Deploy outputs — client under `builds/client/`, generated apps under `builds/framework/` |
 | [docs/](docs/) | Documentation hub |
@@ -287,7 +287,7 @@ The included build at `misc/build-logic/` replaces a root `buildSrc/` directory 
 ./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 
-Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
+Hub: [misc/README.md](misc/README.md) · generation flow: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 
 ### Initial setup scripts (`misc/client-setup/`)
 
@@ -295,7 +295,7 @@ Run **once** before first `./gradlew :app:run` — same flow as [First run](#fir
 
 ### Automated tests & test generation (`misc/scripts/test-gen/`)
 
-[test-gen/](misc/scripts/test-gen/) generates smoke and instrumented test **stubs for built apps** under `builds/framework/<project>/` — not for the scaffolder itself. It reads `nxs_config.json`, detects desktop vs Android, and writes idempotent files (desktop C++ smoke via CTest; Android `androidTest` Kotlin stubs). Generation is idempotent; pass `--force` to overwrite.
+[test-gen/](misc/scripts/test-gen/) generates smoke and instrumented test **stubs for built apps** under `builds/framework/<project>/` — not for the project generator itself. It reads `nxs_config.json`, detects desktop vs Android, and writes idempotent files (desktop C++ smoke via CTest; Android `androidTest` Kotlin stubs). Generation is idempotent; pass `--force` to overwrite.
 
 Platform entry points wrap a shared core at [test-gen/common/generate-tests.sh](misc/scripts/test-gen/common/generate-tests.sh):
 
@@ -311,7 +311,7 @@ Platform entry points wrap a shared core at [test-gen/common/generate-tests.sh](
 ```bash
 ./misc/scripts/test-gen/linux/generic.sh --dry-run --project MyApp
 ./misc/scripts/test-gen/linux/debian.sh builds/framework/MyApp
-./gradlew :core:test   # Gradle tests for the scaffolder (:core, :cli, :app)
+./gradlew :core:test   # Gradle tests for the project generator (:core, :cli, :app)
 ```
 
 For local build/validate/run of the Compose client, use [misc/scripts/dev/nexus-dev.sh](misc/scripts/dev/nexus-dev.sh) (`compile`, `generate`, `docker`, …). Full usage: [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md).
@@ -349,7 +349,7 @@ Nexus is built for **throughput, footprint, and field deployment** — not for r
 
 | Advantage | What it means in practice | Electron / Tauri context |
 |-----------|---------------------------|---------------------------|
-| **Binary size** | ~3–20 MB native binary + assets (grows with vendored `libs/`) | Electron installers commonly **85–250 MB** (bundled Chromium); Tauri typically **3–15 MB** but still ships WebView + frontend bundle |
+| **Binary size** | ~3–20 MB desktop/mobile app + assets (grows with vendored `libs/`) | Electron installers commonly **85–250 MB** (bundled Chromium); Tauri typically **3–15 MB** but still ships WebView + frontend bundle |
 | **No Chromium / WebView** | UI is ImGui + SDL3/OpenGL — no renderer subprocess, no DOM layout/paint | Electron = full browser stack; Tauri = system WebView + JS runtime |
 | **Native memory for arrays** | Meshes, order books, and numpy buffers stay in the C++ heap; Python via pybind11/Chaquopy without marshaling through JS | Web shells copy or serialize data across JS boundaries |
 | **SDL3 cross-platform** | Same windowing/input layer on Windows, macOS, Linux, and Android GLES | Mobile is secondary or a separate toolchain in most web-shell stacks |
@@ -357,7 +357,7 @@ Nexus is built for **throughput, footprint, and field deployment** — not for r
 | **`python.dat` / `lua.dat` protection** | Optional v2 encrypted packs ship logic without loose `.py`/`.lua` on disk (desktop `misc/`; Android `lua.dat` in APK assets) | Not a first-class concern in typical Electron/Tauri asset models |
 | **Sub-ms ImGui refresh** | Immediate-mode UI targets **<1 ms** per Dear ImGui guidance; no layout thrash | WebView layout + paint cycles dominate steady-state CPU |
 | **Field tablet APK** | Android template: full-screen SDL3/GLES ImGui + Chaquopy Python on rugged devices — no WebView | Electron Android is not primary; Tauri Mobile remains WebView-based |
-| **Same blueprint, desktop + Android** | One `blueprint.json` / imnodes workflow wires MVC on both templates | Separate web + mobile pipelines are common |
+| **Same blueprint, desktop + Android** | One `blueprint.json` / imnodes workflow wires MVC on both templates | Separate web + mobile build flows are common |
 | **Djinni vs hand-rolled JNI** | Generated type-safe C++ ↔ Kotlin bridge on Android | N/A on desktop web shells; manual JNI boilerplate on native Android hybrids |
 
 **When Nexus wins:** native throughput, small binaries, SDL3 parity from trading desk to Android field tablet, in-process Python/numpy, blueprint-driven rewiring, and game-engine-style immediate-mode UX — without paying for a browser engine you don't need.
@@ -394,7 +394,7 @@ Nexus has a real ramp — CMake, C++20, and immediate-mode UI are part of the de
 | TypeScript + XHTML | Optional | Web-familiar UI authoring → native widgets |
 | Python | Optional | pybind11 (desktop) · Chaquopy (Android) |
 | Android / Djinni | Android only | JNI-free bridge, APK packaging |
-| Kotlin Compose | Scaffold client only | `:app` wizard — not the generated app |
+| Kotlin Compose | Project generator client only | `:app` wizard — not the generated app |
 
 ### Progression path (by persona)
 
@@ -416,7 +416,7 @@ Full guide: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 | Web-only team, no appetite for C++/CMake | Electron or Tauri — faster ramp for HTML/CSS teams |
 | Pixel-perfect marketing UI or design-system fidelity | Web or native UI toolkit with layout engines |
 | iOS from this repo today | Not shipped yet — wait for v1 iOS template or use platform-native Swift |
-| Greenfield safety-critical with compile-time memory proofs | Rust — see [Modern C++ in Nexus](#modern-c-in-nexus) below |
+| Brand-new safety-critical project with compile-time memory proofs | Rust — see [Modern C++ in Nexus](#modern-c-in-nexus) below |
 
 **Worth the Nexus ramp when:** you need native throughput, small binaries, SDL3 parity across desktop and Android field tablets, in-process Python/numpy, or blueprint-driven rewiring — see [Why Nexus performs better](#why-nexus-performs-better). For incremental migration vs full rewrite, see [Modern C++ in Nexus](#modern-c-in-nexus).
 
@@ -426,18 +426,18 @@ Full guide: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)
 
 ## 🐍 Python: Desktop vs Android
 
-The same `python.module` node in [`blueprint.json`](docs/templates/blueprint-schema.md) wires curve sampling on **both** templates — only the embed, packaging, and C++↔Python boundary change. Generated-project guides: [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) · [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
+The same `python.module` node in [`blueprint.json`](docs/templates/blueprint-schema.md) wires curve sampling on **both** templates — only the built-in Python setup, packaging, and C++↔Python boundary change. Generated-project guides: [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) · [template/android-app/AGENTS.md](template/android-app/AGENTS.md).
 
 | | **Desktop** | **Android** |
 |---|-------------|-------------|
-| **Embedding** | pybind11 — CPython inside the native process | Chaquopy on the JVM; Djinni `ChaquopyPythonBridge` |
+| **Built-in Python** | pybind11 — CPython inside the native process | Chaquopy on the JVM; Djinni `ChaquopyPythonBridge` |
 | **Source tree** | `python/` (e.g. `functions.py`) | `app/src/main/python/` |
 | **Archive** | `misc/python.dat` (PYAC) via CMake `pack_python_dat` | **None** — Gradle/Chaquopy bundle `.py` in the APK |
 | **Runtime loader** | `PythonEngine` in `src/controller/` | `PlotterCore` → Djinni → Kotlin `ChaquopyPythonBridge` |
 | **`nxs_config.json`** | `features.python.embedding = "pybind11"` | `features.python.embedding = "chaquopy"` |
 | **Typical rebuild** | `cmake --build` (refreshes `python.dat`) | `./gradlew :app:assembleDebug` |
 
-### Python embedding flow
+### Python: desktop vs Android flow
 *Same `python.module` evaluate port — different pack and bridge per platform*
 
 The diagram traces how one blueprint edge fans out into desktop pybind11 + `python.dat` vs Android Chaquopy + Djinni, then reconverges on the shared PlotController → ImPlot path.

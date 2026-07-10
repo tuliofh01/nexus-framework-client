@@ -47,9 +47,9 @@ Se você está avaliando stacks **web-shell** — **Electron** (Chromium + JavaS
 - [Adicionando dependências após o setup](#adicionando-dependências-após-o-setup)
 - [Status de desenvolvimento e limitações](#status-de-desenvolvimento-e-limitações)
 - [Além da automação rápida: de fluxos para aplicações reais](#além-da-automação-rápida-de-fluxos-para-aplicações-reais)
-- [Rumo ao MVP](#rumo-ao-mvp)
 - [Copyright e licença](#copyright-e-licença)
 - [Veja também](#veja-também)
+- [Rumo ao MVP](#rumo-ao-mvp)
 
 ---
 
@@ -559,7 +559,7 @@ Guia completo, exemplos apt/dnf/pacman por distro e tabela desktop vs Android: *
 
 **Entregue:** `:app` (Counter + Generate Project + Blueprint Editor), `:core` / `:cli` (emissão + `BlueprintValidator`), `template/*`, packs de script (`lua.dat` / `python.dat` no desktop, `lua.dat` no APK Android), `builds/`, `misc/client-setup/`, `docs/`.
 
-**Ainda não:** wizard completo em 6 passos, painel **imnodes nativo** (v1 usa editor Compose JSON), catálogo remoto, template iOS, polimento SDL3 Android.
+**Ainda não:** veja [Rumo ao MVP](#rumo-ao-mvp) para a lista completa (v1 entrega Generate em 2 telas + editores Compose).
 
 **Limitações (v1):** apenas scaffolder Compose Desktop; estética ImGui utilitária; Chaquopy aumenta o APK no Android; sem iOS nesta toolchain hoje.
 
@@ -590,63 +590,6 @@ Diagramas: [arquitetura completa](docs/assets/diagrams/full-stack-architecture.s
 
 > [!WARNING]
 > **O Nexus não é n8n nem Power Automate.** Use essas ferramentas para orquestração SaaS na cloud; use o Nexus quando o fluxo deve virar software entregue.
-
-> *"Se você não está envergonhado da primeira versão do seu produto, lançou tarde demais."* — Reid Hoffman
-
-## 🏁 Rumo ao MVP
-
-Quando todas as caixas abaixo estiverem marcadas, o Nexus Framework estará **pronto para MVP**: scaffold de apps nativos, edição de blueprints/fluxos, geração e entrega de um projeto desktop/Android documentado.
-
-### Cliente / scaffolder
-
-- [ ] Assistente Compose em 6 passos *(v1 entrega Generate em 2 telas + editores — suficiente para MVP)*
-- [x] Gerar desktop + android a partir dos templates
-- [x] Editor de blueprint (Compose)
-- [x] Editor de fluxos (lista, ativar/desativar, preview JSON)
-- [x] ProjectGenerator + validadores
-
-### Templates
-
-- [x] Templates desktop + android de propósito geral
-- [ ] Build binário desktop ponta a ponta verificado no CI
-- [ ] Build APK Android ponta a ponta verificado no CI
-- [x] Estrutura `blueprint.json` + `flows.json` opcional
-- [x] Stubs TS/XHTML DSL, caminhos Lua e Python
-
-### Runtime / apps gerados
-
-- [ ] pybind11 desktop totalmente integrado no app gerado (Fase 2 — codegen guiado por blueprint)
-- [x] Paridade de packs `python.dat` / `lua.dat`
-- [ ] Ponte Chaquopy Android testada E2E em dispositivo
-- [ ] Compilador TS/XHTML → Lua *(caminho manual via `panels.lua` documentado hoje)*
-
-### Docs / DX
-
-- [x] Seções de arquitetura e comparação no README
-- [x] Guias `AGENTS.md` dos templates
-- [ ] CLI `debug validate --all` ou validação equivalente de templates no CI
-- [x] Scripts `client-setup` (JDK 26)
-
-### Release
-
-- [ ] Pipeline CI verde em `main`
-- [ ] Binário do cliente publicado (`builds/client/`)
-- [ ] Tag de versão `v1.0.0`
-
-### Pós-MVP (v1.1+)
-
-<details>
-<summary><strong>Roadmap pós-MVP (v1.1+) — clique para expandir</strong></summary>
-
-Não obrigatório para MVP — acompanhar separadamente:
-
-- Painel imnodes nativo de blueprint (mesmo schema `blueprint.json`)
-- Canvas visual do editor de fluxos
-- Catálogo remoto de templates · template iOS
-- Tipos de passo HTTP/webhook em `flows.json`
-- Polimento do runner SDL3 no Android
-
-</details>
 
 ## 📜 Copyright e licença
 
@@ -698,3 +641,48 @@ Texto completo: [Apache License 2.0](LICENSE) · [https://www.apache.org/license
 | Repositório | Papel |
 |-------------|-------|
 | [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Distribuição separada do wizard `:client-desktop` |
+
+## 🏁 Rumo ao MVP
+
+Quando cada linha estiver ✅, o Nexus Framework estará **pronto para MVP**: scaffold de apps nativos, edição de blueprints/fluxos, geração e entrega de um projeto desktop/Android documentado.
+
+> *"Se você não está envergonhado da primeira versão do seu produto, lançou tarde demais."* — Reid Hoffman
+
+| Área | Item | Status |
+|------|------|--------|
+| Cliente / scaffolder | Assistente Compose em 6 passos *(v1 entrega Generate em 2 telas + editores — suficiente para MVP)* | ⬜ |
+| Cliente / scaffolder | Gerar desktop + android a partir dos templates | ✅ |
+| Cliente / scaffolder | Editor de blueprint (Compose) | ✅ |
+| Cliente / scaffolder | Editor de fluxos (lista, ativar/desativar, preview JSON) | ✅ |
+| Cliente / scaffolder | ProjectGenerator + validadores | ✅ |
+| Templates | Templates desktop + android de propósito geral | ✅ |
+| Templates | Build binário desktop ponta a ponta verificado no CI | ⬜ |
+| Templates | Build APK Android ponta a ponta verificado no CI | ⬜ |
+| Templates | Estrutura `blueprint.json` + `flows.json` opcional | ✅ |
+| Templates | Stubs TS/XHTML DSL, caminhos Lua e Python | ✅ |
+| Runtime | pybind11 desktop totalmente integrado no app gerado (Fase 2 — codegen guiado por blueprint) | ⬜ |
+| Runtime | Paridade de packs `python.dat` / `lua.dat` | ✅ |
+| Runtime | Ponte Chaquopy Android testada E2E em dispositivo | ⬜ |
+| Runtime | Compilador TS/XHTML → Lua *(caminho manual via `panels.lua` documentado hoje)* | ⬜ |
+| Docs / DX | Seções de arquitetura e comparação no README | ✅ |
+| Docs / DX | Guias `AGENTS.md` dos templates | ✅ |
+| Docs / DX | CLI `debug validate --all` ou validação equivalente de templates no CI | ⬜ |
+| Docs / DX | Scripts `client-setup` (JDK 26) | ✅ |
+| Release | Pipeline CI verde em `main` | ⬜ |
+| Release | Binário do cliente publicado (`builds/client/`) | ⬜ |
+| Release | Tag de versão `v1.0.0` | ⬜ |
+
+<details>
+<summary><strong>Roadmap pós-MVP (v1.1+) — clique para expandir</strong></summary>
+
+Não obrigatório para MVP — acompanhar separadamente:
+
+| Item |
+|------|
+| Painel imnodes nativo de blueprint (mesmo schema `blueprint.json`) |
+| Canvas visual do editor de fluxos |
+| Catálogo remoto de templates · template iOS |
+| Tipos de passo HTTP/webhook em `flows.json` |
+| Polimento do runner SDL3 no Android |
+
+</details>
