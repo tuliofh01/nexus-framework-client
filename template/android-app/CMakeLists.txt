@@ -65,6 +65,8 @@ FetchContent_Declare(sol2
 FetchContent_MakeAvailable(sol2)
 
 # ---- Shared native library (loaded by MainActivity) -----------------------
+set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+
 add_library({{projectName}} SHARED
     src/main.cpp
     src/model/FunctionRegistry.cpp
@@ -72,10 +74,13 @@ add_library({{projectName}} SHARED
     src/controller/PythonEngine.cpp
     src/view/PlotterView.cpp
     src/view/LuaPanels.cpp
+    ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
+    ${NXS_SHARED_DIR}/runtime/FontConfig.cpp
     djinni-generated/jni/NativePythonBridge.cpp)
 
 target_include_directories({{projectName}} PRIVATE
     src
+    ${NXS_SHARED_DIR}/runtime
     djinni-generated/cpp
     djinni-generated/jni)
 

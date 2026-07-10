@@ -1,0 +1,45 @@
+{
+  "$schema": "https://nexus.dev/schemas/theme-1.json",
+  "id": "nexus-dark",
+  "name": "Nexus Dark",
+  "description": "Default dark ImGui preset — matches the scaffold client and generated plotter sample.",
+  "imgui": {
+    "style": {
+      "WindowRounding": 6.0,
+      "FrameRounding": 4.0,
+      "GrabRounding": 4.0,
+      "WindowPadding": [12.0, 12.0],
+      "FramePadding": [8.0, 4.0],
+      "ItemSpacing": [8.0, 6.0],
+      "ScrollbarSize": 14.0
+    },
+    "colors": {
+      "Text": [0.92, 0.93, 0.94, 1.0],
+      "TextDisabled": [0.50, 0.52, 0.55, 1.0],
+      "WindowBg": [0.08, 0.09, 0.11, 1.0],
+      "ChildBg": [0.10, 0.11, 0.13, 1.0],
+      "PopupBg": [0.10, 0.11, 0.14, 0.98],
+      "Border": [0.22, 0.24, 0.28, 1.0],
+      "FrameBg": [0.16, 0.17, 0.20, 1.0],
+      "FrameBgHovered": [0.22, 0.24, 0.28, 1.0],
+      "FrameBgActive": [0.26, 0.28, 0.32, 1.0],
+      "TitleBg": [0.06, 0.07, 0.09, 1.0],
+      "TitleBgActive": [0.12, 0.28, 0.55, 1.0],
+      "TitleBgCollapsed": [0.06, 0.07, 0.09, 0.75],
+      "CheckMark": [0.35, 0.65, 0.95, 1.0],
+      "SliderGrab": [0.35, 0.65, 0.95, 1.0],
+      "SliderGrabActive": [0.45, 0.75, 1.0, 1.0],
+      "Button": [0.18, 0.38, 0.62, 1.0],
+      "ButtonHovered": [0.24, 0.48, 0.78, 1.0],
+      "ButtonActive": [0.30, 0.55, 0.88, 1.0],
+      "Header": [0.18, 0.38, 0.62, 0.55],
+      "HeaderHovered": [0.24, 0.48, 0.78, 0.80],
+      "HeaderActive": [0.30, 0.55, 0.88, 1.0],
+      "PlotLines": [0.55, 0.75, 0.95, 1.0],
+      "PlotHistogram": [0.35, 0.65, 0.95, 1.0],
+      "TableHeaderBg": [0.12, 0.14, 0.18, 1.0],
+      "TableRowBg": [0.10, 0.11, 0.13, 1.0],
+      "TableRowBgAlt": [0.12, 0.13, 0.16, 1.0]
+    }
+  }
+}
