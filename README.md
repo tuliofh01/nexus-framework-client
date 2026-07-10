@@ -11,6 +11,8 @@
 
 **The Nexus Framework** scaffolds native C++/Lua/Python applications for **Desktop** (Windows, macOS, Linux) and **Android** — SDL3 windowing, sol2 scripting, TypeScript + XHTML UI authoring, and embedded Python (pybind11 on desktop, Chaquopy + Djinni on Android). ImGui + ImPlot render immediate-mode UIs without a browser engine.
 
+If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScript) or **Tauri** (OS WebView + Rust) — Nexus is a different bet: native C++ runtime, immediate-mode widgets, and in-process Lua/Python instead of HTML layout engines. Those tools excel when DOM/CSS is the product surface; Nexus excels when throughput, binary size, and a shared SDL3 stack across desktop and Android field hardware matter more.
+
 ## What this repo is
 
 | Today | Roadmap (v1) |
@@ -27,16 +29,16 @@ Run one platform setup script, load the env file, then Gradle:
 
 | Platform | Setup | Env |
 |----------|-------|-----|
-| Linux | `./client-setup/linux/setup.sh` | `source client-setup/env.sh` |
-| macOS | `./client-setup/macos/setup.sh` | `source client-setup/env.sh` |
-| Windows | `client-setup\windows\setup.bat` | `call client-setup\env.bat` |
+| Linux | `./misc/client-setup/linux/setup.sh` | `source misc/client-setup/env.sh` |
+| macOS | `./misc/client-setup/macos/setup.sh` | `source misc/client-setup/env.sh` |
+| Windows | `misc\client-setup\windows\setup.bat` | `call misc\client-setup\env.bat` |
 
-Requires **JDK 26** and Git — see [client-setup/README.md](client-setup/README.md).
+Requires **JDK 26** and Git — see [misc/client-setup/README.md](misc/client-setup/README.md).
 
 ## Quick start
 
 ```bash
-source client-setup/env.sh          # after first-run setup
+source misc/client-setup/env.sh          # after first-run setup
 ./gradlew :app:run                  # Compose client
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ./gradlew :cli:run --args="generate --type desktop --name MyApp"
@@ -59,10 +61,10 @@ Framework/
 ├── misc/
 │   ├── core/            Generation pipeline (`:core`) — ProjectGenerator, nxs_config schema
 │   ├── cli/             Headless `generate` command (`:cli`)
+│   ├── client-setup/    First-run JDK 26 + Git installers
 │   ├── docker/          Optional containerized generation
 │   ├── jenkins/         Optional Jenkins setup notes
 │   └── scripts/         Repo automation (e.g. `generate-in-docker.sh`)
-├── client-setup/        First-run JDK 26 + Git installers
 ├── builds/              Client → builds/client/ · apps → builds/framework/<name>/
 ├── template/
 │   ├── desktop-app/     Desktop output (C++/CMake plotter)
@@ -88,9 +90,32 @@ Nexus targets **native, data-heavy, and field-deployed tools** — trading desks
 | Robotics / teleop panel | Touch ImGui; `android.*` Lua bindings | Android |
 | Embedded HMI | Same SDL3 stack on desktop and Android | Both |
 
-**Nexus strengths:** SDL3 + ImGui immediate-mode rendering (no WebView), sol2 for runtime panels, blueprint/imnodes workflow for wiring MVC without CMake churn, pybind11/Chaquopy for keeping analytics in Python, Djinni for Android without hand-rolled JNI, and roadmap `python.dat` / `lua.dat` packs to ship logic without loose scripts on disk.
-
 Flagship sample: **Desmos-style plotter** — Python samples curves, C++ owns the model, ImGui draws. [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
+
+---
+
+## Why Nexus performs better
+
+Nexus is built for **throughput, footprint, and field deployment** — not for rendering marketing websites. Where Electron bundles Chromium and Tauri delegates to the OS WebView, generated Nexus apps stay in native address space end-to-end: C++ domain logic, SDL3 GPU surfaces, ImGui/ImPlot widgets, and optional Lua/Python layers without a browser process.
+
+| Advantage | What it means in practice | Electron / Tauri context |
+|-----------|---------------------------|---------------------------|
+| **Binary size** | ~3–20 MB native binary + assets (grows with vendored `libs/`) | Electron installers commonly **85–250 MB** (bundled Chromium); Tauri typically **3–15 MB** but still ships WebView + frontend bundle |
+| **No Chromium / WebView** | UI is ImGui + SDL3/OpenGL — no renderer subprocess, no DOM layout/paint | Electron = full browser stack; Tauri = system WebView + JS runtime |
+| **Native memory for arrays** | Meshes, order books, and numpy buffers stay in the C++ heap; Python via pybind11/Chaquopy without marshaling through JS | Web shells copy or serialize data across JS boundaries |
+| **SDL3 cross-platform** | Same windowing/input layer on Windows, macOS, Linux, and Android GLES | Mobile is secondary or a separate toolchain in most web-shell stacks |
+| **sol2 + Lua hot-reload** | Edit `panels.lua`, repack optional `lua.dat` — runtime UI panels without recompiling C++ | Frontend HMR helps, but still an HTML/CSS/JS round-trip |
+| **`python.dat` / `lua.dat` protection** | Roadmap encrypted packs ship logic without loose `.py`/`.lua` on disk | Not a first-class concern in typical Electron/Tauri asset models |
+| **Sub-ms ImGui refresh** | Immediate-mode UI targets **<1 ms** per Dear ImGui guidance; no layout thrash | WebView layout + paint cycles dominate steady-state CPU |
+| **Field tablet APK** | Android template: full-screen SDL3/GLES ImGui + Chaquopy Python on rugged devices — no WebView | Electron Android is not primary; Tauri Mobile remains WebView-based |
+| **Same blueprint, desktop + Android** | One `blueprint.json` / imnodes workflow wires MVC on both templates | Separate web + mobile pipelines are common |
+| **Djinni vs hand-rolled JNI** | Generated type-safe C++ ↔ Kotlin bridge on Android | N/A on desktop web shells; manual JNI boilerplate on native Android hybrids |
+
+**When Nexus wins:** native throughput, small binaries, SDL3 parity from trading desk to Android field tablet, in-process Python/numpy, blueprint-driven rewiring, and game-engine-style immediate-mode UX — without paying for a browser engine you don't need.
+
+**When Electron or Tauri wins:** your team is web-first, the UI is HTML/CSS/React, or you need iOS from a web-shell toolchain today. That's a fair trade — not a failure mode.
+
+> **Honest caveat:** cross-framework benchmarks vary by app complexity, OS, and measurement method. Always profile *your* workload before choosing on size or RAM alone.
 
 ---
 
@@ -191,7 +216,7 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 
 ## Development status and limitations
 
-**Shipped:** `:app` (Counter + Generate Project), `:core` / `:cli` (template emit), `template/*`, `builds/`, `client-setup/`, `docs/`.
+**Shipped:** `:app` (Counter + Generate Project), `:core` / `:cli` (template emit), `template/*`, `builds/`, `misc/client-setup/`, `docs/`.
 
 **Not yet:** full wizard UI, imnodes editor integration, remote catalog, iOS template, SDL3 Android runner polish, `python.dat` / `lua.dat` packs.
 
