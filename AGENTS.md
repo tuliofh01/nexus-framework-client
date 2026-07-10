@@ -8,9 +8,10 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 
 | Module | Role |
 |--------|------|
-| `:core` | `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
-| `:cli` | Headless `generate` command |
+| `:core` | `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) — sources in `misc/core/` |
+| `:cli` | Headless `generate` command — sources in `misc/cli/` |
 | `:app` | Compose Desktop client — **MVC** under `nexus.opensource` (`model/`, `view/`, `controller/`) |
+| `misc/` | Generation pipeline (`:core`, `:cli`), Docker, Jenkins, scripts — see [misc/README.md](misc/README.md) |
 | `client-setup/` | First-run JDK 26 + Git installers — run **before** first `./gradlew :app:run` ([client-setup/README.md](client-setup/README.md)) |
 | `template/desktop-app/` | Desktop output (SDL3 + pybind11 path) |
 | `template/android-app/` | Android output (Chaquopy + Djinni) |
@@ -76,20 +77,21 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 - **Window title**: `NexusBranding.windowTitle(...)` → `{projectName} - built with The Nexus Framework`.
 - **Template placeholders**: `{{projectName}}`, `{{windowTitle}}`, `{{cppStandard}}`, etc.
 - **Default output**: `builds/framework/{projectName}/`
-- **Config file**: `nxs_config.json` schema v2 (see `core/.../NexusConfigSchema.kt`).
+- **Config file**: `nxs_config.json` schema v2 (see `misc/core/.../NexusConfigSchema.kt`).
 - Build + configuration cache enabled — keep build logic cache-compatible.
 
 ## Where to edit
 
 | Change | Location |
 |--------|----------|
-| Generation pipeline | `core/.../service/ProjectGenerator.kt` |
-| CLI commands | `cli/.../FrameworkCli.kt` |
+| Generation pipeline | `misc/core/.../service/ProjectGenerator.kt` |
+| CLI commands | `misc/cli/.../FrameworkCli.kt` |
 | Compose UI | `app/.../view/`, `app/.../controller/` |
 | Desktop template | `template/desktop-app/` |
 | Android template | `template/android-app/` |
-| Docker generation | `docker/`, `scripts/generate-in-docker.sh` |
-| Jenkins (optional) | `Jenkinsfile`, `jenkins/README.md` |
+| Docker generation | `misc/docker/`, `misc/scripts/generate-in-docker.sh` |
+| Jenkins (optional) | `Jenkinsfile`, `misc/jenkins/README.md` |
+| `misc/` layout + `buildSrc` exception | `misc/README.md` |
 
 ## Docs
 

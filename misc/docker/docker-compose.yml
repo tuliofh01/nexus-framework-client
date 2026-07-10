@@ -1,0 +1,15 @@
+services:
+  framework-generate:
+    build:
+      context: ../..
+      dockerfile: misc/docker/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ../..:/workspace
+      - gradle-cache:/root/.gradle
+    environment:
+      - NXS_REPO_ROOT=/workspace
+    command: ["--args=help"]
+
+volumes:
+  gradle-cache:

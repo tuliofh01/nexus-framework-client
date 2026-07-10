@@ -29,8 +29,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | [../client-setup/README.md](../client-setup/README.md) | First-run JDK 26 + Git setup |
 | [../builds/README.md](../builds/README.md) | `builds/client/` and `builds/framework/` layout |
 | [../template/README.md](../template/README.md) | Output templates index |
-| [../misc/README.md](../misc/README.md) | Generation pipeline modules (`:core`, `:cli`) |
-| [../jenkins/README.md](../jenkins/README.md) | Optional Jenkins CI |
+| [../misc/README.md](../misc/README.md) | Generation pipeline modules, Docker, Jenkins, scripts |
 | [../AGENTS.md](../AGENTS.md) | Build commands for coding assistants |
 
 ## Quick commands
