@@ -34,6 +34,18 @@ Edges wire data flow (e.g. `evaluate` → `sampleCache` → `activeCurves` → `
 
 **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1.1 adds a native imnodes panel using the same JSON.
 
+### Langflow-style nodes vs n8n
+
+`blueprint.json` follows a **Langflow-style** typed graph: nodes are app modules, edges are data/command ports inside the generated MVC stack. **n8n** sits at a different layer — workflow automation across external services (webhooks, REST, schedules). Nexus does not replace n8n; a generated app can call an n8n webhook from Python or Lua while the blueprint documents internal wiring only.
+
+| Layer | Tool | Role |
+|-------|------|------|
+| In-app authoring | Nexus `blueprint.json` | Structure C++/Python/Lua/UI modules and their connections |
+| AI flow authoring | Langflow | Chain LLM and tool nodes (analogous mental model, different domain) |
+| External automation | n8n | Integrate SaaS, cron jobs, webhooks outside the native binary |
+
+Full comparison table: [blueprint-schema.md § Langflow vs n8n](../templates/blueprint-schema.md#langflow-style-nodes-vs-n8n).
+
 ## Generation and builds
 
 ![Generation flow — client-setup through :app/:cli to builds/framework and native binary](../assets/diagrams/generation-builds-flow.svg)

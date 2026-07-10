@@ -4,6 +4,22 @@ Langflow-style app graph at the project root. The Compose **Blueprint Editor** i
 
 **Future (v1.1):** native **imnodes** panel embedded via C++/JNI interop will use the same JSON — no schema migration planned.
 
+## Langflow-style nodes vs n8n
+
+Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. All three use nodes and edges, but the layers differ.
+
+| | **Nexus `blueprint.json`** | **Langflow** | **n8n** |
+|---|---------------------------|--------------|---------|
+| **Purpose** | Author in-app MVC wiring for generated native apps | Author LLM / component chains for AI apps | Automate external services (webhooks, APIs, schedules) |
+| **Node types** | `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script` | LLM, Prompt, Tool, Memory, … | HTTP, Webhook, Cron, CRM connectors, … |
+| **Execution** | Consumed at generation; runtime is C++/Lua/Python on SDL3 | Flow runtime executes the graph server-side | Workflow engine on n8n host |
+| **Where it runs** | Generated desktop binary or Android APK | Langflow server / desktop | n8n cloud or self-hosted |
+| **When to use** | Rewire screens, controllers, Python sampling inside your app | Prototype and ship AI agent pipelines | Ops glue, ETL, third-party integrations |
+
+**Nexus does not replace n8n.** Use `blueprint.json` for **internal** app structure (Langflow mental model). Use n8n when the generated app must trigger external automation — e.g. call an n8n webhook from `python/functions.py` or `scripts/panels.lua` while the blueprint stays focused on MVC edges (`evaluate` → `sampleCache` → `commands`).
+
+**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema.
+
 ## Top-level fields
 
 | Field | Type | Description |

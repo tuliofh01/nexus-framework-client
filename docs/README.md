@@ -11,6 +11,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | [Risk analysis](architecture/risk-analysis.md) | Architecture risks and mitigations |
 | [Desktop App template](templates/desktop-app.md) | `template/desktop-app/` — MVC, pybind11, plotter |
 | [Android App template](templates/android-app.md) | `template/android-app/` — Djinni, Chaquopy |
+| [Blueprint schema](templates/blueprint-schema.md) | `blueprint.json` — Langflow-style nodes, validation, vs n8n |
 | [Shared DSL](templates/shared-dsl.md) | `template/shared/dsl/` — TypeScript + XHTML |
 | [Coding with Nexus](guides/coding-with-nexus.md) | UI, MVC, Python, Lua, blueprint, themes, icons |
 | [Generation pipeline](guides/generation-pipeline.md) | `ProjectGenerator`, CLI, Docker, Jenkins |
