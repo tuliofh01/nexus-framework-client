@@ -1,4 +1,4 @@
-package com.nexus.plotter
+package com.nexus.{{packageName}}
 
 import android.os.Bundle
 import org.libsdl.app.SDLActivity
@@ -6,13 +6,12 @@ import org.libsdl.app.SDLActivity
 /**
  * SDL3 host activity. Boots Chaquopy (via [NexusApplication]), installs the
  * Chaquopy-backed [PythonBridge] into the native core, then hands off to
- * SDL_main (see src/main.cpp). Rendering is handled entirely by SDL/ImGui.
+ * SDL_main (see src/main.cpp).
  */
 class MainActivity : SDLActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        PlotterCore.installPythonBridge(ChaquopyPythonBridge())
-        // Runtime flows execute in native FlowRunner (SDL_main); this stub is for future JVM triggers.
-        FlowRunner.notifyManualTrigger("manual-check")
+        AppCore.installPythonBridge(ChaquopyPythonBridge())
+        FlowRunner.notifyManualTrigger("app.ready")
         super.onCreate(savedInstanceState)
     }
 

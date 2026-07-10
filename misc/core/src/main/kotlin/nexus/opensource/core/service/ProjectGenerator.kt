@@ -94,9 +94,11 @@ class ProjectGenerator(
     fun templateVars(spec: ProjectSpec): Map<String, String> {
         val createdAt = Instant.now().toString()
         val salt = if (spec.scriptProtectionEnabled) UUID.randomUUID().toString() else ""
+        val packageName = spec.projectName.lowercase().replace(Regex("[^a-z0-9]"), "")
         return mapOf(
             "projectName" to spec.projectName,
             "project_name" to spec.projectName.lowercase(),
+            "packageName" to packageName.ifBlank { "app" },
             "windowTitle" to spec.windowTitle,
             "license" to spec.license,
             "cppStandard" to spec.cppStandard,

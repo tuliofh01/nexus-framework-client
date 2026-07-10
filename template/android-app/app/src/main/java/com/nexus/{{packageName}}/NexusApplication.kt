@@ -1,4 +1,4 @@
-package com.nexus.plotter
+package com.nexus.{{packageName}}
 
 import android.app.Application
 import com.chaquo.python.Python

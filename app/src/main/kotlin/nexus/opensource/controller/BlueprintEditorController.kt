@@ -20,7 +20,7 @@ import java.nio.file.Path
 class BlueprintEditorController(
     private val validator: BlueprintValidator = BlueprintValidator(),
 ) {
-    var blueprint: BlueprintFile = BlueprintJson.samplePlotter("MyApp", AppType.DESKTOP)
+    var blueprint: BlueprintFile = BlueprintJson.sampleApp("MyApp", AppType.DESKTOP)
         private set
     var appType: AppType = AppType.DESKTOP
         private set

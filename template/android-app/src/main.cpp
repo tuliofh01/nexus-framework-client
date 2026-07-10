@@ -1,14 +1,10 @@
 // {{projectName}} — Android entry (SDL3 + GLES3).
-//
-// Same MVC loop as the desktop template. Python evaluation goes through
-// Chaquopy via the Djinni PythonBridge installed by MainActivity before
-// this SDL_main runs.
-#include "controller/PlotController.hpp"
+#include "controller/AppController.hpp"
 #include "controller/PythonEngine.hpp"
-#include "model/FunctionRegistry.hpp"
+#include "model/AppModel.hpp"
 #include "service/FlowRunner.hpp"
+#include "view/AppView.hpp"
 #include "view/LuaPanels.hpp"
-#include "view/PlotterView.hpp"
 #include "FontConfig.hpp"
 #include "NexusTheme.hpp"
 
@@ -17,7 +13,6 @@
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl3.h>
-#include <implot.h>
 
 #include <GLES3/gl3.h>
 
@@ -37,7 +32,6 @@ int main(int, char**) {
         SDL_CreateWindow("{{windowTitle}}", 1280, 720,
                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (!window) {
-        std::fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
         return 1;
     }
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -46,18 +40,16 @@ int main(int, char**) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImPlot::CreateContext();
-    // Field-tablet preset suits touch-first Android; override via nxs_config.json "theme".
     nxs::runtime::NexusTheme::applyFromFile("assets/themes/nexus-field.json");
     ImGui_ImplSDL3_InitForOpenGL(window, glContext);
     ImGui_ImplOpenGL3_Init("#version 300 es");
     nxs::view::FontConfig::setIconScale(1.25f);
     nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
-    nxs::model::FunctionRegistry registry;
+    nxs::model::AppModel model;
     nxs::controller::PythonEngine& python = nxs::controller::PythonEngine::instance();
-    nxs::controller::PlotController controller(registry, python);
-    nxs::view::PlotterView view(controller);
+    nxs::controller::AppController controller(model, python);
+    nxs::view::AppView view(controller);
     nxs::view::LuaPanels luaPanels(controller);
     luaPanels.loadScripts();
 
@@ -65,29 +57,22 @@ int main(int, char**) {
     flowRunner.load("nxs_config.json", "flows/flows.json");
     flowRunner.onStartup();
 
-    controller.addFunction("sine");
-    flowRunner.onEvent("curve.added");
+    controller.refresh();
+    flowRunner.onEvent("app.ready");
 
     bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL3_ProcessEvent(&event);
-            if (event.type == SDL_EVENT_QUIT) {
-                running = false;
-            }
+            if (event.type == SDL_EVENT_QUIT) running = false;
         }
-
         flowRunner.tick(16);
-        controller.refresh();
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
-
         view.draw();
         luaPanels.drawFrame();
-
         ImGui::Render();
         int w = 0, h = 0;
         SDL_GetWindowSizeInPixels(window, &w, &h);
@@ -100,7 +85,6 @@ int main(int, char**) {
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
-    ImPlot::DestroyContext();
     ImGui::DestroyContext();
     SDL_GL_DestroyContext(glContext);
     SDL_DestroyWindow(window);

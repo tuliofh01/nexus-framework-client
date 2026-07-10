@@ -1,4 +1,4 @@
-package com.nexus.plotter
+package com.nexus.{{packageName}}
 
 import android.content.Context
 import android.content.res.AssetManager

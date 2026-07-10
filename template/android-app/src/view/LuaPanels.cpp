@@ -6,28 +6,23 @@
 #include <imgui.h>
 
 #include <filesystem>
+#include <iostream>
 
 namespace nxs::view {
 
-LuaPanels::LuaPanels(controller::PlotController& controller) : m_controller(controller) {
+LuaPanels::LuaPanels(controller::AppController& controller) : m_controller(controller) {
     m_lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
     bindApi();
 }
 
 void LuaPanels::bindApi() {
     sol::table nxs = m_lua.create_named_table("nxs");
-
-    nxs.set_function("add_function",
-                     [this](const std::string& id) { m_controller.addFunction(id); });
-    nxs.set_function("remove_function",
-                     [this](const std::string& id) { m_controller.removeFunction(id); });
-    nxs.set_function("set_range",
-                     [this](double lo, double hi) { m_controller.setRange(lo, hi); });
-    nxs.set_function("set_samples", [this](int n) { m_controller.setSampleCount(n); });
-    nxs.set_function("toggle_log_y", [this]() {
-        m_controller.settings().logScaleY = !m_controller.settings().logScaleY;
+    nxs.set_function("increment", [this]() { m_controller.increment(); });
+    nxs.set_function("decrement", [this]() { m_controller.decrement(); });
+    nxs.set_function("reset", [this]() { m_controller.reset(); });
+    nxs.set_function("log", [](const std::string& msg) {
+        std::fprintf(stderr, "[Lua] %s\n", msg.c_str());
     });
-
     nxs.set_function("register_panel", [this](const std::string& title, sol::protected_function fn) {
         m_panels.push_back({title, std::move(fn)});
     });
@@ -43,70 +38,38 @@ void LuaPanels::bindApi() {
 
     sol::table keys = m_lua.create_named_table("keys");
     keys["F1"] = static_cast<int>(ImGuiKey_F1);
-    keys["F2"] = static_cast<int>(ImGuiKey_F2);
-    keys["L"] = static_cast<int>(ImGuiKey_L);
 }
 
 void LuaPanels::loadScripts(const std::string& scriptDir) {
     m_panels.clear();
     m_hotkeys.clear();
-
-    // APK assets: lua.dat staged by packLuaDat Gradle task (see app/build.gradle.kts).
-    const std::string archiveCandidates[] = {
-        "misc/lua.dat",
-        "lua.dat",
-        runtime::Paths::luaArchive(),
-    };
-
-    for (const auto& candidate : archiveCandidates) {
-        if (!std::filesystem::exists(candidate)) continue;
-
+    const std::string archivePath = runtime::Paths::luaArchive();
+    if (std::filesystem::exists(archivePath)) {
         runtime::ScriptArchive archive(runtime::ScriptArchive::MAGIC_LUA);
-        if (!archive.load(candidate)) {
-            m_lastError = "Failed to load " + candidate;
-            return;
+        if (archive.load(archivePath)) {
+            std::string source;
+            if (archive.getSource("panels", source)) {
+                auto result = m_lua.safe_script(source, sol::script_pass_on_error);
+                if (!result.valid()) m_lastError = sol::error(result).what();
+                else m_lastError.clear();
+                return;
+            }
         }
-
-        std::string source;
-        if (!archive.getSource("panels", source)) {
-            m_lastError = candidate + " missing entry: panels";
-            return;
-        }
-
-        sol::protected_function_result result =
-            m_lua.safe_script(source, sol::script_pass_on_error);
-        if (!result.valid()) {
-            m_lastError = sol::error(result).what();
-        } else {
-            m_lastError.clear();
-        }
-        return;
     }
-
-    // Dev fallback when packLuaDat was skipped.
-    sol::protected_function_result result =
-        m_lua.safe_script_file(scriptDir + "/panels.lua", sol::script_pass_on_error);
-    if (!result.valid()) {
-        m_lastError = sol::error(result).what();
-    } else {
-        m_lastError.clear();
-    }
+    auto result = m_lua.safe_script_file(scriptDir + "/panels.lua", sol::script_pass_on_error);
+    if (!result.valid()) m_lastError = sol::error(result).what();
+    else m_lastError.clear();
 }
 
 void LuaPanels::drawFrame() {
     for (const auto& hotkey : m_hotkeys) {
         if (ImGui::IsKeyPressed(static_cast<ImGuiKey>(hotkey.keycode), false)) {
-            if (auto r = hotkey.action(); !r.valid()) {
-                m_lastError = sol::error(r).what();
-            }
+            if (auto r = hotkey.action(); !r.valid()) m_lastError = sol::error(r).what();
         }
     }
     for (const auto& panel : m_panels) {
         ImGui::Begin(panel.title.c_str());
-        if (auto r = panel.body(); !r.valid()) {
-            m_lastError = sol::error(r).what();
-            ImGui::TextUnformatted("(script error — see log)");
-        }
+        if (auto r = panel.body(); !r.valid()) m_lastError = sol::error(r).what();
         ImGui::End();
     }
 }

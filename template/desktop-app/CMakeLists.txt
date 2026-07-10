@@ -136,15 +136,16 @@ target_link_libraries({{projectName}} PRIVATE
 add_dependencies({{projectName}} pack_lua_dat pack_python_dat)
 
 if(BUILD_NEXUS_EXAMPLES)
+    message(STATUS "Building optional plotter example: {{projectName}}_plotter")
     set(NXS_PLOTTER_DIR ${CMAKE_SOURCE_DIR}/examples/plotter)
     add_executable({{projectName}}_plotter
         ${NXS_PLOTTER_DIR}/src/main.cpp
         ${NXS_PLOTTER_DIR}/src/model/FunctionRegistry.cpp
         ${NXS_PLOTTER_DIR}/src/controller/PlotController.cpp
-        ${NXS_PLOTTER_DIR}/src/controller/PythonEngine_plotter.cpp
+        ${NXS_PLOTTER_DIR}/src/controller/PythonEngine.cpp
         ${NXS_PLOTTER_DIR}/src/view/PlotterView.cpp
-        ${NXS_PLOTTER_DIR}/src/view/LuaPanels_plotter.cpp
-        ${NXS_PLOTTER_DIR}/src/service/FlowRunner_plotter.cpp
+        ${NXS_PLOTTER_DIR}/src/view/LuaPanels.cpp
+        ${NXS_PLOTTER_DIR}/src/service/FlowRunner.cpp
         ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
         ${NXS_SHARED_DIR}/runtime/FontConfig.cpp
         ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp

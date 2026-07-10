@@ -16,7 +16,7 @@ import java.nio.file.Path
 class FlowsEditorController(
     private val validator: FlowsValidator = FlowsValidator(),
 ) {
-    var flows: FlowsFile = FlowsJson.samplePlotter()
+    var flows: FlowsFile = FlowsJson.sampleApp()
         private set
     var appType: AppType = AppType.DESKTOP
         private set

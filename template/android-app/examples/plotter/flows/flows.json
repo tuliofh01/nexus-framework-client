@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "flows": [
+    {
+      "id": "sync-curves",
+      "name": "Resample on timer",
+      "enabled": true,
+      "mode": "background",
+      "trigger": { "type": "interval", "ms": 5000 },
+      "steps": [
+        { "type": "invoke", "target": "nxs.set_samples", "args": ["${state.sampleCount}"] }
+      ]
+    },
+    {
+      "id": "on-add",
+      "name": "Welcome toast",
+      "enabled": true,
+      "mode": "triggered",
+      "trigger": { "type": "event", "name": "curve.added" },
+      "steps": [
+        { "type": "invoke", "target": "nxs.log", "args": ["Added curve"] }
+      ]
+    }
+  ]
+}

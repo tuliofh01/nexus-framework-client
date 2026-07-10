@@ -2,23 +2,23 @@
   "version": 1,
   "flows": [
     {
-      "id": "sync-curves",
-      "name": "Resample on timer",
+      "id": "startup-log",
+      "name": "Startup log",
       "enabled": true,
-      "mode": "background",
-      "trigger": { "type": "interval", "ms": 5000 },
+      "mode": "triggered",
+      "trigger": { "type": "startup" },
       "steps": [
-        { "type": "invoke", "target": "nxs.set_samples", "args": ["${state.sampleCount}"] }
+        { "type": "invoke", "target": "nxs.log", "args": ["{{projectName}} started"] }
       ]
     },
     {
-      "id": "on-add",
-      "name": "Welcome toast",
+      "id": "manual-trigger",
+      "name": "Manual ready event",
       "enabled": true,
       "mode": "triggered",
-      "trigger": { "type": "event", "name": "curve.added" },
+      "trigger": { "type": "event", "name": "app.ready" },
       "steps": [
-        { "type": "invoke", "target": "nxs.log", "args": ["Added curve"] }
+        { "type": "invoke", "target": "nxs.log", "args": ["App ready"] }
       ]
     }
   ]

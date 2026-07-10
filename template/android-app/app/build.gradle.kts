@@ -12,11 +12,11 @@ val luaOut = layout.buildDirectory.file("assets/lua.dat")
 val nxsConfig = file("$templateRoot/nxs_config.json")
 
 android {
-    namespace = "com.nexus.plotter"
+    namespace = "com.nexus.{{packageName}}"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.nexus.plotter"
+        applicationId = "com.nexus.{{packageName}}"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

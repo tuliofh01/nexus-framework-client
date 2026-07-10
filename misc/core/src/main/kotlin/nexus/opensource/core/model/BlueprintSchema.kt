@@ -105,38 +105,29 @@ object BlueprintJson {
         BlueprintNodeType.PYTHON_MODULE -> buildJsonObject {
             put(
                 "source",
-                if (appType == AppType.ANDROID) "app/src/main/python/functions.py" else "python/functions.py",
+                if (appType == AppType.ANDROID) "app/src/main/python/helpers.py" else "python/helpers.py",
             )
-            putJsonArray("exports") { add("evaluate") }
-            putJsonArray("packages") { add("numpy") }
+            putJsonArray("exports") { add("greeting") }
+            putJsonArray("packages") { }
         }
         BlueprintNodeType.CPP_MODEL -> buildJsonObject {
-            put("class", "nxs::model::FunctionRegistry")
-            putJsonArray("catalog") {
-                listOf("sine", "cosine", "gaussian", "polynomial", "damped", "sinc").forEach { add(it) }
-            }
+            put("class", "nxs::model::AppModel")
+            putJsonArray("fields") { add("counter"); add("greeting") }
         }
         BlueprintNodeType.CPP_CONTROLLER -> buildJsonObject {
-            put("class", "nxs::controller::PlotController")
-            put(
-                "settings",
-                buildJsonObject {
-                    put("xMin", -10)
-                    put("xMax", 10)
-                    put("sampleCount", 512)
-                },
-            )
+            put("class", "nxs::controller::AppController")
+            putJsonArray("commands") { add("increment"); add("decrement"); add("reset") }
         }
         BlueprintNodeType.UI_PAGE -> buildJsonObject {
             put("source", "ui/ui.xhtml")
-            put("controllerScript", "ui/ui.ts#PlotterPage")
+            put("controllerScript", "ui/ui.ts#AppPage")
             putJsonArray("widgets") {
-                listOf("combo", "list", "slider", "toggle", "plot").forEach { add(it) }
+                listOf("panel", "label", "button", "row").forEach { add(it) }
             }
         }
         BlueprintNodeType.LUA_SCRIPT -> buildJsonObject {
             put("source", "scripts/panels.lua")
-            putJsonArray("hotkeys") { add("F1"); add("L") }
+            putJsonArray("hotkeys") { add("F1") }
         }
     }
 
@@ -152,6 +143,62 @@ object BlueprintJson {
         data = defaultDataFor(type, appType),
     )
 
+    fun sampleApp(projectName: String, appType: AppType): BlueprintFile {
+        val pySource = if (appType == AppType.ANDROID) {
+            "app/src/main/python/helpers.py"
+        } else {
+            "python/helpers.py"
+        }
+        return BlueprintFile(
+            name = "$projectName flow",
+            description = "General-purpose Nexus app graph — edit in the Compose blueprint editor.",
+            nodes = listOf(
+                BlueprintNode(
+                    id = "py-helpers",
+                    type = BlueprintNodeType.PYTHON_MODULE.id,
+                    position = BlueprintPosition(40f, 120f),
+                    data = buildJsonObject {
+                        put("source", pySource)
+                        putJsonArray("exports") { add("greeting") }
+                        putJsonArray("packages") { }
+                    },
+                ),
+                BlueprintNode(
+                    id = "model-app",
+                    type = BlueprintNodeType.CPP_MODEL.id,
+                    position = BlueprintPosition(320f, 40f),
+                    data = defaultDataFor(BlueprintNodeType.CPP_MODEL, appType),
+                ),
+                BlueprintNode(
+                    id = "controller-app",
+                    type = BlueprintNodeType.CPP_CONTROLLER.id,
+                    position = BlueprintPosition(320f, 220f),
+                    data = defaultDataFor(BlueprintNodeType.CPP_CONTROLLER, appType),
+                ),
+                BlueprintNode(
+                    id = "view-main",
+                    type = BlueprintNodeType.UI_PAGE.id,
+                    position = BlueprintPosition(620f, 120f),
+                    data = defaultDataFor(BlueprintNodeType.UI_PAGE, appType),
+                ),
+                BlueprintNode(
+                    id = "lua-panels",
+                    type = BlueprintNodeType.LUA_SCRIPT.id,
+                    position = BlueprintPosition(620f, 320f),
+                    data = defaultDataFor(BlueprintNodeType.LUA_SCRIPT, appType),
+                ),
+            ),
+            edges = listOf(
+                BlueprintEdge("e1", "py-helpers", "controller-app", "greeting"),
+                BlueprintEdge("e2", "controller-app", "model-app", "state"),
+                BlueprintEdge("e3", "model-app", "view-main", "bindings"),
+                BlueprintEdge("e4", "view-main", "controller-app", "commands"),
+                BlueprintEdge("e5", "lua-panels", "controller-app", "commands"),
+            ),
+        )
+    }
+
+    /** Desmos-style plotter sample — see template/examples/plotter/. */
     fun samplePlotter(projectName: String, appType: AppType): BlueprintFile {
         val pySource = if (appType == AppType.ANDROID) {
             "app/src/main/python/functions.py"

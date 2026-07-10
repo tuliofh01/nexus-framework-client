@@ -6,7 +6,7 @@
   },
   "project": {
     "name": "{{projectName}}",
-    "applicationId": "com.nexus.plotter",
+    "applicationId": "com.nexus.{{packageName}}",
     "windowTitle": "{{projectName}} - built with The Nexus Framework",
     "version": "0.1.0",
     "cppStandard": "20",
@@ -36,14 +36,17 @@
       "enabled": true,
       "embedding": "chaquopy",
       "sourceDir": "app/src/main/python",
-      "packages": ["numpy"]
+      "packages": []
     },
     "djinni": {
       "enabled": true,
-      "idl": "djinni/plotter.djinni",
+      "idl": "djinni/app.djinni",
       "generatedDir": "djinni-generated"
     },
-    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" }
+    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" },
+    "examples": {
+      "plotter": { "enabled": false, "path": "examples/plotter" }
+    }
   },
   "blueprint": {
     "flow": "blueprint.json",

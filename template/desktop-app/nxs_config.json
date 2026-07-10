@@ -34,7 +34,10 @@
       "sourceDir": "python",
       "requirements": "requirements.txt"
     },
-    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" }
+    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" },
+    "examples": {
+      "plotter": { "enabled": false, "path": "examples/plotter", "cmakeFlag": "BUILD_NEXUS_EXAMPLES" }
+    }
   },
   "blueprint": {
     "flow": "blueprint.json",

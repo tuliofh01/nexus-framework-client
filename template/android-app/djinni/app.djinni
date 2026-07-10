@@ -1,0 +1,26 @@
+# app.djinni — Djinni IDL for the C++ <-> Kotlin/JVM bridge.
+#
+# Regenerate C++/JNI (and diff JVM signatures) with:
+#   ./scripts/regen-djinni.sh
+#
+# Direction of the arrows:
+#   +j  implemented in Kotlin/Java (Chaquopy lives on the JVM side)
+#   +c  implemented in C++ (the native core the activity drives)
+
+eval_result = record {
+    ok: bool;
+    error: string;
+    xs: list<f64>;
+    ys: list<f64>;
+}
+
+# Implemented in Kotlin on top of Chaquopy.
+python_bridge = interface +j {
+    greeting(name: string): string;
+    evaluate(function_name: string, x_min: f64, x_max: f64, samples: i32): eval_result;
+}
+
+# Implemented in C++: entry point MainActivity uses before SDL_main runs.
+app_core = interface +c {
+    static install_python_bridge(bridge: python_bridge);
+}

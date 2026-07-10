@@ -17,6 +17,13 @@ class BlueprintValidatorTest {
     private val validator = BlueprintValidator()
 
     @Test
+    fun sampleAppIsValid() {
+        val blueprint = BlueprintJson.sampleApp("TestApp", nexus.opensource.core.model.AppType.DESKTOP)
+        val result = validator.validate(blueprint)
+        assertTrue(result.isValid, result.errors.joinToString())
+    }
+
+    @Test
     fun samplePlotterIsValid() {
         val blueprint = BlueprintJson.samplePlotter("TestApp", nexus.opensource.core.model.AppType.DESKTOP)
         val result = validator.validate(blueprint)

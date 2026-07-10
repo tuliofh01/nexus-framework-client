@@ -13,7 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
-# ---- SDL3 (Android NDK build) ---------------------------------------------
 FetchContent_Declare(SDL3
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG        release-3.2.4)
@@ -22,7 +21,6 @@ set(SDL_STATIC OFF CACHE BOOL "" FORCE)
 set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(SDL3)
 
-# ---- Dear ImGui + ImPlot + imnodes ----------------------------------------
 FetchContent_Declare(imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG        v1.91.8)
@@ -52,7 +50,6 @@ target_include_directories(imgui_bundle PUBLIC
 target_compile_definitions(imgui_bundle PUBLIC IMNODES_NAMESPACE=imnodes IMGUI_IMPL_OPENGL_ES3)
 target_link_libraries(imgui_bundle PUBLIC SDL3::SDL3 GLESv3 EGL)
 
-# ---- Lua 5.4 + sol2 -------------------------------------------------------
 FetchContent_Declare(lua
     GIT_REPOSITORY https://github.com/walterschell/Lua.git
     GIT_TAG        v5.4.5)
@@ -64,10 +61,8 @@ FetchContent_Declare(sol2
     GIT_TAG        v3.3.1)
 FetchContent_MakeAvailable(sol2)
 
-# ---- Shared native library (loaded by MainActivity) -----------------------
 set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
-# Host-only packer for Gradle packLuaDat (Android APK assets).
 if(NOT ANDROID)
     add_executable(pack_archive
         ${NXS_SHARED_DIR}/tools/pack_archive.cpp
@@ -78,10 +73,10 @@ endif()
 
 add_library({{projectName}} SHARED
     src/main.cpp
-    src/model/FunctionRegistry.cpp
-    src/controller/PlotController.cpp
+    src/model/AppModel.cpp
+    src/controller/AppController.cpp
     src/controller/PythonEngine.cpp
-    src/view/PlotterView.cpp
+    src/view/AppView.cpp
     src/view/LuaPanels.cpp
     src/service/FlowRunner.cpp
     ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
@@ -105,5 +100,4 @@ target_link_libraries({{projectName}} PRIVATE
     GLESv3
     EGL)
 
-# SDL_main is provided by SDL3 on Android; keep the symbol.
 target_compile_definitions({{projectName}} PRIVATE SDL_MAIN_USE_CALLBACKS=0)

@@ -66,9 +66,9 @@ cmake -S tools -B /tmp/nxs-pack && cmake --build /tmp/nxs-pack
 - Controller pattern in app `ui/ui.ts`:
 
 ```typescript
-pendingFunction = state<string>("sine");
-activeCurves = native<Curve[]>("registry.active");
-addPending(): void { this.invoke("nxs.add_function", this.pendingFunction.value); }
+counter = state<number>(0);
+greeting = native<string>("model.greeting");
+increment(): void { this.invoke("nxs.increment"); }
 ```
 
 - `state()` ↔ two-way `bind=` in XHTML; `native()` ↔ read-only C++ projection; `invoke()` ↔ sol2 controller commands.

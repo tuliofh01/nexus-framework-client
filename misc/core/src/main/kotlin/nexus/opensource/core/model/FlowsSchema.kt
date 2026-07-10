@@ -111,6 +111,41 @@ object FlowsJson {
     fun readRendered(text: String, vars: Map<String, String>): FlowsFile =
         read(TemplateSubst.substitute(text, vars))
 
+    fun sampleApp(): FlowsFile = FlowsFile(
+        version = 1,
+        flows = listOf(
+            FlowDefinition(
+                id = "startup-log",
+                name = "Startup log",
+                enabled = true,
+                mode = FlowMode.TRIGGERED.id,
+                trigger = FlowTrigger(type = FlowTriggerType.STARTUP.id),
+                steps = listOf(
+                    FlowStep(
+                        type = FlowStepType.INVOKE.id,
+                        target = "nxs.log",
+                        args = listOf("App started"),
+                    ),
+                ),
+            ),
+            FlowDefinition(
+                id = "manual-trigger",
+                name = "Manual ready event",
+                enabled = true,
+                mode = FlowMode.TRIGGERED.id,
+                trigger = FlowTrigger(type = FlowTriggerType.EVENT.id, name = "app.ready"),
+                steps = listOf(
+                    FlowStep(
+                        type = FlowStepType.INVOKE.id,
+                        target = "nxs.log",
+                        args = listOf("App ready"),
+                    ),
+                ),
+            ),
+        ),
+    )
+
+    /** Plotter-specific flows — see template/examples/plotter/. */
     fun samplePlotter(): FlowsFile = FlowsFile(
         version = 1,
         flows = listOf(

@@ -19,6 +19,13 @@ class FlowsValidatorTest {
     private val validator = FlowsValidator()
 
     @Test
+    fun sampleAppIsValid() {
+        val flows = FlowsJson.sampleApp()
+        val result = validator.validate(flows)
+        assertTrue(result.isValid, result.errors.joinToString())
+    }
+
+    @Test
     fun samplePlotterIsValid() {
         val flows = FlowsJson.samplePlotter()
         val result = validator.validate(flows)

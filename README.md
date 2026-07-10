@@ -69,7 +69,7 @@ Nexus separates **design-time structure** from **runtime automation**:
 
 | Path | What you ship |
 |------|----------------|
-| **No flows** | Omit or disable flows — fully custom app; plotter works without FlowRunner |
+| **No flows** | Omit or disable flows — fully custom app; starter works without FlowRunner |
 | **Flows as helpers** | Small automation services (timers, event hooks) inside a larger app |
 | **Hybrid** | Blueprint MVC + background/triggered flows in the same binary |
 
@@ -213,7 +213,7 @@ Nexus targets **native, data-heavy, and field-deployed tools** — trading desks
 | Robotics / teleop panel | Touch ImGui; `android.*` Lua bindings | Android |
 | Embedded HMI | Same SDL3 stack on desktop and Android | Both |
 
-Flagship sample: **Desmos-style plotter** — Python samples curves, C++ owns the model, ImGui draws. [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
+Default template: **general-purpose starter** (hello + counter). Optional **Desmos-style plotter** under `examples/plotter/`. [docs/templates/desktop-app.md](docs/templates/desktop-app.md) · [docs/templates/android-app.md](docs/templates/android-app.md)
 
 ---
 
@@ -418,8 +418,8 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) 
 | [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | AI agent onboarding |
 | [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Architecture risks |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
-| [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) | Generated desktop plotter — pybind11, Lua, TS/XHTML |
-| [template/android-app/AGENTS.md](template/android-app/AGENTS.md) | Generated Android plotter — Chaquopy, Djinni |
+| [template/desktop-app/AGENTS.md](template/desktop-app/AGENTS.md) | Generated desktop app — pybind11, Lua, TS/XHTML |
+| [template/android-app/AGENTS.md](template/android-app/AGENTS.md) | Generated Android app — Chaquopy, Djinni |
 
 ## Development status and limitations
 
