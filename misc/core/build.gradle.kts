@@ -26,17 +26,17 @@ tasks.register("buildPackArchive") {
 
     doLast {
         if (!exe.exists()) {
-            project.exec {
-                workingDir = templateDesktop
-                commandLine("cmake", "-B", buildDir.absolutePath, "-S", templateDesktop.absolutePath)
+            fun run(vararg args: String) {
+                check(
+                    ProcessBuilder(*args)
+                        .directory(templateDesktop)
+                        .inheritIO()
+                        .start()
+                        .waitFor() == 0,
+                ) { "Command failed: ${args.joinToString(" ")}" }
             }
-            project.exec {
-                workingDir = templateDesktop
-                commandLine(
-                    "cmake", "--build", buildDir.absolutePath,
-                    "--target", "pack_archive", "-j",
-                )
-            }
+            run("cmake", "-B", buildDir.absolutePath, "-S", templateDesktop.absolutePath)
+            run("cmake", "--build", buildDir.absolutePath, "--target", "pack_archive", "-j")
         }
     }
 }
