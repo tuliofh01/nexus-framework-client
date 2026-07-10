@@ -48,6 +48,7 @@ Se você está avaliando stacks **web-shell** — **Electron** (Chromium + JavaS
 - [Status de desenvolvimento e limitações](#status-de-desenvolvimento-e-limitações)
 - [Além da automação rápida: de fluxos para aplicações reais](#além-da-automação-rápida-de-fluxos-para-aplicações-reais)
 - [Rumo ao MVP](#rumo-ao-mvp)
+- [Copyright e licença](#copyright-e-licença)
 - [Veja também](#veja-também)
 
 ---
