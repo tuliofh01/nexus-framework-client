@@ -54,6 +54,10 @@ android {
 
     sourceSets {
         getByName("main") {
+            kotlin.srcDirs(
+                "src/main/java",
+                "$templateRoot/djinni-generated/kotlin",
+            )
             assets.srcDirs(
                 "$templateRoot/scripts",
                 "$templateRoot/ui",

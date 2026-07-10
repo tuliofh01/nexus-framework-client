@@ -1,11 +1,18 @@
 # plotter.djinni — Djinni IDL for the C++ <-> Kotlin/JVM bridge.
 #
-# Regenerate the stubs in ../djinni-generated with:
+# Regenerate C++/JNI (and diff JVM signatures) with:
+#   ./scripts/regen-djinni.sh
+#
+# Djinni has no --kotlin-out. JVM stubs are committed as Kotlin under
+# djinni-generated/kotlin/com/nexus/plotter/ — update them after IDL edits
+# so method names and types still match the JNI layer in djinni-generated/jni/.
+#
+# Manual equivalent:
 #   djinni --idl djinni/plotter.djinni \
 #          --cpp-out djinni-generated/cpp   --cpp-namespace nxs::bridge \
-#          --java-out djinni-generated/java/com/nexus/plotter \
-#          --java-package com.nexus.plotter \
-#          --jni-out djinni-generated/jni
+#          --jni-out djinni-generated/jni \
+#          --java-out /tmp/djinni-java-staging/com/nexus/plotter \
+#          --java-package com.nexus.plotter
 #
 # Direction of the arrows:
 #   +j  implemented in Kotlin/Java (Chaquopy lives on the JVM side)
