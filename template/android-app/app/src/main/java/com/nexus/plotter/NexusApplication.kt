@@ -4,20 +4,6 @@ import android.app.Application
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 
-class NexusApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(this))
-        }
-    }
-}
-package com.nexus.plotter
-
-import android.app.Application
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
-
 /** Starts Chaquopy before any PythonBridge call. */
 class NexusApplication : Application() {
     override fun onCreate() {
