@@ -71,3 +71,16 @@ __pycache__/
 
 ### Cursor local plans (optional agent artifacts) ###
 .cursor/plans/
+
+### Secrets / local env (never commit) ###
+.env
+*.env
+!.env.example
+
+### Generated doc exports (source stays in .md) ###
+docs/architecture/risk-analysis.html
+
+### Local build outputs under template builds/ (keep README + .gitkeep) ###
+template/*/builds/*
+!template/*/builds/README.md
+!template/*/builds/.gitkeep
