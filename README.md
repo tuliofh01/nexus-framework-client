@@ -147,8 +147,8 @@ The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, c
 | [misc/core/](misc/core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
 | [misc/cli/](misc/cli/) | `:cli` — headless `generate` command |
 | [misc/build-logic/](misc/build-logic/) | Included build (formerly root `buildSrc`) — JVM toolchain 26, convention plugins |
-| [misc/client-setup/](misc/client-setup/) | First-run JDK 26 + Git installers and env scripts |
-| [misc/scripts/](misc/scripts/) | Repo automation — [dev/](misc/scripts/dev/) (local workflow, Docker gen), [test-gen/](misc/scripts/test-gen/) (smoke tests for `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (docs SVGs) |
+| [misc/client-setup/](misc/client-setup/) | First-run installers (Linux/macOS/Windows) for JDK 26 + Git; `env.sh` / `env.bat` set `JAVA_HOME` before Gradle |
+| [misc/scripts/](misc/scripts/) | Repo automation — [dev/](misc/scripts/dev/) (build/validate/run client), [test-gen/](misc/scripts/test-gen/) (smoke/instrumented stubs for `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (docs SVGs) |
 | [misc/docker/](misc/docker/) | `Dockerfile` + compose for containerized generation |
 | [misc/jenkins/](misc/jenkins/) | Optional Jenkins setup — see [misc/jenkins/README.md](misc/jenkins/README.md) |
 
@@ -185,17 +185,47 @@ The included build at `misc/build-logic/` replaces a root `buildSrc/` directory 
 
 Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 
-### Development scripts
+### Initial setup scripts (`misc/client-setup/`)
 
-Repo automation lives under [misc/scripts/](misc/scripts/) by function:
+Run **once** before your first `./gradlew :app:run`. Platform installers under [misc/client-setup/](misc/client-setup/) provision **JDK 26** and **Git** (plus recommended build tools on Linux). After setup, source the generated env file so Gradle picks up `JAVA_HOME`:
+
+```bash
+./misc/client-setup/linux/setup.sh   # or macos/setup.sh / windows/setup.bat
+source misc/client-setup/env.sh      # Windows: call misc\client-setup\env.bat
+./gradlew :app:run
+```
+
+Per-distro Linux helpers (`setup-arch.sh`, `setup-debian.sh`, `setup-fedora.sh`) and troubleshooting: [misc/client-setup/README.md](misc/client-setup/README.md).
+
+### Automated tests & test generation (`misc/scripts/test-gen/`)
+
+[test-gen/](misc/scripts/test-gen/) generates smoke and instrumented test **stubs for built apps** under `builds/framework/<project>/` — not for the scaffolder itself. It reads `nxs_config.json`, detects desktop vs Android, and writes idempotent files (desktop C++ smoke via CTest; Android `androidTest` Kotlin stubs). Generation is idempotent; pass `--force` to overwrite.
+
+Platform entry points wrap a shared core at [test-gen/common/generate-tests.sh](misc/scripts/test-gen/common/generate-tests.sh):
+
+| Platform | Script |
+|----------|--------|
+| Linux (Arch) | `linux/arch.sh` |
+| Linux (Debian/Ubuntu) | `linux/debian.sh` |
+| Linux (Fedora/RHEL) | `linux/fedora.sh` |
+| Linux (POSIX fallback) | `linux/generic.sh` |
+| macOS | `macos/darwin.sh` |
+| Windows | `windows/win32.ps1` |
+
+```bash
+./misc/scripts/test-gen/linux/generic.sh --dry-run --project MyApp
+./misc/scripts/test-gen/linux/debian.sh builds/framework/MyApp
+./gradlew :core:test   # Gradle tests for the scaffolder (:core, :cli, :app)
+```
+
+For local build/validate/run of the Compose client, use [misc/scripts/dev/nexus-dev.sh](misc/scripts/dev/nexus-dev.sh) (`compile`, `generate`, `docker`, …). Full usage: [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md).
+
+### Other repo scripts
 
 | Family | Entry point | Purpose |
 |--------|-------------|---------|
 | `dev/` | `./misc/scripts/dev/nexus-dev.sh compile` | Local Gradle workflow + Docker generation |
-| `test-gen/` | `./misc/scripts/test-gen/linux/generic.sh --project MyApp` | Smoke-test stubs for apps in `builds/framework/` |
 | `generate-diagrams/` | `python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py` | Regenerate docs SVGs |
-
-Client first-run setup stays at [misc/client-setup/](misc/client-setup/). See [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md) for per-distro usage.
 
 ## Use cases — what Nexus is built for
 

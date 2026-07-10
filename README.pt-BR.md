@@ -148,8 +148,8 @@ A pasta `misc/` consolida **tooling do repositório Framework** — módulos Gra
 | [misc/core/](misc/core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, schema `nxs_config.json` (v2) |
 | [misc/cli/](misc/cli/) | `:cli` — comando headless `generate` |
 | [misc/build-logic/](misc/build-logic/) | Included build (antes `buildSrc` na raiz) — toolchain JVM 26, plugins de convenção |
-| [misc/client-setup/](misc/client-setup/) | Instaladores JDK 26 + Git e scripts de ambiente na primeira execução |
-| [misc/scripts/](misc/scripts/) | Automação do repo — [dev/](misc/scripts/dev/) (workflow local, gen Docker), [test-gen/](misc/scripts/test-gen/) (smoke tests em `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (SVGs de docs) |
+| [misc/client-setup/](misc/client-setup/) | Instaladores na primeira execução (Linux/macOS/Windows) para JDK 26 + Git; `env.sh` / `env.bat` definem `JAVA_HOME` antes do Gradle |
+| [misc/scripts/](misc/scripts/) | Automação do repo — [dev/](misc/scripts/dev/) (build/validação/execução do client), [test-gen/](misc/scripts/test-gen/) (stubs smoke/instrumentados em `builds/framework/`), [generate-diagrams/](misc/scripts/generate-diagrams/) (SVGs de docs) |
 | [misc/docker/](misc/docker/) | `Dockerfile` + compose para geração containerizada |
 | [misc/jenkins/](misc/jenkins/) | Setup Jenkins opcional — veja [misc/jenkins/README.md](misc/jenkins/README.md) |
 
@@ -181,9 +181,52 @@ O included build em `misc/build-logic/` substitui um diretório `buildSrc/` na r
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
 ./misc/scripts/dev/nexus-dev.sh compile
 ./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 
 Hub: [misc/README.md](misc/README.md) · pipeline: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
+
+### Scripts de setup inicial (`misc/client-setup/`)
+
+Execute **uma vez** antes do primeiro `./gradlew :app:run`. Os instaladores em [misc/client-setup/](misc/client-setup/) provisionam **JDK 26** e **Git** (mais ferramentas de build recomendadas no Linux). Depois, carregue o arquivo de ambiente gerado para o Gradle encontrar `JAVA_HOME`:
+
+```bash
+./misc/client-setup/linux/setup.sh   # ou macos/setup.sh / windows/setup.bat
+source misc/client-setup/env.sh      # Windows: call misc\client-setup\env.bat
+./gradlew :app:run
+```
+
+Helpers Linux por distro (`setup-arch.sh`, `setup-debian.sh`, `setup-fedora.sh`) e troubleshooting: [misc/client-setup/README.md](misc/client-setup/README.md).
+
+### Testes automatizados e geração de testes (`misc/scripts/test-gen/`)
+
+[test-gen/](misc/scripts/test-gen/) gera stubs de smoke e testes instrumentados para **apps já gerados** em `builds/framework/<projeto>/` — não para o scaffolder em si. Lê `nxs_config.json`, detecta desktop vs Android e grava arquivos idempotentes (smoke C++ desktop via CTest; stubs Kotlin `androidTest`). A geração é idempotente; use `--force` para sobrescrever.
+
+Os entry points por plataforma envolvem o núcleo compartilhado em [test-gen/common/generate-tests.sh](misc/scripts/test-gen/common/generate-tests.sh):
+
+| Plataforma | Script |
+|------------|--------|
+| Linux (Arch) | `linux/arch.sh` |
+| Linux (Debian/Ubuntu) | `linux/debian.sh` |
+| Linux (Fedora/RHEL) | `linux/fedora.sh` |
+| Linux (fallback POSIX) | `linux/generic.sh` |
+| macOS | `macos/darwin.sh` |
+| Windows | `windows/win32.ps1` |
+
+```bash
+./misc/scripts/test-gen/linux/generic.sh --dry-run --project MyApp
+./misc/scripts/test-gen/linux/debian.sh builds/framework/MyApp
+./gradlew :core:test   # testes Gradle do scaffolder (:core, :cli, :app)
+```
+
+Para build/validação/execução local do client Compose, use [misc/scripts/dev/nexus-dev.sh](misc/scripts/dev/nexus-dev.sh) (`compile`, `generate`, `docker`, …). Uso completo: [misc/scripts/test-gen/README.md](misc/scripts/test-gen/README.md).
+
+### Outros scripts do repo
+
+| Família | Entry point | Propósito |
+|---------|-------------|-----------|
+| `dev/` | `./misc/scripts/dev/nexus-dev.sh compile` | Workflow Gradle local + geração Docker |
+| `generate-diagrams/` | `python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py` | Regenerar SVGs de docs |
 
 ## Casos de uso — para que o Nexus foi feito
 

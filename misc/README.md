@@ -9,10 +9,10 @@ Supporting modules and tooling for the Framework scaffold client. Gradle modules
 | [build-logic/](build-logic/) | Gradle convention plugins (included build) — JVM toolchain 26 |
 | [core/](core/) | Generation pipeline (`:core`) — `ProjectGenerator`, `TemplateEngine`, `nxs_config` schema |
 | [cli/](cli/) | Headless CLI (`:cli`) — `generate` command |
-| [client-setup/](client-setup/) | First-run JDK 26 + Git installers |
+| [client-setup/](client-setup/) | First-run JDK 26 + Git installers — see [client-setup/README.md](client-setup/README.md) |
 | [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
 | [jenkins/](jenkins/) | Optional Jenkins setup — see [jenkins/README.md](jenkins/README.md) |
-| [scripts/](scripts/) | Repo automation by function — `dev/`, `test-gen/`, `generate-diagrams/` (see [scripts/README.md](scripts/README.md)) |
+| [scripts/](scripts/) | Repo automation — `dev/` (client workflow), `test-gen/` (smoke tests for `builds/framework/`), `generate-diagrams/` (see [scripts/test-gen/README.md](scripts/test-gen/README.md)) |
 
 Root [Jenkinsfile](../Jenkinsfile) points at this repo for optional CI.
 
