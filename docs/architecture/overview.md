@@ -18,9 +18,10 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 
 | Layer | Technology | Role |
 |-------|------------|------|
-| **Scaffold client** | Kotlin Compose MVC (`:app`) | **Generate Project** + **Edit blueprint** (v1 Compose graph editor) |
+| **Scaffold client** | Kotlin Compose MVC (`:app`) | **Generate Project** + **Edit blueprint** + **Edit flows** (v1 Compose editors) |
 | **Blueprint graph** | `blueprint.json` (imnodes schema) | Langflow-style nodes + edges — generation consumes the graph |
-| **Generation** | `:core`, `:cli` in `misc/` | `ProjectGenerator`, `BlueprintValidator` → `builds/framework/<name>/` |
+| **Runtime flows** | `flows/flows.json` (optional) | Background/triggered services — `FlowRunner` no-op when disabled |
+| **Generation** | `:core`, `:cli` in `misc/` | `ProjectGenerator`, `BlueprintValidator`, `FlowsValidator` → `builds/framework/<name>/` |
 | **Authoring** | TS/XHTML, Lua, Python files | UI components and runtime panels referenced by blueprint nodes |
 | **Scripting** | Lua 5.4 + **sol2** | Runtime panels, hotkeys (`lua.script` nodes) |
 | **Domain** | C++20 MVC | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`) |
@@ -58,7 +59,7 @@ Full comparison table: [blueprint-schema.md § Langflow vs n8n](../templates/blu
 
 ![Generation flow — client-setup through :app/:cli to builds/framework and native binary](../assets/diagrams/generation-builds-flow.svg)
 
-The pipeline validates `blueprint.json` after template emit. A custom graph from the Compose editor is passed via `ProjectSpec.blueprint` and overrides the template stub.
+The pipeline validates `blueprint.json` and optional `flows/flows.json` after template emit. Custom graphs from the Compose editors are passed via `ProjectSpec.blueprint` and `ProjectSpec.flows`.
 
 ## Desktop vs Android runtime
 
@@ -75,6 +76,7 @@ Both templates share the same `blueprint.json` node graph; only the Python bridg
 ## Related
 
 - [Blueprint schema](../templates/blueprint-schema.md)
+- [Flows schema](../templates/flows-schema.md)
 - [Coding with Nexus](../guides/coding-with-nexus.md)
 - [Generation pipeline](../guides/generation-pipeline.md)
 - [Desktop template](../templates/desktop-app.md)

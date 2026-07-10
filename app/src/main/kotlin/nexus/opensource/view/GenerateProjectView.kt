@@ -30,6 +30,7 @@ fun GenerateProjectScreen(
     controller: GenerateController,
     onBack: () -> Unit,
     onEditBlueprint: () -> Unit,
+    onEditFlows: () -> Unit,
 ) {
     var typeMenuExpanded by remember { mutableStateOf(false) }
 
@@ -50,7 +51,7 @@ fun GenerateProjectScreen(
             value = controller.projectName,
             onValueChange = {
                 controller.projectName = it
-                controller.syncBlueprintContext()
+                controller.syncAllContext()
             },
             label = { Text("Project name") },
             modifier = Modifier.fillMaxWidth(),
@@ -66,7 +67,7 @@ fun GenerateProjectScreen(
                 for (type in AppType.entries) {
                     DropdownMenuItem(onClick = {
                         controller.appType = type
-                        controller.syncBlueprintContext()
+                        controller.syncAllContext()
                         typeMenuExpanded = false
                     }) {
                         Text(type.label)
@@ -82,10 +83,16 @@ fun GenerateProjectScreen(
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = {
-                controller.syncBlueprintContext()
+                controller.syncAllContext()
                 onEditBlueprint()
             }) {
                 Text("Edit blueprint")
+            }
+            Button(onClick = {
+                controller.syncAllContext()
+                onEditFlows()
+            }) {
+                Text("Edit flows")
             }
             Button(
                 onClick = { controller.generate() },
@@ -103,6 +110,14 @@ fun GenerateProjectScreen(
             )
         }
 
+        if (controller.flowsEditor.validationErrors.isNotEmpty()) {
+            Text(
+                "Flows: ${controller.flowsEditor.validationErrors.first()}",
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+            )
+        }
+
         if (controller.statusMessage.isNotBlank()) {
             Text(controller.statusMessage, style = MaterialTheme.typography.body2)
         }
@@ -113,6 +128,6 @@ fun GenerateProjectScreen(
 @Composable
 fun GenerateProjectScreenPreview() {
     MaterialTheme {
-        GenerateProjectScreen(controller = remember { GenerateController() }, onBack = {}, onEditBlueprint = {})
+        GenerateProjectScreen(controller = remember { GenerateController() }, onBack = {}, onEditBlueprint = {}, onEditFlows = {})
     }
 }

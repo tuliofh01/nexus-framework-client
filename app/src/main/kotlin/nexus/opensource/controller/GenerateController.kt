@@ -15,9 +15,19 @@ class GenerateController {
     var statusMessage: String = ""
     var isGenerating: Boolean = false
     val blueprintEditor: BlueprintEditorController = BlueprintEditorController()
+    val flowsEditor: FlowsEditorController = FlowsEditorController()
 
     fun syncBlueprintContext() {
         blueprintEditor.syncContext(projectName, appType)
+    }
+
+    fun syncFlowsContext() {
+        flowsEditor.syncContext(projectName, appType)
+    }
+
+    fun syncAllContext() {
+        syncBlueprintContext()
+        syncFlowsContext()
     }
 
     fun generate(onProgress: (String) -> Unit = {}): String? {
@@ -25,12 +35,13 @@ class GenerateController {
         isGenerating = true
         statusMessage = ""
         return try {
-            syncBlueprintContext()
+            syncAllContext()
             val spec = ProjectSpec(
                 projectName = projectName,
                 outputPath = ProjectGenerator.defaultOutputPath(projectName),
                 appType = appType,
                 blueprint = blueprintEditor.blueprint,
+                flows = flowsEditor.effectiveFlows(),
             )
             val repoRoot = RepoRoot.resolve()
             val generator = ProjectGenerator(repoRoot)

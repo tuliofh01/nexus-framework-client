@@ -83,6 +83,7 @@ add_library({{projectName}} SHARED
     src/controller/PythonEngine.cpp
     src/view/PlotterView.cpp
     src/view/LuaPanels.cpp
+    src/service/FlowRunner.cpp
     ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
     ${NXS_SHARED_DIR}/runtime/FontConfig.cpp
     ${NXS_SHARED_DIR}/runtime/ScriptArchive.cpp

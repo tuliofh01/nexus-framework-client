@@ -6,6 +6,7 @@
 #include "controller/PlotController.hpp"
 #include "controller/PythonEngine.hpp"
 #include "model/FunctionRegistry.hpp"
+#include "service/FlowRunner.hpp"
 #include "view/LuaPanels.hpp"
 #include "view/PlotterView.hpp"
 #include "FontConfig.hpp"
@@ -59,7 +60,13 @@ int main(int, char**) {
     nxs::view::PlotterView view(controller);
     nxs::view::LuaPanels luaPanels(controller);
     luaPanels.loadScripts();
+
+    nxs::service::FlowRunner flowRunner(controller);
+    flowRunner.load("nxs_config.json", "flows/flows.json");
+    flowRunner.onStartup();
+
     controller.addFunction("sine");
+    flowRunner.onEvent("curve.added");
 
     bool running = true;
     while (running) {
@@ -71,6 +78,7 @@ int main(int, char**) {
             }
         }
 
+        flowRunner.tick(16);
         controller.refresh();
 
         ImGui_ImplOpenGL3_NewFrame();

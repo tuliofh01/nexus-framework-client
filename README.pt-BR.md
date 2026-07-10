@@ -55,12 +55,44 @@ Ambas as ferramentas usam o **modelo mental de nós e arestas**, mas resolvem ca
 
 **Exemplos visuais:** Veja [chatbot RAG](docs/assets/examples/langflow-rag-chatbot.svg), [agente com ferramentas](docs/assets/examples/langflow-agent-tools.svg) e [estrutura de app no blueprint Nexus](docs/assets/examples/nexus-blueprint-app-structure.svg) para grafos estilo Langflow e como o Nexus traduz o mesmo modelo mental para `blueprint.json` em design-time.
 
+## Fluxos de runtime opcionais (serviços)
+
+O Nexus separa **estrutura em design-time** de **automação em runtime**:
+
+| Camada | Arquivo | Propósito |
+|--------|---------|-----------|
+| Estrutura do app | `blueprint.json` | Fiação MVC estilo Langflow (módulos, portas, telas) |
+| Fluxos de runtime | `flows/flows.json` | Serviços opcionais in-app — loops em background, gatilhos por evento, agendamentos |
+
+**Editar no cliente:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — listar fluxos, habilitar/desabilitar, pré-visualizar JSON (editor visual na v1.1). Schema: [docs/templates/flows-schema.md](docs/templates/flows-schema.md).
+
+### Caminhos de adoção
+
+| Caminho | O que você entrega |
+|---------|-------------------|
+| **Sem fluxos** | Omitir ou desabilitar — app totalmente customizado; o plotter funciona sem FlowRunner |
+| **Fluxos como helpers** | Pequenos serviços de automação (timers, hooks de evento) dentro de um app maior |
+| **Híbrido** | MVC via blueprint + fluxos background/triggered no mesmo binário |
+
+### Background vs triggered
+
+| Modo | Quando executa | Exemplo de gatilho |
+|------|----------------|-------------------|
+| `background` | Enquanto o app está vivo | `interval` a cada 5000 ms |
+| `triggered` | Só na condição | `event` `curve.added`, `startup`, `manual` |
+
+Adicione vários fluxos no array `flows` de `flows.json` (cada um com `id` único). Desabilite globalmente com `nxs_config.json` → `"flows": { "enabled": false }` ou por fluxo com `"enabled": false`.
+
+**Não é n8n na v1:** fluxos são serviços **locais, in-process** dentro do app nativo. Não substituem orquestração de webhooks na nuvem (n8n, Power Automate). Chame webhooks externos via Python/Lua quando precisar; use `flows.json` para timers e eventos do app. Passos HTTP/webhook estão previstos para v1.1.
+
+Amostra: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json).
+
 ## O que é este repositório
 
 | Camada | Hoje | Roadmap (v1.1+) |
 |--------|------|-----------------|
-| **Cliente (`:app`)** | Compose Desktop — demo MVC + **Generate Project** + **Blueprint Editor** (grafo `blueprint.json`) | Assistente em 6 passos, painel imnodes nativo |
-| **Geração (`misc/core`, `misc/cli`)** | `ProjectGenerator` + `BlueprintValidator` → `builds/framework/<nome>/` | Catálogo remoto, packs `python.dat` / `lua.dat` |
+| **Cliente (`:app`)** | Compose Desktop — demo MVC + **Generate Project** + **Blueprint Editor** + **Flows Editor** | Assistente em 6 passos, painel imnodes nativo, canvas visual de fluxos (v1.1) |
+| **Geração (`misc/core`, `misc/cli`)** | `ProjectGenerator` + `BlueprintValidator` + `FlowsValidator` → `builds/framework/<nome>/` | Catálogo remoto, packs `python.dat` / `lua.dat` |
 | **Templates** | Plotter desktop + Android com `blueprint.json` compartilhado | Template iOS |
 | **Autoria** | JSON de nós estilo Langflow + TS/XHTML + Lua | Packs de script criptografados |
 

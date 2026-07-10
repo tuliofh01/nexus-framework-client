@@ -17,6 +17,7 @@ data class NexusConfigFile(
     val targets: Map<String, JsonObject> = emptyMap(),
     val features: Map<String, JsonElement> = emptyMap(),
     val blueprint: Map<String, String> = emptyMap(),
+    val flows: FlowsConfigSpec? = null,
     val build: NexusBuild = NexusBuild(),
 )
 

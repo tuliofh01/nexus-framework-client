@@ -10,4 +10,6 @@ data class ProjectSpec(
     val scriptProtectionEnabled: Boolean = true,
     /** When set, written to the generated project as `blueprint.json` (overrides template copy). */
     val blueprint: BlueprintFile? = null,
+    /** When set, written to the generated project as `flows/flows.json` (overrides template copy). */
+    val flows: FlowsFile? = null,
 )

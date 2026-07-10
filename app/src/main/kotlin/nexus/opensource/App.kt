@@ -12,12 +12,14 @@ import nexus.opensource.controller.GenerateController
 import nexus.opensource.model.NexusBranding
 import nexus.opensource.view.CounterScreen
 import nexus.opensource.view.BlueprintEditorScreen
+import nexus.opensource.view.FlowsEditorScreen
 import nexus.opensource.view.GenerateProjectScreen
 
 enum class AppScreen {
     Counter,
     Generate,
     BlueprintEditor,
+    FlowsEditor,
 }
 
 fun main() = application {
@@ -38,9 +40,14 @@ fun main() = application {
                     controller = generateController,
                     onBack = { screen = AppScreen.Counter },
                     onEditBlueprint = { screen = AppScreen.BlueprintEditor },
+                    onEditFlows = { screen = AppScreen.FlowsEditor },
                 )
                 AppScreen.BlueprintEditor -> BlueprintEditorScreen(
                     controller = generateController.blueprintEditor,
+                    onBack = { screen = AppScreen.Generate },
+                )
+                AppScreen.FlowsEditor -> FlowsEditorScreen(
+                    controller = generateController.flowsEditor,
                     onBack = { screen = AppScreen.Generate },
                 )
             }

@@ -18,7 +18,10 @@ The same **Desmos-style function plotter** as the desktop template, adapted for 
 | `scripts/` | Lua sources → packed to `build/assets/lua.dat` |
 | `ui/` | TypeScript + XHTML DSL |
 | `blueprint.json` | App graph (same node types as desktop) |
-| `nxs_config.json` | Nexus schema v2 — Android targets, Chaquopy, Djinni paths |
+| `flows/flows.json` | Optional runtime services — delete or disable in `nxs_config.json` to skip |
+| `src/service/FlowRunner.*` | Native flow runner (NO-OP when flows disabled) |
+| `app/.../FlowRunner.kt` | JVM stub for future manual triggers |
+| `nxs_config.json` | Nexus schema v2 — Android targets, Chaquopy, Djinni, optional `flows` |
 | `app/src/main/assets/` | Themes, fonts, staged `lua.dat` |
 
 **Vendored (do not edit):** `app/src/main/java/org/libsdl/app/` — upstream SDL3 Android glue.
@@ -47,6 +50,7 @@ cmake --build --preset debug
 - **Default theme:** `nexus-field` (high-contrast field tablet) — override via `"theme": "nexus-dark"` in `nxs_config.json`.
 - **ABIs:** `arm64-v8a`, `x86_64` (`targets.android.ndkAbis`).
 - **blueprint.json:** Same schema v1 as desktop — node types `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script`. Python node `data.source` points to `app/src/main/python/functions.py` on Android.
+- **flows/flows.json (optional):** Runtime automation — disable via `nxs_config.json` → `"flows": { "enabled": false }` or delete the file.
 - **nxs_config.json:** `features.python.embedding` = `chaquopy` (not pybind11). `features.djinni` points to IDL and `djinni-generated/`.
 - **Script archives:** Gradle task `packLuaDat` packs `scripts/**/*.lua` → `build/assets/lua.dat`. **No `python.dat` on Android** — Chaquopy bundles `app/src/main/python/` directly. `scriptProtection` still applies to `lua.dat` when enabled.
 

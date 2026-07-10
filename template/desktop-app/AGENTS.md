@@ -17,7 +17,9 @@ A **Desmos-style function plotter** demonstrating the full Nexus desktop stack: 
 | `scripts/` | Lua sources → packed to `misc/lua.dat` |
 | `python/` | Python sources → packed to `misc/python.dat` |
 | `blueprint.json` | App graph (`python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script`) |
-| `nxs_config.json` | Nexus schema v2 — features, build paths, script protection |
+| `flows/flows.json` | Optional runtime services (background/triggered) — **optional**; delete or disable to skip |
+| `src/service/FlowRunner.*` | Loads flows.json; NO-OP when missing or `"flows": []` |
+| `nxs_config.json` | Nexus schema v2 — features, build paths, script protection, optional `flows.enabled` |
 | `assets/` | Themes, fonts, logo (copied from shared template) |
 | `misc/` | Runtime script archives (`lua.dat`, `python.dat`) |
 
@@ -50,7 +52,8 @@ Optional: `-DNXS_PREFER_SYSTEM_DEPS=ON` to prefer system/vcpkg packages over Fet
 - **C++ standard:** C++20 (`project.cppStandard` in `nxs_config.json`).
 - **Namespaces:** `nxs::model::`, `nxs::controller::`, `nxs::view::` — match `blueprint.json` node `data.class` values.
 - **blueprint.json:** Langflow-style graph; node types `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script`. Edges use `port` names (`evaluate`, `sampleCache`, `commands`, `activeCurves`). Edit via Nexus client Blueprint Editor or by hand; generator validates on emit.
-- **nxs_config.json:** Schema v2. Key flags: `features.python.embedding` = `pybind11`, `features.lua.scriptDir` = `scripts`, `scriptProtection.enabled` controls v2 encryption on archives.
+- **flows/flows.json (optional):** Runtime automation — background intervals and event triggers. Disable by deleting the file or setting `nxs_config.json` → `"flows": { "enabled": false }`. Plotter works unchanged without FlowRunner.
+- **nxs_config.json:** Schema v2. Key flags: `features.python.embedding` = `pybind11`, `features.lua.scriptDir` = `scripts`, `scriptProtection.enabled` controls v2 encryption on archives, `flows.enabled` toggles FlowRunner.
 - **Script archives:** CMake targets `pack_lua_dat` and `pack_python_dat` build `misc/lua.dat` (LUAC) and `misc/python.dat` (PYAC) via `template/shared/tools/pack_archive.cpp`. Set `"scriptProtection": { "enabled": false }` during development for plaintext archives. Plaintext `scripts/` and `python/` remain as dev fallback when archives are missing.
 
 ## Where to edit
@@ -65,6 +68,7 @@ Optional: `-DNXS_PREFER_SYSTEM_DEPS=ON` to prefer system/vcpkg packages over Fet
 | Lua panels & hotkeys | `scripts/panels.lua`, `src/view/LuaPanels.*` |
 | TS/XHTML UI authoring | `ui/ui.xhtml`, `ui/ui.ts` |
 | App wiring graph | `blueprint.json` |
+| Runtime flows (optional) | `flows/flows.json`, `src/service/FlowRunner.*` |
 | ImGui theme preset | `assets/themes/*.json` or `nxs_config.json` → `theme` |
 | Build output / features | `nxs_config.json` |
 | CMake deps / link flags | `CMakeLists.txt`, `CMakePresets.json` |
@@ -99,5 +103,6 @@ Optional: `-DNXS_PREFER_SYSTEM_DEPS=ON` to prefer system/vcpkg packages over Fet
 
 - [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
 - [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
+- [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md)
 - [docs/templates/shared-dsl.md](../../docs/templates/shared-dsl.md)
 - [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)

@@ -54,11 +54,44 @@ Both tools use a **node-and-edge mental model**, but they solve different proble
 
 **Visual examples:** See [RAG chatbot](docs/assets/examples/langflow-rag-chatbot.svg), [agent with tools](docs/assets/examples/langflow-agent-tools.svg), and [Nexus blueprint app structure](docs/assets/examples/nexus-blueprint-app-structure.svg) for Langflow-style node graphs and how Nexus maps the same mental model to design-time `blueprint.json`.
 
+## Optional runtime flows (services)
+
+Nexus separates **design-time structure** from **runtime automation**:
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| App structure | `blueprint.json` | Langflow-style MVC wiring (modules, ports, screens) |
+| Runtime flows | `flows/flows.json` | Optional in-app services — background loops, event triggers, schedules |
+
+**Edit in the client:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — list flows, enable/disable, JSON preview (visual editor v1.1). Schema: [docs/templates/flows-schema.md](docs/templates/flows-schema.md).
+
+### Adoption paths
+
+| Path | What you ship |
+|------|----------------|
+| **No flows** | Omit or disable flows — fully custom app; plotter works without FlowRunner |
+| **Flows as helpers** | Small automation services (timers, event hooks) inside a larger app |
+| **Hybrid** | Blueprint MVC + background/triggered flows in the same binary |
+
+### Background vs triggered
+
+| Mode | When it runs | Example trigger |
+|------|----------------|-----------------|
+| `background` | While app is alive | `interval` every 5000 ms |
+| `triggered` | On condition only | `event` `curve.added`, `startup`, `manual` |
+
+Add multiple flows by appending objects to the `flows` array in `flows.json` (each needs a unique `id`). Disable globally via `nxs_config.json` → `"flows": { "enabled": false }` or per-flow with `"enabled": false`.
+
+**Not n8n in v1:** flows are **local, in-process** services inside the native app. They do not replace cloud webhook orchestration (n8n, Power Automate). Call external webhooks from Python/Lua when needed; use `flows.json` for timers and app events. HTTP/webhook step types are planned for v1.1.
+
+Sample template: [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json) (interval resample stub + event on curve add).
+
 ## What this repo is
 
 | Today | Roadmap (v1.1+) |
 |-------|-----------------|
 | Compose Desktop client (`:app`) — Counter MVC demo + **Generate Project** + **Blueprint Editor** (JSON graph) | Full 6-step wizard, imnodes native panel |
+| Compose **Flows Editor** — optional runtime `flows.json` (list, enable/disable, JSON preview) | Visual flows canvas (v1.1) |
 | Generation pipeline (`:core`, `:cli` in `misc/`) — emit templates to `builds/framework/<name>/` | Remote template catalog, iOS template |
 | Script archive packs — `lua.dat` + `python.dat` (desktop), `lua.dat` in APK assets (Android) | Chaquopy `python.dat` (not applicable — sources ship in APK) |
 
@@ -332,6 +365,7 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) 
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes |
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` — Langflow-style nodes vs n8n |
+| [docs/templates/flows-schema.md](docs/templates/flows-schema.md) | `flows.json` — optional runtime services |
 | [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | AI agent onboarding |
 | [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Architecture risks |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
@@ -340,7 +374,7 @@ Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) 
 
 ## Development status and limitations
 
-**Shipped:** `:app` (Counter + Generate Project + Blueprint Editor), `:core` / `:cli` (template emit + `BlueprintValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
+**Shipped:** `:app` (Counter + Generate Project + Blueprint Editor + Flows Editor), `:core` / `:cli` (template emit + `BlueprintValidator` + `FlowsValidator`), `template/*`, script archive packs (`lua.dat` / `python.dat` on desktop, `lua.dat` in Android APK), `builds/`, `misc/client-setup/`, `docs/`.
 
 **Not yet:** full 6-step wizard, imnodes **native** panel (v1 ships Compose JSON graph editor), remote catalog, iOS template, SDL3 Android runner polish.
 

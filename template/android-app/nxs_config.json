@@ -49,6 +49,10 @@
     "flow": "blueprint.json",
     "editor": "imnodes"
   },
+  "flows": {
+    "path": "flows/flows.json",
+    "enabled": true
+  },
   "build": {
     "outputDir": "../../builds/framework/{{projectName}}",
     "gradleModule": "app",

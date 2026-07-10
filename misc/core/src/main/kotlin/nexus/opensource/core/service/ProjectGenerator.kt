@@ -1,6 +1,7 @@
 package nexus.opensource.core.service
 
 import nexus.opensource.core.model.BlueprintJson
+import nexus.opensource.core.model.FlowsJson
 import nexus.opensource.core.model.NexusConfigJson
 import nexus.opensource.core.model.ProjectSpec
 import java.nio.file.Files
@@ -19,6 +20,7 @@ class ProjectGenerator(
     private val repoRoot: Path,
     private val templateEngine: TemplateEngine = TemplateEngine(),
     private val blueprintValidator: BlueprintValidator = BlueprintValidator(),
+    private val flowsValidator: FlowsValidator = FlowsValidator(),
 ) {
     fun generate(
         spec: ProjectSpec,
@@ -65,8 +67,10 @@ class ProjectGenerator(
         }
 
         writeBlueprint(projectRoot, spec, vars, onProgress)
+        writeFlows(projectRoot, spec, vars, onProgress)
         validateRenderedConfig(projectRoot, onProgress)
         validateRenderedBlueprint(projectRoot, onProgress)
+        validateRenderedFlows(projectRoot, onProgress)
         onProgress("Done: $projectRoot")
         return projectRoot
     }
@@ -77,6 +81,14 @@ class ProjectGenerator(
             .resolve(BlueprintJson.FILE_NAME)
         require(Files.isRegularFile(path)) { "Missing template ${BlueprintJson.FILE_NAME}: $path" }
         return BlueprintJson.read(Files.readString(path))
+    }
+
+    fun loadTemplateFlows(appType: nexus.opensource.core.model.AppType): nexus.opensource.core.model.FlowsFile {
+        val path = repoRoot.resolve(TEMPLATE_DIR)
+            .resolve(appType.templateFolder)
+            .resolve(FlowsJson.DEFAULT_PATH)
+        require(Files.isRegularFile(path)) { "Missing template ${FlowsJson.DEFAULT_PATH}: $path" }
+        return FlowsJson.read(Files.readString(path))
     }
 
     fun templateVars(spec: ProjectSpec): Map<String, String> {
@@ -152,6 +164,41 @@ class ProjectGenerator(
         val rendered = templateEngine.render(BlueprintJson.write(custom), vars)
         Files.writeString(path, rendered)
         onProgress("Wrote custom ${BlueprintJson.FILE_NAME} (${custom.nodes.size} nodes, ${custom.edges.size} edges)")
+    }
+
+    private fun writeFlows(
+        projectRoot: Path,
+        spec: ProjectSpec,
+        vars: Map<String, String>,
+        onProgress: (String) -> Unit,
+    ) {
+        val custom = spec.flows ?: return
+        flowsValidator.requireValid(custom)
+        val path = projectRoot.resolve(FlowsJson.DEFAULT_PATH)
+        Files.createDirectories(path.parent)
+        val rendered = templateEngine.render(FlowsJson.write(custom), vars)
+        Files.writeString(path, rendered)
+        onProgress("Wrote custom ${FlowsJson.DEFAULT_PATH} (${custom.flows.size} flows)")
+    }
+
+    private fun validateRenderedFlows(projectRoot: Path, onProgress: (String) -> Unit) {
+        val path = projectRoot.resolve(FlowsJson.DEFAULT_PATH)
+        if (!Files.isRegularFile(path)) {
+            onProgress("  [info] no ${FlowsJson.DEFAULT_PATH} — flow runner disabled")
+            return
+        }
+        try {
+            val flows = FlowsJson.read(Files.readString(path))
+            val result = flowsValidator.validate(flows)
+            if (!result.isValid) {
+                onProgress("  [warn] ${FlowsJson.DEFAULT_PATH}: ${result.errors.joinToString()}")
+                return
+            }
+            result.warnings.forEach { onProgress("  [flows] $it") }
+            onProgress("Validated ${FlowsJson.DEFAULT_PATH} (${flows.flows.size} flows)")
+        } catch (e: Exception) {
+            onProgress("  [warn] could not parse ${FlowsJson.DEFAULT_PATH}: ${e.message}")
+        }
     }
 
     private fun validateRenderedBlueprint(projectRoot: Path, onProgress: (String) -> Unit) {

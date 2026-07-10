@@ -11,6 +11,8 @@ import org.libsdl.app.SDLActivity
 class MainActivity : SDLActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         PlotterCore.installPythonBridge(ChaquopyPythonBridge())
+        // Runtime flows execute in native FlowRunner (SDL_main); this stub is for future JVM triggers.
+        FlowRunner.notifyManualTrigger("manual-check")
         super.onCreate(savedInstanceState)
     }
 
