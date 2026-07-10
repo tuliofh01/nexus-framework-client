@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 820" width="1500" height="820">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1304 942" width="1304" height="942">
   <title>Desktop vs Android runtime</title>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
@@ -22,151 +22,151 @@
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="1500" height="100%" fill="#f8f9fa"/>
+  <rect width="1304" height="100%" fill="#f8f9fa"/>
   <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
 
-  <rect x="420" y="78" width="480" height="340" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
-  <text x="434" y="102" class="layer-label">&#xf5fd; Shared (both templates)</text>
-  <rect x="440" y="118" width="257" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="454" y="144" class="icon">&#xf15b;</text>
-  <text x="476" y="146" class="label">
-    <tspan x="476" dy="0">blueprint.json</tspan>
+  <rect x="400" y="88" width="606" height="382" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
+  <text x="414" y="112" class="layer-label">&#xf5fd; Shared (both templates)</text>
+  <rect x="420" y="128" width="257" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="434" y="154" class="icon">&#xf15b;</text>
+  <text x="456" y="156" class="label">
+    <tspan x="456" dy="0">blueprint.json</tspan>
   </text>
-  <text x="454" y="165" class="desc">
-    <tspan x="454" dy="0">Loads blueprint.json at generate</tspan>
-    <tspan x="454" dy="14">time</tspan>
+  <text x="434" y="175" class="desc">
+    <tspan x="434" dy="0">Loads blueprint.json at generate</tspan>
+    <tspan x="434" dy="14">time</tspan>
   </text>
-  <rect x="660" y="118" width="257" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="674" y="144" class="icon">&#xf120;</text>
-  <text x="696" y="146" class="label">
-    <tspan x="696" dy="0">Lua 5.4 + sol2</tspan>
+  <rect x="725" y="128" width="257" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="739" y="154" class="icon">&#xf120;</text>
+  <text x="761" y="156" class="label">
+    <tspan x="761" dy="0">Lua 5.4 + sol2</tspan>
   </text>
-  <text x="674" y="165" class="desc">
-    <tspan x="674" dy="0">Scripting layer shared across</tspan>
-    <tspan x="674" dy="14">targets</tspan>
+  <text x="739" y="175" class="desc">
+    <tspan x="739" dy="0">Scripting layer shared across</tspan>
+    <tspan x="739" dy="14">targets</tspan>
   </text>
-  <rect x="440" y="210" width="460" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="454" y="236" class="icon">&#xf121;</text>
-  <text x="476" y="238" class="label">
-    <tspan x="476" dy="0">C++20 MVC</tspan>
+  <rect x="420" y="254" width="480" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="434" y="280" class="icon">&#xf121;</text>
+  <text x="456" y="282" class="label">
+    <tspan x="456" dy="0">C++20 MVC</tspan>
   </text>
-  <text x="454" y="257" class="desc">
-    <tspan x="454" dy="0">model · controller · view from graph</tspan>
+  <text x="434" y="301" class="desc">
+    <tspan x="434" dy="0">model · controller · view from graph</tspan>
   </text>
-  <rect x="440" y="302" width="220" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="454" y="328" class="icon">&#xf080;</text>
-  <text x="476" y="330" class="label">
-    <tspan x="476" dy="0">ImGui + ImPlot</tspan>
+  <rect x="420" y="374" width="220" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="434" y="400" class="icon">&#xf080;</text>
+  <text x="456" y="402" class="label">
+    <tspan x="456" dy="0">ImGui + ImPlot</tspan>
   </text>
-  <text x="454" y="349" class="desc">
-    <tspan x="454" dy="0">Immediate-mode UI and plotting</tspan>
+  <text x="434" y="421" class="desc">
+    <tspan x="434" dy="0">Immediate-mode UI and plotting</tspan>
   </text>
-  <rect x="680" y="302" width="232" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="694" y="328" class="icon">&#xf108;</text>
-  <text x="716" y="330" class="label">
-    <tspan x="716" dy="0">SDL3 render loop</tspan>
+  <rect x="688" y="374" width="240" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="702" y="400" class="icon">&#xf108;</text>
+  <text x="724" y="402" class="label">
+    <tspan x="724" dy="0">SDL3 render loop</tspan>
   </text>
-  <text x="694" y="349" class="desc">
-    <tspan x="694" dy="0">Cross-platform graphics and</tspan>
-    <tspan x="694" dy="14">input</tspan>
-  </text>
-
-  <rect x="24" y="450" width="520" height="340" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
-  <text x="38" y="474" class="layer-label">&#xf108; Desktop runtime</text>
-  <rect x="44" y="490" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="58" y="516" class="icon">&#xf013;</text>
-  <text x="80" y="518" class="label">
-    <tspan x="80" dy="0">CMake + Ninja</tspan>
-  </text>
-  <text x="58" y="537" class="desc">
-    <tspan x="58" dy="0">OpenGL 3.3 native build pipeline</tspan>
-  </text>
-  <rect x="300" y="490" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="314" y="516" class="icon">&#xe73c;</text>
-  <text x="336" y="518" class="label">
-    <tspan x="336" dy="0">pybind11 embed</tspan>
-  </text>
-  <text x="314" y="537" class="desc">
-    <tspan x="314" dy="0">Embeds CPython via pybind11</tspan>
-  </text>
-  <rect x="44" y="582" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="58" y="608" class="icon">&#xf15b;</text>
-  <text x="80" y="610" class="label">
-    <tspan x="80" dy="0">python/functions.py</tspan>
-  </text>
-  <text x="58" y="629" class="desc">
-    <tspan x="58" dy="0">In-process NumPy analytics module</tspan>
-  </text>
-  <rect x="300" y="582" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="314" y="608" class="icon">&#xf466;</text>
-  <text x="336" y="610" class="label">
-    <tspan x="336" dy="0">Native binary</tspan>
-  </text>
-  <text x="314" y="629" class="desc">
-    <tspan x="314" dy="0">Win · macOS · Linux executable</tspan>
+  <text x="702" y="421" class="desc">
+    <tspan x="702" dy="0">Cross-platform graphics and input</tspan>
   </text>
 
-  <rect x="760" y="450" width="520" height="340" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
-  <text x="774" y="474" class="layer-label">&#xf3cd; Android runtime</text>
-  <rect x="780" y="490" width="240" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="794" y="516" class="icon">&#xf17b;</text>
-  <text x="816" y="518" class="label">
-    <tspan x="816" dy="0">Gradle + NDK</tspan>
+  <rect x="32" y="518" width="592" height="256" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
+  <text x="46" y="542" class="layer-label">&#xf108; Desktop runtime</text>
+  <rect x="52" y="558" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="66" y="584" class="icon">&#xf013;</text>
+  <text x="88" y="586" class="label">
+    <tspan x="88" dy="0">CMake + Ninja</tspan>
   </text>
-  <text x="794" y="537" class="desc">
-    <tspan x="794" dy="0">APK build with native C++ libs</tspan>
+  <text x="66" y="605" class="desc">
+    <tspan x="66" dy="0">OpenGL 3.3 native build pipeline</tspan>
   </text>
-  <rect x="1040" y="490" width="260" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="1054" y="516" class="icon">&#xf108;</text>
-  <text x="1076" y="518" class="label">
-    <tspan x="1076" dy="0">SDL3 GLES</tspan>
+  <rect x="340" y="558" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="354" y="584" class="icon">&#xe73c;</text>
+  <text x="376" y="586" class="label">
+    <tspan x="376" dy="0">pybind11 embed</tspan>
   </text>
-  <text x="1054" y="537" class="desc">
-    <tspan x="1054" dy="0">Full-screen touch UI on GLES</tspan>
+  <text x="354" y="605" class="desc">
+    <tspan x="354" dy="0">Embeds CPython via pybind11</tspan>
   </text>
-  <rect x="780" y="582" width="240" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="794" y="608" class="icon">&#xf1e6;</text>
-  <text x="816" y="610" class="label">
-    <tspan x="816" dy="0">Djinni IDL</tspan>
+  <rect x="52" y="678" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="66" y="704" class="icon">&#xf15b;</text>
+  <text x="88" y="706" class="label">
+    <tspan x="88" dy="0">python/functions.py</tspan>
   </text>
-  <text x="794" y="629" class="desc">
-    <tspan x="794" dy="0">C++ ↔ Kotlin JNI codegen</tspan>
+  <text x="66" y="725" class="desc">
+    <tspan x="66" dy="0">In-process NumPy analytics module</tspan>
   </text>
-  <rect x="1040" y="582" width="260" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
-  <text x="1054" y="608" class="icon">&#xe73c;</text>
-  <text x="1076" y="610" class="label">
-    <tspan x="1076" dy="0">Chaquopy</tspan>
+  <rect x="340" y="678" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="354" y="704" class="icon">&#xf466;</text>
+  <text x="376" y="706" class="label">
+    <tspan x="376" dy="0">Native binary</tspan>
   </text>
-  <text x="1054" y="629" class="desc">
-    <tspan x="1054" dy="0">app/src/main/python/ embedding</tspan>
+  <text x="354" y="725" class="desc">
+    <tspan x="354" dy="0">Win · macOS · Linux executable</tspan>
   </text>
 
-  <line x1="540" y1="180" x2="540" y2="200" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="540" y="184" text-anchor="middle" class="small">wires nodes</text>
-  <line x1="770" y1="149" x2="660" y2="200" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="540" y1="262" x2="540" y2="282" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="540" y1="344" x2="154" y2="450" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="347" y="391" text-anchor="middle" class="small">desktop</text>
-  <line x1="540" y1="344" x2="900" y2="450" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="720" y="391" text-anchor="middle" class="small">Android NDK</text>
-  <line x1="154" y1="552" x2="154" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="400" y1="552" x2="280" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="900" y1="552" x2="900" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1020" y1="552" x2="890" y2="580" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="672" y="518" width="592" height="256" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <text x="686" y="542" class="layer-label">&#xf3cd; Android runtime</text>
+  <rect x="692" y="558" width="240" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="706" y="584" class="icon">&#xf17b;</text>
+  <text x="728" y="586" class="label">
+    <tspan x="728" dy="0">Gradle + NDK</tspan>
+  </text>
+  <text x="706" y="605" class="desc">
+    <tspan x="706" dy="0">APK build with native C++ libs</tspan>
+  </text>
+  <rect x="980" y="558" width="260" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="994" y="584" class="icon">&#xf108;</text>
+  <text x="1016" y="586" class="label">
+    <tspan x="1016" dy="0">SDL3 GLES</tspan>
+  </text>
+  <text x="994" y="605" class="desc">
+    <tspan x="994" dy="0">Full-screen touch UI on GLES</tspan>
+  </text>
+  <rect x="692" y="678" width="240" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="706" y="704" class="icon">&#xf1e6;</text>
+  <text x="728" y="706" class="label">
+    <tspan x="728" dy="0">Djinni IDL</tspan>
+  </text>
+  <text x="706" y="725" class="desc">
+    <tspan x="706" dy="0">C++ ↔ Kotlin JNI codegen</tspan>
+  </text>
+  <rect x="980" y="678" width="260" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="994" y="704" class="icon">&#xe73c;</text>
+  <text x="1016" y="706" class="label">
+    <tspan x="1016" dy="0">Chaquopy</tspan>
+  </text>
+  <text x="994" y="725" class="desc">
+    <tspan x="994" dy="0">app/src/main/python/ embedding</tspan>
+  </text>
 
-  <rect x="960" y="118" width="300" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
-  <text x="980" y="148" class="small">Same plotter template on both targets.</text>
-  <text x="980" y="168" class="desc">blueprint.json declares the same node graph.</text>
+  <line x1="548" y1="206" x2="660" y2="254" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="604" y="224" text-anchor="middle" class="small">wires nodes</text>
+  <line x1="725" y1="167" x2="900" y2="290" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="660" y1="326" x2="530" y2="374" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M660,326 L808,326 L808,374 L808,374" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M530,446 L172,446 L172,558 L172,558" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="164" y="502" text-anchor="middle" class="small">desktop</text>
+  <path d="M808,446 L812,446 L812,558 L812,558" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="804" y="502" text-anchor="middle" class="small">Android NDK</text>
+  <line x1="172" y1="630" x2="172" y2="678" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="630" x2="470" y2="678" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="812" y1="630" x2="812" y2="678" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1110" y1="630" x2="1110" y2="678" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="560" y="680" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="580" y="710" class="small">Lowest latency: Python runs in-process via pybind11.</text>
+  <rect x="1054" y="118" width="300" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
+  <text x="1074" y="148" class="small">Same plotter template on both targets.</text>
+  <text x="1074" y="168" class="desc">blueprint.json declares the same node graph.</text>
 
-  <rect x="24" y="720" width="480" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
-  <text x="40" y="742" class="legend-title">Runtime layers</text>
-  <rect x="40" y="744" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="62" y="756" class="small">Shared — blueprint + MVC + SDL3</text>
-  <rect x="280" y="744" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="302" y="756" class="small">Desktop — CMake + pybind11</text>
-  <rect x="40" y="766" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="62" y="778" class="small">Android — Gradle + Djinni + Chaquopy</text>
+  <rect x="468" y="766" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="488" y="796" class="small">Lowest latency: Python runs in-process via pybind11.</text>
+
+  <rect x="32" y="822" width="500" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="48" y="844" class="legend-title">Runtime layers</text>
+  <rect x="48" y="846" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="70" y="858" class="small">Shared — blueprint + MVC + SDL3</text>
+  <rect x="298" y="846" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="320" y="858" class="small">Desktop — CMake + pybind11</text>
+  <rect x="48" y="868" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="70" y="880" class="small">Android — Gradle + Djinni + Chaquopy</text>
 </svg>
