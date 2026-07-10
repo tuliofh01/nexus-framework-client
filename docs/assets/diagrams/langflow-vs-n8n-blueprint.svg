@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520">
+  <title>Langflow vs n8n vs Nexus blueprint.json</title>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#37474F"/>
+    </marker>
+    <style>
+      .title { font: bold 20px Verdana, sans-serif; fill: #1a1a1a; }
+      .subtitle { font: 13px Verdana, sans-serif; fill: #455A64; }
+      .label { font: 12px Verdana, sans-serif; fill: #263238; }
+      .small { font: 10px Verdana, sans-serif; fill: #546E7A; }
+      .node { rx: 6; stroke-width: 1.5; }
+      .panel { fill: #FAFAFA; stroke: #B0BEC5; stroke-width: 1.2; rx: 8; }
+      .timing { font: bold 11px Verdana, sans-serif; fill: #1565C0; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="520" fill="#FFFFFF"/>
+  <text x="600" y="34" text-anchor="middle" class="title">Blueprint paradigms  Langflow · n8n · Nexus</text>
+  <text x="600" y="56" text-anchor="middle" class="subtitle">Same visual wiring metaphor; different purpose and execution timing</text>
+
+  <!-- Langflow column -->
+  <rect x="24" y="76" width="360" height="420" class="panel"/>
+  <text x="204" y="104" text-anchor="middle" class="title" font-size="16">Langflow</text>
+  <text x="204" y="124" text-anchor="middle" class="subtitle">ML / LLM flow DAG</text>
+  <text x="204" y="148" text-anchor="middle" class="timing">Runtime execution</text>
+
+  <rect x="64" y="168" width="120" height="44" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="124" y="194" text-anchor="middle" class="label">Prompt</text>
+
+  <rect x="224" y="168" width="120" height="44" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="284" y="194" text-anchor="middle" class="label">LLM</text>
+
+  <rect x="144" y="248" width="120" height="44" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="204" y="274" text-anchor="middle" class="label">Parser</text>
+
+  <line x1="184" y1="212" x2="224" y2="190" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="284" y1="212" x2="204" y2="248" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="44" y="320" class="small">" Typed nodes (model, tool, memory)</text>
+  <text x="44" y="338" class="small">" Edges = data between components</text>
+  <text x="44" y="356" class="small">" Runs when user invokes the flow</text>
+  <text x="44" y="374" class="small">" Output: inference / chat response</text>
+
+  <!-- n8n column -->
+  <rect x="420" y="76" width="360" height="420" class="panel"/>
+  <text x="600" y="104" text-anchor="middle" class="title" font-size="16">n8n</text>
+  <text x="600" y="124" text-anchor="middle" class="subtitle">Workflow automation</text>
+  <text x="600" y="148" text-anchor="middle" class="timing">Runtime execution</text>
+
+  <rect x="460" y="168" width="120" height="44" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="520" y="188" text-anchor="middle" class="label">Webhook</text>
+  <text x="520" y="202" text-anchor="middle" class="small">trigger</text>
+
+  <rect x="620" y="168" width="120" height="44" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="680" y="194" text-anchor="middle" class="label">HTTP Request</text>
+
+  <rect x="540" y="248" width="120" height="44" class="node" fill="#E0F2F1" stroke="#00695C"/>
+  <text x="600" y="274" text-anchor="middle" class="label">Slack</text>
+
+  <line x1="580" y1="190" x2="620" y2="190" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="680" y1="212" x2="600" y2="248" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="440" y="320" class="small">" Triggers + integration steps</text>
+  <text x="440" y="338" class="small">" Edges = event / payload routing</text>
+  <text x="440" y="356" class="small">" Runs on schedule or webhook</text>
+  <text x="440" y="374" class="small">" Output: side effects (API calls)</text>
+
+  <!-- Nexus column -->
+  <rect x="816" y="76" width="360" height="420" class="panel"/>
+  <text x="996" y="104" text-anchor="middle" class="title" font-size="16">Nexus blueprint.json</text>
+  <text x="996" y="124" text-anchor="middle" class="subtitle">Native app structure graph</text>
+  <text x="996" y="148" text-anchor="middle" class="timing" fill="#6A1B9A">Design-time codegen</text>
+
+  <rect x="856" y="168" width="100" height="36" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="906" y="190" text-anchor="middle" class="small">python.module</text>
+
+  <rect x="976" y="168" width="100" height="36" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="1026" y="190" text-anchor="middle" class="small">cpp.model</text>
+
+  <rect x="916" y="218" width="100" height="36" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="966" y="240" text-anchor="middle" class="small">cpp.controller</text>
+
+  <rect x="1036" y="218" width="100" height="36" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="1086" y="240" text-anchor="middle" class="small">ui.page</text>
+
+  <rect x="976" y="268" width="100" height="36" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="1026" y="290" text-anchor="middle" class="small">lua.script</text>
+
+  <line x1="906" y1="204" x2="966" y2="218" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="966" y1="254" x2="1026" y2="204" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1026" y1="254" x2="1086" y2="236" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1026" y1="286" x2="966" y2="254" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="836" y="330" class="small">" Langflow-style typed DAG (not n8n triggers)</text>
+  <text x="836" y="348" class="small">" Edges = MVC data / command ports</text>
+  <text x="836" y="366" class="small">" Consumed at generate time (:core)</text>
+  <text x="836" y="384" class="small">" Output: C++/Lua/Python/UI project tree</text>
+  <text x="836" y="410" class="small">" Edit: :app ’ Generate Project ’ Edit blueprint</text>
+
+  <!-- Bottom legend -->
+  <rect x="24" y="468" width="1152" height="36" fill="#ECEFF1" stroke="#CFD8DC" rx="6"/>
+  <text x="600" y="490" text-anchor="middle" class="label">
+    Nexus maps the Langflow mental model (typed nodes + edges) to native app codegen  not runtime webhook automation. Future n8n-style hooks are optional roadmap.
+  </text>
+</svg>

@@ -6,7 +6,15 @@ Generated Nexus apps share one layered design. The scaffold client (`app/`) uses
 
 ![Nexus full stack — Compose client, blueprint.json graph, generation, C++ MVC on SDL3/ImGui, Python bridges](../assets/diagrams/full-stack-architecture.svg)
 
+![Langflow vs n8n vs Nexus blueprint](../assets/diagrams/langflow-vs-n8n-blueprint.svg)
+
 This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewers, and scientific tools all compose the same layers; only domain code in `model/` and `controller/` changes.
+
+### Langflow vs n8n
+
+- **Langflow:** visual DAG of typed nodes for ML/LLM — Nexus reuses this UX for **native app structure** (`python.module` → `cpp.controller` → `ui.page`, etc.).
+- **n8n:** workflow automation with triggers and integrations at **runtime** — Nexus blueprint is **build-time only**; optional n8n-style hooks are roadmap.
+- **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** → custom graph passed via `ProjectSpec.blueprint` to `ProjectGenerator`.
 
 | Layer | Technology | Role |
 |-------|------------|------|

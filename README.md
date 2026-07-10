@@ -13,9 +13,11 @@
 
 If you're evaluating **web-shell** stacks — **Electron** (Chromium + JavaScript) or **Tauri** (OS WebView + Rust) — Nexus is a different bet: native C++ runtime, immediate-mode widgets, and in-process Lua/Python instead of HTML layout engines. Those tools excel when DOM/CSS is the product surface; Nexus excels when throughput, binary size, and a shared SDL3 stack across desktop and Android field hardware matter more.
 
-## Blueprint graph (`blueprint.json`)
+## Blueprint nodes: Langflow-style vs n8n
 
 Nexus ships a **Langflow-style app graph** at the project root. Nodes declare modules (`python.module`, `cpp.model`, `ui.page`, …); edges wire data and command flow inside the generated MVC app. The **`:core` generator** validates and consumes the graph when materializing `builds/framework/<name>/`.
+
+![Langflow vs n8n vs Nexus blueprint — typed DAG vs workflow automation vs design-time codegen](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 | Node type | Role |
 |-----------|------|
@@ -24,6 +26,13 @@ Nexus ships a **Langflow-style app graph** at the project root. Nodes declare mo
 | `cpp.controller` | Commands + orchestration (`PlotController`) |
 | `ui.page` | TS/XHTML page (`ui/ui.ts`, `ui/ui.xhtml`) |
 | `lua.script` | Runtime Lua panels (`scripts/panels.lua`) |
+
+| | **Langflow** | **n8n** | **Nexus `blueprint.json`** |
+|---|-------------|---------|---------------------------|
+| **Purpose** | ML / LLM flow authoring | Workflow automation (triggers, HTTP, integrations) | **Build-time** native app structure |
+| **Node model** | Typed components (model, tool, memory) | Steps + triggers (webhook, cron, Slack, …) | Typed modules (`python.module`, `cpp.model`, …) |
+| **Edges** | Data between components | Event / payload routing | MVC ports (`evaluate`, `sampleCache`, `commands`, …) |
+| **Execution** | **Runtime** — user runs the flow | **Runtime** — schedule or webhook fires | **Design-time** — `ProjectGenerator` validates + emits |
 
 **Edit in the client:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** (Compose canvas + JSON inspector in v1; native **imnodes** panel planned for v1.1 — same schema). Samples: [template/desktop-app/blueprint.json](template/desktop-app/blueprint.json) · [template/android-app/blueprint.json](template/android-app/blueprint.json). Schema: [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md).
 
@@ -39,7 +48,7 @@ Both tools use a **node-and-edge mental model**, but they solve different proble
 | **Where it runs** | Inside the generated desktop binary or Android APK | n8n instance (cloud or self-hosted) |
 | **When to use** | Rewiring plotter MVC, adding screens, mapping Python samples → controller → UI | Ops automation, ETL, alerting, glue between third-party services |
 
-**Coexistence:** a generated Nexus app can call an n8n webhook from Python or Lua (e.g. post telemetry, trigger a downstream pipeline) while `blueprint.json` stays focused on **internal** app wiring — the same separation Langflow uses for LLM chains vs. what n8n uses for integration flows.
+**Coexistence:** a generated Nexus app can call an n8n webhook from Python or Lua (e.g. post telemetry, trigger a downstream pipeline) while `blueprint.json` stays focused on **internal** app wiring — the same separation Langflow uses for LLM chains vs. what n8n uses for integration flows. Optional **n8n-style automation hooks** inside the blueprint schema are roadmap only; v1 node types are all Langflow-style (`editor.paradigm: langflow`).
 
 **Client mapping:** **Edit blueprint** in `:app` mirrors the Langflow canvas — drag nodes, connect ports, preview JSON. v1.1 embeds **imnodes** natively with the same file; no schema migration planned.
 
@@ -232,6 +241,8 @@ Generated projects use **C++20** with conventions that address common legacy C++
 ![Generation and builds flow — client-setup → :app/:cli → builds/framework/&lt;name&gt; → native app](docs/assets/diagrams/generation-builds-flow.svg)
 
 ![Desktop vs Android runtime — shared MVC/ImGui/SDL3, pybind11 vs Chaquopy+Djinni](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+
+![Langflow vs n8n vs Nexus blueprint — design-time typed DAG vs runtime automation](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md)
 

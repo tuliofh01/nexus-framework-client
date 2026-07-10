@@ -80,7 +80,7 @@ fun BlueprintEditorScreen(
             Column {
                 Text("Blueprint Editor", style = MaterialTheme.typography.h5)
                 Text(
-                    "v1 JSON graph — future imnodes native panel uses the same blueprint.json schema",
+                    "Langflow-style typed DAG (design-time) — not n8n runtime automation; same schema in future imnodes panel",
                     style = MaterialTheme.typography.caption,
                 )
             }
@@ -95,7 +95,7 @@ fun BlueprintEditorScreen(
                         controller.addNode(type)
                         addMenuExpanded = false
                     }) {
-                        Text(type.label)
+                        Text("${type.label} (${type.paradigm.id})")
                     }
                 }
             }

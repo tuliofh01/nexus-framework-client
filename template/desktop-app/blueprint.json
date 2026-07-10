@@ -1,8 +1,8 @@
 {
   "$schema": "https://nexus.dev/schemas/blueprint-1.json",
   "name": "{{projectName}} flow",
-  "description": "Langflow-style app graph authored in the imnodes GUI during the creation wizard. Re-open it there to rewire screens and data flows; the generator consumes this file the same way Langflow consumes its flow JSON.",
-  "editor": { "tool": "imnodes", "version": "0.5", "grid_snap": 16 },
+  "description": "Langflow-style app graph (design-time codegen, not n8n runtime automation). Edit in :app Blueprint Editor; ProjectGenerator consumes this file when emitting builds/framework/<name>/.",
+  "editor": { "tool": "imnodes", "version": "0.5", "grid_snap": 16, "paradigm": "langflow" },
   "nodes": [
     {
       "id": "py-functions",

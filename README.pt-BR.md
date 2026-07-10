@@ -13,9 +13,19 @@
 
 Se você está avaliando stacks **web-shell** — **Electron** (Chromium + JavaScript) ou **Tauri** (WebView do SO + Rust) — o Nexus aposta em outro caminho: runtime C++ nativo, widgets immediate-mode e Lua/Python in-process em vez de motores de layout HTML. Essas ferramentas brilham quando DOM/CSS é a superfície do produto; o Nexus brilha quando throughput, tamanho de binário e uma pilha SDL3 compartilhada entre desktop e tablets Android de campo importam mais.
 
-## Grafo blueprint (`blueprint.json`)
+## Blueprint nodes: Langflow-style vs n8n
 
 O Nexus inclui um **grafo de app estilo Langflow** na raiz do projeto. Nós declaram módulos (`python.module`, `cpp.model`, `ui.page`, …); arestas ligam fluxo de dados e comandos dentro do app MVC gerado. A **geração em `:core`** valida e consome o grafo ao materializar `builds/framework/<nome>/`.
+
+![Langflow vs n8n vs blueprint Nexus — DAG tipado vs automação vs codegen em design-time](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
+
+| | **Langflow** | **n8n** | **Nexus `blueprint.json`** |
+|---|-------------|---------|---------------------------|
+| **Propósito** | Autoria de fluxos ML/LLM | Automação (gatilhos, HTTP, integrações) | Estrutura de app nativo em **design-time** |
+| **Modelo de nó** | Componentes tipados (modelo, ferramenta, memória) | Passos + gatilhos (webhook, cron, Slack, …) | Módulos tipados (`python.module`, `cpp.model`, …) |
+| **Arestas** | Dados entre componentes | Roteamento de evento / payload | Portas MVC (`evaluate`, `sampleCache`, `commands`, …) |
+| **Execução** | **Runtime** — usuário executa o fluxo | **Runtime** — agenda ou webhook dispara | **Design-time** — `ProjectGenerator` valida e emite |
+
 
 | Tipo de nó | Papel |
 |------------|-------|
@@ -39,7 +49,7 @@ Ambas as ferramentas usam o **modelo mental de nós e arestas**, mas resolvem ca
 | **Onde roda** | Dentro do binário desktop ou APK Android gerado | Instância n8n (cloud ou self-hosted) |
 | **Quando usar** | Reconfigurar MVC do plotter, adicionar telas, mapear amostras Python → controller → UI | Automação de ops, ETL, alertas, cola entre serviços de terceiros |
 
-**Coexistência:** um app Nexus gerado pode chamar um webhook n8n a partir de Python ou Lua (ex.: enviar telemetria, disparar pipeline downstream) enquanto o `blueprint.json` cuida apenas da **fiação interna** do app — a mesma separação que o Langflow usa para cadeias LLM vs. o que o n8n usa para fluxos de integração.
+**Coexistência:** um app Nexus gerado pode chamar um webhook n8n a partir de Python ou Lua (ex.: enviar telemetria, disparar pipeline downstream) enquanto o `blueprint.json` cuida apenas da **fiação interna** do app — a mesma separação que o Langflow usa para cadeias LLM vs. o que o n8n usa para fluxos de integração. **Ganchos estilo n8n** no schema do blueprint são roadmap; os tipos v1 são todos estilo Langflow (`editor.paradigm: langflow`).
 
 **Mapeamento no cliente:** **Edit blueprint** no `:app` espelha o canvas do Langflow — arrastar nós, conectar portas, pré-visualizar JSON. A v1.1 embute **imnodes** nativamente com o mesmo arquivo; sem migração de schema prevista.
 
@@ -233,6 +243,8 @@ Projetos gerados usam **C++20** com convenções que endereçam dores clássicas
 ![Fluxo de geração e builds — client-setup → :app/:cli → builds/framework/&lt;nome&gt; → app nativo](docs/assets/diagrams/generation-builds-flow.svg)
 
 ![Runtime Desktop vs Android — MVC/ImGui/SDL3 compartilhados, pybind11 vs Chaquopy+Djinni](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+
+![Langflow vs n8n vs blueprint Nexus — DAG tipado vs automação vs codegen em design-time](docs/assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
 Referência de camadas: [docs/architecture/overview.md](docs/architecture/overview.md)
 

@@ -31,6 +31,8 @@ data class BlueprintEditorMeta(
     val tool: String = "imnodes",
     val version: String = "0.5",
     @SerialName("grid_snap") val gridSnap: Int = 16,
+    /** `langflow` = typed DAG (v1 default); `n8n` reserved for future automation hooks. */
+    val paradigm: String = BlueprintParadigm.LANGFLOW.id,
 )
 
 @Serializable
@@ -55,7 +57,18 @@ data class BlueprintEdge(
     val port: String = "",
 )
 
-enum class BlueprintNodeType(val id: String, val label: String) {
+/** Conceptual authoring paradigm — all v1 node types are Langflow-style DAG nodes. */
+enum class BlueprintParadigm(val id: String, val label: String) {
+    LANGFLOW("langflow", "Langflow-style DAG"),
+    /** Reserved for future runtime automation hooks (webhooks, schedules) — not v1 node types. */
+    N8N("n8n", "n8n-style workflow"),
+}
+
+enum class BlueprintNodeType(
+    val id: String,
+    val label: String,
+    val paradigm: BlueprintParadigm = BlueprintParadigm.LANGFLOW,
+) {
     PYTHON_MODULE("python.module", "Python module"),
     CPP_MODEL("cpp.model", "C++ model"),
     CPP_CONTROLLER("cpp.controller", "C++ controller"),
@@ -67,6 +80,9 @@ enum class BlueprintNodeType(val id: String, val label: String) {
         val ALL: List<BlueprintNodeType> = entries.toList()
 
         fun fromId(id: String): BlueprintNodeType? = entries.find { it.id == id }
+
+        fun byParadigm(paradigm: BlueprintParadigm): List<BlueprintNodeType> =
+            entries.filter { it.paradigm == paradigm }
     }
 }
 

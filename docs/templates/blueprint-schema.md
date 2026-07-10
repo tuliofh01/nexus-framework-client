@@ -8,6 +8,8 @@ Langflow-style app graph at the project root. The Compose **Blueprint Editor** i
 
 Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. All three use nodes and edges, but the layers differ.
 
+![Langflow vs n8n vs Nexus blueprint](../assets/diagrams/langflow-vs-n8n-blueprint.svg)
+
 | | **Nexus `blueprint.json`** | **Langflow** | **n8n** |
 |---|---------------------------|--------------|---------|
 | **Purpose** | Author in-app MVC wiring for generated native apps | Author LLM / component chains for AI apps | Automate external services (webhooks, APIs, schedules) |
@@ -18,7 +20,8 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 
 **Nexus does not replace n8n.** Use `blueprint.json` for **internal** app structure (Langflow mental model). Use n8n when the generated app must trigger external automation — e.g. call an n8n webhook from `python/functions.py` or `scripts/panels.lua` while the blueprint stays focused on MVC edges (`evaluate` → `sampleCache` → `commands`).
 
-**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema.
+**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema. All v1 node types use `editor.paradigm: "langflow"`; future **n8n-style** automation nodes may use `"n8n"` — not shipped in v1.
+
 
 ## Top-level fields
 
@@ -27,11 +30,20 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 | `$schema` | string | `https://nexus.dev/schemas/blueprint-1.json` |
 | `name` | string | Human-readable flow name (e.g. `MyApp flow`) |
 | `description` | string | Optional notes |
-| `editor` | object | Authoring metadata (`tool`, `version`, `grid_snap`) |
+| `editor` | object | Authoring metadata (`tool`, `version`, `grid_snap`, `paradigm`) |
 | `nodes` | array | Graph nodes |
 | `edges` | array | Directed connections between nodes |
 
+### `editor.paradigm`
+
+| Value | Meaning |
+|-------|---------|
+| `langflow` (default) | Typed DAG nodes — all v1 node types |
+| `n8n` | Reserved for future runtime automation hooks — no v1 node types |
+
 ## Node types
+
+All v1 types use the **Langflow-style** paradigm (`BlueprintParadigm.LANGFLOW`). Each maps to generated source artifacts:
 
 | `type` | Role | Typical `data` keys |
 |--------|------|---------------------|
