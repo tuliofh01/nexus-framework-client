@@ -132,6 +132,13 @@ Nexus separates **design-time structure** from **runtime automation**:
 | App structure | [`blueprint.json`](docs/templates/blueprint-schema.md) | Langflow-style MVC wiring (modules, ports, screens) |
 | Runtime flows | [`flows/flows.json`](docs/templates/flows-schema.md) | Optional in-app services — background loops, event triggers, schedules |
 
+### Blueprint vs flows layers
+*Design-time codegen vs optional runtime automation*
+
+`blueprint.json` wires MVC structure consumed once by `:core`; `flows.json` registers in-process triggers loaded by FlowRunner at startup. A single Langflow canvas may split across both files after translation.
+
+![blueprint.json vs flows.json two-layer model](docs/assets/diagrams/blueprint-vs-flows-layers.svg)
+
 **Edit in the client:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — list flows, enable/disable, JSON preview (visual editor v1.1). Schema: [docs/templates/flows-schema.md](docs/templates/flows-schema.md).
 
 ### Adoption paths
@@ -141,12 +148,6 @@ Three ways to adopt runtime flows — pick the weight that fits your app:
 1. 🚫 **No flows** — Omit or disable flows; fully custom app; starter works without FlowRunner
 2. 🔧 **Flows as helpers** — Small automation services (timers, event hooks) inside a larger app
 3. 🔀 **Hybrid** — Blueprint MVC + background/triggered flows in the same binary
-
-| Path | What you ship |
-|------|----------------|
-| **No flows** → | Fully custom app; starter works without FlowRunner |
-| **Flows as helpers** → | Timers, event hooks inside a larger app |
-| **Hybrid** → | Blueprint MVC + background/triggered flows in the same binary |
 
 ### Background vs triggered
 
@@ -184,6 +185,10 @@ Nexus adopts the graph as **in-process automation** — not a hosted Langflow se
 **`blueprint.json` vs `flows.json`:** Langflow graphs that wire **app structure** (screens, controllers, Python modules) map better to [`blueprint.json`](docs/templates/blueprint-schema.md). Graphs that express **runtime automation** (timers, event hooks, background tasks) map to **`flows.json`**. A single Langflow canvas may split across both files after translation.
 
 #### Step C — Adoption workflow
+
+Export from Langflow, translate into the Nexus schema, ship in `flows/`, enable in config, and let FlowRunner register triggers at startup.
+
+![Langflow export to flows.json adoption workflow](docs/assets/diagrams/langflow-adoption-workflow.svg)
 
 1. **Export** JSON from Langflow.
 2. **Translate** field names into the Nexus `flows.json` schema ([docs/templates/flows-schema.md](docs/templates/flows-schema.md)) — manual in v1; a Langflow importer is planned for v1.1.
@@ -464,28 +469,14 @@ The same `python.module` node in [`blueprint.json`](docs/templates/blueprint-sch
 | **`nxs_config.json`** | `features.python.embedding = "pybind11"` | `features.python.embedding = "chaquopy"` |
 | **Typical rebuild** | `cmake --build` (refreshes `python.dat`) | `./gradlew :app:assembleDebug` |
 
-```
-blueprint.json  (python.module  →  port "evaluate")
-        │
-        ├─ Desktop ───────────────────────────────────────────┐
-        │   python/functions.py                               │
-        │        │  CMake: pack_python_dat                    │
-        │        ▼                                            │
-        │   misc/python.dat (PYAC)                            │
-        │        │  PythonEngine (pybind11 embed)             │
-        │        ▼                                            │
-        │   PlotController → FunctionRegistry → ImPlot        │
-        │                                                     │
-        └─ Android ───────────────────────────────────────────┤
-            app/src/main/python/functions.py                  │
-                 │  Gradle + Chaquopy (no python.dat)         │
-                 ▼                                            │
-            ChaquopyPythonBridge (Djinni)                     │
-                 ▼                                            │
-            PlotController → FunctionRegistry → ImPlot  ◄─────┘
-```
+### Python embedding flow
+*Same `python.module` evaluate port — different pack and bridge per platform*
 
-Both paths honor the same blueprint edge: Python `evaluate` → controller `sampleCache` → model caches → ImPlot draw. Desktop favors a single native binary with optional encrypted script packs; Android favors JVM-managed Python with type-safe JNI via Djinni. See [Desktop vs Android runtime](docs/assets/diagrams/desktop-vs-android-runtime.svg).
+The diagram traces how one blueprint edge fans out into desktop pybind11 + `python.dat` vs Android Chaquopy + Djinni, then reconverges on the shared PlotController → ImPlot path.
+
+![Python desktop vs Android embedding flow](docs/assets/diagrams/python-desktop-vs-android-flow.svg)
+
+Both paths honor the same blueprint edge: Python `evaluate` → controller `sampleCache` → model caches → ImPlot draw. Desktop favors a single native binary with optional encrypted script packs; Android favors JVM-managed Python with type-safe JNI via Djinni. See also [Desktop vs Android runtime](docs/assets/diagrams/desktop-vs-android-runtime.svg).
 
 ---
 
@@ -575,7 +566,7 @@ The end-to-end map from the Compose scaffolder through `:core` generation into C
 Traces the path from first-run JDK setup through `:app`/`:cli` generation into emitted templates under `builds/framework/`. Use it when debugging generation failures or explaining deploy layout. Key stops: `client-setup`, `ProjectGenerator`, and the native build step.
 
 <!-- Diagram: Generation and builds flow -->
-![📊 Generation and builds flow — JDK setup → Gradle → ProjectGenerator → builds/framework/&lt;name&gt;/](docs/assets/diagrams/generation-builds-flow.svg)
+![📊 Generation and builds flow — JDK setup → Gradle → ProjectGenerator → builds/framework/<name>/](docs/assets/diagrams/generation-builds-flow.svg)
 
 ### 📊 Desktop vs Android runtime
 *Shared MVC on SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
@@ -767,6 +758,18 @@ Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/lice
 | [Chaquopy](https://chaquo.com/chaquopy/) | Python on Android (JVM) |
 | [Djinni](https://github.com/dropbox/djinni) | Type-safe C++ ↔ Kotlin/Java bridge |
 | [Langflow](https://github.com/langflow-ai/langflow) | Visual DAG editor for LLM flows (optional authoring) |
+| [n8n](https://n8n.io/) | Workflow automation (external ops glue) |
+| [Kotlin](https://kotlinlang.org/) | Compose Desktop scaffolder client |
+| [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | Multiplatform UI for `:app` |
+
+<!-- Maintainer: consider GitHub repo topics — native-app, scaffolder, sdl3, imgui, kotlin-compose, cpp, lua, python, android, blueprint, langflow, open-source -->
+
+### Related repositories
+
+| Repo | Role |
+|------|------|
+| [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) | Separate `:client-desktop` wizard distribution |
+ub.com/langflow-ai/langflow) | Visual DAG editor for LLM flows (optional authoring) |
 | [n8n](https://n8n.io/) | Workflow automation (external ops glue) |
 | [Kotlin](https://kotlinlang.org/) | Compose Desktop scaffolder client |
 | [Kotlin Compose](https://www.jetbrains.com/compose-multiplatform/) | Multiplatform UI for `:app` |

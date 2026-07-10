@@ -13,6 +13,20 @@ BG = "#f8f9fa"
 ARROW_STROKE = "1.5"  # relationship linkers (not module borders)
 ARROW_STROKE_ACCENT = "2"  # highlighted codegen arrow
 
+# Node layout — min box 160×64, 14px padding, 14/11px type
+MIN_NODE_W = 160
+MIN_NODE_H = 64
+PAD_X = 14
+PAD_Y = 14
+ICON_COL = 22
+LABEL_SIZE = 14
+DESC_SIZE = 11
+LABEL_LINE = 17
+DESC_LINE = 14
+LABEL_GAP = 8
+CHAR_W_LABEL = 7.4
+CHAR_W_DESC = 6.2
+
 # Nerd Font codepoints (Private Use Area)
 NF = {
     "gear": "&#xf013;",
@@ -50,7 +64,7 @@ def defs(logo_href: str) -> str:
       <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
     </marker>
     <style>
-      .label {{ font: bold 13px {FONT}; fill: #263238; font-weight: 700; }}
+      .label {{ font: bold 14px {FONT}; fill: #263238; font-weight: 700; }}
       .desc {{ font: italic 11px {FONT}; fill: #78909C; }}
       .small {{ font: 11px {FONT}; fill: #546E7A; }}
       .mono {{ font: bold 12px {MONO}; fill: #263238; font-weight: 700; }}
@@ -70,13 +84,104 @@ def header(logo_href: str, w: int) -> str:
   <image href="{logo_href}" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>"""
 
 
+def _escape_xml(text: str) -> str:
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _wrap_lines(text: str, max_width: float, char_width: float) -> list[str]:
+    max_chars = max(1, int(max_width / char_width))
+    words = text.split()
+    if not words:
+        return [""]
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        trial = f"{current} {word}".strip() if current else word
+        if len(trial) <= max_chars:
+            current = trial
+            continue
+        if current:
+            lines.append(current)
+        while len(word) > max_chars:
+            lines.append(word[:max_chars])
+            word = word[max_chars:]
+        current = word
+    if current:
+        lines.append(current)
+    return lines
+
+
+def _tspan_block(x: int, y: int, lines: list[str], cls: str, line_height: int) -> str:
+    if not lines:
+        return ""
+    inner = ""
+    for i, line in enumerate(lines):
+        dy = 0 if i == 0 else line_height
+        inner += f'\n    <tspan x="{x}" dy="{dy}">{_escape_xml(line)}</tspan>'
+    return f'  <text x="{x}" y="{y}" class="{cls}">{inner}\n  </text>'
+
+
+def _module_size(label: str, desc: str, w: int, h: int, has_icon: bool) -> tuple[int, int, list[str], list[str], int, int]:
+    label_x_offset = PAD_X + (ICON_COL if has_icon else 0)
+    desc_x_offset = PAD_X
+
+    # Grow width until label fits on one line when possible, else wrap within box.
+    natural_w = max(
+        w,
+        MIN_NODE_W,
+        int(label_x_offset + len(label) * CHAR_W_LABEL + PAD_X),
+        int(desc_x_offset + len(desc) * CHAR_W_DESC + PAD_X),
+    )
+    label_inner = natural_w - label_x_offset - PAD_X
+    desc_inner = natural_w - 2 * PAD_X
+    label_lines = _wrap_lines(label, label_inner, CHAR_W_LABEL)
+    desc_lines = _wrap_lines(desc, desc_inner, CHAR_W_DESC)
+
+    # Widen if wrapped lines still exceed inner width estimates.
+    for line in label_lines:
+        natural_w = max(natural_w, int(label_x_offset + len(line) * CHAR_W_LABEL + PAD_X))
+    for line in desc_lines:
+        natural_w = max(natural_w, int(desc_x_offset + len(line) * CHAR_W_DESC + PAD_X))
+
+    label_inner = natural_w - label_x_offset - PAD_X
+    desc_inner = natural_w - 2 * PAD_X
+    label_lines = _wrap_lines(label, label_inner, CHAR_W_LABEL)
+    desc_lines = _wrap_lines(desc, desc_inner, CHAR_W_DESC)
+
+    content_h = (
+        LABEL_SIZE
+        + max(0, len(label_lines) - 1) * LABEL_LINE
+        + LABEL_GAP
+        + len(desc_lines) * DESC_LINE
+    )
+    natural_h = max(h, MIN_NODE_H, PAD_Y + content_h + PAD_Y)
+    return natural_w, natural_h, label_lines, desc_lines, label_x_offset, desc_x_offset
+
+
 def module(x, y, w, h, fill, stroke, icon, label, desc, mono=False) -> str:
     cls = "mono" if mono else "label"
-    label_x = x + 34 if icon else x + 12
-    icon_el = f'\n  <text x="{x + 12}" y="{y + 22}" class="icon">{icon}</text>' if icon else ""
-    return f"""  <rect x="{x}" y="{y}" width="{w}" height="{h}" class="node" fill="{fill}" stroke="{stroke}"/>{icon_el}
-  <text x="{label_x}" y="{y + 22}" class="{cls}">{label}</text>
-  <text x="{x + 12}" y="{y + h - 10}" class="desc">{desc}</text>"""
+    has_icon = bool(icon)
+    box_w, box_h, label_lines, desc_lines, label_x_off, desc_x_off = _module_size(
+        label, desc, w, h, has_icon
+    )
+    label_x = x + label_x_off
+    desc_x = x + desc_x_off
+    label_y = y + PAD_Y + LABEL_SIZE
+    desc_y = label_y + max(0, len(label_lines) - 1) * LABEL_LINE + LABEL_GAP + DESC_SIZE
+
+    icon_y = y + PAD_Y + LABEL_SIZE - 2
+    icon_el = f'\n  <text x="{x + PAD_X}" y="{icon_y}" class="icon">{icon}</text>' if has_icon else ""
+    label_el = _tspan_block(label_x, label_y, label_lines, cls, LABEL_LINE)
+    desc_el = _tspan_block(desc_x, desc_y, desc_lines, "desc", DESC_LINE)
+
+    return f"""  <rect x="{x}" y="{y}" width="{box_w}" height="{box_h}" class="node" fill="{fill}" stroke="{stroke}"/>{icon_el}
+{label_el}
+{desc_el}"""
 
 
 def layer_box(x, y, w, h, fill, stroke, label, icon="") -> str:
@@ -119,9 +224,9 @@ def full_stack_architecture() -> str:
 {header(logo, w)}
 
 {layer_box(620, 78, 360, 400, "#E8F4FD", "#1565C0", "Scaffold client (:app)", NF["desktop"])}
-{module(640, 118, 320, 58, "#FFFFFF", "#1565C0", NF["rocket"], "Generate Project", "Compose UI entry for project scaffolding")}
-{module(640, 192, 320, 58, "#FFFFFF", "#1565C0", NF["code"], "Blueprint Editor", "Visual canvas + JSON sync for blueprint.json")}
-{module(640, 266, 320, 58, "#FFFFFF", "#1565C0", NF["gear"], ":core ProjectGenerator", "Reads graph and emits native project tree")}
+{module(640, 118, 320, 72, "#FFFFFF", "#1565C0", NF["rocket"], "Generate Project", "Compose UI entry for project scaffolding")}
+{module(640, 206, 320, 72, "#FFFFFF", "#1565C0", NF["code"], "Blueprint Editor", "Visual canvas + JSON sync for blueprint.json")}
+{module(640, 294, 320, 72, "#FFFFFF", "#1565C0", NF["gear"], ":core ProjectGenerator", "Reads graph and emits native project tree")}
 
 {layer_box(24, 500, 760, 380, "#FFF8E1", "#F57F17", "Authoring — blueprint.json", NF["file"])}
 {module(44, 540, 180, 58, "#FFFFFF", "#F57F17", NF["python"], "python.module", "NumPy/analytics hooks evaluated at runtime")}
@@ -486,12 +591,182 @@ def nexus_blueprint_app_structure() -> str:
 </svg>"""
 
 
+def python_desktop_vs_android_flow() -> str:
+    w, h = 1280, 720
+    logo = "../nexus-logo.png"
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>Python desktop vs Android embedding flow</title>
+{defs(logo)}
+{header(logo, w)}
+
+{module(440, 56, 400, 58, "#FFF8E1", "#F57F17", NF["file"], "blueprint.json", "python.module port evaluate", mono=True)}
+
+{layer_box(40, 150, 560, 420, "#E3F2FD", "#1565C0", "Desktop path", NF["desktop"])}
+{module(80, 200, 240, 58, "#FFFFFF", "#1565C0", NF["python"], "python/functions.py", "NumPy curve sampling source")}
+{module(360, 200, 220, 58, "#FFFFFF", "#1565C0", NF["gear"], "CMake: pack_python_dat", "Build step packs PYAC archive")}
+{module(80, 290, 240, 58, "#FFFFFF", "#1565C0", NF["box"], "misc/python.dat (PYAC)", "Encrypted script pack in misc/")}
+{module(360, 290, 220, 58, "#FFFFFF", "#1565C0", NF["python"], "PythonEngine", "pybind11 embed in controller/")}
+
+{layer_box(680, 150, 560, 420, "#FCE4EC", "#C2185B", "Android path", NF["phone"])}
+{module(720, 200, 280, 58, "#FFFFFF", "#C2185B", NF["python"], "app/src/main/python/", "functions.py in APK tree")}
+{module(1020, 200, 200, 58, "#FFFFFF", "#C2185B", NF["android"], "Gradle + Chaquopy", "No python.dat — sources in APK")}
+{module(720, 290, 500, 58, "#FFFFFF", "#C2185B", NF["plug"], "ChaquopyPythonBridge (Djinni)", "Type-safe C++ ↔ Kotlin JNI bridge")}
+
+{layer_box(200, 500, 880, 120, "#F3E5F5", "#6A1B9A", "Shared MVC output (both templates)", NF["chart"])}
+{module(240, 540, 220, 58, "#FFFFFF", "#6A1B9A", NF["gear"], "PlotController", "Routes evaluate to model cache")}
+{module(500, 540, 220, 58, "#FFFFFF", "#6A1B9A", NF["database"], "FunctionRegistry", "Active curves and samples")}
+{module(760, 540, 260, 58, "#FFFFFF", "#6A1B9A", NF["chart"], "ImPlot draw", "Renders curves each frame")}
+
+{arrow(640, 114, 200, 150, "Desktop")}
+{arrow(640, 114, 960, 150, "Android")}
+{arrow(200, 258, 200, 290)}
+{arrow(360, 229, 200, 229)}
+{arrow(200, 348, 200, 500)}
+{arrow(360, 319, 360, 500)}
+{arrow(960, 258, 960, 290)}
+{arrow(970, 348, 970, 500)}
+{arrow(460, 569, 500, 569)}
+{arrow(720, 569, 760, 569)}
+
+{legend_box(40, 640, 520, 70, [
+    ("#E3F2FD", "#1565C0", "Desktop — pybind11 + python.dat"),
+    ("#FCE4EC", "#C2185B", "Android — Chaquopy + Djinni"),
+    ("#F3E5F5", "#6A1B9A", "Shared — controller → ImPlot"),
+], "Python embed layers")}
+</svg>"""
+
+
+def tsxhtml_lowering_pipeline() -> str:
+    w, h = 1480, 480
+    logo = "../nexus-logo.png"
+    nodes = [
+        (40, 120, "ui/ui.xhtml", "Declarative markup — panels, plots, sliders", "#E8F5E9", "#2E7D32", NF["file"]),
+        (40, 210, "ui/ui.ts", "state(), native(), invoke() bindings", "#E8F5E9", "#2E7D32", NF["code"]),
+        (280, 160, "shared/dsl/", "tags.ts · components.ts · core.ts", "#E3F2FD", "#1565C0", NF["layer"]),
+        (520, 160, "Lowering pass", "Maps ComponentTag → draw calls", "#FFF3E0", "#EF6C00", NF["gear"]),
+        (760, 160, "panels.lua equiv.", "nxs.register_panel definitions", "#F3E5F5", "#7B1FA2", NF["terminal"]),
+        (1000, 160, "sol2 runtime", "LuaPanels walks tree each frame", "#E0F7FA", "#00838F", NF["terminal"]),
+        (1240, 120, "Dear ImGui", "window, button, slider, …", "#ECEFF1", "#455A64", NF["desktop"]),
+        (1240, 210, "ImPlot / imnodes", "plot-line, node-editor tags", "#ECEFF1", "#455A64", NF["chart"]),
+    ]
+    body = ""
+    for x, y, label, desc, fill, stroke, icon in nodes:
+        body += module(x, y, 200 if x < 280 else (220 if x < 1000 else 180), 64, fill, stroke, icon, label, desc) + "\n"
+    edges = f"""
+  <line x1="240" y1="152" x2="280" y2="176" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="240" y1="242" x2="280" y2="208" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="480" y1="192" x2="520" y2="192" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="720" y1="192" x2="760" y2="192" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="960" y1="192" x2="1000" y2="192" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1220" y1="176" x2="1240" y2="152" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="1220" y1="208" x2="1240" y2="242" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <rect x="40" y="320" width="1380" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="730" y="348" text-anchor="middle" class="small">No browser engine — same nxs.* commands as hand-written panels.lua; hot-reload via lua.dat optional</text>
+"""
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>TS/XHTML lowering pipeline</title>
+{defs(logo)}
+{header(logo, w)}
+{body}
+{edges}
+{legend_box(40, 380, 1380, 80, [
+    ("#E8F5E9", "#2E7D32", "Authoring — ui.xhtml + ui.ts"),
+    ("#E3F2FD", "#1565C0", "DSL — shared tag registry"),
+    ("#F3E5F5", "#7B1FA2", "Lua — register_panel output"),
+    ("#ECEFF1", "#455A64", "Native — ImGui / ImPlot / imnodes"),
+], "Lowering stages")}
+</svg>"""
+
+
+def blueprint_vs_flows_layers() -> str:
+    w, h = 1200, 560
+    logo = "../nexus-logo.png"
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>blueprint.json vs flows.json layers</title>
+{defs(logo)}
+{header(logo, w)}
+
+{layer_box(40, 88, 520, 380, "#FFF8E1", "#F57F17", "Design-time — blueprint.json", NF["file"])}
+  <text x="300" y="130" text-anchor="middle" class="desc">Langflow-style MVC wiring · consumed at generation</text>
+{module(80, 160, 200, 58, "#FFFFFF", "#F57F17", NF["python"], "python.module", "Analytics and glue modules")}
+{module(300, 160, 200, 58, "#FFFFFF", "#F57F17", NF["database"], "cpp.model", "Domain state and caches")}
+{module(80, 240, 200, 58, "#FFFFFF", "#F57F17", NF["gear"], "cpp.controller", "Command routing layer")}
+{module(300, 240, 200, 58, "#FFFFFF", "#F57F17", NF["layer"], "ui.page", "ImGui screens and DSL layout")}
+{module(180, 320, 240, 58, "#FFFFFF", "#6A1B9A", NF["rocket"], ":core ProjectGenerator", "Validates graph · emits src/ tree")}
+  <line x1="180" y1="218" x2="300" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="280" y1="298" x2="280" y2="320" stroke="#1565C0" stroke-width="{ARROW_STROKE_ACCENT}" marker-end="url(#arrow-blue)"/>
+
+{layer_box(640, 88, 520, 380, "#E8F5E9", "#2E7D32", "Runtime — flows/flows.json", NF["branch"])}
+  <text x="900" y="130" text-anchor="middle" class="desc">Optional in-app services · loaded at app startup</text>
+{module(680, 160, 200, 58, "#FFFFFF", "#2E7D32", NF["cog"], "background flows", "interval loops while app is alive")}
+{module(900, 160, 220, 58, "#FFFFFF", "#2E7D32", NF["comment"], "triggered flows", "event · startup · manual · hotkey")}
+{module(680, 240, 440, 58, "#FFFFFF", "#2E7D32", NF["terminal"], "steps[] invoke", "nxs.* · python.* · lua.* targets")}
+{module(780, 320, 240, 58, "#FFFFFF", "#00838F", NF["gear"], "FlowRunner", "Registers triggers from flows.json")}
+  <line x1="780" y1="218" x2="900" y2="218" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+  <line x1="900" y1="298" x2="900" y2="320" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>
+
+  <rect x="200" y="490" width="800" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="600" y="518" text-anchor="middle" class="small">Same Langflow canvas may split: structure → blueprint.json · automation → flows.json</text>
+
+{legend_box(40, 440, 1120, 90, [
+    ("#FFF8E1", "#F57F17", "blueprint.json — design-time codegen"),
+    ("#E8F5E9", "#2E7D32", "flows.json — runtime automation"),
+    ("#6A1B9A", "#6A1B9A", "ProjectGenerator — one-time emit"),
+    ("#00838F", "#00838F", "FlowRunner — in-process triggers"),
+], "Two-layer model")}
+</svg>"""
+
+
+def langflow_adoption_workflow() -> str:
+    w, h = 1500, 420
+    logo = "../nexus-logo.png"
+    steps = [
+        (40, 120, "Langflow canvas", "Design DAG in external tool", "#E8F5E9", "#2E7D32", NF["robot"]),
+        (260, 120, "Export JSON", "API or Export flow button", "#E3F2FD", "#1565C0", NF["file"]),
+        (480, 120, "Translate fields", "Manual map to Nexus schema (v1)", "#FFF3E0", "#EF6C00", NF["gear"]),
+        (700, 120, "flows/flows.json", "Place in generated project", "#F3E5F5", "#7B1FA2", NF["box"]),
+        (920, 120, "nxs_config.json", "flows.enabled = true", "#E0F7FA", "#00838F", NF["cog"]),
+        (1140, 120, "FlowRunner", "Startup triggers registered", "#E8EAF6", "#3949AB", NF["rocket"]),
+    ]
+    body = ""
+    for x, y, label, desc, fill, stroke, icon in steps:
+        body += module(x, y, 190, 64, fill, stroke, icon, label, desc) + "\n"
+    edges = ""
+    xs = [230, 450, 670, 890, 1110, 1330]
+    for i in range(len(xs) - 1):
+        edges += f'  <line x1="{xs[i]}" y1="152" x2="{xs[i+1]-190}" y2="152" stroke="#37474F" stroke-width="{ARROW_STROKE}" marker-end="url(#arrow)"/>\n'
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>Langflow adoption workflow</title>
+{defs(logo)}
+{header(logo, w)}
+{body}
+{edges}
+  <rect x="40" y="240" width="1420" height="50" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" rx="10"/>
+  <text x="750" y="262" text-anchor="middle" class="small">App structure nodes → blueprint.json instead · LLM components become invoke stubs in python.module</text>
+  <text x="750" y="280" text-anchor="middle" class="desc">Automatic Langflow importer planned for v1.1</text>
+{legend_box(40, 310, 1420, 90, [
+    ("#E8F5E9", "#2E7D32", "External — Langflow authoring"),
+    ("#FFF3E0", "#EF6C00", "Translate — manual field mapping"),
+    ("#F3E5F5", "#7B1FA2", "Ship — flows.json in project"),
+    ("#3949AB", "#3949AB", "Runtime — FlowRunner at startup"),
+], "Adoption path")}
+</svg>"""
+
+
 def main() -> None:
     outputs = {
         DIAGRAMS / "full-stack-architecture.svg": full_stack_architecture(),
         DIAGRAMS / "generation-builds-flow.svg": generation_builds_flow(),
         DIAGRAMS / "desktop-vs-android-runtime.svg": desktop_vs_android(),
         DIAGRAMS / "langflow-vs-n8n-blueprint.svg": langflow_vs_n8n(),
+        DIAGRAMS / "python-desktop-vs-android-flow.svg": python_desktop_vs_android_flow(),
+        DIAGRAMS / "tsxhtml-lowering-pipeline.svg": tsxhtml_lowering_pipeline(),
+        DIAGRAMS / "blueprint-vs-flows-layers.svg": blueprint_vs_flows_layers(),
+        DIAGRAMS / "langflow-adoption-workflow.svg": langflow_adoption_workflow(),
         EXAMPLES / "langflow-rag-chatbot.svg": langflow_rag_chatbot(),
         EXAMPLES / "langflow-agent-tools.svg": langflow_agent_tools(),
         EXAMPLES / "nexus-blueprint-app-structure.svg": nexus_blueprint_app_structure(),
