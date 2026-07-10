@@ -28,7 +28,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-// Single-module MVC client — all Kotlin sources live under `:app`.
-include(":app")
+// Multi-module Framework repo: generation pipeline + Compose client.
+include(":core", ":cli", ":app")
+project(":core").projectDir = file("misc/core")
+project(":cli").projectDir = file("misc/cli")
 
 rootProject.name = "Framework"
