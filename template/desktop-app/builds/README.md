@@ -1,12 +1,26 @@
-# builds/
+# builds/ (project-local pointer)
 
-Out-of-source build trees go here. The CMake presets in `../CMakePresets.json`
-bind `binaryDir` to `builds/<preset>` (e.g. `builds/debug`, `builds/release`),
-so this folder is populated by:
+CMake presets in `../CMakePresets.json` write out-of-source trees to the **Framework
+repo** central folder:
+
+```
+../../builds/framework/{{projectName}}/<preset>/
+```
+
+For example, with project name `MyTradingApp`:
 
 ```bash
 cmake --preset debug
 cmake --build --preset debug
+./../../builds/framework/MyTradingApp/debug/{{projectName}}
 ```
 
-Everything under this folder except this note and `.gitkeep` is git-ignored.
+Or without presets:
+
+```bash
+cmake -B ../../builds/framework/{{projectName}}/debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build ../../builds/framework/{{projectName}}/debug
+```
+
+This per-project `builds/` folder is not used for CMake output — see
+`nxs_config.json` → `build.outputDir` for the resolved path.

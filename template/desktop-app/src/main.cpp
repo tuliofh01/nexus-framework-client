@@ -10,6 +10,8 @@
 #include "model/FunctionRegistry.hpp"
 #include "view/LuaPanels.hpp"
 #include "view/PlotterView.hpp"
+#include "FontConfig.hpp"
+#include "NexusTheme.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
@@ -45,9 +47,11 @@ int main(int, char**) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImPlot::CreateContext();
-    ImGui::StyleColorsDark();
+    nxs::runtime::NexusTheme::applyFromFile("assets/themes/nexus-dark.json");
     ImGui_ImplSDL3_InitForOpenGL(window, glContext);
     ImGui_ImplOpenGL3_Init("#version 330");
+    // Optional: load Nerd Font icons when assets/fonts/NexusNerdFont-Regular.ttf exists.
+    nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
     // ---- MVC wiring ------------------------------------------------------
     nxs::model::FunctionRegistry registry;

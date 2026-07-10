@@ -107,15 +107,19 @@ FetchContent_MakeAvailable(pybind11)
 # --------------------------------------------------------------------------
 # Application target — MVC layout under src/.
 # --------------------------------------------------------------------------
+set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+
 add_executable({{projectName}}
     src/main.cpp
     src/model/FunctionRegistry.cpp
     src/controller/PlotController.cpp
     src/controller/PythonEngine.cpp
     src/view/PlotterView.cpp
-    src/view/LuaPanels.cpp)
+    src/view/LuaPanels.cpp
+    ${NXS_SHARED_DIR}/runtime/NexusTheme.cpp
+    ${NXS_SHARED_DIR}/runtime/FontConfig.cpp)
 
-target_include_directories({{projectName}} PRIVATE src)
+target_include_directories({{projectName}} PRIVATE src ${NXS_SHARED_DIR}/runtime)
 target_link_libraries({{projectName}} PRIVATE
     imgui_bundle
     sol2::sol2
@@ -134,3 +138,17 @@ add_custom_command(TARGET {{projectName}} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/blueprint.json
         $<TARGET_FILE_DIR:{{projectName}}>/blueprint.json)
+foreach(shared_asset_dir assets themes)
+    if(EXISTS ${NXS_SHARED_DIR}/${shared_asset_dir})
+        add_custom_command(TARGET {{projectName}} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${NXS_SHARED_DIR}/${shared_asset_dir}
+                $<TARGET_FILE_DIR:{{projectName}}>/assets/${shared_asset_dir})
+    endif()
+endforeach()
+if(EXISTS ${CMAKE_SOURCE_DIR}/assets)
+    add_custom_command(TARGET {{projectName}} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/assets
+            $<TARGET_FILE_DIR:{{projectName}}>/assets)
+endif()

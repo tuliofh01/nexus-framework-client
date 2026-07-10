@@ -1,13 +1,11 @@
 # djinni-generated/
 
-Output of the Djinni generator for `../djinni/plotter.djinni` (see the
-regeneration command in that file's header). Committed so the template
-builds without a Djinni install; re-run the generator after editing the IDL.
+Output of the Djinni generator for `../djinni/plotter.djinni`. Committed so the template builds without a Djinni install; re-run `../scripts/regen-djinni.sh` after editing the IDL.
 
 ```
-cpp/   C++ headers the native core includes (records + interface bases)
-java/  Java interfaces/records the Kotlin side implements or consumes
-jni/   JNI marshalling glue compiled into the native library
+cpp/    C++ headers the native core includes (records + interface bases)
+kotlin/ Kotlin JVM stubs consumed by the app (PlotterCore, PythonBridge, EvalResult)
+jni/    JNI marshalling glue compiled into the native library
 ```
 
-Do not hand-edit these files — change the `.djinni` IDL and regenerate.
+Djinni does not emit Kotlin. The `kotlin/` tree is maintained to match JNI signatures produced from the IDL. Do not hand-edit `cpp/` or `jni/` — change `plotter.djinni` and regenerate. Update `kotlin/` when IDL changes affect the JVM boundary.

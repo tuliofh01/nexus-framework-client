@@ -44,7 +44,7 @@
     "editor": "imnodes"
   },
   "build": {
-    "outputDir": "builds",
+    "outputDir": "../../builds/framework/{{projectName}}",
     "gradleModule": "app",
     "presets": "CMakePresets.json"
   }

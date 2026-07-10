@@ -1,14 +1,22 @@
-.gradle
+# Gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+*.compiler.options
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/workspace.xml
+.idea/shelf/
+.idea/httpRequests/
+.idea/queries/
+.idea/dataSources/
+.idea/dataSources.local.xml
 *.iws
 *.iml
 *.ipr
@@ -41,5 +49,48 @@ bin/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### OS ###
 .DS_Store
+Thumbs.db
+*.log
+
+### Android / NDK ###
+local.properties
+.cxx/
+
+### CMake / native build artifacts ###
+compile_commands.json
+.cache/
+cmake-build-*/
+_deps/
+
+### Python ###
+__pycache__/
+*.pyc
+.venv/
+
+### Cursor local plans (optional agent artifacts) ###
+.cursor/plans/
+
+### Generated scaffold output ###
+builds/framework/
+builds/client/
+
+### Central build outputs (keep structure + docs) ###
+builds/client/*
+!builds/client/.gitkeep
+builds/framework/*
+!builds/framework/.gitkeep
+!builds/README.md
+
+### Secrets / local env (never commit) ###
+.env
+*.env
+!.env.example
+client-setup/env.sh
+client-setup/env.bat
+
+### Local build outputs under template builds/ (keep README + .gitkeep) ###
+template/*/builds/*
+!template/*/builds/README.md
+!template/*/builds/.gitkeep

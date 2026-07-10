@@ -28,10 +28,10 @@ std::vector<double> toVector(JNIEnv* env, jobject list) {
 
 }  // namespace
 
-NativePythonBridge::NativePythonBridge(JNIEnv* env, jobject javaBridge) {
+NativePythonBridge::NativePythonBridge(JNIEnv* env, jobject kotlinBridge) {
     env->GetJavaVM(&m_vm);
-    m_javaBridge = env->NewGlobalRef(javaBridge);
-    jclass cls = env->GetObjectClass(javaBridge);
+    m_kotlinBridge = env->NewGlobalRef(kotlinBridge);
+    jclass cls = env->GetObjectClass(kotlinBridge);
     m_evaluate = env->GetMethodID(cls, "evaluate",
                                   "(Ljava/lang/String;DDI)Lcom/nexus/plotter/EvalResult;");
 }
@@ -39,7 +39,7 @@ NativePythonBridge::NativePythonBridge(JNIEnv* env, jobject javaBridge) {
 NativePythonBridge::~NativePythonBridge() {
     JNIEnv* env = nullptr;
     if (m_vm && m_vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) == JNI_OK) {
-        env->DeleteGlobalRef(m_javaBridge);
+        env->DeleteGlobalRef(m_kotlinBridge);
     }
 }
 
@@ -49,12 +49,12 @@ EvalResult NativePythonBridge::evaluate(const std::string& function_name, double
     m_vm->AttachCurrentThread(&env, nullptr);
 
     jstring jName = env->NewStringUTF(function_name.c_str());
-    jobject jResult = env->CallObjectMethod(m_javaBridge, m_evaluate, jName, x_min, x_max, samples);
+    jobject jResult = env->CallObjectMethod(m_kotlinBridge, m_evaluate, jName, x_min, x_max, samples);
     env->DeleteLocalRef(jName);
 
     if (env->ExceptionCheck()) {
         env->ExceptionClear();
-        return EvalResult{false, "Java exception in PythonBridge.evaluate", {}, {}};
+        return EvalResult{false, "Kotlin exception in PythonBridge.evaluate", {}, {}};
     }
 
     jclass resultCls = env->GetObjectClass(jResult);
