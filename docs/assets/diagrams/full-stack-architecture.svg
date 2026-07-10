@@ -1,225 +1,231 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2160 1362" width="2160" height="1362">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2260 1415" width="2260" height="1415">
   <title>Nexus full-stack architecture</title>
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
     </marker>
-    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
     </marker>
     <style>
-      .label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
-      .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
-      .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
-      .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
-      .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
-      .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
-      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
-      .node { rx: 10; stroke-width: 2.5; }
-      .panel { rx: 12; stroke-width: 2.5; }
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="2160" height="100%" fill="#f8f9fa"/>
-  <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
+  <rect width="2260" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
-  <rect x="700" y="96" width="380" height="376" class="panel" fill="#E8F4FD" stroke="#1565C0" fill-opacity="0.35"/>
+  <rect x="700" y="96" width="380" height="392" class="panel" fill="#E8F4FD" stroke="#1565C0" fill-opacity="0.35"/>
   <text x="714" y="120" class="layer-label">&#xf108; Scaffold client (:app)</text>
   <rect x="720" y="136" width="340" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="734" y="162" class="icon">&#xf135;</text>
-  <text x="756" y="164" class="label">
-    <tspan x="756" dy="0">Generate Project</tspan>
+  <text x="736" y="165" class="icon">&#xf135;</text>
+  <text x="758" y="167" class="label">
+    <tspan x="758" dy="0">Generate Project</tspan>
   </text>
-  <text x="734" y="183" class="desc">
-    <tspan x="734" dy="0">Compose UI entry for project scaffolding</tspan>
+  <text x="736" y="187" class="desc">
+    <tspan x="736" dy="0">Compose UI entry for project scaffolding</tspan>
   </text>
-  <rect x="720" y="256" width="340" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="734" y="282" class="icon">&#xf121;</text>
-  <text x="756" y="284" class="label">
-    <tspan x="756" dy="0">Blueprint Editor</tspan>
+  <rect x="720" y="264" width="340" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="736" y="293" class="icon">&#xf121;</text>
+  <text x="758" y="295" class="label">
+    <tspan x="758" dy="0">Blueprint Editor</tspan>
   </text>
-  <text x="734" y="303" class="desc">
-    <tspan x="734" dy="0">Visual canvas + JSON sync for blueprint.json</tspan>
+  <text x="736" y="315" class="desc">
+    <tspan x="736" dy="0">Visual canvas + JSON sync for blueprint.json</tspan>
   </text>
-  <rect x="720" y="376" width="340" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
-  <text x="734" y="402" class="icon">&#xf013;</text>
-  <text x="756" y="404" class="label">
-    <tspan x="756" dy="0">:core ProjectGenerator</tspan>
+  <rect x="720" y="392" width="340" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="736" y="421" class="icon">&#xf013;</text>
+  <text x="758" y="423" class="label">
+    <tspan x="758" dy="0">:core ProjectGenerator</tspan>
   </text>
-  <text x="734" y="423" class="desc">
-    <tspan x="734" dy="0">Reads graph and emits native project tree</tspan>
+  <text x="736" y="443" class="desc">
+    <tspan x="736" dy="0">Reads graph and emits native project tree</tspan>
   </text>
 
-  <rect x="32" y="540" width="966" height="514" class="panel" fill="#FFF8E1" stroke="#F57F17" fill-opacity="0.35"/>
+  <rect x="32" y="540" width="1018" height="559" class="panel" fill="#FFF8E1" stroke="#F57F17" fill-opacity="0.35"/>
   <text x="46" y="564" class="layer-label">&#xf15b; Authoring — blueprint.json</text>
-  <rect x="52" y="580" width="288" height="78" class="node" fill="#FFFFFF" stroke="#F57F17"/>
-  <text x="66" y="606" class="icon">&#xe73c;</text>
-  <text x="88" y="608" class="label">
-    <tspan x="88" dy="0">python.module</tspan>
+  <rect x="52" y="580" width="300" height="85" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="68" y="609" class="icon">&#xe73c;</text>
+  <text x="90" y="611" class="label">
+    <tspan x="90" dy="0">python.module</tspan>
   </text>
-  <text x="66" y="627" class="desc">
-    <tspan x="66" dy="0">NumPy/analytics hooks evaluated at</tspan>
-    <tspan x="66" dy="14">runtime</tspan>
+  <text x="68" y="631" class="desc">
+    <tspan x="68" dy="0">NumPy/analytics hooks evaluated at</tspan>
+    <tspan x="68" dy="15">runtime</tspan>
   </text>
-  <rect x="52" y="706" width="251" height="78" class="node" fill="#FFFFFF" stroke="#F57F17"/>
-  <text x="66" y="732" class="icon">&#xf121;</text>
-  <text x="88" y="734" class="label">
-    <tspan x="88" dy="0">cpp.controller</tspan>
+  <rect x="52" y="721" width="262" height="85" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="68" y="750" class="icon">&#xf121;</text>
+  <text x="90" y="752" class="label">
+    <tspan x="90" dy="0">cpp.controller</tspan>
   </text>
-  <text x="66" y="753" class="desc">
-    <tspan x="66" dy="0">Routes commands between UI and</tspan>
-    <tspan x="66" dy="14">model</tspan>
+  <text x="68" y="772" class="desc">
+    <tspan x="68" dy="0">Routes commands between UI and</tspan>
+    <tspan x="68" dy="15">model</tspan>
   </text>
-  <rect x="52" y="832" width="245" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
-  <text x="66" y="858" class="icon">&#xf1c0;</text>
-  <text x="88" y="860" class="label">
-    <tspan x="88" dy="0">cpp.model</tspan>
+  <rect x="52" y="862" width="256" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="68" y="891" class="icon">&#xf1c0;</text>
+  <text x="90" y="893" class="label">
+    <tspan x="90" dy="0">cpp.model</tspan>
   </text>
-  <text x="66" y="879" class="desc">
-    <tspan x="66" dy="0">Holds domain state and sample cache</tspan>
+  <text x="68" y="913" class="desc">
+    <tspan x="68" dy="0">Holds domain state and sample cache</tspan>
   </text>
-  <rect x="52" y="952" width="251" height="78" class="node" fill="#FFFFFF" stroke="#F57F17"/>
-  <text x="66" y="978" class="icon">&#xf5fd;</text>
-  <text x="88" y="980" class="label">
-    <tspan x="88" dy="0">ui.page</tspan>
+  <rect x="52" y="990" width="262" height="85" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="68" y="1019" class="icon">&#xf5fd;</text>
+  <text x="90" y="1021" class="label">
+    <tspan x="90" dy="0">ui.page</tspan>
   </text>
-  <text x="66" y="999" class="desc">
-    <tspan x="66" dy="0">ImGui screens wired via TS/XHTML</tspan>
-    <tspan x="66" dy="14">DSL</tspan>
+  <text x="68" y="1041" class="desc">
+    <tspan x="68" dy="0">ImGui screens wired via TS/XHTML</tspan>
+    <tspan x="68" dy="15">DSL</tspan>
   </text>
-  <rect x="388" y="580" width="238" height="78" class="node" fill="#FFFFFF" stroke="#F57F17"/>
-  <text x="402" y="606" class="icon">&#xf120;</text>
-  <text x="424" y="608" class="label">
-    <tspan x="424" dy="0">lua.script</tspan>
+  <rect x="408" y="580" width="249" height="85" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="424" y="609" class="icon">&#xf120;</text>
+  <text x="446" y="611" class="label">
+    <tspan x="446" dy="0">lua.script</tspan>
   </text>
-  <text x="402" y="627" class="desc">
-    <tspan x="402" dy="0">sol2 panels and hot-reload</tspan>
-    <tspan x="402" dy="14">scripts</tspan>
+  <text x="424" y="631" class="desc">
+    <tspan x="424" dy="0">sol2 panels and hot-reload</tspan>
+    <tspan x="424" dy="15">scripts</tspan>
   </text>
-  <rect x="674" y="600" width="300" height="110" class="node" fill="#FFFDE7" stroke="#F9A825"/>
-  <text x="688" y="626" class="icon">&#xf126;</text>
-  <text x="710" y="628" class="mono">
-    <tspan x="710" dy="0">Langflow-style graph</tspan>
+  <rect x="713" y="600" width="313" height="110" class="node" fill="#FFFDE7" stroke="#F9A825"/>
+  <text x="729" y="629" class="icon">&#xf126;</text>
+  <text x="751" y="631" class="mono">
+    <tspan x="751" dy="0">Langflow-style graph</tspan>
   </text>
-  <text x="688" y="647" class="desc">
-    <tspan x="688" dy="0">Edit blueprint in :app; edges wire data</tspan>
-    <tspan x="688" dy="14">flow</tspan>
-  </text>
-
-  <rect x="1022" y="540" width="420" height="388" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
-  <text x="1036" y="564" class="layer-label">&#xf466; Generated app — C++ MVC</text>
-  <rect x="1042" y="580" width="251" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="1056" y="606" class="icon">&#xf1c0;</text>
-  <text x="1078" y="608" class="label">
-    <tspan x="1078" dy="0">model/</tspan>
-  </text>
-  <text x="1056" y="627" class="desc">
-    <tspan x="1056" dy="0">Generated C++ domain types and</tspan>
-    <tspan x="1056" dy="14">state</tspan>
-  </text>
-  <rect x="1042" y="706" width="257" height="78" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="1056" y="732" class="icon">&#xf013;</text>
-  <text x="1078" y="734" class="label">
-    <tspan x="1078" dy="0">controller/</tspan>
-  </text>
-  <text x="1056" y="753" class="desc">
-    <tspan x="1056" dy="0">Command handlers from blueprint</tspan>
-    <tspan x="1056" dy="14">ports</tspan>
-  </text>
-  <rect x="1042" y="832" width="380" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
-  <text x="1056" y="858" class="icon">&#xf080;</text>
-  <text x="1078" y="860" class="label">
-    <tspan x="1078" dy="0">view/ ImGui + ImPlot</tspan>
-  </text>
-  <text x="1056" y="879" class="desc">
-    <tspan x="1056" dy="0">Renders plots and UI from blueprint layout</tspan>
+  <text x="729" y="651" class="desc">
+    <tspan x="729" dy="0">Edit blueprint in :app; edges wire data</tspan>
+    <tspan x="729" dy="15">flow</tspan>
   </text>
 
-  <rect x="1490" y="540" width="630" height="138" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
-  <text x="1504" y="564" class="layer-label">&#xf121; Scripting &amp; UI</text>
-  <rect x="1510" y="580" width="269" height="78" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
-  <text x="1524" y="606" class="icon">&#xf120;</text>
-  <text x="1546" y="608" class="label">
-    <tspan x="1546" dy="0">Lua 5.4 + sol2</tspan>
+  <rect x="1082" y="540" width="420" height="418" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
+  <text x="1096" y="564" class="layer-label">&#xf466; Generated app — C++ MVC</text>
+  <rect x="1102" y="580" width="262" height="85" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="1118" y="609" class="icon">&#xf1c0;</text>
+  <text x="1140" y="611" class="label">
+    <tspan x="1140" dy="0">model/</tspan>
   </text>
-  <text x="1524" y="627" class="desc">
-    <tspan x="1524" dy="0">Embeds Lua runtime for scripting</tspan>
-    <tspan x="1524" dy="14">panels</tspan>
+  <text x="1118" y="631" class="desc">
+    <tspan x="1118" dy="0">Generated C++ domain types and</tspan>
+    <tspan x="1118" dy="15">state</tspan>
   </text>
-  <rect x="1827" y="580" width="269" height="78" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
-  <text x="1841" y="606" class="icon">&#xf15b;</text>
-  <text x="1863" y="608" class="label">
-    <tspan x="1863" dy="0">TS/XHTML DSL</tspan>
+  <rect x="1102" y="721" width="268" height="85" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="1118" y="750" class="icon">&#xf013;</text>
+  <text x="1140" y="752" class="label">
+    <tspan x="1140" dy="0">controller/</tspan>
   </text>
-  <text x="1841" y="627" class="desc">
-    <tspan x="1841" dy="0">Declarative UI markup compiled to</tspan>
-    <tspan x="1841" dy="14">ImGui</tspan>
+  <text x="1118" y="772" class="desc">
+    <tspan x="1118" dy="0">Command handlers from blueprint</tspan>
+    <tspan x="1118" dy="15">ports</tspan>
   </text>
-
-  <rect x="1022" y="976" width="606" height="138" class="panel" fill="#ECEFF1" stroke="#455A64" fill-opacity="0.35"/>
-  <text x="1036" y="1000" class="layer-label">&#xf108; Runtime</text>
-  <rect x="1042" y="1016" width="263" height="78" class="node" fill="#FFFFFF" stroke="#455A64"/>
-  <text x="1056" y="1042" class="icon">&#xe73c;</text>
-  <text x="1078" y="1044" class="label">
-    <tspan x="1078" dy="0">Python bridge</tspan>
+  <rect x="1102" y="862" width="380" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="1118" y="891" class="icon">&#xf080;</text>
+  <text x="1140" y="893" class="label">
+    <tspan x="1140" dy="0">view/ ImGui + ImPlot</tspan>
   </text>
-  <text x="1056" y="1063" class="desc">
-    <tspan x="1056" dy="0">Embeds CPython via pybind11 /</tspan>
-    <tspan x="1056" dy="14">Chaquopy</tspan>
-  </text>
-  <rect x="1353" y="1016" width="251" height="78" class="node" fill="#FFFFFF" stroke="#455A64"/>
-  <text x="1367" y="1042" class="icon">&#xf108;</text>
-  <text x="1389" y="1044" class="label">
-    <tspan x="1389" dy="0">SDL3</tspan>
-  </text>
-  <text x="1367" y="1063" class="desc">
-    <tspan x="1367" dy="0">Cross-platform render loop and</tspan>
-    <tspan x="1367" dy="14">input</tspan>
+  <text x="1118" y="913" class="desc">
+    <tspan x="1118" dy="0">Renders plots and UI from blueprint layout</tspan>
   </text>
 
-  <line x1="890" y1="208" x2="890" y2="256" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="890" y="226" text-anchor="middle" class="small">Edit blueprint</text>
-  <line x1="890" y1="328" x2="890" y2="376" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="890" y="346" text-anchor="middle" class="small">validated graph</text>
-  <line x1="1080" y1="172" x2="1080" y2="412" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="1080" y="286" text-anchor="middle" class="small">Generate</text>
-  <path d="M890,448 L890,500 L196,500 L196,580" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
-  <text x="543" y="492" text-anchor="middle" class="small">emit blueprint.json</text>
-  <path d="M890,448 L982,448 L982,580 L1167,580" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="974" y="514" text-anchor="middle" class="small">emit src/</text>
-  <line x1="196" y1="658" x2="177" y2="706" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="186" y="676" text-anchor="middle" class="small">evaluate</text>
-  <line x1="177" y1="784" x2="174" y2="832" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="175" y="802" text-anchor="middle" class="small">sampleCache</text>
-  <line x1="174" y1="904" x2="177" y2="952" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="175" y="922" text-anchor="middle" class="small">activeCurves</text>
-  <path d="M52,991 Q-8,868 52,745" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="-8" y="860" text-anchor="middle" class="small">commands</text>
-  <path d="M388,619 Q385,682 303,745" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <text x="385" y="674" text-anchor="middle" class="small">commands</text>
-  <line x1="340" y1="619" x2="1042" y2="619" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
-  <text x="691" y="613" text-anchor="middle" class="small">declares</text>
-  <line x1="313" y1="745" x2="1052" y2="745" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
-  <text x="682" y="739" text-anchor="middle" class="small">declares</text>
-  <line x1="317" y1="868" x2="1062" y2="868" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="8,5"/>
-  <text x="689" y="862" text-anchor="middle" class="small">declares</text>
-  <path d="M1510,619 L1510,725 L1299,725 L1299,745" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M1827,619 L1827,888 L1422,888 L1422,868" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1170" y1="784" x2="1232" y2="832" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="1173" y1="1094" x2="1478" y2="1016" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M1232,904 L1478,904 L1478,1016 L1478,1016" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M1170,784 L1173,784 L1173,1016 L1173,1016" fill="none" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="1558" y="540" width="662" height="145" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
+  <text x="1572" y="564" class="layer-label">&#xf121; Scripting &amp; UI</text>
+  <rect x="1578" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="1594" y="609" class="icon">&#xf120;</text>
+  <text x="1616" y="611" class="label">
+    <tspan x="1616" dy="0">Lua 5.4 + sol2</tspan>
+  </text>
+  <text x="1594" y="631" class="desc">
+    <tspan x="1594" dy="0">Embeds Lua runtime for scripting</tspan>
+    <tspan x="1594" dy="15">panels</tspan>
+  </text>
+  <rect x="1915" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="1931" y="609" class="icon">&#xf15b;</text>
+  <text x="1953" y="611" class="label">
+    <tspan x="1953" dy="0">TS/XHTML DSL</tspan>
+  </text>
+  <text x="1931" y="631" class="desc">
+    <tspan x="1931" dy="0">Declarative UI markup compiled to</tspan>
+    <tspan x="1931" dy="15">ImGui</tspan>
+  </text>
 
-  <rect x="1490" y="1162" width="630" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
-  <text x="1506" y="1184" class="legend-title">Layer colors</text>
-  <rect x="1506" y="1186" width="16" height="16" class="legend-box" fill="#E8F4FD" stroke="#1565C0"/>
-  <text x="1528" y="1198" class="small">Client — Compose scaffold UI</text>
-  <rect x="1821" y="1186" width="16" height="16" class="legend-box" fill="#FFF8E1" stroke="#F57F17"/>
-  <text x="1843" y="1198" class="small">Authoring — blueprint.json graph</text>
-  <rect x="1506" y="1208" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="1528" y="1220" class="small">Generated — C++ MVC output</text>
-  <rect x="1821" y="1208" width="16" height="16" class="legend-box" fill="#ECEFF1" stroke="#455A64"/>
-  <text x="1843" y="1220" class="small">Runtime — SDL3 + Python bridge</text>
+  <rect x="1082" y="1014" width="637" height="145" class="panel" fill="#ECEFF1" stroke="#455A64" fill-opacity="0.35"/>
+  <text x="1096" y="1038" class="layer-label">&#xf108; Runtime</text>
+  <rect x="1102" y="1054" width="275" height="85" class="node" fill="#FFFFFF" stroke="#455A64"/>
+  <text x="1118" y="1083" class="icon">&#xe73c;</text>
+  <text x="1140" y="1085" class="label">
+    <tspan x="1140" dy="0">Python bridge</tspan>
+  </text>
+  <text x="1118" y="1105" class="desc">
+    <tspan x="1118" dy="0">Embeds CPython via pybind11 /</tspan>
+    <tspan x="1118" dy="15">Chaquopy</tspan>
+  </text>
+  <rect x="1433" y="1054" width="262" height="85" class="node" fill="#FFFFFF" stroke="#455A64"/>
+  <text x="1449" y="1083" class="icon">&#xf108;</text>
+  <text x="1471" y="1085" class="label">
+    <tspan x="1471" dy="0">SDL3</tspan>
+  </text>
+  <text x="1449" y="1105" class="desc">
+    <tspan x="1449" dy="0">Cross-platform render loop and</tspan>
+    <tspan x="1449" dy="15">input</tspan>
+  </text>
+
+  <line x1="890" y1="208" x2="890" y2="264" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="890" y="230" text-anchor="middle" class="small">Edit blueprint</text>
+  <line x1="890" y1="336" x2="890" y2="392" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="890" y="358" text-anchor="middle" class="small">validated graph</text>
+  <line x1="1084" y1="172" x2="1084" y2="428" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1084" y="294" text-anchor="middle" class="small">Generate</text>
+  <path d="M890,464 L890,500 L202,500 L202,580" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="546" y="492" text-anchor="middle" class="small">emit blueprint.json</text>
+  <path d="M890,464 L1042,464 L1042,580 L1233,580" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1034" y="522" text-anchor="middle" class="small">emit src/</text>
+  <line x1="202" y1="665" x2="183" y2="721" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="192" y="687" text-anchor="middle" class="small">evaluate</text>
+  <line x1="183" y1="806" x2="180" y2="862" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="181" y="828" text-anchor="middle" class="small">sampleCache</text>
+  <line x1="180" y1="934" x2="183" y2="990" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="181" y="956" text-anchor="middle" class="small">activeCurves</text>
+  <path d="M52,1032 Q-8,897 52,763" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="-8" y="889" text-anchor="middle" class="small">commands</text>
+  <path d="M408,622 Q401,692 314,763" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="401" y="684" text-anchor="middle" class="small">commands</text>
+  <line x1="352" y1="622" x2="1102" y2="622" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="727" y="616" text-anchor="middle" class="small">declares</text>
+  <line x1="326" y1="763" x2="1114" y2="763" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="720" y="757" text-anchor="middle" class="small">declares</text>
+  <line x1="332" y1="898" x2="1126" y2="898" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="729" y="892" text-anchor="middle" class="small">declares</text>
+  <path d="M1578,622 L1578,743 L1370,743 L1370,763" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1915,622 L1915,918 L1482,918 L1482,898" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1236" y1="806" x2="1292" y2="862" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1239" y1="1139" x2="1564" y2="1054" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1292,934 L1564,934 L1564,1054 L1564,1054" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1236,806 L1239,806 L1239,1054 L1239,1054" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="1558" y="1215" width="662" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="1574" y="1237" class="legend-title">Layer colors</text>
+  <rect x="1574" y="1239" width="16" height="16" class="legend-box" fill="#E8F4FD" stroke="#1565C0"/>
+  <text x="1596" y="1251" class="small">Client — Compose scaffold UI</text>
+  <rect x="1905" y="1239" width="16" height="16" class="legend-box" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="1927" y="1251" class="small">Authoring — blueprint.json graph</text>
+  <rect x="1574" y="1261" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="1596" y="1273" class="small">Generated — C++ MVC output</text>
+  <rect x="1905" y="1261" width="16" height="16" class="legend-box" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1927" y="1273" class="small">Runtime — SDL3 + Python bridge</text>
 </svg>

@@ -1,102 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 958 602" width="958" height="602">
   <title>Langflow: agent with tools</title>
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#37474F"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
     </marker>
-    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#1565C0"/>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
     </marker>
     <style>
-      .label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; font-weight: 700; }
-      .desc { font: italic 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #78909C; }
-      .small { font: 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #546E7A; }
-      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; font-weight: 700; }
-      .legend-title { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #37474F; }
-      .layer-label { font: bold 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #263238; }
-      .badge { font: bold 11px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1565C0; }
-      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #263238; }
-      .node { rx: 10; stroke-width: 2.5; }
-      .panel { rx: 12; stroke-width: 2.5; }
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="1000" height="100%" fill="#f8f9fa"/>
-  <image href="../nexus-logo.png" x="24" y="16" width="40" height="40" preserveAspectRatio="xMidYMid meet"/>
+  <rect width="958" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
-  <rect x="80" y="200" width="220" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="94" y="226" class="icon">&#xf075;</text>
-  <text x="116" y="228" class="label">
-    <tspan x="116" dy="0">User Input</tspan>
+  <rect x="48" y="120" width="230" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="64" y="149" class="icon">&#xf075;</text>
+  <text x="86" y="151" class="label">
+    <tspan x="86" dy="0">User Input</tspan>
   </text>
-  <text x="94" y="247" class="desc">
-    <tspan x="94" dy="0">Natural language task from</tspan>
-    <tspan x="94" dy="14">user</tspan>
+  <text x="64" y="171" class="desc">
+    <tspan x="64" dy="0">Natural language task from</tspan>
+    <tspan x="64" dy="15">user</tspan>
   </text>
-  <rect x="380" y="190" width="257" height="88" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="394" y="216" class="icon">&#xf544;</text>
-  <text x="416" y="218" class="label">
-    <tspan x="416" dy="0">Agent</tspan>
+  <rect x="342" y="120" width="268" height="88" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="358" y="149" class="icon">&#xf544;</text>
+  <text x="380" y="151" class="label">
+    <tspan x="380" dy="0">Agent</tspan>
   </text>
-  <text x="394" y="237" class="desc">
-    <tspan x="394" dy="0">ReAct / tool-calling LLM</tspan>
-    <tspan x="394" dy="14">orchestrator</tspan>
+  <text x="358" y="171" class="desc">
+    <tspan x="358" dy="0">ReAct / tool-calling LLM</tspan>
+    <tspan x="358" dy="15">orchestrator</tspan>
   </text>
-  <rect x="740" y="200" width="226" height="78" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="754" y="226" class="icon">&#xf075;</text>
-  <text x="776" y="228" class="label">
-    <tspan x="776" dy="0">Output</tspan>
+  <rect x="674" y="120" width="236" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="690" y="149" class="icon">&#xf075;</text>
+  <text x="712" y="151" class="label">
+    <tspan x="712" dy="0">Output</tspan>
   </text>
-  <text x="754" y="247" class="desc">
-    <tspan x="754" dy="0">Synthesized final answer to</tspan>
-    <tspan x="754" dy="14">user</tspan>
+  <text x="690" y="171" class="desc">
+    <tspan x="690" dy="0">Synthesized final answer to</tspan>
+    <tspan x="690" dy="15">user</tspan>
+  </text>
+  <rect x="120" y="341" width="198" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="136" y="370" class="icon">&#xf013;</text>
+  <text x="158" y="372" class="label">
+    <tspan x="158" dy="0">Calculator</tspan>
+  </text>
+  <text x="136" y="392" class="desc">
+    <tspan x="136" dy="0">Arithmetic tool</tspan>
+    <tspan x="136" dy="15">invocation</tspan>
+  </text>
+  <rect x="382" y="341" width="198" height="85" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="398" y="370" class="icon">&#xf002;</text>
+  <text x="420" y="372" class="label">
+    <tspan x="420" dy="0">Web Search</tspan>
+  </text>
+  <text x="398" y="392" class="desc">
+    <tspan x="398" dy="0">Live web lookup</tspan>
+    <tspan x="398" dy="15">capability</tspan>
+  </text>
+  <rect x="644" y="341" width="211" height="85" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="660" y="370" class="icon">&#xe73c;</text>
+  <text x="682" y="372" class="label">
+    <tspan x="682" dy="0">Python REPL</tspan>
+  </text>
+  <text x="660" y="392" class="desc">
+    <tspan x="660" dy="0">Execute code snippets</tspan>
+    <tspan x="660" dy="15">safely</tspan>
   </text>
 
-  <rect x="120" y="400" width="189" height="78" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="134" y="426" class="icon">&#xf013;</text>
-  <text x="156" y="428" class="label">
-    <tspan x="156" dy="0">Calculator</tspan>
-  </text>
-  <text x="134" y="447" class="desc">
-    <tspan x="134" dy="0">Arithmetic tool</tspan>
-    <tspan x="134" dy="14">invocation</tspan>
-  </text>
-  <rect x="420" y="400" width="189" height="78" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="434" y="426" class="icon">&#xf002;</text>
-  <text x="456" y="428" class="label">
-    <tspan x="456" dy="0">Web Search</tspan>
-  </text>
-  <text x="434" y="447" class="desc">
-    <tspan x="434" dy="0">Live web lookup</tspan>
-    <tspan x="434" dy="14">capability</tspan>
-  </text>
-  <rect x="720" y="400" width="201" height="78" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="734" y="426" class="icon">&#xe73c;</text>
-  <text x="756" y="428" class="label">
-    <tspan x="756" dy="0">Python REPL</tspan>
-  </text>
-  <text x="734" y="447" class="desc">
-    <tspan x="734" dy="0">Execute code snippets</tspan>
-    <tspan x="734" dy="14">safely</tspan>
-  </text>
+  <line x1="278" y1="162" x2="342" y2="164" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="610" y1="164" x2="674" y2="162" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M476,208 L219,196 L219,329 L219,341" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M476,208 L481,208 L481,341 L481,341" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M476,208 L749,220 L749,353 L749,341" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M219,341 Q273,274 476,208" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <path d="M481,341 Q478,274 476,208" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <path d="M749,341 Q686,274 476,208" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="476" y="317" text-anchor="middle" class="desc">tool result (dashed)</text>
 
-  <line x1="230" y1="232" x2="380" y2="232" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="600" y1="232" x2="740" y2="232" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="420" y1="274" x2="200" y2="400" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="490" y1="274" x2="500" y2="400" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <line x1="560" y1="274" x2="800" y2="400" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M200,400 Q200,330 420,274" fill="none" stroke="#90A4AE" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
-  <path d="M500,400 Q500,340 490,274" fill="none" stroke="#90A4AE" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
-  <path d="M800,400 Q800,330 560,274" fill="none" stroke="#90A4AE" stroke-width="1.5" stroke-dasharray="8,5" marker-end="url(#arrow)"/>
-  <text x="300" y="340" class="desc">tool result</text>
-
-  <rect x="40" y="490" width="920" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
-  <text x="56" y="512" class="legend-title">Legend — solid = request, dashed = tool result</text>
-  <rect x="56" y="514" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="78" y="526" class="small">I/O — message in, answer out</text>
-  <rect x="516" y="514" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="538" y="526" class="small">Agent — orchestrates tool calls</text>
-  <rect x="56" y="536" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="78" y="548" class="small">Tool — callable capability</text>
+  <rect x="48" y="482" width="862" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="504" class="legend-title">Legend — solid = request, dashed = tool result</text>
+  <rect x="64" y="506" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="86" y="518" class="small">I/O — message in, answer out</text>
+  <rect x="495" y="506" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="517" y="518" class="small">Agent — orchestrates tool calls</text>
+  <rect x="64" y="528" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="86" y="540" class="small">Tool — callable capability</text>
 </svg>
