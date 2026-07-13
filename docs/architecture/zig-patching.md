@@ -1,4 +1,4 @@
-# Surgical Zig Integration + Langflow Importer — Implementation Plan
+# Zig patching — native build orchestration + Langflow importer
 
 **Repository:** Nexus Framework Client (monorepo: `:app`, `:core`, `:cli`, `template/`)  
 **Plan date:** 2026-07-13  

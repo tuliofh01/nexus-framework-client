@@ -9,6 +9,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | [Architecture overview](architecture/overview.md) | Full-stack layers, generation flow, Desktop vs Android |
 | [Agent readiness](architecture/agent-readiness.md) | AI agent onboarding score, gaps, fixes |
 | [Risk analysis](architecture/risk-analysis.md) | Architecture risks and mitigations |
+| [Zig patching](architecture/zig-patching.md) | Phased Zig native-build orchestration + Langflow importer |
 | [Desktop App template](templates/desktop-app.md) | `template/desktop-app/` — MVC, pybind11, plotter |
 | [Android App template](templates/android-app.md) | `template/android-app/` — Djinni, Chaquopy |
 | [Blueprint schema](templates/blueprint-schema.md) | `blueprint.json` — Langflow-style nodes, validation, vs n8n |

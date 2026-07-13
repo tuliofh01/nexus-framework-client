@@ -47,6 +47,7 @@
 - [A pasta `misc/`](#a-pasta-misc)
 - [Adicionando dependências](#adicionando-dependências)
 - [C++ moderno e crescimento sem reescrever](#c-moderno-e-crescimento-sem-reescrever)
+- [Zig patching (builds nativos)](#zig-patching-builds-nativos)
 - [Além da automação rápida](#além-da-automação-rápida)
 - [Status de desenvolvimento](#status-de-desenvolvimento)
 - [Copyright e licença](#copyright-e-licença)
@@ -406,6 +407,25 @@ Projetos gerados usam **C++20** com padrões RAII, presets CMake e clang-format.
 **Cresça passo a passo, não reescreva do zero.** Novos nós de blueprint, flows em runtime e telas autoria em XHTML podem conviver com scripts Lua antigos e módulos C++ sob medida no mesmo processo. Times presos em Electron ou Tauri costumam enfrentar um garfo: aceitar overhead de web-shell ou apostar em rewrite completo. O Nexus oferece um terceiro caminho — manter o C++ crítico de performance que você já pagou, modernizar autoria incrementalmente e fazer profile antes de reescrever em outra linguagem.
 
 > *"Faça funcionar, faça certo, faça rápido — nessa ordem."* — frequentemente atribuído a Kent Beck
+
+---
+
+## Zig patching (builds nativos)
+
+**Zig** é uma camada opcional de **orquestração** para apps nativos gerados — não uma reescrita do gerador Kotlin `:app` / `:core`. O Gradle continua sendo o sistema de build do cliente Compose e do pipeline de geração.
+
+| Fase | Foco | Status |
+|------|------|--------|
+| 0 | Instalar Zig **0.14.x** em `misc/client-setup` | ⬜ Planejado |
+| 1 | Sidecar `zig-services/` ao lado do CMake | ⬜ Planejado |
+| 2 | Importador Langflow → `flows.json` (`enabled: false` na importação) | ⬜ Planejado |
+| 3 | Zig como backend nativo padrão no desktop | ⬜ Planejado |
+| 4 | Zig JNI no Android (aposentar Djinni) | ⬜ Planejado |
+| 5 | ArenaAllocator opt-in nos hotspots do AppModel | ⬜ Planejado |
+
+Rollout em fases: Zig ao lado do CMake → Zig padrão no desktop → JNI Android → ArenaAllocator opt-in. Fixar Zig **0.14.x**; builds Android precisam do NDK (API ≥ 29) — Zig não inclui Bionic. O importador Langflow é uma trilha Kotlin paralela em `:core` e não bloqueia o scaffold Zig.
+
+[Plano completo](../../docs/architecture/zig-patching.md)
 
 ---
 

@@ -47,6 +47,7 @@
 - [La carpeta `misc/`](#la-carpeta-misc)
 - [Añadir dependencias](#añadir-dependencias)
 - [C++ moderno y crecer sin reescribir](#c-moderno-y-crecer-sin-reescribir)
+- [Zig patching (builds nativos)](#zig-patching-builds-nativos)
 - [Más allá de la automatización rápida](#más-allá-de-la-automatización-rápida)
 - [Estado del desarrollo](#estado-del-desarrollo)
 - [Copyright y licencia](#copyright-y-licencia)
@@ -406,6 +407,25 @@ Los proyectos generados usan **C++20** con patrones RAII, presets CMake y clang-
 **Crece paso a paso, no reescribas desde cero.** Nuevos nodos de blueprint, flows en runtime y pantallas autoría en XHTML pueden convivir con scripts Lua antiguos y módulos C++ a medida en el mismo proceso. Equipos atrapados en Electron o Tauri suelen enfrentar una bifurcación: aceptar overhead de web-shell o apostar por un rewrite completo. Nexus ofrece un tercer camino — mantener el C++ crítico de rendimiento que ya pagaste, modernizar la autoría incrementalmente y perfilar antes de reescribir en otro lenguaje.
 
 > *"Haz que funcione, hazlo bien, hazlo rápido — en ese orden."* — a menudo atribuido a Kent Beck
+
+---
+
+## Zig patching (builds nativos)
+
+**Zig** es una capa opcional de **orquestación** para apps nativas generadas — no reescribe el generador Kotlin `:app` / `:core`. Gradle sigue siendo el sistema de build del cliente Compose y del pipeline de generación.
+
+| Fase | Enfoque | Estado |
+|------|---------|--------|
+| 0 | Instalar Zig **0.14.x** en `misc/client-setup` | ⬜ Planificado |
+| 1 | Sidecar `zig-services/` junto a CMake | ⬜ Planificado |
+| 2 | Importador Langflow → `flows.json` (`enabled: false` al importar) | ⬜ Planificado |
+| 3 | Zig como backend nativo por defecto en desktop | ⬜ Planificado |
+| 4 | Zig JNI en Android (retirar Djinni) | ⬜ Planificado |
+| 5 | ArenaAllocator opt-in en hotspots de AppModel | ⬜ Planificado |
+
+Despliegue por fases: Zig junto a CMake → Zig por defecto en desktop → JNI Android → ArenaAllocator opt-in. Fijar Zig **0.14.x**; builds Android requieren NDK (API ≥ 29) — Zig no incluye Bionic.
+
+[Plan completo (inglés)](../../docs/architecture/zig-patching.md)
 
 ---
 

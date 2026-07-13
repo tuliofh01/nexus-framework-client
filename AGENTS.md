@@ -104,3 +104,13 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
 - Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
 - Client setup: [misc/client-setup/README.md](misc/client-setup/README.md)
+
+## Zig patching
+
+Phased native-build orchestration for **generated template apps** — see [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md).
+
+- **Do not** replace all CMake in one PR; CMake stays the fallback during transition.
+- **Phase order:** 0 install → 1 `zig-services/` sidecar → 2 Langflow importer (parallel Kotlin track) → 3 desktop Zig default → 4 Android JNI → 5 ArenaAllocator opt-in → 6 docs/diagrams.
+- **`zig-services/`** lives under `template/desktop-app/zig-services/` (mirrored in generated output); Android mirror added in Phase 4.
+- **Keep Gradle** for `:app`, `:core`, and `:cli` — Zig owns generated native binaries only.
+- **Pin Zig 0.14.x** in `misc/client-setup/env.sh`; Android needs NDK (API ≥ 29); Zig does not ship Bionic.

@@ -47,6 +47,7 @@
 - [Папка `misc/`](#папка-misc)
 - [Добавление зависимостей](#добавление-зависимостей)
 - [Современный C++ и рост без переписывания](#современный-c-и-рост-без-переписывания)
+- [Zig patching (нативные сборки)](#zig-patching-нативные-сборки)
 - [За пределами быстрой автоматизации](#за-пределами-быстрой-автоматизации)
 - [Статус разработки](#статус-разработки)
 - [Copyright и лицензия](#copyright-и-лицензия)
@@ -406,6 +407,25 @@ Gradle мапит `:core` и `:cli` из `misc/` via [settings.gradle.kts](../..
 **Растите шаг за шагом, не переписывайте с нуля.** Новые blueprint nodes, runtime flows и XHTML-authored screens могут сосуществовать со старыми Lua scripts и bespoke C++ modules в одном process. Команды на Electron или Tauri часто стоят перед выбором: принять web-shell overhead или полный stack rewrite. Nexus предлагает третий путь — сохранить performance-critical C++, модернизировать authoring incrementally и профилировать перед rewrite на другом языке.
 
 > *"Make it work, make it right, make it fast — in that order."* — часто приписывают Kent Beck
+
+---
+
+## Zig patching (нативные сборки)
+
+**Zig** — опциональный слой **оркестрации** для сгенерированных нативных приложений; это не переписывание Kotlin-генератора `:app` / `:core`. Gradle остаётся системой сборки Compose-клиента и pipeline генерации.
+
+| Фаза | Фокус | Статус |
+|------|-------|--------|
+| 0 | Установка Zig **0.14.x** в `misc/client-setup` | ⬜ Запланировано |
+| 1 | Sidecar `zig-services/` рядом с CMake | ⬜ Запланировано |
+| 2 | Импортёр Langflow → `flows.json` (`enabled: false` при импорте) | ⬜ Запланировано |
+| 3 | Zig как native backend по умолчанию (desktop) | ⬜ Запланировано |
+| 4 | Zig JNI на Android (замена Djinni) | ⬜ Запланировано |
+| 5 | Opt-in ArenaAllocator в hotspots AppModel | ⬜ Запланировано |
+
+Поэтапно: Zig рядом с CMake → desktop Zig default → Android JNI → opt-in ArenaAllocator. Зафиксировать Zig **0.14.x**; для Android нужен NDK (API ≥ 29) — Zig не поставляет Bionic.
+
+[Полный план (англ.)](../../docs/architecture/zig-patching.md)
 
 ---
 

@@ -46,6 +46,7 @@
 - [The `misc/` folder](#the-misc-folder)
 - [Adding dependencies](#adding-dependencies)
 - [Modern C++ & growing without a rewrite](#modern-c--growing-without-a-rewrite)
+- [Zig patching (native builds)](#zig-patching-native-builds)
 - [Beyond quick-fix automation](#beyond-quick-fix-automation)
 - [Development status](#development-status)
 - [Copyright and license](#copyright-and-license)
@@ -408,6 +409,25 @@ Generated projects use **C++20** with RAII patterns, CMake presets, and clang-fo
 
 ---
 
+## Zig patching (native builds)
+
+**Zig** is an optional **orchestration layer** for generated native apps — not a rewrite of the Kotlin `:app` / `:core` generator. Gradle remains the build system for the Compose client and generation pipeline.
+
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 0 | Zig **0.14.x** install in `misc/client-setup` | ⬜ Planned |
+| 1 | `zig-services/` sidecar beside CMake | ⬜ Planned |
+| 2 | Langflow → `flows.json` importer (`enabled: false` on import) | ⬜ Planned |
+| 3 | Desktop Zig as default native backend | ⬜ Planned |
+| 4 | Android Zig JNI (retire Djinni) | ⬜ Planned |
+| 5 | Opt-in ArenaAllocator at AppModel hotspots | ⬜ Planned |
+
+Phased rollout: Zig beside CMake first → desktop Zig default → Android Zig JNI → opt-in ArenaAllocator. Pin Zig **0.14.x**; Android builds need the NDK (API ≥ 29) — Zig does not ship Bionic. The Langflow importer is a parallel Kotlin track in `:core` and does not block the Zig scaffold.
+
+[Full plan](docs/architecture/zig-patching.md)
+
+---
+
 ## Beyond quick-fix automation
 
 **Power Automate**, **n8n**, and similar tools excel at ops glue. That breaks down when the quick fix *is* the product: no native UI, weak offline packaging, cloud dependency.
@@ -469,6 +489,7 @@ Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/lice
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` schema |
 | [docs/templates/flows-schema.md](docs/templates/flows-schema.md) | `flows.json` schema |
+| [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md) | Zig native-build orchestration plan |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
 
 ### Ecosystem

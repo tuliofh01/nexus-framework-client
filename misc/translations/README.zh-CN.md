@@ -47,6 +47,7 @@
 - [`misc/` 文件夹](#misc-文件夹)
 - [添加依赖](#添加依赖)
 - [现代 C++ 与无需重写即可成长](#现代-c-与无需重写即可成长)
+- [Zig patching（原生构建）](#zig-patching原生构建)
 - [超越快速修复自动化](#超越快速修复自动化)
 - [开发状态](#开发状态)
 - [版权与许可](#版权与许可)
@@ -406,6 +407,25 @@ Gradle 通过 [settings.gradle.kts](../../settings.gradle.kts) 将 `:core` 与 `
 **逐步成长，而非从零重写。** 新 blueprint 节点、runtime flows 与 XHTML 创作屏幕可与旧 Lua 脚本、定制 C++ 模块共存于同一进程。困在 Electron 或 Tauri 的团队常面临分叉：接受 web shell 开销或全面重写。Nexus 提供第三条路 — 保留已投入的性能关键 C++，逐步现代化创作，迁移语言前先 profiling。
 
 > *"Make it work, make it right, make it fast — in that order."* — 常归于 Kent Beck
+
+---
+
+## Zig patching（原生构建）
+
+**Zig** 是生成原生应用的可选**编排层** — 不会重写 Kotlin `:app` / `:core` 生成器。Gradle 仍是 Compose 客户端与生成流水线的构建系统。
+
+| 阶段 | 重点 | 状态 |
+|------|------|------|
+| 0 | 在 `misc/client-setup` 安装 Zig **0.14.x** | ⬜ 计划中 |
+| 1 | `zig-services/` 与 CMake 并存的 sidecar | ⬜ 计划中 |
+| 2 | Langflow → `flows.json` 导入器（导入时 `enabled: false`） | ⬜ 计划中 |
+| 3 | 桌面默认 Zig 原生后端 | ⬜ 计划中 |
+| 4 | Android Zig JNI（退役 Djinni） | ⬜ 计划中 |
+| 5 | AppModel 热点 opt-in ArenaAllocator | ⬜ 计划中 |
+
+分阶段：先 Zig 与 CMake 并存 → 桌面 Zig 默认 → Android JNI → opt-in ArenaAllocator。固定 Zig **0.14.x**；Android 需 NDK（API ≥ 29）— Zig 不自带 Bionic。
+
+[完整计划（英文）](../../docs/architecture/zig-patching.md)
 
 ---
 
