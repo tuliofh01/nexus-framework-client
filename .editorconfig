@@ -1,0 +1,35 @@
+# Nexus Framework — editor defaults (see docs/guides/coding-styles.md)
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+indent_style = space
+indent_size = 4
+
+[*.{cpp,hpp,h,c,cc}]
+indent_style = space
+indent_size = 4
+
+[*.{zig,zon}]
+indent_style = space
+indent_size = 4
+
+[*.{ts,js}]
+indent_style = space
+indent_size = 4
+
+[*.{py,lua}]
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,md}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab

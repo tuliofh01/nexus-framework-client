@@ -7,6 +7,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | Doc | What it covers |
 |-----|----------------|
 | [Architecture overview](architecture/overview.md) | Full-stack layers, generation flow, Desktop vs Android |
+| [Runtime stack map](architecture/runtime-stack.md) | Historical, functional, and syntactic language map |
 | [Agent readiness](architecture/agent-readiness.md) | AI agent onboarding score, gaps, fixes |
 | [Risk analysis](architecture/risk-analysis.md) | Architecture risks and mitigations |
 | [Zig patching](architecture/zig-patching.md) | Phased Zig native-build orchestration + Langflow importer |
@@ -15,6 +16,7 @@ Documentation for the **Framework** scaffold client: Compose Desktop UI + Gradle
 | [Blueprint schema](templates/blueprint-schema.md) | `blueprint.json` — Langflow-style nodes, validation, vs n8n |
 | [Shared DSL](templates/shared-dsl.md) | `template/shared/dsl/` — TypeScript + XHTML |
 | [Coding with Nexus](guides/coding-with-nexus.md) | UI, MVC, Python, Lua, blueprint, themes, icons |
+| [Coding styles](guides/coding-styles.md) | C++20, Zig, Kotlin, Lua, TS, Python — authoritative rules |
 | [Adding dependencies](guides/adding-dependencies.md) | C++, Lua, Python packages after client-setup |
 | [Generation pipeline](guides/generation-pipeline.md) | `ProjectGenerator`, CLI, Docker, Jenkins |
 

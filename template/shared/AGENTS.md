@@ -40,6 +40,7 @@ cmake -S tools -B /tmp/nxs-pack && cmake --build /tmp/nxs-pack
 
 ## Conventions
 
+- **Coding styles:** follow [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md) — C++20 in `runtime/`, TS in `dsl/`, `clang-format` in this folder.
 - **DSL tags:** XHTML tags in `tags.ts` map to Dear ImGui / ImPlot widgets (`Button`, `Slider`, `Plot`, etc. in `components.ts`).
 - **Component base:** `core.ts` defines `Component`, `StyleProps`, callbacks — runtime walks the tree each frame.
 - **Themes:** JSON schema `$schema` → `https://nexus.dev/schemas/theme-1.json`. Keys under `imgui.colors` / `imgui.style`. Desktop defaults to `nexus-dark`; Android defaults to `nexus-field`.
@@ -98,3 +99,4 @@ Shared `runtime/` code is target-agnostic; embedding differs per template (`pybi
 - [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
 - [docs/templates/android-app.md](../../docs/templates/android-app.md)
 - [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)
+- [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md)

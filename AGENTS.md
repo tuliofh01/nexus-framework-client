@@ -18,7 +18,7 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `template/shared/` | Shared DSL, themes, runtime helpers |
 | `docs/assets/diagrams/` | Architecture SVGs referenced from README |
 
-**Generated-app stack** (see README): C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Djinni** + Chaquopy.
+**Generated-app stack:** For “what language does what” (historical lineage, runtime roles, authoring vs lowered), read **[docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)** first. Summary: C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Djinni** + Chaquopy. Compose `:app` still needs **JDK 26** — generated desktop apps do not.
 
 ## First run (human or agent)
 
@@ -74,6 +74,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 
 ## Conventions
 
+- **Coding styles:** follow [docs/guides/coding-styles.md](docs/guides/coding-styles.md) for C++20, Zig, Kotlin, Lua, TS, and Python.
 - **JDK / toolchain**: Java 26 via Foojay in `misc/build-logic` convention plugin.
 - **Kotlin**: 2.4.0.
 - **Window title**: `NexusBranding.windowTitle(...)` → `{projectName} - built with The Nexus Framework`.
@@ -99,7 +100,9 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 
 ## Docs
 
+- **Stack map (start here):** [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)
 - Hub: [docs/README.md](docs/README.md)
+- Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
 - Generation: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
 - Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)

@@ -41,6 +41,7 @@
 - [What lives in this repo](#what-lives-in-this-repo)
 - [Quick start](#quick-start)
 - [Architecture](#architecture)
+- [Runtime stack map](#runtime-stack-map)
 - [Blueprint & flows — two layers](#blueprint--flows--two-layers)
 - [Building your app](#building-your-app)
 - [The `misc/` folder](#the-misc-folder)
@@ -194,6 +195,12 @@ JDK 26 setup → Gradle `:core` / `:cli` / `:app` → `ProjectGenerator` writes 
 One `blueprint.json` wires MVC on both templates; only the Python bridge and packaging differ per platform.
 
 Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Blueprint/flows: [Blueprint & flows](#blueprint--flows--two-layers) · Python split: [Python on desktop vs Android](#python-on-desktop-vs-android)
+
+### Runtime stack map
+
+**Historical, functional, and syntactic language map** — which layer came from where, what runs at generation vs runtime, and what you author (blueprint, flows, TS/XHTML, C++, Lua, Python) vs what gets lowered. Educational cross-link across CMake→Zig migration, Langflow mental model, and JVM boundaries.
+
+→ [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)
 
 ---
 
@@ -521,6 +528,7 @@ Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/lice
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` schema |
 | [docs/templates/flows-schema.md](docs/templates/flows-schema.md) | `flows.json` schema |
+| [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md) | Historical, functional, and syntactic language map |
 | [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md) | Zig native-build orchestration plan |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
 
@@ -579,6 +587,7 @@ When every row is ✅, Nexus Framework is **MVP-ready**: generate native apps, e
 |------|--------|
 | README architecture + comparison sections | ✅ |
 | Template `AGENTS.md` guides | ✅ |
+| Multi-language [coding styles](docs/guides/coding-styles.md) | ✅ |
 | `client-setup` scripts (JDK 26) | ✅ |
 | CLI `debug validate --all` or equivalent in CI | ⬜ |
 
