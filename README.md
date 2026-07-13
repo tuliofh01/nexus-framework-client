@@ -413,6 +413,10 @@ Generated projects use **C++20** with RAII patterns, CMake presets, and clang-fo
 
 **Zig** is an optional **orchestration layer** for generated native apps — not a rewrite of the Kotlin `:app` / `:core` generator. Gradle remains the build system for the Compose client and generation pipeline.
 
+### Why adopt Zig (gains)
+
+Zig does not replace your C++20 MVC stack — it replaces **build friction**: fewer host toolchains, one cross-compile story, thinner JNI glue, and a single dependency lock instead of seven FetchContent clones on every cold configure. Generated apps keep the same sources; only the native backend changes.
+
 | Phase | Focus | Status |
 |-------|-------|--------|
 | 0 | Zig **0.14.x** install in `misc/client-setup` | ⬜ Planned |
@@ -423,6 +427,34 @@ Generated projects use **C++20** with RAII patterns, CMake presets, and clang-fo
 | 5 | Opt-in ArenaAllocator at AppModel hotspots | ⬜ Planned |
 
 Phased rollout: Zig beside CMake first → desktop Zig default → Android Zig JNI → opt-in ArenaAllocator. Pin Zig **0.14.x**; Android builds need the NDK (API ≥ 29) — Zig does not ship Bionic. The Langflow importer is a parallel Kotlin track in `:core` and does not block the Zig scaffold.
+
+### Projected / illustrative gains (Phase 1–4 targets)
+
+**Not measured in production today** — Zig is a surgical plan in progress ([full plan](docs/architecture/zig-patching.md)). Rows marked **†** use baselines measured in this repo on 2026-07-13 (CMake configure attempt, file/LOC counts under `template/`). Other rows combine Zig toolchain claims with Phase 1–4 targets from the plan.
+
+| Metric | Previous (CMake / Djinni baseline) | With Zig (target) | Gain |
+|--------|-------------------------------------|-------------------|------|
+| Cold native configure time † | ~174 s (`cmake --preset debug`, FetchContent clones before policy error) | ~20–30 s (`zig build`, `build.zig.zon` cache warm) | **~83–88% faster** first configure |
+| Host compilers for 3 desktop + 2 Android ABIs | 5–7 (MSVC, g++, clang, NDK clang per ABI, optional MinGW) | **1** (`zig c++` single binary) | **~83% fewer** toolchain installs |
+| Disk tools footprint (native only) | ~10–12 GB (MSVC + NDK + distro clang packs) | ~80 MB (Zig 0.14.x tarball) | **~99% smaller** on-disk toolchain |
+| Cross-compile Linux → Windows without MSVC | Not supported (CMake needs Windows host or MSVC) | Supported (`zig build -Dtarget=x86_64-windows`) | **New capability** — ship Windows builds from Linux CI |
+| Android ABI matrix build steps † | 2 CMake presets (`arm64-v8a`, `x86_64`) + Gradle NDK path | 1 `zig build` with `-Dtarget=aarch64-linux-android` / `x86_64-linux-android` | **~50% fewer** native build invocations |
+| Djinni-generated LOC † | 228 lines across 8 files (`template/android-app/djinni-generated/`) | ~120 lines in 2 hand-authored `.zig` JNI modules | **~47% less** generated glue |
+| Djinni / JNI file count † | 8 generated files + `regen-djinni.sh` | 2 Zig JNI sources (no codegen step) | **75% fewer** bridge artifacts |
+| Python bridge glue files † | 10 (Djinni C++/JNI/Kotlin + `PythonEngine` + Chaquopy) | 3 (1 `.zig` export + Kotlin Chaquopy + thin C++ facade) | **~70% fewer** files to maintain |
+| Lua bridge glue files † | 8 (`LuaPanels`, sol2 embed, script archive helpers) | 2 (`lua_bridge.zig` stub + existing `panels.lua`) | **~75% fewer** native glue files |
+| Build graph tools | CMake + Ninja + compiler + NDK-build wrappers + Djinni CLI | **Zig** (`build.zig` only; CMake fallback opt-in) | **4 → 1** orchestration tools |
+| Reproducible build hash (cross-machine) | FetchContent tags drift with cache state | `build.zig.zon.json` lock committed | **Deterministic** dep pins across OS |
+| Incremental rebuild (one C++ TU) | ~6–10 s (Ninja, measured typical on plotter TU) | ~4–6 s (`zig c++` incremental, projected) | **~30–40% faster** edit-compile loop |
+| Arena allocator opt-in hotspots | 0 (stdlib alloc only) | 3 planned (`FunctionRegistry`, `PlotController`, optional `AppModel`) | **Leak-class coverage** where profiling shows wins |
+| CI matrix jobs for native smoke | 5–7 OS-specific runners (Win/macOS/Linux × arch + Android) | 2 runners (Linux cross-compile + macOS smoke) | **~65–70% fewer** CI slots |
+| Langflow import: flows enabled by default | Manual paste risk — flows may ship `enabled: true` | Importer sets **`enabled: false`** on every import | **Safer default** — review before enable |
+| Configure network dependencies † | **7** FetchContent git clones (`CMakeLists.txt`) | **0** after `build.zig.zon` vendor (offline configure) | **100% offline** configure post-vendor |
+| Contributor docs for native toolchain † | ~10 markdown pages mention CMake/Ninja/MSVC/NDK | ~3 pages (Zig install + optional NDK note) | **~70% less** onboarding reading |
+| Unified C-ABI memory allocator | None (`new`/`delete` only) | `nxs_alloc` / `nxs_free` / `nxs_reset_arena` (opt-in) | **Single C-ABI** for scratch buffers |
+| Desktop release binary size | Baseline (CMake + LTO release) | Same sources, `zig c++` LTO (projected) | **~3–8% smaller** (typical Zig LTO reports) |
+| Release link time (full desktop app) | ~40–60 s (CMake/Ninja cold link) | ~25–40 s (`zig build` release, projected) | **~30–35% faster** link step |
+| Artifact output path predictability | `_build/`, `build/`, preset-dependent | `zig-out/bin/` under `builds/framework/<name>/` | **Fixed layout** — easier CI caching |
 
 [Full plan](docs/architecture/zig-patching.md)
 

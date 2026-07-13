@@ -414,16 +414,32 @@ Gradle мапит `:core` и `:cli` из `misc/` via [settings.gradle.kts](../..
 
 **Zig** — опциональный слой **оркестрации** для сгенерированных нативных приложений; это не переписывание Kotlin-генератора `:app` / `:core`. Gradle остаётся системой сборки Compose-клиента и pipeline генерации.
 
-| Фаза | Фокус | Статус |
-|------|-------|--------|
-| 0 | Установка Zig **0.14.x** в `misc/client-setup` | ⬜ Запланировано |
-| 1 | Sidecar `zig-services/` рядом с CMake | ⬜ Запланировано |
-| 2 | Импортёр Langflow → `flows.json` (`enabled: false` при импорте) | ⬜ Запланировано |
-| 3 | Zig как native backend по умолчанию (desktop) | ⬜ Запланировано |
-| 4 | Zig JNI на Android (замена Djinni) | ⬜ Запланировано |
-| 5 | Opt-in ArenaAllocator в hotspots AppModel | ⬜ Запланировано |
+### Зачем Zig (выигрыши)
 
-Поэтапно: Zig рядом с CMake → desktop Zig default → Android JNI → opt-in ArenaAllocator. Зафиксировать Zig **0.14.x**; для Android нужен NDK (API ≥ 29) — Zig не поставляет Bionic.
+Zig не заменяет C++20 MVC — он убирает **трение сборки**: меньше toolchain'ов, единый cross-compile, тонкий JNI-glue. **Не измерено в проде** — хирургический план ([полный план](../../docs/architecture/zig-patching.md)). **†** = baseline в репо (2026-07-13).
+
+| Метрика | Было (CMake / Djinni) | С Zig (цель) | Выигрыш |
+|---------|----------------------|--------------|---------|
+| Холодный configure † | ~174 с | ~20–30 с | **~83–88% быстрее** |
+| Host toolchains | 5–7 | **1** | **~83% меньше** |
+| Диск (инструменты) | ~10–12 ГБ | ~80 МБ | **~99% меньше** |
+| Cross-compile Linux → Windows | Нет | Да | **Новая возможность** |
+| Шаги Android ABI † | 2 CMake preset | 1 `zig build` | **~50% меньше** |
+| LOC Djinni † | 228 / 8 файлов | ~120 / 2 `.zig` | **~47% меньше** |
+| Python glue † | 10 файлов | 3 | **~70% меньше** |
+| Lua glue † | 8 файлов | 2 | **~75% меньше** |
+| Инструменты сборки | CMake+Ninja+NDK+Djinni | **Zig** | **4 → 1** |
+| Воспроизводимый hash | FetchContent плавает | `build.zig.zon.json` | **Детерминизм** |
+| Инкрементальный rebuild | ~6–10 с | ~4–6 с | **~30–40% быстрее** |
+| ArenaAllocator hotspots | 0 | 3 планируется | **Opt-in покрытие** |
+| CI smoke jobs | 5–7 runner | 2 runner | **~65–70% меньше** |
+| Langflow: enabled flows | Ручной риск | **`enabled: false`** | **Безопаснее** |
+| Сетевые deps configure † | **7** FetchContent | **0** после vendor | **100% offline** |
+| Docs onboarding † | ~10 страниц | ~3 | **~70% меньше** |
+| C-ABI allocator | Нет | `nxs_alloc` opt-in | **Единый C-ABI** |
+| Размер release binary | CMake baseline | Zig LTO | **~3–8% меньше** |
+| Время link release | ~40–60 с | ~25–40 с | **~30–35% быстрее** |
+| Пути артеfactов | Зависит от preset | `zig-out/bin/` | **Фиксированный layout** |
 
 [Полный план (англ.)](../../docs/architecture/zig-patching.md)
 

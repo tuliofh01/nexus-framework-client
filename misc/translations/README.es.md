@@ -414,16 +414,32 @@ Los proyectos generados usan **C++20** con patrones RAII, presets CMake y clang-
 
 **Zig** es una capa opcional de **orquestación** para apps nativas generadas — no reescribe el generador Kotlin `:app` / `:core`. Gradle sigue siendo el sistema de build del cliente Compose y del pipeline de generación.
 
-| Fase | Enfoque | Estado |
-|------|---------|--------|
-| 0 | Instalar Zig **0.14.x** en `misc/client-setup` | ⬜ Planificado |
-| 1 | Sidecar `zig-services/` junto a CMake | ⬜ Planificado |
-| 2 | Importador Langflow → `flows.json` (`enabled: false` al importar) | ⬜ Planificado |
-| 3 | Zig como backend nativo por defecto en desktop | ⬜ Planificado |
-| 4 | Zig JNI en Android (retirar Djinni) | ⬜ Planificado |
-| 5 | ArenaAllocator opt-in en hotspots de AppModel | ⬜ Planificado |
+### Por qué adoptar Zig (ganancias)
 
-Despliegue por fases: Zig junto a CMake → Zig por defecto en desktop → JNI Android → ArenaAllocator opt-in. Fijar Zig **0.14.x**; builds Android requieren NDK (API ≥ 29) — Zig no incluye Bionic.
+Zig no reemplaza tu stack C++20 MVC — reemplaza **fricción de build**: menos toolchains, cross-compile unificado, glue JNI más delgado y un lock de dependencias en lugar de siete clones FetchContent. **No medido en producción hoy** — plan quirúrgico en curso ([plan completo](../../docs/architecture/zig-patching.md)). Filas **†** = baseline medido en el repo (2026-07-13).
+
+| Métrica | Anterior (CMake / Djinni) | Con Zig (meta) | Ganancia |
+|---------|---------------------------|----------------|----------|
+| Configure nativo frío † | ~174 s | ~20–30 s | **~83–88% más rápido** |
+| Toolchains host (desktop + Android) | 5–7 | **1** (`zig c++`) | **~83% menos** |
+| Huella en disco (herramientas) | ~10–12 GB | ~80 MB | **~99% menor** |
+| Cross-compile Linux → Windows | No | Sí | **Nueva capacidad** |
+| Pasos build ABI Android † | 2 presets CMake | 1 `zig build` | **~50% menos** |
+| LOC Djinni generado † | 228 / 8 archivos | ~120 / 2 `.zig` | **~47% menos** |
+| Archivos glue Python † | 10 | 3 | **~70% menos** |
+| Archivos glue Lua † | 8 | 2 | **~75% menos** |
+| Herramientas de build | CMake+Ninja+NDK+Djinni | **Zig** | **4 → 1** |
+| Hash reproducible | FetchContent variable | `build.zig.zon.json` | **Determinístico** |
+| Rebuild incremental (1 TU) | ~6–10 s | ~4–6 s | **~30–40% más rápido** |
+| Hotspots ArenaAllocator | 0 | 3 planeados | **Cobertura opt-in** |
+| Jobs CI smoke nativo | 5–7 runners | 2 runners | **~65–70% menos** |
+| Langflow: flows habilitados | Riesgo manual | **`enabled: false`** | **Default seguro** |
+| Deps de red en configure † | **7** FetchContent | **0** post-vendor | **100% offline** |
+| Docs onboarding toolchain † | ~10 páginas | ~3 páginas | **~70% menos** |
+| Allocator C-ABI unificado | Ninguno | `nxs_alloc` opt-in | **C-ABI único** |
+| Tamaño binario release | Baseline CMake | LTO Zig | **~3–8% menor** |
+| Tiempo de link release | ~40–60 s | ~25–40 s | **~30–35% más rápido** |
+| Rutas de artefactos | Preset-dependent | `zig-out/bin/` fijo | **Layout predecible** |
 
 [Plan completo (inglés)](../../docs/architecture/zig-patching.md)
 

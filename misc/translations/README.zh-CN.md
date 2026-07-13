@@ -414,16 +414,32 @@ Gradle 通过 [settings.gradle.kts](../../settings.gradle.kts) 将 `:core` 与 `
 
 **Zig** 是生成原生应用的可选**编排层** — 不会重写 Kotlin `:app` / `:core` 生成器。Gradle 仍是 Compose 客户端与生成流水线的构建系统。
 
-| 阶段 | 重点 | 状态 |
-|------|------|------|
-| 0 | 在 `misc/client-setup` 安装 Zig **0.14.x** | ⬜ 计划中 |
-| 1 | `zig-services/` 与 CMake 并存的 sidecar | ⬜ 计划中 |
-| 2 | Langflow → `flows.json` 导入器（导入时 `enabled: false`） | ⬜ 计划中 |
-| 3 | 桌面默认 Zig 原生后端 | ⬜ 计划中 |
-| 4 | Android Zig JNI（退役 Djinni） | ⬜ 计划中 |
-| 5 | AppModel 热点 opt-in ArenaAllocator | ⬜ 计划中 |
+### 为何采用 Zig（收益）
 
-分阶段：先 Zig 与 CMake 并存 → 桌面 Zig 默认 → Android JNI → opt-in ArenaAllocator。固定 Zig **0.14.x**；Android 需 NDK（API ≥ 29）— Zig 不自带 Bionic。
+Zig 不替换 C++20 MVC 栈——它替换**构建摩擦**：更少 host 工具链、统一交叉编译、更薄的 JNI 胶水、单一依赖锁代替七次 FetchContent 克隆。**尚未在生产环境测量**——见[完整计划](../../docs/architecture/zig-patching.md)。**†** = 本仓库 2026-07-13 实测 baseline。
+
+| 指标 | 先前（CMake / Djinni） | Zig（目标） | 收益 |
+|------|------------------------|-------------|------|
+| 冷 configure 时间 † | ~174 秒 | ~20–30 秒 | **快 ~83–88%** |
+| Host 工具链数量 | 5–7 | **1** | **少 ~83%** |
+| 工具磁盘占用 | ~10–12 GB | ~80 MB | **小 ~99%** |
+| Linux → Windows 交叉编译 | 不支持 | 支持 | **新能力** |
+| Android ABI 构建步骤 † | 2 个 CMake preset | 1 次 `zig build` | **少 ~50%** |
+| Djinni 生成 LOC † | 228 行 / 8 文件 | ~120 行 / 2 个 `.zig` | **少 ~47%** |
+| Python 胶水文件 † | 10 | 3 | **少 ~70%** |
+| Lua 胶水文件 † | 8 | 2 | **少 ~75%** |
+| 构建工具 | CMake+Ninja+NDK+Djinni | **Zig** | **4 → 1** |
+| 可复现构建 hash | FetchContent 不稳定 | `build.zig.zon.json` | **确定性** |
+| 增量重建（1 个 TU） | ~6–10 秒 | ~4–6 秒 | **快 ~30–40%** |
+| ArenaAllocator 热点 | 0 | 计划 3 处 | **可选覆盖** |
+| CI 原生 smoke 任务 | 5–7 个 runner | 2 个 | **少 ~65–70%** |
+| Langflow 默认启用 flow | 手动风险 | **`enabled: false`** | **更安全默认** |
+| Configure 网络依赖 † | **7** 次 FetchContent | **0**（vendor 后） | **100% 离线** |
+| 工具链 onboarding 文档 † | ~10 页 | ~3 页 | **少 ~70%** |
+| 统一 C-ABI 分配器 | 无 | `nxs_alloc` opt-in | **单一 C-ABI** |
+| Release 二进制大小 | CMake 基线 | Zig LTO | **小 ~3–8%** |
+| Release 链接时间 | ~40–60 秒 | ~25–40 秒 | **快 ~30–35%** |
+| 产物路径 | 依赖 preset | 固定 `zig-out/bin/` | **可预测布局** |
 
 [完整计划（英文）](../../docs/architecture/zig-patching.md)
 
