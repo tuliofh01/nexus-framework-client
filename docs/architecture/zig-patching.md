@@ -586,6 +586,7 @@ No Gradle module for Zig — invocation via documented scripts and optional CI `
 
 - [Architecture overview](overview.md)
 - [Risk analysis](risk-analysis.md) — requires refresh after Phase 6
+- [Opsera risk analysis (HTML)](zig-surgical-integration-risk-analysis.html)
 - [flows.json schema](../templates/flows-schema.md)
 - [Adding dependencies](../guides/adding-dependencies.md)
 - [Client setup](../../misc/client-setup/README.md)

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Framework Client — Zig Surgical Integration Risk Analysis</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1419; --card: #1a2332; --text: #e7ecf3; --muted: #8b9cb3;
+      --critical: #ff4d6d; --high: #ff8c42; --medium: #ffd166; --low: #06d6a0;
+      --accent: #4cc9f0; --border: #2d3a4f; --opsera: #6c5ce7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; }
+    .page-main { padding: 2rem clamp(1rem, 4vw, 3rem); max-width: 1200px; margin: 0 auto; }
+    .header { border-bottom: 1px solid var(--border); padding: 1.5rem 2rem; background: var(--card); }
+    .header h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+    .meta { color: var(--muted); font-size: 0.88rem; }
+    .section { margin-bottom: 2.5rem; }
+    .section h2 { font-size: 1.25rem; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 0.65rem; margin-bottom: 1rem; }
+    .section h3 { font-size: 1rem; color: var(--text); margin: 1rem 0 0.5rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.15rem; margin-bottom: 0.75rem; }
+    .strength-card { border-left: 4px solid var(--low); }
+    .decision-card { border-left: 4px solid var(--opsera); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 4px; margin-right: 0.4rem; }
+    .badge-critical, .badge.critical { background: var(--critical); color: #fff; }
+    .badge-important, .badge.high { background: var(--high); color: #111; }
+    .badge-nice, .badge.medium { background: var(--medium); color: #111; }
+    .badge-noted { background: var(--muted); color: #111; }
+    .attack-complexity { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; }
+    .ac-low { background: #ffd166; color: #111; }
+    .ac-medium { background: #ff8c42; color: #111; }
+    .ac-high { background: #ff4d6d; color: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.75rem 0; }
+    th, td { border: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: left; }
+    th { background: #243044; color: var(--accent); }
+    .diagram-container { background: #fff; border-radius: 10px; padding: 1rem; margin: 1rem 0; overflow-x: auto; }
+    .diagram-container h4 { color: #111; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    pre { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; overflow-x: auto; font-size: 0.78rem; color: #c9d1d9; }
+    .score-ring { display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin: 1rem 0; }
+    .score-value { font-size: 2.75rem; font-weight: 800; color: var(--high); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.65rem; margin: 1rem 0; }
+    .stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem; text-align: center; }
+    .stat .n { font-size: 1.5rem; font-weight: 700; }
+    .stat .l { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+    .stat.critical .n { color: var(--critical); }
+    .stat.high .n { color: var(--high); }
+    .stat.medium .n { color: var(--medium); }
+    .stat.low .n { color: var(--low); }
+    .category-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; text-align: center; }
+    .cat-count { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+    .contradiction-card, .stress-card, .assumption-card, .coupling-card, .dead-path-card { border-left: 3px solid var(--medium); }
+    .sprint-card { background: #1e2a3a; border: 1px dashed var(--accent); }
+    .footer { margin-top: 2rem; padding: 1rem 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; }
+    details { margin: 0.5rem 0; }
+    summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+    .stride-card { display: inline-block; width: 15%; min-width: 90px; text-align: center; padding: 0.5rem; margin: 0.25rem; border-radius: 6px; background: var(--card); border: 1px solid var(--border); }
+    code { background: #243044; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Nexus Framework Client — Zig Surgical Integration Risk Analysis</h1>
+    <p class="meta">Repository: <code>tuliofh01/nexus-framework-client</code> · 2026-07-13 · Opsera architecture-analyze exec_45b5ba566d83a4e68760afb4d70aef45</p>
+  </div>
+
+  <div class="page-main">
+
+    <section class="section" id="architecture-glance">
+      <h2>Architecture at a Glance</h2>
+
+      <div class="diagram-container"><h4>1. System Architecture Overview</h4>
+<pre class="mermaid">graph TB
+  subgraph Client["Compose Desktop :app — JDK 26"]
+    APP[App.kt MVC] -->|nav| GEN[GenerateProjectScreen]
+    GEN -->|ProjectSpec| PG[ProjectGenerator :core]
+    PG -->|validate| BV[BlueprintValidator]
+    PG -->|validate| FV[FlowsValidator]
+  end
+  subgraph Templates["template/ — C++20 SDL3"]
+    DT[desktop-app CMake 3.24] -->|7x FetchContent| FC[GitHub deps ~100MB]
+    AT[android-app Gradle+CMake] -->|6x FetchContent| FC
+    SH[shared/runtime themes fonts]
+  end
+  subgraph Runtime["Generated binary"]
+    SDL[SDL3 3.2.4] -->|16ms tick| FR[FlowRunner]
+    PY[pybind11 / Chaquopy] -->|sync eval| UI[ImGui render]
+    DJ[Djinni JNI bridge] -->|EvalResult| PY
+  end
+  PG -->|emit| DT
+  PG -->|emit| AT
+  DT --> Runtime
+  AT --> Runtime</pre></div>
+
+      <div class="diagram-container"><h4>2. Trust Boundaries (no HTTP auth — local desktop)</h4>
+<pre class="mermaid">graph TD
+  subgraph External["External — 0 HTTP routes"]
+    LF[Langflow export JSON] -->|manual import| MANUAL[Human translation]
+  end
+  subgraph App["Local Compose :app"]
+    MANUAL --> BE[Blueprint Editor]
+    MANUAL --> FE[Flows Editor]
+    BE -->|write| BJ[blueprint.json]
+    FE -->|write| FJ[flows.json]
+  end
+  subgraph Native["Native trust boundaries"]
+    BJ -->|build-time| CXX[C++ MVC]
+    FJ -->|runtime| FR[FlowRunner]
+    PYE[pybind11 embed] -->|in-process| CXX
+    JNI[Djinni JNI] -->|AttachCurrentThread| CXX
+  end
+  classDef protected fill:#06d6a0,color:#111
+  classDef absent fill:#ff4d6d,color:#fff
+  class PYE,JNI protected
+  class LF absent</pre></div>
+
+      <div class="diagram-container"><h4>3. Data Flow — Generation to Runtime</h4>
+<pre class="mermaid">graph TB
+  SPEC[ProjectSpec] -->|templateVars 11 keys| TE[TemplateEngine]
+  TE -->|copyTree| ROOT[builds/framework/name/]
+  ROOT --> NC[nxs_config.json flows.enabled:true]
+  ROOT --> BP[blueprint.json 5 node types]
+  ROOT --> FL[flows/flows.json 2 flows]
+  NC -->|load| FRC[FlowRunner.cpp desktop 269 LOC]
+  FL --> FRC
+  FRC -->|invoke| AC[AppController]
+  AC -->|refresh| PE[PythonEngine pybind11]
+  PE -->|memcpy 64-4096 samples| IM[ImPlot draw]</pre></div>
+
+      <div class="diagram-container"><h4>4. Failure Mode Map</h4>
+<pre class="mermaid">graph TD
+  subgraph Failures["What breaks"]
+    F1[GitHub FetchContent down] -->|100%| E1[cmake configure FAIL]
+    F2[python3-dev missing] -->|desktop| E1
+    F3[Bridge after SDL_main] -->|Android| E2[Empty charts]
+    F4[JNI EvalResult mismatch] -->|Android| E3[Process crash]
+    F5[Heavy numpy on UI thread] -->|desktop| E4[UI &lt;10 FPS]
+    F6[Zig build.zig without CMake wrapper] -->|future| E5[Dual build drift]
+  end
+  subgraph Effects["Blast radius"]
+    E1 --> U1[Zero native builds — all contributors]
+    E2 --> U2[Silent empty UI — 100% Android flow users]
+    E4 --> U3[Frame drops — 5 curves x 4096 samples]
+    E5 --> U4[Android APK never ships Zig modules]
+  end</pre></div>
+
+      <div class="diagram-container"><h4>5. Security Defense-in-Depth (desktop generator)</h4>
+<pre class="mermaid">graph TB
+  subgraph Layers["Defense layers"]
+    P[Perimeter / WAF] -->|absent| R1[❌ No network surface]
+    N[Network TLS] -->|N/A| R2[❌ Local app only]
+    A[App input validation] -->|partial| R3[⚠️ FlowRunner string-parse JSON]
+    AU[Auth middleware] -->|N/A| R4[❌ No routes]
+    AZ[Authorization] -->|N/A| R5[❌ No RBAC]
+    D[Data encryption at rest] -->|optional| R6[⚠️ ScriptCrypto nxs-v1]
+    M[Monitoring / audit] -->|stderr only| R7[⚠️ FlowRunner logs]
+  end
+  classDef present fill:#06d6a0,color:#111
+  classDef absent fill:#ff4d6d,color:#fff
+  classDef partial fill:#ffd166,color:#111</pre></div>
+
+      <div class="diagram-container"><h4>6. CI/CD Pipeline (current vs target)</h4>
+<pre class="mermaid">graph LR
+  GIT[git push main] -->|0 workflows| GAP[❌ No GHA]
+  GAP -->|manual| GRADLE[gradlew :core:test :app:test]
+  GRADLE -->|4 tests pass| KOTLIN[Kotlin only gate]
+  JENKINS[Jenkinsfile optional] -->|RUN_CMAKE_BUILD=false| SKIP[CMake skipped]
+  TARGET[Target MVP CI] -->|needed| CMAKE[cmake --preset debug]
+  TARGET --> APK[Android assembleDebug]
+  TARGET --> TAG[v1.0.0 release]</pre></div>
+
+      <div class="diagram-container"><h4>7. Request Lifecycle — Android boot chain</h4>
+<pre class="mermaid">sequenceDiagram
+  participant NA as NexusApplication
+  participant CP as Chaquopy Python.start
+  participant MA as MainActivity
+  participant DJ as Djinni AppCore
+  participant SDL as SDL_main C++
+  NA->>CP: onCreate super first
+  CP-->>MA: Python ready ~200ms
+  MA->>DJ: installPythonBridge BEFORE super.onCreate
+  MA->>SDL: SDLActivity onCreate
+  SDL->>DJ: evaluate via JNI AttachCurrentThread
+  Note over DJ,SDL: Wrong order = empty charts</pre></div>
+
+      <div class="diagram-container"><h4>8. Module Dependency Graph</h4>
+<pre class="mermaid">graph TD
+  CORE[:core ProjectGenerator] --> TE[TemplateEngine]
+  CORE --> BV[BlueprintValidator]
+  CORE --> FV[FlowsValidator]
+  APP[:app Compose] --> CORE
+  CLI[:cli FrameworkCli] --> CORE
+  DT[desktop-app CMakeLists] -->|FetchContent 7| DEPS[SDL3 imgui sol2 pybind11]
+  AT[android-app] -->|externalNativeBuild| DT2[CMakeLists 6 deps]
+  AT -->|Chaquopy 3.11| JVM[Kotlin PythonBridge]
+  JVM -->|djinni-generated| JNI[NativePythonBridge.cpp]
+  FRD[FlowRunner desktop 269 LOC] -.->|diverged| FRA[FlowRunner android 58 LOC stub]
+  classDef hotspot fill:#ff8c42,color:#111
+  class DEPS,DT,AT hotspot</pre></div>
+
+      <h3>Tech Stack Summary</h3>
+      <table>
+        <thead><tr><th>Component</th><th>Version</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Kotlin / Compose Desktop</td><td>2.4 / 1.11.1</td><td>gradle/libs.versions.toml</td></tr>
+          <tr><td>JVM Toolchain (client)</td><td>26</td><td>misc/build-logic/kotlin-jvm.gradle.kts:14</td></tr>
+          <tr><td>Android JVM target</td><td>17</td><td>template/android-app/app/build.gradle.kts:54</td></tr>
+          <tr><td>C++ standard</td><td>20</td><td>template/*/CMakeLists.txt:10</td></tr>
+          <tr><td>SDL3</td><td>release-3.2.4</td><td>FetchContent GIT_TAG</td></tr>
+          <tr><td>Chaquopy</td><td>Python 3.11</td><td>app/build.gradle.kts:83</td></tr>
+          <tr><td>Djinni</td><td>app.djinni IDL</td><td>template/android-app/djinni/</td></tr>
+          <tr><td>Zig</td><td>Not present</td><td>0 matches in 735 files</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Quantitative Profile</h3>
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Total Lines of Code</td><td>~8,204</td><td>wc -l kt/cpp/hpp</td></tr>
+          <tr><td>Total Files</td><td>735</td><td>find (excl. build)</td></tr>
+          <tr><td>Routes / Endpoints</td><td>0</td><td>Local desktop — no HTTP</td></tr>
+          <tr><td>Auth Coverage</td><td>N/A</td><td>No auth layer</td></tr>
+          <tr><td>Test Files</td><td>4</td><td>*/test/*.kt</td></tr>
+          <tr><td>FetchContent repos (desktop)</td><td>7</td><td>CMakeLists.txt:22-86</td></tr>
+          <tr><td>FetchContent repos (Android)</td><td>6</td><td>android CMakeLists.txt</td></tr>
+          <tr><td>FlowRunner LOC desktop / Android</td><td>269 / 58</td><td>src/service/FlowRunner.cpp</td></tr>
+          <tr><td>CI Workflows</td><td>0</td><td>.github/ absent</td></tr>
+          <tr><td>MVP completion</td><td>~52%</td><td>README Road to MVP</td></tr>
+          <tr><td>Top Coupling Hotspot</td><td>FetchContent deps (7 consumers)</td><td>desktop CMakeLists.txt</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="strengths">
+      <h2>What Works Well</h2>
+      <div class="card strength-card"><h3>Consistent MVC across Kotlin and C++</h3><p><code>app/</code> and <code>template/*/src/{model,controller,view}/</code> share the same layering. Evidence: <code>App.kt</code> controllers mirror <code>AppController.cpp</code>.</p></div>
+      <div class="card strength-card"><h3>Generation pipeline with validators</h3><p><code>ProjectGenerator.kt</code> validates blueprint and flows after emit. <code>BlueprintValidatorTest</code>, <code>FlowsValidatorTest</code>, <code>ProjectGeneratorTest</code> in :core.</p></div>
+      <div class="card strength-card"><h3>Explicit Android bridge contract</h3><p>Djinni IDL (<code>app.djinni</code>) documents JVM↔native boundary. <code>MainActivity.kt:13</code> installs bridge before <code>super.onCreate()</code>.</p></div>
+      <div class="card strength-card"><h3>Pinned dependency versions</h3><p>FetchContent uses explicit GIT_TAG (SDL3 release-3.2.4, pybind11 v2.13.6). Gradle version catalog for Kotlin deps.</p></div>
+      <div class="card strength-card"><h3>Compose editors shipped</h3><p><code>App.kt</code> routes Generate + Blueprint + Flows editors — beyond counter-only demo. Honest README Development status at line 433.</p></div>
+    </section>
+
+    <section class="section" id="risk-landscape">
+      <h2>Risk Landscape</h2>
+      <div id="risk-score" class="score-ring">
+        <div class="score-value">68</div>
+        <div>
+          <div style="font-size:1.2rem;font-weight:700;color:var(--high)">High Risk</div>
+          <div class="meta">Formula: min(100, round(log₁₀(3×100 + 6×30 + 4×10 + 2×3 + 1) × 25)) = 68</div>
+          <div class="meta">17 total issues · 3 critical · 6 high · 4 medium · 2 low</div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="stat critical"><div class="n">3</div><div class="l">Critical</div></div>
+        <div class="stat high"><div class="n">6</div><div class="l">High</div></div>
+        <div class="stat medium"><div class="n">4</div><div class="l">Medium</div></div>
+        <div class="stat low"><div class="n">2</div><div class="l">Low</div></div>
+      </div>
+      <div id="category-breakdown" class="grid">
+        <div class="category-card"><div>🔗</div><div>Coupling Traps</div><div class="cat-count">3</div><div>2C · 1H</div></div>
+        <div class="category-card"><div>💥</div><div>Failure Cascades</div><div class="cat-count">2</div><div>1C · 1H</div></div>
+        <div class="category-card"><div>🔄</div><div>State Incoherence</div><div class="cat-count">2</div><div>1H · 1M</div></div>
+        <div class="category-card"><div>⚙️</div><div>Operability</div><div class="cat-count">3</div><div>2H · 1M</div></div>
+        <div class="category-card"><div>🔧</div><div>Maintainability</div><div class="cat-count">3</div><div>1H · 1M · 1L</div></div>
+        <div class="category-card"><div>📈</div><div>Scalability Walls</div><div class="cat-count">1</div><div>1H</div></div>
+      </div>
+
+      <div id="stride-threat-model">
+        <h3>STRIDE Threat Model</h3>
+        <div>
+          <span class="stride-card">S: 0</span>
+          <span class="stride-card">T: 2</span>
+          <span class="stride-card">R: 1</span>
+          <span class="stride-card">I: 1</span>
+          <span class="stride-card">D: 2</span>
+          <span class="stride-card">E: 0</span>
+        </div>
+        <div class="diagram-container"><h4>Trust Boundary — Script packs &amp; FetchContent</h4>
+<pre class="mermaid">graph TB
+  subgraph Untrusted["Untrusted input"]
+    LF[Langflow JSON import] -->|no validator| FR[FlowRunner string parser]
+    GH[GitHub FetchContent tags] -->|no SHA256| CMAKE[cmake _deps]
+  end
+  subgraph Trusted["Trusted runtime"]
+    FR -->|invoke stubs| AC[AppController]
+    CMAKE -->|compile| BIN[Native binary]
+    SC[ScriptCrypto nxs-v1] -->|optional| ARCH[lua.dat python.dat]
+  end</pre></div>
+      </div>
+
+      <h3>3a. Basic Issues</h3>
+      <table>
+        <thead><tr><th>ID</th><th>Issue</th><th>File</th><th>Complexity</th><th>Fix time</th></tr></thead>
+        <tbody>
+          <tr><td>B1</td><td>JDK 26/17/21 triple mismatch</td><td>kotlin-jvm.gradle.kts:14</td><td><span class="attack-complexity ac-low">LOW</span></td><td>15 min</td></tr>
+          <tr><td>B2</td><td>Android lacks NXS_PREFER_SYSTEM_DEPS</td><td>android CMakeLists.txt:14</td><td><span class="attack-complexity ac-medium">MED</span></td><td>20 min</td></tr>
+          <tr><td>B3</td><td>FlowRunner unknown invoke = stderr stub</td><td>FlowRunner.cpp:266</td><td><span class="attack-complexity ac-low">LOW</span></td><td>10 min</td></tr>
+          <tr><td>B4</td><td>4 test files for 8204 LOC; no CMake CI</td><td>app/src/test/</td><td><span class="attack-complexity ac-low">LOW</span></td><td>45 min</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3b. Advanced Issues (ordered by exploitability)</h3>
+      <div class="card"><h3><span class="badge-critical">Critical</span> A4 FetchContent SPOF <span class="attack-complexity ac-medium">MED</span></h3>
+        <p>7 GitHub repos at configure; Android packLuaDat doubles cmake network use. Cost of inaction: MVP CI never green.</p>
+        <pre>--- a/template/desktop-app/CMakeLists.txt
++++ b/template/desktop-app/CMakeLists.txt
+@@ -22,6 +22,7 @@
+     FetchContent_Declare(SDL3
+         GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+-        GIT_TAG        release-3.2.4)
++        GIT_TAG        release-3.2.4
++        GIT_SHALLOW    TRUE)
++# TODO: vendor/ mirror for air-gapped CI</pre>
+      </div>
+      <div class="card"><h3><span class="badge-critical">Critical</span> A1 CMake→build.zig hard to reverse <span class="attack-complexity ac-high">HIGH</span></h3>
+        <p>Zero Zig in repo. CMake owns pack_lua_dat, POST_BUILD staging, Android externalNativeBuild entry. Strangler pattern recommended.</p>
+        <pre>option(NXS_ENABLE_ZIG_MODULES "Build Zig static libs" OFF)
+if(NXS_ENABLE_ZIG_MODULES)
+  add_custom_target(zig_core ALL
+    COMMAND zig build -Dtarget=native
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/zig)
+  target_link_libraries({{projectName}} PRIVATE zig_core)
+endif()</pre>
+      </div>
+      <div class="card"><h3><span class="badge-critical">Critical</span> A3 Djinni→Zig JNI <span class="attack-complexity ac-high">HIGH</span></h3>
+        <p>NativePythonBridge.cpp ~100 LOC hand JNI. Zig cannot consume .djinni without new codegen. Keep Djinni for Android; defer Zig JNI post-MVP.</p>
+      </div>
+      <div class="card"><h3><span class="badge-important">High</span> Android FlowRunner stub <span class="attack-complexity ac-low">LOW</span></h3>
+        <p>58 LOC vs desktop 269 LOC. tick() and runFlow() empty — flows silently no-op on Android.</p>
+      </div>
+      <div class="card"><h3><span class="badge-important">High</span> CI not green <span class="attack-complexity ac-low">LOW</span></h3>
+        <p>0 GitHub workflows. README MVP lines 511-512, 536 unchecked. Jenkins RUN_CMAKE_BUILD defaults false.</p>
+      </div>
+      <div class="card"><h3><span class="badge-important">High</span> Langflow importer absent <span class="attack-complexity ac-low">LOW</span></h3>
+        <p>README:547 post-MVP manual. No LangflowTransformationEngine. flows.enabled:true in templates despite docs showing disable path.</p>
+      </div>
+      <div class="card"><h3><span class="badge-important">High</span> A2 ArenaAllocator C-ABI undefined <span class="attack-complexity ac-high">HIGH</span></h3>
+        <p>PythonEngine memcpy and Djinni vector copies assume heap std::vector. Zig arena needs extern "C" NxsBuffer contract.</p>
+      </div>
+      <div class="card"><h3><span class="badge-important">High</span> Android Zig/Bionic/NDK <span class="attack-complexity ac-high">HIGH</span></h3>
+        <p>ANDROID_STL=c++_shared, GLESv3, Chaquopy on JVM — Zig NDK cross-compile blocked without libc++ negotiation.</p>
+      </div>
+    </section>
+
+    <section class="section" id="deep-insights">
+      <h2>Deep Insights</h2>
+      <div class="card contradiction-card"><h3>flows.enabled:true vs README disable guidance</h3>
+        <p><code>nxs_config.json:48</code> ships enabled:true · README:245 documents disable via enabled:false · New projects run flows ON by default.</p></div>
+      <div class="card contradiction-card"><h3>Stale risk-analysis.md vs App.kt reality</h3>
+        <p>risk-analysis.md:48 claims Counter-only · App.kt:34-52 has Generate/Blueprint/Flows editors.</p></div>
+      <div class="card stress-card"><h3>Stress Projection</h3>
+        <p><strong>Current:</strong> 1 cmake configure, ~50-100MB FetchContent, FlowRunner tick(16ms) per frame.</p>
+        <p><strong>2x:</strong> 2 parallel configures saturate network; GitHub rate limits.</p>
+        <p><strong>5x:</strong> Tag move → 100% native build failure across agents.</p>
+        <p><strong>10x:</strong> No _deps cache in CI — horizontal scaling blocked.</p>
+        <p><strong>Bottleneck:</strong> GitHub FetchContent → cmake fail → zero binaries → MVP CI ⬜</p>
+      </div>
+      <div class="card assumption-card"><h3>PythonBridge before SDL_main</h3>
+        <p><code>MainActivity.kt:13</code> — super.onCreate after installPythonBridge. Reordering breaks evaluate().</p></div>
+      <div class="card assumption-card"><h3>FlowRunner reads nxs_config.json from CWD</h3>
+        <p><code>main.cpp:61</code> — launch from wrong directory silently disables flows.</p></div>
+      <div class="card coupling-card"><h3>FlowsSchema.kt ↔ FlowRunner.cpp magic strings</h3>
+        <p>nxs.log, nxs.increment duplicated — no shared enum; editor can emit targets runtime doesn't handle.</p></div>
+      <div class="card dead-path-card"><h3>Dead paths</h3>
+        <table>
+          <tr><td>README:547 Langflow importer</td><td>zombie_feature</td><td>No engine class</td></tr>
+          <tr><td>android FlowRunner.cpp:51-53</td><td>dead_handler</td><td>tick/runFlow empty</td></tr>
+          <tr><td>plotter enabled:false</td><td>dead_config</td><td>BUILD_NEXUS_EXAMPLES never ON in CI</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="remediation">
+      <h2>Remediation Roadmap</h2>
+      <div class="card sprint-card"><h3>Fix Today (~90 min total)</h3>
+        <ul>
+          <li>B3: FlowRunner ERROR for unknown invoke (10 min)</li>
+          <li>B1: Document JDK 26+17 targets in README (15 min)</li>
+          <li>B2: Port NXS_PREFER_SYSTEM_DEPS to Android (20 min)</li>
+          <li>Update risk-analysis.md stale Counter claim (10 min)</li>
+        </ul>
+        <p><strong>PR title:</strong> fix: architecture quick wins — FlowRunner errors, JDK docs, Android CMake option</p>
+      </div>
+      <table>
+        <thead><tr><th>Sprint action</th><th>Effort</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td>Add .github/workflows/ci.yml — gradle + cmake configure</td><td>4h</td><td>Unblocks MVP CI checkbox</td></tr>
+          <tr><td>Extract shared FlowRunner to template/shared/</td><td>6h</td><td>Android/desktop parity</td></tr>
+          <tr><td>Vendor FetchContent deps or CONTENT_HASH pins</td><td>8h</td><td>Air-gap + reproducible builds</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Next quarter</th><th>Effort</th><th>Prerequisite</th></tr></thead>
+        <tbody>
+          <tr><td>Zig strangler-fig (NXS_ENABLE_ZIG_MODULES)</td><td>2-3 weeks</td><td>CI green + vendored deps</td></tr>
+          <tr><td>ArenaAllocator C-ABI header + lifetime contract</td><td>1 week</td><td>Zig desktop module POC</td></tr>
+          <tr><td>LangflowTransformationEngine (optional)</td><td>3+ weeks</td><td>Unified FlowRunner first</td></tr>
+        </tbody>
+      </table>
+      <div class="card decision-card"><h3>D1: Zig via strangler-fig or replace CMake?</h3>
+        <p><strong>Recommendation:</strong> Defer Zig until CI green; then CMake-canonical with optional zig build static libs. Cost of inaction: dual build drift in 6 months.</p></div>
+      <div class="card decision-card"><h3>D2: Unify FlowRunner before Langflow automation?</h3>
+        <p><strong>Recommendation:</strong> Yes — share FlowRunner.cpp via template/shared/ before any importer work.</p></div>
+      <div class="card decision-card"><h3>D3: Keep Djinni for Android?</h3>
+        <p><strong>Recommendation:</strong> Yes — Zig desktop-only initially; Zig JNI codegen is 6+ month blocker.</p></div>
+    </section>
+
+  </div>
+
+  <div class="footer">
+    Opsera architecture-analyze · Execution exec_45b5ba566d83a4e68760afb4d70aef45 ·
+    <a href="risk-analysis.md">risk-analysis.md</a> · Analysis only — no Zig code implemented
+  </div>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</body>
+</html>
