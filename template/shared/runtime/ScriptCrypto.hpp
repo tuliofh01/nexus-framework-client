@@ -7,7 +7,12 @@
 
 namespace nxs::runtime {
 
-/** Key derivation and stream obfuscation for script archives (nxs-v1). */
+/** Key derivation and stream obfuscation for script archives (nxs-v1).
+ *
+ * Intentionally lightweight: no OpenSSL dependency in generated apps. SHA-256 is
+ * embedded so pack_archive and runtime share one code path; XOR stream is symmetric
+ * (encrypt == decrypt) to keep load/save logic identical.
+ */
 class ScriptCrypto {
 public:
     static constexpr size_t KEY_SIZE = 32;

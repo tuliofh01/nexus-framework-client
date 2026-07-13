@@ -9,6 +9,8 @@ namespace nxs::runtime {
 
 namespace {
 
+// Key material is baked into ScriptProtectionConfig.hpp at generation — runtime
+// cannot decrypt without the same project name + salt + createdAt triple.
 std::array<uint8_t, ScriptCrypto::KEY_SIZE> runtimeKey() {
     return ScriptCrypto::deriveKey(
         script_protection::PROJECT_NAME,
@@ -53,6 +55,8 @@ bool ScriptArchive::load(const std::string& path) {
     if (magic != magic_) return false;
     if (version != VERSION_V1 && version != VERSION_V2) return false;
 
+    // v2 stores encrypt flag + 16-byte nonce in reserved[0..16]; payload XOR uses
+    // the same nonce for every entry in this build (sufficient for obfuscation).
     const bool encrypted =
         version == VERSION_V2 && (static_cast<uint8_t>(reserved[0]) & FLAG_ENCRYPTED) != 0;
     std::array<uint8_t, 16> nonce{};
@@ -131,6 +135,8 @@ bool ScriptArchive::save(const std::string& path) const {
 
         std::string payload = e.source;
         if (encrypt_) {
+            // save() re-applies XOR so on-disk bytes stay encrypted; in-memory entries
+            // remain plaintext for fast getSource() during dev reload cycles.
             decryptEntry(payload, key_.data(), nonce.data());
         }
 

@@ -7,6 +7,8 @@ namespace nxs::runtime {
 
 namespace {
 
+// Self-contained SHA-256 avoids linking crypto libs into every generated binary.
+// pack_archive.cpp duplicates this logic — keep wire format changes in sync.
 struct Sha256Ctx {
     uint32_t state[8];
     uint64_t bitcount;
@@ -145,6 +147,7 @@ void ScriptCrypto::xorStream(
     std::string& data,
     const uint8_t key[KEY_SIZE],
     const uint8_t nonce[NONCE_SIZE]) {
+    // Repeating key⊕nonce pattern — not a cipher, but deters casual grep of .dat files.
     for (size_t i = 0; i < data.size(); ++i) {
         const uint8_t streamByte = key[i % KEY_SIZE] ^ nonce[i % NONCE_SIZE];
         data[i] = static_cast<char>(static_cast<uint8_t>(data[i]) ^ streamByte);

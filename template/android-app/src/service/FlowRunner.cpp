@@ -1,5 +1,8 @@
 #include "service/FlowRunner.hpp"
 
+// Android v1 stub — full invoke dispatch lands with Chaquopy bridge parity (Phase 2).
+// Still loads flows.json so logging and enabled checks match desktop behavior.
+
 #include <cstdio>
 #include <fstream>
 #include <sstream>

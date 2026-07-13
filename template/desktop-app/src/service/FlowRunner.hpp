@@ -1,6 +1,9 @@
 // FlowRunner — optional runtime flows from flows/flows.json.
 // Loads background and triggered automations; NO-OP when flows.json is missing,
 // flows.enabled is false in nxs_config.json, or "flows": [].
+//
+// v1 uses substring JSON extraction (no nlohmann) to keep the template dependency-
+// light; FlowsValidator in :core is the source of truth for schema correctness.
 #pragma once
 
 #include "controller/AppController.hpp"

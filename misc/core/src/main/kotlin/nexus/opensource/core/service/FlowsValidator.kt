@@ -14,6 +14,9 @@ data class FlowsValidationResult(
 }
 
 class FlowsValidator {
+    /** Mirrors what FlowRunner v1 can execute — unknown step types are errors;
+     *  condition/hotkey gaps are warnings until the native runner catches up.
+     */
     fun validate(flows: FlowsFile): FlowsValidationResult {
         val errors = mutableListOf<String>()
         val warnings = mutableListOf<String>()

@@ -16,6 +16,9 @@ import java.nio.file.Path
 /**
  * Holds blueprint graph state for the v1 Compose JSON/canvas editor.
  * v1.1 will embed imnodes via native interop; this controller keeps the same schema.
+ *
+ * Reloading from template applies ProjectGenerator placeholder vars so the editor
+ * matches what a fresh generate would produce — without writing to builds/framework/.
  */
 class BlueprintEditorController(
     private val validator: BlueprintValidator = BlueprintValidator(),

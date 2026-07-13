@@ -16,6 +16,11 @@ data class GenerateOptions(
     val force: Boolean = false,
 )
 
+/** Orchestrates template copy, placeholder render, and post-generation validation.
+ *
+ * Order matters: shared/ lands beside projectRoot (not inside it) so CMake can
+ * reference ../shared/runtime from both desktop and Android trees identically.
+ */
 class ProjectGenerator(
     private val repoRoot: Path,
     private val templateEngine: TemplateEngine = TemplateEngine(),
@@ -63,6 +68,7 @@ class ProjectGenerator(
         if (Files.isDirectory(sharedDir)) {
             onProgress("Copying shared/ → $sharedDest")
             engine.copyTree(sharedDir, sharedDest, vars, onProgress)
+            // Salt + project metadata become compile-time constants for ScriptArchive crypto.
             writeScriptProtectionHeader(sharedDest, vars, onProgress)
         }
 

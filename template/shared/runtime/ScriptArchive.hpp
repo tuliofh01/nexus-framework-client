@@ -2,6 +2,10 @@
 
 // Binary archive of Lua or Python script sources.
 // Magic LUAC (lua.dat) or PYAC (python.dat); v2 supports optional nxs-v1 encryption.
+//
+// Design: pack many named scripts into one file so shipping/CMake only tracks two
+// artifacts (lua.dat, python.dat). v2 encryption is obfuscation keyed at generation
+// time — not DRM; disabled archives remain readable v1 for dev plaintext fallback.
 
 #include <array>
 #include <cstdint>
@@ -28,8 +32,8 @@ public:
 
     explicit ScriptArchive(uint32_t magic) : magic_(magic) {}
 
-    bool load(const std::string& path);
-    bool save(const std::string& path) const;
+    [[nodiscard]] bool load(const std::string& path);
+    [[nodiscard]] bool save(const std::string& path) const;
 
     void add(const std::string& name, const std::string& source);
     bool remove(const std::string& name);

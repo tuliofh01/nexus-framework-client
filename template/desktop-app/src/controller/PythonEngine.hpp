@@ -8,6 +8,7 @@
 // calls Chaquopy through the Djinni-generated bridge instead.
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,7 +32,7 @@ public:
 
 private:
     struct Impl;   // hides pybind11 headers from the rest of the app
-    Impl* m_impl;
+    std::unique_ptr<Impl> m_impl;
     std::string m_lastError;
 };
 

@@ -8,6 +8,7 @@
 
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 namespace py = pybind11;
 
@@ -20,6 +21,8 @@ struct PythonEngine::Impl {
 
 namespace {
 
+// Prefer packed python.dat in release; fall back to plaintext python/ for dev iteration
+// without re-running pack_python_dat on every edit.
 bool importFromArchive(py::module_& out) {
     const std::string archivePath = runtime::Paths::pythonArchive();
     if (!std::filesystem::exists(archivePath)) {
@@ -47,7 +50,7 @@ bool importFromArchive(py::module_& out) {
 }  // namespace
 
 PythonEngine::PythonEngine() {
-    m_impl = new Impl{};
+    m_impl = std::make_unique<Impl>();
     if (!importFromArchive(m_impl->functions)) {
         // Dev fallback: import from python/ next to the executable.
         py::module_ sys = py::module_::import("sys");
@@ -56,9 +59,7 @@ PythonEngine::PythonEngine() {
     }
 }
 
-PythonEngine::~PythonEngine() {
-    delete m_impl;
-}
+PythonEngine::~PythonEngine() = default;
 
 bool PythonEngine::evaluate(const std::string& functionName, double xMin, double xMax, int samples,
                             std::vector<double>& xs, std::vector<double>& ys) {
@@ -69,6 +70,7 @@ bool PythonEngine::evaluate(const std::string& functionName, double xMin, double
 
         xs.resize(static_cast<std::size_t>(xArr.size()));
         ys.resize(static_cast<std::size_t>(yArr.size()));
+        // Buffer protocol memcpy avoids per-element Python→C++ boxing on large samples.
         std::memcpy(xs.data(), xArr.data(), xs.size() * sizeof(double));
         std::memcpy(ys.data(), yArr.data(), ys.size() * sizeof(double));
         m_lastError.clear();

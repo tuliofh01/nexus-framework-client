@@ -12,6 +12,9 @@ import java.nio.file.Path
 
 /**
  * Holds flows.json state for the v1 Compose JSON preview editor.
+ *
+ * flowsEnabled is derived from any enabled flow — matches nxs_config.json flows.enabled
+ * semantics the native FlowRunner checks before loading flows/flows.json.
  */
 class FlowsEditorController(
     private val validator: FlowsValidator = FlowsValidator(),

@@ -1,5 +1,8 @@
 // Minimal flows.json loader — string extraction matches pack_archive.cpp style.
 // v1 dispatches invoke steps to AppController / stderr log only.
+//
+// Why not a JSON library here: generated apps should build with FetchContent only;
+// invalid flows are caught at generation time by FlowsValidator in the Kotlin core.
 #include "service/FlowRunner.hpp"
 
 #include <cstdio>
@@ -235,6 +238,7 @@ void FlowRunner::tick(std::uint64_t frameDeltaMs) {
         if (flow.triggerType != "interval" || flow.intervalMs <= 0) {
             continue;
         }
+        // One interval fire per tick pass — avoids stampede when multiple flows share ms.
         if (m_elapsedMs >= static_cast<std::uint64_t>(flow.intervalMs)) {
             runFlow(flow);
             m_elapsedMs = 0;

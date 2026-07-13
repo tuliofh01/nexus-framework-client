@@ -3,6 +3,8 @@
 #include "app_core.hpp"
 #include "python_bridge.hpp"
 
+// Singleton + Djinni bridge — Chaquopy runs in JVM; C++ never embeds CPython on Android.
+
 namespace nxs::controller {
 
 using PythonBridgeImpl = nxs::bridge::PythonBridge;

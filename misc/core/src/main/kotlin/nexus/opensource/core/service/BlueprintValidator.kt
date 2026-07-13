@@ -11,6 +11,9 @@ data class BlueprintValidationResult(
 }
 
 class BlueprintValidator {
+    /** Structural checks only — runtime wiring (missing commands, orphan UI) is app-specific.
+     *  Warnings are non-fatal so the Compose editor can show issues before save.
+     */
     fun validate(blueprint: BlueprintFile): BlueprintValidationResult {
         val errors = mutableListOf<String>()
         val warnings = mutableListOf<String>()
