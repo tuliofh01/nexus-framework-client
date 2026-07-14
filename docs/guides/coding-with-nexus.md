@@ -143,6 +143,47 @@ See [template/shared/assets/fonts/README.md](../../template/shared/assets/fonts/
 
 ---
 
+## Adding dependencies in generated apps
+
+> Merged from: `adding-dependencies.md` (now part of this guide)
+
+After running client-setup (JDK 26 + Git) and generating a project, install packages for the three language runtimes:
+
+**Python** (`uv`):
+```bash
+uv add numpy scipy
+uv sync
+```
+Zig's `build.zig` automatically picks up `.venv` — no extra wiring.
+
+**Lua** (C++ sol2 bindings):
+```bash
+# Copy module to runtime folder, use sol2 API:
+state["module"] = module;
+```
+
+**C++** (FetchContent):
+```bash
+# In CMakeLists.txt:
+include(FetchContent)
+FetchContent_Declare(glm GIT_REPOSITORY ...)
+# Or add to build.zig.zon for the Zig build path
+```
+
+Desktop and Android share the same 3-runtime dependency model — no WebView, no npm, no bundler.
+
+---
+
+## XHTML/TypeScript DSL
+
+> Merged from: `shared-dsl.md` (now part of this guide)
+
+The XHTML + TypeScript DSL lowers declarative UI markup into native ImGui calls — no DOM, no browser engine. Components like `<Panel>`, `<Button>`, `<Slider>` at `template/shared/dsl/` are compiled by a TypeScript transformer to C++ structs, not HTML strings.
+
+Use case: rapid UI prototyping in a familiar syntax without touching C++. The DSL is optional — you can write ImGui calls directly with the same visual result.
+
+---
+
 ## Use cases
 
 | Scenario | Nexus strength |

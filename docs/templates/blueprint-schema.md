@@ -98,6 +98,24 @@ Bundled plotter samples:
 
 `ProjectGenerator` validates rendered `blueprint.json` after template emit and writes a custom blueprint when the Compose editor passes one in `ProjectSpec.blueprint`.
 
+## Runtime flows (`flows.json`)
+
+> Merged from: `flows-schema.md` (now part of this doc)
+
+**flows.json** (optional) adds runtime automation to a generated app — background loops, event triggers, and scheduled tasks. Distinct from `blueprint.json` which wires design-time MVC.
+
+| Schema | Purpose | Editor |
+|--------|---------|--------|
+| `blueprint.json` | App structure (pages, models, services) | Compose Canvas |
+| `flows/flows.json` | Runtime service automations | Enable/disable list |
+
+Flows live under `runtimes/flows/` in the generated app tree. Enable via `nxs_config.json`:
+```json
+{ "flows": { "enabled": true, "max_scheduled": 10, "max_concurrent": 4 } }
+```
+
+---
+
 ## Editor path (v1 vs v1.1)
 
 | Version | UI | Notes |

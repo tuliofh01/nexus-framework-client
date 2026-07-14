@@ -110,7 +110,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — module name correct + originals gone. failure — leftover `.hpp` include → reject. Evidence `.omo/evidence/task-2-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop FunctionRegistry to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 3. Convert desktop AppController → `nxs.desktop.controller`
+- [x] 3. Convert desktop AppController → `nxs.desktop.controller`
   What to do / Must NOT do: Read `template/desktop-app/src/controller/AppController.hpp` + `.cpp`. Create `template/desktop-app/src/controller/AppController.cppm` (`export module nxs.desktop.controller;`). Inline defs, educational comments. Delete originals. Preserve behavior.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief; exemplar; `template/desktop-app/src/controller/AppController.hpp`, `.cpp`
@@ -118,7 +118,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — behavior change suspected → diff against original. Evidence `.omo/evidence/task-3-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop AppController to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 4. Convert desktop PythonEngine → `nxs.desktop.python`
+- [x] 4. Convert desktop PythonEngine → `nxs.desktop.python`
   What to do / Must NOT do: Read `template/desktop-app/src/controller/PythonEngine.hpp` + `.cpp`. Create `template/desktop-app/src/controller/PythonEngine.cppm` (`export module nxs.desktop.python;`). Desktop uses pybind11 — keep as-is. Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief (desktop = pybind11, NOT Chaquopy); exemplar; `template/desktop-app/src/controller/PythonEngine.hpp`, `.cpp`
@@ -126,7 +126,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — pybind11 include in global fragment + name correct. failure — pybind11 include left outside `module;` → reject. Evidence `.omo/evidence/task-4-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop PythonEngine to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 5. Convert desktop AppView → `nxs.desktop.view`
+- [x] 5. Convert desktop AppView → `nxs.desktop.view`
   What to do / Must NOT do: Read `template/desktop-app/src/view/AppView.hpp` + `.cpp`. Create `template/desktop-app/src/view/AppView.cppm` (`export module nxs.desktop.view;`). Inline defs, educational comments (ImGui usage). Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief; exemplar; `template/desktop-app/src/view/AppView.hpp`, `.cpp`
@@ -134,7 +134,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — ImGui include in global fragment. failure — missing method defs → reject. Evidence `.omo/evidence/task-5-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop AppView to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 6. Convert desktop LuaPanels → `nxs.desktop.lua`
+- [x] 6. Convert desktop LuaPanels → `nxs.desktop.lua`
   What to do / Must NOT do: Read `template/desktop-app/src/view/LuaPanels.hpp` + `.cpp`. Create `template/desktop-app/src/view/LuaPanels.cppm` (`export module nxs.desktop.lua;`). sol2 includes in `module;` fragment. Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief; exemplar; `template/desktop-app/src/view/LuaPanels.hpp`, `.cpp`
@@ -142,7 +142,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — sol2 include in fragment. failure — leftover `.hpp` include → reject. Evidence `.omo/evidence/task-6-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop LuaPanels to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 7. Convert desktop FlowRunner → `nxs.desktop.flow`
+- [x] 7. Convert desktop FlowRunner → `nxs.desktop.flow`
   What to do / Must NOT do: Read `template/desktop-app/src/service/FlowRunner.hpp` + `.cpp`. Create `template/desktop-app/src/service/FlowRunner.cppm` (`export module nxs.desktop.flow;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief; exemplar; `template/desktop-app/src/service/FlowRunner.hpp`, `.cpp`
@@ -150,7 +150,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — behavior change → diff. Evidence `.omo/evidence/task-7-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop FlowRunner to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 8. Convert desktop PlotController → `nxs.desktop.plot`
+- [x] 8. Convert desktop PlotController → `nxs.desktop.plot`
   What to do / Must NOT do: Read `template/desktop-app/src/controller/PlotController.hpp` + `.cpp`. Create `template/desktop-app/src/controller/PlotController.cppm` (`export module nxs.desktop.plot;`). ImPlot includes in `module;` fragment. Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief; exemplar; `template/desktop-app/src/controller/PlotController.hpp`, `.cpp`
@@ -158,7 +158,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — ImPlot in fragment. failure — missing defs → reject. Evidence `.omo/evidence/task-8-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop PlotController to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 9. Rewrite desktop `main.cpp` to import `nxs.desktop.*`
+- [x] 9. Rewrite desktop `main.cpp` to import `nxs.desktop.*`
   What to do / Must NOT do: Read `template/desktop-app/src/main.cpp`. Rewrite to `import nxs.desktop.model; import nxs.desktop.func; import nxs.desktop.controller; import nxs.desktop.python; import nxs.desktop.view; import nxs.desktop.lua; import nxs.desktop.flow; import nxs.desktop.plot;` and call the same entry logic. Must NOT alter program behavior; keep `int main()` signature.
   Parallelization: Wave 2 | Blocked by: tasks 1-8 | Blocks: task 19 (verify-desktop)
   References: brief (rule 4); exemplar `NexusBridge.cppm`; `template/desktop-app/src/main.cpp`; all 8 desktop `.cppm` files from tasks 1-8
@@ -166,7 +166,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — 8 import statements present, no project `#include`. failure — missing import or behavior change → reject. Evidence `.omo/evidence/task-9-cppm-conversion.md`
   Commit: Y | feat(template): rewrite desktop main.cpp to import C++20 modules — TIDY + `git add -A && git commit && git push`
 
-- [ ] 10. Convert android AppModel → `nxs.android.model`
+- [x] 10. Convert android AppModel → `nxs.android.model`
   What to do / Must NOT do: Read `template/android-app/src/model/AppModel.hpp` + `.cpp`. Create `template/android-app/src/model/AppModel.cppm` (`export module nxs.android.model;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16 (android main)
   References: brief (android module map); exemplar; `template/android-app/src/model/AppModel.hpp`, `.cpp`
@@ -174,7 +174,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — leftover `.hpp` include → reject. Evidence `.omo/evidence/task-10-cppm-conversion.md`
   Commit: Y | feat(template): convert android AppModel to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 11. Convert android AppController → `nxs.android.controller`
+- [x] 11. Convert android AppController → `nxs.android.controller`
   What to do / Must NOT do: Read `template/android-app/src/controller/AppController.hpp` + `.cpp`. Create `template/android-app/src/controller/AppController.cppm` (`export module nxs.android.controller;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16
   References: brief; exemplar; `template/android-app/src/controller/AppController.hpp`, `.cpp`
@@ -182,7 +182,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — behavior change → diff. Evidence `.omo/evidence/task-11-cppm-conversion.md`
   Commit: Y | feat(template): convert android AppController to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 12. Convert android PythonEngine → `nxs.android.python`
+- [x] 12. Convert android PythonEngine → `nxs.android.python`
   What to do / Must NOT do: Read `template/android-app/src/controller/PythonEngine.hpp` + `.cpp`. Create `template/android-app/src/controller/PythonEngine.cppm` (`export module nxs.android.python;`). Android = Chaquopy/JVM + Zig JNI (NOT pybind11) — keep as-is. Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16
   References: brief (android PythonEngine = Chaquopy/JVM + Zig JNI); exemplar; `template/android-app/src/controller/PythonEngine.hpp`, `.cpp`
@@ -190,7 +190,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — Chaquopy/JNI include in global fragment, no pybind11. failure — pybind11 present → reject. Evidence `.omo/evidence/task-12-cppm-conversion.md`
   Commit: Y | feat(template): convert android PythonEngine to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 13. Convert android AppView → `nxs.android.view`
+- [x] 13. Convert android AppView → `nxs.android.view`
   What to do / Must NOT do: Read `template/android-app/src/view/AppView.hpp` + `.cpp`. Create `template/android-app/src/view/AppView.cppm` (`export module nxs.android.view;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16
   References: brief; exemplar; `template/android-app/src/view/AppView.hpp`, `.cpp`
@@ -198,7 +198,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — missing defs → reject. Evidence `.omo/evidence/task-13-cppm-conversion.md`
   Commit: Y | feat(template): convert android AppView to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 14. Convert android LuaPanels → `nxs.android.lua`
+- [x] 14. Convert android LuaPanels → `nxs.android.lua`
   What to do / Must NOT do: Read `template/android-app/src/view/LuaPanels.hpp` + `.cpp`. Create `template/android-app/src/view/LuaPanels.cppm` (`export module nxs.android.lua;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16
   References: brief; exemplar; `template/android-app/src/view/LuaPanels.hpp`, `.cpp`
@@ -206,7 +206,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — leftover `.hpp` include → reject. Evidence `.omo/evidence/task-14-cppm-conversion.md`
   Commit: Y | feat(template): convert android LuaPanels to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 15. Convert android FlowRunner → `nxs.android.flow`
+- [x] 15. Convert android FlowRunner → `nxs.android.flow`
   What to do / Must NOT do: Read `template/android-app/src/service/FlowRunner.hpp` + `.cpp`. Create `template/android-app/src/service/FlowRunner.cppm` (`export module nxs.android.flow;`). Inline defs, educational comments. Delete originals.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 16
   References: brief; exemplar; `template/android-app/src/service/FlowRunner.hpp`, `.cpp`
@@ -214,7 +214,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — name + deletion correct. failure — behavior change → diff. Evidence `.omo/evidence/task-15-cppm-conversion.md`
   Commit: Y | feat(template): convert android FlowRunner to C++20 module — TIDY + `git add -A && git commit && git push`
 
-- [ ] 16. Rewrite android `main.cpp` to import `nxs.android.*`
+- [x] 16. Rewrite android `main.cpp` to import `nxs.android.*`
   What to do / Must NOT do: Read `template/android-app/src/main.cpp`. Rewrite to `import nxs.android.model; import nxs.android.controller; import nxs.android.python; import nxs.android.view; import nxs.android.lua; import nxs.android.flow;` and call the same entry logic. Must NOT alter behavior; keep `int main()` signature.
   Parallelization: Wave 2 | Blocked by: tasks 10-15 | Blocks: task 20 (verify-android)
   References: brief (rule 4); exemplar; `template/android-app/src/main.cpp`; all 6 android `.cppm` files from tasks 10-15
@@ -222,7 +222,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — 6 import statements present, no project `#include`. failure — missing import → reject. Evidence `.omo/evidence/task-16-cppm-conversion.md`
   Commit: Y | feat(template): rewrite android main.cpp to import C++20 modules — TIDY + `git add -A && git commit && git push`
 
-- [ ] 17. Delete obsolete shared/runtime dupes + Paths.hpp
+- [x] 17. Delete obsolete shared/runtime dupes + Paths.hpp
   What to do / Must NOT do: Delete `template/shared/runtime/` duplicate headers that are now superseded by `.cppm` modules (verify which `.hpp` have a `.cppm` twin and remove the `.hpp` only if a `.cppm` provides the same API). Also remove `Paths.hpp` if it is a legacy dupe of `paths.cppm`. Must NOT delete any `.cppm` or files still `#include`d by non-converted code.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 19 (verify-desktop)
   References: brief; `template/shared/runtime/*.cppm` (7 exist: nexus_theme, font_config, paths, script_crypto, script_archive, script_protection, zig_allocator); `template/shared/runtime/*.hpp` (inspect for dupes)
@@ -230,7 +230,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — dupe `.hpp` gone, `.cppm` intact. failure — deleted a still-referenced file → restore. Evidence `.omo/evidence/task-17-cppm-conversion.md`
   Commit: Y | chore(template): remove obsolete shared/runtime header dupes — TIDY + `git add -A && git commit && git push`
 
-- [ ] 18. Delete android djinni tree
+- [x] 18. Delete android djinni tree
   What to do / Must NOT do: Delete `template/android-app/djinni-generated/`, `template/android-app/djinni/`, and `template/android-app/scripts/regen-djinni.sh`. These are superseded by the Zig JNI bridge (Phase 4). Must NOT delete `zig-services/` or any `.cppm`.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 20 (verify-android)
   References: brief; `template/android-app/djinni-generated/`, `template/android-app/djinni/`, `template/android-app/scripts/regen-djinni.sh`; README "Android Zig JNI (retire Djinni)" note

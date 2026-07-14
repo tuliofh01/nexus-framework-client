@@ -91,6 +91,10 @@ misc/client-setup/env.bat
 ### Session continuation state (opencode internal — never commit) ###
 .omo/run-continuation/*.json
 
+### Zig build artifacts (caches and output dirs in zig-services/) ###
+.zig-cache/
+zig-out/
+
 ### Local build outputs under template builds/ (keep README + .gitkeep) ###
 template/*/builds/*
 !template/*/builds/README.md

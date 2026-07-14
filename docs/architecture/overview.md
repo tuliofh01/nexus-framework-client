@@ -2,7 +2,7 @@
 
 Generated Nexus apps share one layered design. The scaffold client (`app/`) uses **MVC in Kotlin Compose**; generated C++ templates mirror it under `src/model/`, `src/controller/`, and `src/view/`.
 
-For a multi-dimensional map — **historical lineage** (CMake→Zig, Djinni→JNI, Langflow UX), **functional responsibilities** per language at runtime, and **syntactic authoring** (what you write vs what gets lowered) — see **[runtime-stack.md](runtime-stack.md)**.
+For a multi-dimensional map — **historical lineage** (CMake→Zig, Djinni→Zig JNI, Langflow UX), **functional responsibilities** per language at runtime, and **syntactic authoring** (what you write vs what gets lowered) — see **[runtime-stack.md](runtime-stack.md)**.
 
 ## Full stack + blueprint authoring
 
@@ -39,7 +39,7 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 | **Domain** | C++20 MVC | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`) |
 | **Rendering** | ImGui + ImPlot on **SDL3** | Desktop OpenGL, Android GLES |
 | **Python** | pybind11 (desktop) / **Chaquopy** (Android) | `python.module` nodes — numpy, analytics |
-| **Android bridge** | **Djinni** | C++ ↔ Kotlin/JVM |
+| **Android bridge** | **Zig JNI** (replaces Djinni) | C++  Kotlin/JVM — see [zig-patching.md](zig-patching.md) |
 
 ### Blueprint node types
 
@@ -81,7 +81,7 @@ The pipeline validates `blueprint.json` and optional `flows/flows.json` after te
 ## Desktop vs Android runtime
 
 ### Desktop vs Android runtime
-*Shared MVC on SDL3/ImGui; pybind11 vs Chaquopy + Djinni*
+*Shared MVC on SDL3/ImGui; pybind11 vs Chaquopy + Zig JNI (Djinni retired)*
 
 Same `blueprint.json` node graph on both templates; only the Python bridge and OS host differ at runtime.
 
@@ -95,12 +95,54 @@ Both templates share the same `blueprint.json` node graph; only the Python bridg
 - Nerd Font: `template/shared/assets/fonts/` — loaded by `FontConfig::loadNerdFont()`
 - Logo: `template/shared/assets/nexus-logo.png` (also `docs/assets/nexus-logo.png`)
 
+## Language stack (runtime)
+
+Nexus uses 7 languages across 3 boundaries. Each lives in its natural layer — no one-language-fits-all:
+
+- **Kotlin** — Compose Desktop UI + generation pipeline (`:app` / `:core` / `:cli`)
+- **C++20** — Runtime MVC with RAII, `std::ranges`, `constexpr` (`template/*/src/`)
+- **Zig 0.14** — Build orchestration, cross-compilation, C-ABI allocator (`zig-services/`)
+- **Lua 5.4** — sol2 runtime scripting — panels, hotkeys, quick iteration (`scripts/`)
+- **Python 3.11+** — pybind11 embedded NumPy/scipy (desktop) or Chaquopy (Android)
+- **TypeScript + XHTML** — Declarative UI bindings and markup that lower to ImGui calls
+
+The **generation boundary** is crossed by `ProjectGenerator` (Kotlin → native source trees).  
+The **build boundary** by Zig (`build.zig` → compiled binary).  
+The **runtime boundary** by sol2, pybind11, and Chaquopy (in-process language bridges).
+
+## Risk analysis
+
+**Overall score: 72 / 100 — High Risk.** Main concerns:
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Doc–code drift (README oversells wizard features) | High — agent/contributor confusion | Wave 3 README rewrite reduces gap; `nxs_config.json` v2 schema is source of truth |
+| Dual-repo template sync (this repo  nexus-framework-client) | Medium — stale templates | CI-generated, diff-gated on release |
+| Synchronous Python on UI thread | Medium — frame drops on heavy inference | Async queue planned for v0.4 |
+| FetchContent network dependency | Low — Zig pinned tarballs are offline-capable | `build.zig.zon` with vendored fallback |
+
+Full retrospective in [misc/README.md](../../misc/README.md).
+
+## Architecture diagrams
+
+| Diagram | File |
+|---------|------|
+| Full-stack architecture | [full-stack-architecture.svg](../assets/diagrams/full-stack-architecture.svg) |
+| Generation and builds flow | [generation-builds-flow.svg](../assets/diagrams/generation-builds-flow.svg) |
+| Desktop vs Android runtime | [desktop-vs-android-runtime.svg](../assets/diagrams/desktop-vs-android-runtime.svg) |
+| Blueprint vs flows | [blueprint-vs-flows-layers.svg](../assets/diagrams/blueprint-vs-flows-layers.svg) |
+| Python desktop vs Android | [python-desktop-vs-android-flow.svg](../assets/diagrams/python-desktop-vs-android-flow.svg) |
+| Langflow adoption | [langflow-adoption-workflow.svg](../assets/diagrams/langflow-adoption-workflow.svg) |
+| Langflow vs n8n vs blueprint | [langflow-vs-n8n-blueprint.svg](../assets/diagrams/langflow-vs-n8n-blueprint.svg) |
+| Nexus blueprint structure | [nexus-blueprint-app-structure.svg](../assets/diagrams/nexus-blueprint-app-structure.svg) |
+| RAG chatbot flow | [langflow-rag-chatbot.svg](../assets/diagrams/langflow-rag-chatbot.svg) |
+| Agent with tools | [langflow-agent-tools.svg](../assets/diagrams/langflow-agent-tools.svg) |
+
 ## Related
 
-- [Runtime stack map](runtime-stack.md)
 - [Blueprint schema](../templates/blueprint-schema.md)
-- [Flows schema](../templates/flows-schema.md)
 - [Coding with Nexus](../guides/coding-with-nexus.md)
 - [Generation pipeline](../guides/generation-pipeline.md)
 - [Desktop template](../templates/desktop-app.md)
 - [Android template](../templates/android-app.md)
+- [Zig patching](zig-patching.md)
