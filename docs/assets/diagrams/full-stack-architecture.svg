@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2260 1415" width="2260" height="1415">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2639 1415" width="2639" height="1415">
   <title>Nexus full-stack architecture</title>
   <defs>
     <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
@@ -28,7 +28,7 @@
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="2260" height="100%" fill="#f8fafc"/>
+  <rect width="2639" height="100%" fill="#f8fafc"/>
   <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
   <rect x="700" y="96" width="380" height="392" class="panel" fill="#E8F4FD" stroke="#1565C0" fill-opacity="0.35"/>
@@ -143,25 +143,34 @@
     <tspan x="1118" dy="0">Renders plots and UI from blueprint layout</tspan>
   </text>
 
-  <rect x="1558" y="540" width="662" height="145" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
-  <text x="1572" y="564" class="layer-label">&#xf121; Scripting &amp; UI</text>
-  <rect x="1578" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <rect x="1558" y="540" width="1041" height="145" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
+  <text x="1572" y="564" class="layer-label">&#xf121; Build &amp; Scripting — Zig + Lua + DSL</text>
+  <rect x="1578" y="580" width="339" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
   <text x="1594" y="609" class="icon">&#xf120;</text>
   <text x="1616" y="611" class="label">
-    <tspan x="1616" dy="0">Lua 5.4 + sol2</tspan>
+    <tspan x="1616" dy="0">zig-services sidecar</tspan>
   </text>
   <text x="1594" y="631" class="desc">
-    <tspan x="1594" dy="0">Embeds Lua runtime for scripting</tspan>
-    <tspan x="1594" dy="15">panels</tspan>
+    <tspan x="1594" dy="0">zig build · zig c++ compile · build.zig.zon</tspan>
+    <tspan x="1594" dy="15">deps</tspan>
   </text>
-  <rect x="1915" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
-  <text x="1931" y="609" class="icon">&#xf15b;</text>
-  <text x="1953" y="611" class="label">
-    <tspan x="1953" dy="0">TS/XHTML DSL</tspan>
+  <rect x="1957" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="1973" y="609" class="icon">&#xf120;</text>
+  <text x="1995" y="611" class="label">
+    <tspan x="1995" dy="0">Lua 5.4 + sol2</tspan>
   </text>
-  <text x="1931" y="631" class="desc">
-    <tspan x="1931" dy="0">Declarative UI markup compiled to</tspan>
-    <tspan x="1931" dy="15">ImGui</tspan>
+  <text x="1973" y="631" class="desc">
+    <tspan x="1973" dy="0">Embeds Lua runtime for scripting</tspan>
+    <tspan x="1973" dy="15">panels</tspan>
+  </text>
+  <rect x="2294" y="580" width="281" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="2310" y="609" class="icon">&#xf15b;</text>
+  <text x="2332" y="611" class="label">
+    <tspan x="2332" dy="0">TS/XHTML DSL</tspan>
+  </text>
+  <text x="2310" y="631" class="desc">
+    <tspan x="2310" dy="0">Declarative UI markup compiled to</tspan>
+    <tspan x="2310" dy="15">ImGui</tspan>
   </text>
 
   <rect x="1082" y="1014" width="637" height="145" class="panel" fill="#ECEFF1" stroke="#455A64" fill-opacity="0.35"/>
@@ -211,21 +220,26 @@
   <text x="720" y="757" text-anchor="middle" class="small">declares</text>
   <line x1="332" y1="898" x2="1126" y2="898" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
   <text x="729" y="892" text-anchor="middle" class="small">declares</text>
-  <path d="M1578,622 L1578,743 L1370,743 L1370,763" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M1915,622 L1915,918 L1482,918 L1482,898" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1957,622 L1957,743 L1370,743 L1370,763" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M2294,622 L2294,918 L1482,918 L1482,898" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="1236" y1="806" x2="1292" y2="862" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="1239" y1="1139" x2="1564" y2="1054" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M1292,934 L1564,934 L1564,1054 L1564,1054" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M1236,806 L1239,806 L1239,1054 L1239,1054" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1578,622 L1578,723 L1370,723 L1370,763" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1474" y="715" text-anchor="middle" class="small">zig c++</text>
+  <line x1="1236" y1="806" x2="1292" y2="862" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
 
-  <rect x="1558" y="1215" width="662" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <rect x="1558" y="1215" width="1041" height="110" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
   <text x="1574" y="1237" class="legend-title">Layer colors</text>
   <rect x="1574" y="1239" width="16" height="16" class="legend-box" fill="#E8F4FD" stroke="#1565C0"/>
   <text x="1596" y="1251" class="small">Client — Compose scaffold UI</text>
-  <rect x="1905" y="1239" width="16" height="16" class="legend-box" fill="#FFF8E1" stroke="#F57F17"/>
-  <text x="1927" y="1251" class="small">Authoring — blueprint.json graph</text>
+  <rect x="2094" y="1239" width="16" height="16" class="legend-box" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="2116" y="1251" class="small">Authoring — blueprint.json graph</text>
   <rect x="1574" y="1261" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
   <text x="1596" y="1273" class="small">Generated — C++ MVC output</text>
-  <rect x="1905" y="1261" width="16" height="16" class="legend-box" fill="#ECEFF1" stroke="#455A64"/>
-  <text x="1927" y="1273" class="small">Runtime — SDL3 + Python bridge</text>
+  <rect x="2094" y="1261" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="2116" y="1273" class="small">Build — Zig services sidecar</text>
+  <rect x="1574" y="1283" width="16" height="16" class="legend-box" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1596" y="1295" class="small">Runtime — SDL3 + Python bridge</text>
 </svg>

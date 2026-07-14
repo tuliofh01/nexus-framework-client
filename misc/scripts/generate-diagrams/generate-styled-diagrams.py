@@ -504,13 +504,18 @@ def full_stack_architecture() -> str:
     gen_w = max(b["w"] for b in gen_boxes) + 40
     gen_h = gen_end - gen_y + 24
 
+    # zig-services + Scripting & UI layer
     scr_x = gen_x + gen_w + GAP_H
-    scr_svg, scr_boxes, scr_end = hstack(scr_x + 20, gen_y + 40, [
+    zig_svg, zig_boxes, zig_end = hstack(scr_x + 20, gen_y + 40, [
+        (240, 72, "#FFFFFF", "#2E7D32", NF["terminal"], "zig-services sidecar", "zig build · zig c++ compile · build.zig.zon deps"),
+    ])
+    sc2_x = zig_end + 20
+    scr_svg, scr_boxes, scr_end = hstack(sc2_x + 20, gen_y + 40, [
         (180, 72, "#FFFFFF", "#2E7D32", NF["terminal"], "Lua 5.4 + sol2", "Embeds Lua runtime for scripting panels"),
         (180, 72, "#FFFFFF", "#2E7D32", NF["file"], "TS/XHTML DSL", "Declarative UI markup compiled to ImGui"),
     ])
     scr_w = scr_end - scr_x + 24
-    scr_h = max(b["h"] for b in scr_boxes) + 60
+    scr_h = max(max(b["h"] for b in zig_boxes), max(b["h"] for b in scr_boxes)) + 60
 
     rt_y = gen_y + gen_h + GAP_V
     rt_svg, rt_boxes, rt_end = hstack(gen_x + 20, rt_y + 40, [
@@ -546,6 +551,12 @@ def full_stack_architecture() -> str:
     w = max(scr_x + scr_w, gen_x + gen_w, client_x + client_w) + 40
     h = legend_y + 200
 
+    # Add zig arrow
+    zig_box = zig_boxes[0]
+
+    arrows.append(arrow_between(zig_box, gen_boxes[1], "left", "right", "zig c++", via_y=gen_boxes[1]["y"] + gen_boxes[1]["h"] // 2 - 40))
+    arrows.append(arrow_between(gen_boxes[1], gen_boxes[2]))
+
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
   <title>Nexus full-stack architecture</title>
@@ -563,7 +574,8 @@ def full_stack_architecture() -> str:
 {layer_box(gen_x, gen_y, gen_w, gen_h, "#F3E5F5", "#6A1B9A", "Generated app — C++ MVC", NF["box"])}
 {gen_svg}
 
-{layer_box(scr_x, gen_y, scr_w, scr_h, "#E8F5E9", "#2E7D32", "Scripting &amp; UI", NF["code"])}
+{layer_box(scr_x, gen_y, scr_w, scr_h, "#E8F5E9", "#2E7D32", "Build &amp; Scripting — Zig + Lua + DSL", NF["code"])}
+{zig_svg}
 {scr_svg}
 
 {layer_box(gen_x, rt_y, rt_w, rt_h, "#ECEFF1", "#455A64", "Runtime", NF["desktop"])}
@@ -571,10 +583,11 @@ def full_stack_architecture() -> str:
 
 {chr(10).join(arrows)}
 
-{legend_box(scr_x, legend_y, scr_w, 160, [
+{legend_box(scr_x, legend_y, scr_w, 180, [
     ("#E8F4FD", "#1565C0", "Client — Compose scaffold UI"),
     ("#FFF8E1", "#F57F17", "Authoring — blueprint.json graph"),
     ("#F3E5F5", "#6A1B9A", "Generated — C++ MVC output"),
+    ("#E8F5E9", "#2E7D32", "Build — Zig services sidecar"),
     ("#ECEFF1", "#455A64", "Runtime — SDL3 + Python bridge"),
 ], "Layer colors")}
 </svg>"""
@@ -729,13 +742,18 @@ def desktop_vs_android() -> str:
 
     desk_x, desk_y = 32, shared_y + shared_h + GAP_V
     desk_r1, dr1, _ = hstack(desk_x + 20, desk_y + 40, [
-        (240, 72, "#FFFFFF", "#1565C0", NF["gear"], "CMake + Ninja", "OpenGL 3.3 native build pipeline"),
+        (240, 72, "#FFFFFF", "#1565C0", NF["gear"], "Zig build (primary)", "Single zig c++ binary compiles all C++ TUs"),
         (260, 72, "#FFFFFF", "#1565C0", NF["python"], "pybind11 embed", "Embeds CPython via pybind11"),
     ])
     desk_r2, dr2, _ = hstack(desk_x + 20, dr1[0]["y"] + dr1[0]["h"] + GAP_V, [
         (240, 72, "#FFFFFF", "#1565C0", NF["file"], "python/functions.py", "In-process NumPy analytics module"),
         (260, 72, "#FFFFFF", "#1565C0", NF["box"], "Native binary", "Win · macOS · Linux executable"),
     ])
+    # CMake fallback note
+    desk_note_x = dr1[0]["x"]
+    desk_note_y = dr2[0]["y"] + dr2[0]["h"] + 12
+    desk_note_w = dr2[-1]["x"] + dr2[-1]["w"] - dr1[0]["x"]
+    desk_note = f'  <rect x="{desk_note_x}" y="{desk_note_y}" width="{desk_note_w}" height="24" fill="#FFFFFF" stroke="#64748b" stroke-dasharray="4,3" rx="6"/>\n  <text x="{desk_note_x + desk_note_w // 2}" y="{desk_note_y + 17}" text-anchor="middle" class="desc">CMake fallback: legacy-cmake-debug / release presets</text>'
     desk_w = max(dr1[-1]["x"] + dr1[-1]["w"], dr2[-1]["x"] + dr2[-1]["w"]) - desk_x + 24
     desk_h = dr2[0]["y"] + dr2[0]["h"] - desk_y + 24
 
@@ -745,7 +763,7 @@ def desktop_vs_android() -> str:
         (260, 72, "#FFFFFF", "#C2185B", NF["desktop"], "SDL3 GLES", "Full-screen touch UI on GLES"),
     ])
     and_r2, ar2, _ = hstack(and_x + 20, ar1[0]["y"] + ar1[0]["h"] + GAP_V, [
-        (240, 72, "#FFFFFF", "#C2185B", NF["plug"], "Djinni IDL", "C++ ↔ Kotlin JNI codegen"),
+        (240, 72, "#FFFFFF", "#C2185B", NF["plug"], "Zig JNI bridge", "Hand-authored .zig modules (Djinni retired)"),
         (260, 72, "#FFFFFF", "#C2185B", NF["python"], "Chaquopy", "app/src/main/python/ embedding"),
     ])
     and_w = max(ar1[-1]["x"] + ar1[-1]["w"], ar2[-1]["x"] + ar2[-1]["w"]) - and_x + 24
@@ -789,6 +807,7 @@ def desktop_vs_android() -> str:
 {and_r2}
 
 {chr(10).join(arrows)}
+{desk_note}
 
   <rect x="{note_x}" y="{shared_y + 30}" width="300" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="{note_x + 20}" y="{shared_y + 60}" class="small">Same plotter template on both targets.</text>
@@ -799,8 +818,8 @@ def desktop_vs_android() -> str:
 
 {legend_box(32, legend_y, 500, 80, [
     ("#F3E5F5", "#6A1B9A", "Shared — blueprint + MVC + SDL3"),
-    ("#E3F2FD", "#1565C0", "Desktop — CMake + pybind11"),
-    ("#FCE4EC", "#C2185B", "Android — Gradle + Djinni + Chaquopy"),
+    ("#E3F2FD", "#1565C0", "Desktop — Zig build (primary) + pybind11"),
+    ("#FCE4EC", "#C2185B", "Android — Gradle + Zig JNI + Chaquopy"),
 ], "Runtime layers")}
 </svg>"""
 
@@ -1328,7 +1347,7 @@ def langflow_adoption_workflow() -> str:
     specs = [
         (210, 72, "#E8F5E9", "#2E7D32", NF["robot"], "Langflow canvas", "Design DAG in external tool"),
         (210, 72, "#E3F2FD", "#1565C0", NF["file"], "Export JSON", "API or Export flow button"),
-        (210, 72, "#FFF3E0", "#EF6C00", NF["gear"], "Translate fields", "Manual map to Nexus schema (v1)"),
+        (230, 88, "#E8EAF6", "#3949AB", NF["gear"], "LangflowTransformationEngine", "Automatic import · all flows enabled: false (v0.3.0)"),
         (210, 72, "#F3E5F5", "#7B1FA2", NF["box"], "flows/flows.json", "Place in generated project"),
         (210, 72, "#E0F7FA", "#00838F", NF["cog"], "nxs_config.json", "flows.enabled = true"),
         (210, 72, "#E8EAF6", "#3949AB", NF["rocket"], "FlowRunner", "Startup triggers registered"),
@@ -1348,13 +1367,249 @@ def langflow_adoption_workflow() -> str:
 {chr(10).join(edges)}
   <rect x="40" y="{note_y}" width="{w - 80}" height="50" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" rx="10"/>
   <text x="{w // 2}" y="{note_y + 22}" text-anchor="middle" class="small">App structure nodes → blueprint.json instead · LLM components become invoke stubs in python.module</text>
-  <text x="{w // 2}" y="{note_y + 40}" text-anchor="middle" class="desc">Automatic Langflow importer planned for v1.1</text>
+  <text x="{w // 2}" y="{note_y + 40}" text-anchor="middle" class="desc">LangflowTransformationEngine alive in v0.3.0 — all imported flows default to enabled: false</text>
 {legend_box(40, legend_y, w - 80, 90, [
     ("#E8F5E9", "#2E7D32", "External — Langflow authoring"),
-    ("#FFF3E0", "#EF6C00", "Translate — manual field mapping"),
+    ("#E8EAF6", "#3949AB", "Transform — LangflowTransformationEngine (v0.3.0)"),
     ("#F3E5F5", "#7B1FA2", "Ship — flows.json in project"),
     ("#3949AB", "#3949AB", "Runtime — FlowRunner at startup"),
 ], "Adoption path")}
+</svg>"""
+
+
+def zig_orchestration_layer() -> str:
+    logo = "../nexus-logo.png"
+    gap = GAP_V
+
+    # Layer 1: Client-setup / Bootstrap
+    setup_x, setup_y = 40, 120
+    setup_svg, setup_boxes, setup_end = hstack(setup_x, setup_y, [
+        (220, 72, "#E8F5E9", "#2E7D32", NF["wrench"], "setup.zig", "Entry point — orchestrates bootstrap"),
+        (220, 72, "#E8F5E9", "#2E7D32", NF["terminal"], "bootstrap.zig", "Downloads + extracts Zig 0.14.0 tarball"),
+        (220, 72, "#E8F5E9", "#2E7D32", NF["file"], "env.sh / env.bat", "ZIG_HOME, PATH prepend exports"),
+    ], gap=GAP_H)
+    setup_w = setup_end - setup_x + 24
+    setup_h = setup_boxes[0]["h"] + 48
+
+    # Layer 2: zig-services build
+    svc_x, svc_y = setup_x, setup_y + setup_h + gap
+    svc_svg, svc_boxes, svc_end = hstack(svc_x, svc_y + 40, [
+        (220, 72, "#E3F2FD", "#1565C0", NF["file"], "build.zig", "Build graph — C++ TUs, C-ABI, .cppm"),
+        (240, 72, "#E3F2FD", "#1565C0", NF["package"], "build.zig.zon", "Pinned deps — SDL3, ImGui, sol2"),
+        (220, 72, "#E3F2FD", "#1565C0", NF["gear"], "zig c++ compile", "Single compiler for all target triples"),
+    ], gap=GAP_H)
+    svc_w = svc_end - svc_x + 24
+    svc_h = svc_boxes[0]["h"] + 60
+
+    # Layer 3: Output
+    out_x, out_y = setup_x, svc_y + svc_h + gap
+    out_svg, out_boxes, out_end = hstack(out_x, out_y + 40, [
+        (220, 72, "#F3E5F5", "#7B1FA2", NF["box"], "zig-out/bin/", "Desktop SDL3 app binary"),
+        (220, 72, "#F3E5F5", "#7B1FA2", NF["chart"], "lua.dat / python.dat", "Packed script archives staged"),
+    ], gap=GAP_H)
+    out_w = out_end - out_x + 24
+    out_h = out_boxes[0]["h"] + 60
+
+    # Layer 4: Optional — Android Zig JNI
+    and_x, and_y = setup_x, out_y + out_h + gap
+    and_svg, and_boxes, and_end = hstack(and_x, and_y + 40, [
+        (240, 72, "#FCE4EC", "#C2185B", NF["android"], "Android Zig JNI", "aarch64-linux-android .so target"),
+        (240, 72, "#FCE4EC", "#C2185B", NF["plug"], "Djinni retired", "Hand-authored .zig replaces codegen"),
+    ], gap=GAP_H)
+    and_w = and_end - and_x + 24
+    and_h = and_boxes[0]["h"] + 60
+
+    arrows = [
+        arrow_between(setup_boxes[0], setup_boxes[1], "right", "left"),
+        arrow_between(setup_boxes[1], setup_boxes[2], "right", "left"),
+        arrow_between(setup_boxes[2], svc_boxes[0], "bottom", "top", "provides zig 0.14.0", via_x=svc_boxes[0]["x"] + svc_boxes[0]["w"] // 2, dashed=True),
+        arrow_between(svc_boxes[0], svc_boxes[1], "right", "left"),
+        arrow_between(svc_boxes[1], svc_boxes[2], "right", "left"),
+        arrow_between(svc_boxes[2], out_boxes[0], "bottom", "top", "links binary", via_x=out_boxes[0]["x"] + out_boxes[0]["w"] // 2),
+        arrow_between(svc_boxes[1], out_boxes[1], "bottom", "top", "packs archives", via_x=out_boxes[1]["x"] + out_boxes[1]["w"] // 2),
+        arrow_between(svc_boxes[2], and_boxes[0], "bottom", "top", "cross-compile .so", via_x=and_boxes[0]["x"] + and_boxes[0]["w"] // 2, dashed=True, lane=-LANE),
+    ]
+
+    legend_y = and_y + and_h + GAP_V
+    w = svc_end + 40
+    h = legend_y + 120
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>Zig orchestration layer</title>
+{defs(logo)}
+{header(logo, w)}
+
+{layer_box(setup_x, setup_y, setup_w, setup_h, "#E8F5E9", "#2E7D32", "1. Services Layer — client-setup (Zig bootstrap)", NF["wrench"])}
+{setup_svg}
+
+{layer_box(svc_x, svc_y, svc_w, svc_h, "#E3F2FD", "#1565C0", "2. Build Layer — zig-services (C++ compilation)", NF["gear"])}
+{svc_svg}
+
+{layer_box(out_x, out_y, out_w, out_h, "#F3E5F5", "#7B1FA2", "3. Desktop output — native binary + archives", NF["box"])}
+{out_svg}
+
+{layer_box(and_x, and_y, and_w, and_h, "#FCE4EC", "#C2185B", "4. Android output (Phase 4) — Zig JNI .so", NF["phone"])}
+{and_svg}
+
+{chr(10).join(arrows)}
+
+{legend_box(40, legend_y, 520, 90, [
+    ("#E8F5E9", "#2E7D32", "Bootstrap — setup.zig → env.sh"),
+    ("#E3F2FD", "#1565C0", "Build — zig c++ compile"),
+    ("#F3E5F5", "#7B1FA2", "Output — desktop native binary"),
+    ("#FCE4EC", "#C2185B", "Android — Zig JNI (Phase 4)"),
+], "Orchestration layers — solid = done, dashed = Phase 4")}
+</svg>"""
+
+
+def cmake_to_zig_migration() -> str:
+    logo = "../nexus-logo.png"
+    box_w, box_h = 220, 100
+    gap = 40
+
+    phases = [
+        ("Phase 0", "Zig install", "setup.zig + env.sh", "#E8F5E9", "#2E7D32", NF["wrench"]),
+        ("Phase 1", "zig-services", "C++ TUs via zig c++", "#E3F2FD", "#1565C0", NF["gear"]),
+        ("Phase 2", "Langflow imp.", "Kotlin service (parallel)", "#FFF3E0", "#EF6C00", NF["branch"]),
+        ("Phase 3", "Desktop Zig default", "Zig primary + CMake fallback", "#F3E5F5", "#7B1FA2", NF["desktop"]),
+        ("Phase 4", "Android Zig JNI", "Retire Djinni .zig bridges", "#FCE4EC", "#C2185B", NF["phone"]),
+        ("Phase 5", "ArenaAllocator", "Opt-in C-ABI hotspots", "#E0F7FA", "#00838F", NF["database"]),
+    ]
+    done_indicator = ["✅", "✅", "✅", "✅", "⬜", "✅"]
+
+    x, y = 60, 180
+    parts = []
+    boxes = []
+    cx = x
+    for i, (phase, label, desc, fill, stroke, icon) in enumerate(phases):
+        phase_box = module(cx, y, box_w, box_h, fill, stroke, icon, f"{phase}: {label}", desc)
+        status_y = y + box_h + 16
+        status = f'  <text x="{cx + box_w // 2}" y="{status_y}" text-anchor="middle" class="badge">{done_indicator[i]}</text>'
+        parts.append(f"{phase_box}\n{status}")
+        boxes.append({"x": cx, "y": y, "w": box_w, "h": box_h})
+        cx += box_w + gap
+
+    # Timeline arrow
+    timeline_y = y + box_h + 56
+    timeline_arrow = f'  <line x1="{x - 20}" y1="{timeline_y}" x2="{cx - gap + 20}" y2="{timeline_y}" stroke="{ARROW_COLOR}" stroke-width="3" marker-end="url(#arrow)"/>'
+    left_label = f'  <text x="{x + box_w // 2}" y="{timeline_y - 10}" text-anchor="middle" class="small">CMake dominant</text>'
+    right_label = f'  <text x="{cx - gap - box_w // 2}" y="{timeline_y - 10}" text-anchor="middle" class="small">Zig dominant</text>'
+    mid_label = f'  <text x="{(boxes[1]["x"] + boxes[3]["x"] + boxes[3]["w"]) // 2}" y="{timeline_y - 10}" text-anchor="middle" class="small">Phased migration</text>'
+
+    # Legend
+    legend_y = timeline_y + 60
+    w = cx + 40
+    h = legend_y + 120
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>CMake to Zig migration timeline</title>
+{defs(logo)}
+{header(logo, w)}
+
+  <rect x="{x - 20}" y="{y - 20}" width="{cx - x - gap + 40}" height="36" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="8"/>
+  <text x="{x + (cx - x - gap) // 2}" y="{y + 4}" text-anchor="middle" class="layer-label">CMake → Zig phased migration</text>
+
+{chr(10).join(parts)}
+{timeline_arrow}
+{left_label}
+{mid_label}
+{right_label}
+
+{legend_box(x, legend_y, 520, 70, [
+    ("#E8F5E9", "#2E7D32", "✅ Done — Phase 0 (Zig install)"),
+    ("#E3F2FD", "#1565C0", "✅ Done — Phases 1, 3 (zig-services, desktop)"),
+    ("#FCE4EC", "#C2185B", "⬜ Phase 4 (Android Zig JNI — pending)"),
+    ("#E0F7FA", "#00838F", "✅ Done — Phase 5 (ArenaAllocator)"),
+], "Phase status")}
+</svg>"""
+
+
+def langflow_import_pipeline() -> str:
+    logo = "../nexus-logo.png"
+
+    # Input: Langflow JSON
+    inp_x, inp_y = 40, 180
+    inp_svg, inp_boxes, inp_end = hstack(inp_x, inp_y, [
+        (220, 72, "#E8F5E9", "#2E7D32", NF["robot"], "Langflow JSON", "Export from Langflow API or UI"),
+        (220, 72, "#E3F2FD", "#1565C0", NF["file"], "JSON parser", "Deserialize ReactFlow nodes/edges"),
+    ], gap=GAP_H)
+
+    # Engine: LangflowTransformationEngine
+    eng_x = inp_end + 20
+    eng_y = inp_y
+    eng_w = 520
+    eng_inner_y = eng_y + 40
+    eng_r1, er1, _ = hstack(eng_x + 20, eng_inner_y, [
+        (220, 72, "#FFF3E0", "#EF6C00", NF["gear"], "Trigger inference", "ChatInput→manual, Webhook→event, Schedule→interval"),
+        (220, 72, "#FFF3E0", "#EF6C00", NF["branch"], "Topological sort", "Resolve edge order → ordered steps[]"),
+    ], gap=30)
+    eng_r2, er2, _ = hstack(eng_x + 20, er1[0]["y"] + er1[0]["h"] + GAP_V, [
+        (220, 72, "#FFF3E0", "#EF6C00", NF["code"], "Dedup + validate", "Remove duplicates · validate step types"),
+        (220, 72, "#FFF3E0", "#EF6C00", NF["database"], "Emit flows.json", "All imported flows enabled: false"),
+    ], gap=30)
+    eng_h = er2[0]["y"] + er2[0]["h"] - eng_y + 24
+
+    # Output: flows.json + nxs_config.json
+    out_x = eng_x + eng_w + GAP_H
+    out_y = inp_y
+    out_svg, out_boxes, out_end = vstack(out_x, out_y, [
+        (240, 72, "#F3E5F5", "#7B1FA2", NF["file"], "flows/flows.json", "Automation definitions with enabled: false"),
+        (240, 72, "#F3E5F5", "#7B1FA2", NF["gear"], "nxs_config.json", "flows.enabled = true at user's choice"),
+    ], gap=GAP_V)
+    out_w = out_end - out_x + 24
+    out_h = out_boxes[-1]["y"] + out_boxes[-1]["h"] - out_y + 24
+
+    # FlowRunner
+    runner_x = out_x + (out_w - 240) // 2
+    runner_y = out_y + max(out_boxes[-1]["y"] + out_boxes[-1]["h"] - out_y, 260) + GAP_V
+    runner_box = {"x": runner_x, "y": runner_y, "w": 240, "h": 72}
+    runner_svg = module(runner_x, runner_y, 240, 72, "#E0F7FA", "#00838F", NF["cog"], "FlowRunner", "Registers triggers at startup")
+
+    arrows = [
+        arrow_between(inp_boxes[0], inp_boxes[1], "right", "left"),
+        arrow_between(inp_boxes[1], er1[0], "right", "left", "parse", via_x=eng_x + 20),
+        arrow_between(er1[0], er1[1], "right", "left"),
+        arrow_between(er1[1], er2[0], "bottom", "top", via_x=er2[0]["x"] + er2[0]["w"] // 2, lane=-LANE),
+        arrow_between(er1[0], er2[1], "bottom", "top", via_x=er2[1]["x"] + er2[1]["w"] // 2, lane=LANE),
+        arrow_between(er2[0], er2[1], "right", "left"),
+        arrow_between(er2[1], out_boxes[0], "right", "left"),
+        arrow_between(out_boxes[0], out_boxes[1]),
+        arrow_between(out_boxes[1], runner_box, "bottom", "top", via_x=runner_x + 120, dashed=True),
+    ]
+
+    legend_y = runner_y + 72 + GAP_V
+    w = out_end + 40
+    h = legend_y + 100
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>Langflow import pipeline</title>
+{defs(logo)}
+{header(logo, w)}
+
+{inp_svg}
+
+{layer_box(eng_x, eng_y, eng_w, eng_h, "#FFF8E1", "#F57F17", "LangflowTransformationEngine (v0.3.0)", NF["gear"])}
+{eng_r1}
+{eng_r2}
+
+{layer_box(out_x, out_y, out_w, out_h, "#F3E5F5", "#7B1FA2", "Nexus output files", NF["box"])}
+{out_svg}
+{runner_svg}
+
+{chr(10).join(arrows)}
+
+  <rect x="{inp_x}" y="{runner_y + 72 + 20}" width="{out_end - inp_x}" height="36" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" rx="8"/>
+  <text x="{(inp_x + out_end) // 2}" y="{runner_y + 72 + 44}" text-anchor="middle" class="small">All imported flows default to enabled: false — review before enable</text>
+
+{legend_box(inp_x, legend_y, 520, 70, [
+    ("#E8F5E9", "#2E7D32", "Input — Langflow export JSON"),
+    ("#FFF3E0", "#EF6C00", "Transform — LangflowTransformationEngine"),
+    ("#F3E5F5", "#7B1FA2", "Output — flows.json + nxs_config.json"),
+    ("#E0F7FA", "#00838F", "Runtime — FlowRunner triggers at startup"),
+], "Pipeline stages")}
 </svg>"""
 
 
@@ -1368,6 +1623,9 @@ def main() -> None:
         DIAGRAMS / "tsxhtml-lowering-pipeline.svg": tsxhtml_lowering_pipeline(),
         DIAGRAMS / "blueprint-vs-flows-layers.svg": blueprint_vs_flows_layers(),
         DIAGRAMS / "langflow-adoption-workflow.svg": langflow_adoption_workflow(),
+        DIAGRAMS / "zig-orchestration-layer.svg": zig_orchestration_layer(),
+        DIAGRAMS / "cmake-to-zig-migration.svg": cmake_to_zig_migration(),
+        DIAGRAMS / "langflow-import-pipeline.svg": langflow_import_pipeline(),
         EXAMPLES / "langflow-rag-chatbot.svg": langflow_rag_chatbot(),
         EXAMPLES / "langflow-agent-tools.svg": langflow_agent_tools(),
         EXAMPLES / "nexus-blueprint-app-structure.svg": nexus_blueprint_app_structure(),

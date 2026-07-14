@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 461" width="1640" height="461">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1774 464" width="1774" height="464">
   <title>Langflow adoption workflow</title>
   <defs>
     <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
@@ -28,7 +28,7 @@
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="1640" height="100%" fill="#f8fafc"/>
+  <rect width="1774" height="100%" fill="#f8fafc"/>
   <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
   <rect x="40" y="120" width="210" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="56" y="149" class="icon">&#xf544;</text>
@@ -46,55 +46,55 @@
   <text x="322" y="171" class="desc">
     <tspan x="322" dy="0">API or Export flow button</tspan>
   </text>
-  <rect x="572" y="120" width="230" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <rect x="572" y="120" width="364" height="88" class="node" fill="#E8EAF6" stroke="#3949AB"/>
   <text x="588" y="149" class="icon">&#xf013;</text>
   <text x="610" y="151" class="label">
-    <tspan x="610" dy="0">Translate fields</tspan>
+    <tspan x="610" dy="0">LangflowTransformationEngine</tspan>
   </text>
   <text x="588" y="171" class="desc">
-    <tspan x="588" dy="0">Manual map to Nexus schema</tspan>
-    <tspan x="588" dy="15">(v1)</tspan>
+    <tspan x="588" dy="0">Automatic import · all flows enabled: false</tspan>
+    <tspan x="588" dy="15">(v0.3.0)</tspan>
   </text>
-  <rect x="858" y="120" width="210" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="874" y="149" class="icon">&#xf466;</text>
-  <text x="896" y="151" class="label">
-    <tspan x="896" dy="0">flows/flows.json</tspan>
+  <rect x="992" y="120" width="210" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="1008" y="149" class="icon">&#xf466;</text>
+  <text x="1030" y="151" class="label">
+    <tspan x="1030" dy="0">flows/flows.json</tspan>
   </text>
-  <text x="874" y="171" class="desc">
-    <tspan x="874" dy="0">Place in generated project</tspan>
+  <text x="1008" y="171" class="desc">
+    <tspan x="1008" dy="0">Place in generated project</tspan>
   </text>
-  <rect x="1124" y="120" width="210" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="1140" y="149" class="icon">&#xf013;</text>
-  <text x="1162" y="151" class="label">
-    <tspan x="1162" dy="0">nxs_config.json</tspan>
+  <rect x="1258" y="120" width="210" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="1274" y="149" class="icon">&#xf013;</text>
+  <text x="1296" y="151" class="label">
+    <tspan x="1296" dy="0">nxs_config.json</tspan>
   </text>
-  <text x="1140" y="171" class="desc">
-    <tspan x="1140" dy="0">flows.enabled = true</tspan>
+  <text x="1274" y="171" class="desc">
+    <tspan x="1274" dy="0">flows.enabled = true</tspan>
   </text>
-  <rect x="1390" y="120" width="210" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="1406" y="149" class="icon">&#xf135;</text>
-  <text x="1428" y="151" class="label">
-    <tspan x="1428" dy="0">FlowRunner</tspan>
+  <rect x="1524" y="120" width="210" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="1540" y="149" class="icon">&#xf135;</text>
+  <text x="1562" y="151" class="label">
+    <tspan x="1562" dy="0">FlowRunner</tspan>
   </text>
-  <text x="1406" y="171" class="desc">
-    <tspan x="1406" dy="0">Startup triggers registered</tspan>
+  <text x="1540" y="171" class="desc">
+    <tspan x="1540" dy="0">Startup triggers registered</tspan>
   </text>
   <line x1="250" y1="156" x2="306" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="516" y1="156" x2="572" y2="162" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="802" y1="162" x2="858" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1068" y1="156" x2="1124" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1334" y1="156" x2="1390" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <rect x="40" y="261" width="1560" height="50" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" rx="10"/>
-  <text x="820" y="283" text-anchor="middle" class="small">App structure nodes → blueprint.json instead · LLM components become invoke stubs in python.module</text>
-  <text x="820" y="301" text-anchor="middle" class="desc">Automatic Langflow importer planned for v1.1</text>
-  <rect x="40" y="331" width="1560" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
-  <text x="56" y="353" class="legend-title">Adoption path</text>
-  <rect x="56" y="355" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="78" y="367" class="small">External — Langflow authoring</text>
-  <rect x="836" y="355" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="858" y="367" class="small">Translate — manual field mapping</text>
-  <rect x="56" y="377" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
-  <text x="78" y="389" class="small">Ship — flows.json in project</text>
-  <rect x="836" y="377" width="16" height="16" class="legend-box" fill="#3949AB" stroke="#3949AB"/>
-  <text x="858" y="389" class="small">Runtime — FlowRunner at startup</text>
+  <line x1="516" y1="156" x2="572" y2="164" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="936" y1="164" x2="992" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1202" y1="156" x2="1258" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1468" y1="156" x2="1524" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="40" y="264" width="1694" height="50" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" rx="10"/>
+  <text x="887" y="286" text-anchor="middle" class="small">App structure nodes → blueprint.json instead · LLM components become invoke stubs in python.module</text>
+  <text x="887" y="304" text-anchor="middle" class="desc">LangflowTransformationEngine alive in v0.3.0 — all imported flows default to enabled: false</text>
+  <rect x="40" y="334" width="1694" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="56" y="356" class="legend-title">Adoption path</text>
+  <rect x="56" y="358" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="78" y="370" class="small">External — Langflow authoring</text>
+  <rect x="903" y="358" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="925" y="370" class="small">Transform — LangflowTransformationEngine (v0.3.0)</text>
+  <rect x="56" y="380" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="78" y="392" class="small">Ship — flows.json in project</text>
+  <rect x="903" y="380" width="16" height="16" class="legend-box" fill="#3949AB" stroke="#3949AB"/>
+  <text x="925" y="392" class="small">Runtime — FlowRunner at startup</text>
 </svg>

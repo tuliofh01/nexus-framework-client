@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 963 993" width="963" height="993">
+  <title>Zig orchestration layer</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="963" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+
+  <rect x="40" y="120" width="903" height="133" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
+  <text x="54" y="144" class="layer-label">&#xf0ad; 1. Services Layer — client-setup (Zig bootstrap)</text>
+  <rect x="40" y="120" width="262" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="56" y="149" class="icon">&#xf0ad;</text>
+  <text x="78" y="151" class="label">
+    <tspan x="78" dy="0">setup.zig</tspan>
+  </text>
+  <text x="56" y="171" class="desc">
+    <tspan x="56" dy="0">Entry point — orchestrates</tspan>
+    <tspan x="56" dy="15">bootstrap</tspan>
+  </text>
+  <rect x="358" y="120" width="281" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="374" y="149" class="icon">&#xf120;</text>
+  <text x="396" y="151" class="label">
+    <tspan x="396" dy="0">bootstrap.zig</tspan>
+  </text>
+  <text x="374" y="171" class="desc">
+    <tspan x="374" dy="0">Downloads + extracts Zig 0.14.0</tspan>
+    <tspan x="374" dy="15">tarball</tspan>
+  </text>
+  <rect x="695" y="120" width="224" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="711" y="149" class="icon">&#xf15b;</text>
+  <text x="733" y="151" class="label">
+    <tspan x="733" dy="0">env.sh / env.bat</tspan>
+  </text>
+  <text x="711" y="171" class="desc">
+    <tspan x="711" dy="0">ZIG_HOME, PATH prepend exports</tspan>
+  </text>
+
+  <rect x="40" y="309" width="907" height="132" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
+  <text x="54" y="333" class="layer-label">&#xf013; 2. Build Layer — zig-services (C++ compilation)</text>
+  <rect x="40" y="349" width="256" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="56" y="378" class="icon">&#xf15b;</text>
+  <text x="78" y="380" class="label">
+    <tspan x="78" dy="0">build.zig</tspan>
+  </text>
+  <text x="56" y="400" class="desc">
+    <tspan x="56" dy="0">Build graph — C++ TUs, C-ABI, .cppm</tspan>
+  </text>
+  <rect x="352" y="349" width="240" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="368" y="378" class="icon">&#xf487;</text>
+  <text x="390" y="380" class="label">
+    <tspan x="390" dy="0">build.zig.zon</tspan>
+  </text>
+  <text x="368" y="400" class="desc">
+    <tspan x="368" dy="0">Pinned deps — SDL3, ImGui, sol2</tspan>
+  </text>
+  <rect x="648" y="349" width="275" height="85" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="664" y="378" class="icon">&#xf013;</text>
+  <text x="686" y="380" class="label">
+    <tspan x="686" dy="0">zig c++ compile</tspan>
+  </text>
+  <text x="664" y="400" class="desc">
+    <tspan x="664" dy="0">Single compiler for all target</tspan>
+    <tspan x="664" dy="15">triples</tspan>
+  </text>
+
+  <rect x="40" y="497" width="520" height="132" class="panel" fill="#F3E5F5" stroke="#7B1FA2" fill-opacity="0.35"/>
+  <text x="54" y="521" class="layer-label">&#xf466; 3. Desktop output — native binary + archives</text>
+  <rect x="40" y="537" width="220" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="56" y="566" class="icon">&#xf466;</text>
+  <text x="78" y="568" class="label">
+    <tspan x="78" dy="0">zig-out/bin/</tspan>
+  </text>
+  <text x="56" y="588" class="desc">
+    <tspan x="56" dy="0">Desktop SDL3 app binary</tspan>
+  </text>
+  <rect x="316" y="537" width="220" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="332" y="566" class="icon">&#xf080;</text>
+  <text x="354" y="568" class="label">
+    <tspan x="354" dy="0">lua.dat / python.dat</tspan>
+  </text>
+  <text x="332" y="588" class="desc">
+    <tspan x="332" dy="0">Packed script archives staged</tspan>
+  </text>
+
+  <rect x="40" y="685" width="576" height="132" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <text x="54" y="709" class="layer-label">&#xf3cd; 4. Android output (Phase 4) — Zig JNI .so</text>
+  <rect x="40" y="725" width="240" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="56" y="754" class="icon">&#xf17b;</text>
+  <text x="78" y="756" class="label">
+    <tspan x="78" dy="0">Android Zig JNI</tspan>
+  </text>
+  <text x="56" y="776" class="desc">
+    <tspan x="56" dy="0">aarch64-linux-android .so target</tspan>
+  </text>
+  <rect x="336" y="725" width="256" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="352" y="754" class="icon">&#xf1e6;</text>
+  <text x="374" y="756" class="label">
+    <tspan x="374" dy="0">Djinni retired</tspan>
+  </text>
+  <text x="352" y="776" class="desc">
+    <tspan x="352" dy="0">Hand-authored .zig replaces codegen</tspan>
+  </text>
+
+  <line x1="302" y1="162" x2="358" y2="162" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="639" y1="162" x2="695" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M807,192 L168,192 L168,349 L168,349" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="160" y="270" text-anchor="middle" class="small">provides zig 0.14.0</text>
+  <line x1="296" y1="385" x2="352" y2="385" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="592" y1="385" x2="648" y2="391" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M785,434 L150,434 L150,537 L150,537" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="142" y="485" text-anchor="middle" class="small">links binary</text>
+  <path d="M472,421 L426,421 L426,537 L426,537" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="418" y="479" text-anchor="middle" class="small">packs archives</text>
+  <path d="M785,434 L160,422 L160,713 L160,725" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="152" y="567" text-anchor="middle" class="small">cross-compile .so</text>
+
+  <rect x="40" y="873" width="520" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="56" y="895" class="legend-title">Orchestration layers — solid = done, dashed = Phase 4</text>
+  <rect x="56" y="897" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="78" y="909" class="small">Bootstrap — setup.zig → env.sh</text>
+  <rect x="316" y="897" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="338" y="909" class="small">Build — zig c++ compile</text>
+  <rect x="56" y="919" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="78" y="931" class="small">Output — desktop native binary</text>
+  <rect x="316" y="919" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="338" y="931" class="small">Android — Zig JNI (Phase 4)</text>
+</svg>
