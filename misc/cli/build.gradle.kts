@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass.set("nexus.opensource.cli.FrameworkCliKt")
+    mainClass.set("nexus.opensource.framework.cli.FrameworkCliKt")
 }
 
 tasks.named<JavaExec>("run") {
@@ -20,7 +20,7 @@ tasks.register<JavaExec>("runCli") {
     description = "Run the Framework CLI with --args=\"…\""
     workingDir = rootProject.projectDir
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("nexus.opensource.cli.FrameworkCliKt")
+    mainClass.set("nexus.opensource.framework.cli.FrameworkCliKt")
     if (project.hasProperty("args")) {
         args = (project.property("args") as String).split(" ").filter { it.isNotEmpty() }
     }
