@@ -18,7 +18,7 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `template/shared/` | Shared DSL, themes, runtime helpers |
 | `docs/assets/diagrams/` | Architecture SVGs referenced from README |
 
-**Generated-app stack:** For “what language does what” (historical lineage, runtime roles, authoring vs lowered), read **[docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)** first. Summary: C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Djinni** + Chaquopy. Compose `:app` still needs **JDK 26** — generated desktop apps do not.
+**Generated-app stack:** For “what language does what” (historical lineage, runtime roles, authoring vs lowered), read **[docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)** first. Summary: C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Zig JNI** + Chaquopy (Djinni deprecated). Compose `:app` still needs **JDK 26** — generated desktop apps do not.
 
 ## First run (human or agent)
 
@@ -61,7 +61,7 @@ Top-level `builds/` layout — see [builds/README.md](builds/README.md):
 |------|----------|
 | `builds/client/app/` | Runnable Compose Desktop distribution |
 | `builds/client/packages/` | OS installers (`.deb`, `.rpm`, `.dmg`, …) |
-| `builds/framework/<projectName>/` | Out-of-source CMake trees for scaffolded native apps |
+| `builds/framework/<projectName>/` | Out-of-source Zig/CMake trees for scaffolded native apps |
 
 ```bash
 ./gradlew :app:deployToBuildsClient          # after createDistributable → builds/client/app/
@@ -70,7 +70,19 @@ Top-level `builds/` layout — see [builds/README.md](builds/README.md):
 
 Gradle still writes intermediate outputs under `app/build/`; the `deploy*` tasks copy finished artifacts into `builds/client/`.
 
-## Architecture (MVC + Compose)
+### Android Zig JNI build
+
+Build the native `.so` for Android (requires `ANDROID_NDK`):
+
+```bash
+cd template/android-app/zig-services
+zig build -Dtarget=aarch64-linux-android    # arm64 device
+zig build -Dtarget=x86_64-linux-android     # x86_64 emulator
+```
+
+The Gradle APK (`./gradlew :app:assembleDebug`) picks up the Zig-produced `.so` from `jniLibs/`. Legacy CMake fallback: `cmake --preset android-arm64`.
+
+## Architecture (MVC + Composed)
 
 Packages under `app/src/main/kotlin/nexus/opensource/`:
 
@@ -118,6 +130,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
 - Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
 - Client setup: [misc/client-setup/README.md](misc/client-setup/README.md)
+- Legacy Djinni: [docs/guides/legacy-djinni.md](docs/guides/legacy-djinni.md)
 
 ## Zig patching
 
