@@ -1,0 +1,30 @@
+.{
+    .name = "{{projectName}}-zig-services",
+    .version = "0.1.0",
+    .dependencies = .{
+        .imgui = .{
+            .url = "https://github.com/ocornut/imgui/archive/refs/tags/v1.91.8.tar.gz",
+            .hash = "1220b7c61d43dab726b60696d8a1d92057eddb4c06c53392b8ebad9e52f9c6ccb4e6",
+        },
+        .sol2 = .{
+            .url = "https://github.com/ThePhD/sol2/archive/refs/tags/v3.3.1.tar.gz",
+            .hash = "1220853be246ddf6b8f9c3be7e78b76431cf4e9a1e2824909cfa1f13c7308e2a0a21",
+        },
+        .lua = .{
+            .url = "https://github.com/walterschell/Lua/archive/refs/tags/v5.4.5.tar.gz",
+            .hash = "12206e4741e97eb2ab75396b1398f7a3eb88cbd7f4a5af40b1f7ee84206dcd6e9ed2",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src/root.zig",
+        "src/nexus_exports.zig",
+        "src/memory.zig",
+        "jni/python_bridge.zig",
+        "jni/lua_bridge.zig",
+        "jni/jni_bridge.cpp",
+        "c_abi/zig_allocator.h",
+        "README.md",
+    },
+}

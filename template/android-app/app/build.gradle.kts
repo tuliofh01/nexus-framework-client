@@ -138,6 +138,45 @@ tasks.register<Exec>("packLuaDat") {
     }
 }
 
+tasks.register<Exec>("zigBuildRelease") {
+    group = "nexus"
+    description = "Build {{projectName}}.so via Zig for all Android ABIs"
+    workingDir = file("$templateRoot/zig-services")
+    val jniLibsDir = layout.buildDirectory.dir("jniLibs")
+
+    outputs.dir(jniLibsDir)
+
+    doLast {
+        val abis = listOf(
+            "aarch64-linux-android" to "arm64-v8a",
+            "x86_64-linux-android" to "x86_64",
+        )
+        for ((targetTriple, abiDir) in abis) {
+            val zigOut = layout.buildDirectory.dir("zig-out/$abiDir")
+            exec {
+                commandLine(
+                    "zig", "build",
+                    "-Dtarget=$targetTriple",
+                    "-Doptimize=ReleaseSafe",
+                    "--prefix", zigOut.get().asFile.absolutePath,
+                )
+            }
+            val soFile = zigOut.get().asFile.resolve("lib/${project.name}.so")
+            if (soFile.exists()) {
+                val dest = jniLibsDir.get().asFile.resolve(abiDir)
+                dest.mkdirs()
+                soFile.copyTo(dest.resolve("${project.name}.so"), overwrite = true)
+            }
+        }
+    }
+}
+
+// When using Zig backend, replace CMake externalNativeBuild with Zig .so
+// To enable: uncomment the below and comment out externalNativeBuild { cmake {...} }
+// android.defaultConfig.ndk.abiFilters = listOf("arm64-v8a", "x86_64")
+// tasks.named("preBuild") { dependsOn("zigBuildRelease") }
+// android.sourceSets.getByName("main") { jniLibs.srcDirs(layout.buildDirectory.dir("jniLibs")) }
+
 tasks.named("preBuild") {
     dependsOn("copyBlueprintAsset", "packLuaDat")
 }

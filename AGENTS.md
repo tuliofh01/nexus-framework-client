@@ -13,8 +13,8 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `:app` | Compose Desktop client — **MVC** under `nexus.opensource` (`model/`, `view/`, `controller/`) |
 | `misc/` | Generation pipeline (`:core`, `:cli`), Docker, Jenkins, scripts — see [misc/README.md](misc/README.md) |
 | `misc/client-setup/` | First-run JDK 26 + Git installers — run **before** first `./gradlew :app:run` ([misc/client-setup/README.md](misc/client-setup/README.md)) |
-| `template/desktop-app/` | Desktop output (SDL3 + pybind11 path) |
-| `template/android-app/` | Android output (Chaquopy + Djinni) |
+| `template/desktop-app/` | Desktop output (SDL3 + pybind11 path, **Zig build default**) |
+| `template/android-app/` | Android output (Chaquopy + **Zig JNI bridge**, Djinni deprecated) |
 | `template/shared/` | Shared DSL, themes, runtime helpers |
 | `docs/assets/diagrams/` | Architecture SVGs referenced from README |
 
@@ -125,6 +125,7 @@ Phased native-build orchestration for **generated template apps** — see [docs/
 
 - **Do not** replace all CMake in one PR; CMake stays the fallback during transition.
 - **Phase order:** 0 install → 1 `zig-services/` sidecar → 2 Langflow importer (parallel Kotlin track) → 3 desktop Zig default → 4 Android JNI → 5 ArenaAllocator opt-in → 6 docs/diagrams.
-- **`zig-services/`** lives under `template/desktop-app/zig-services/` (mirrored in generated output); Android mirror added in Phase 4.
+- **`zig-services/`** lives under `template/desktop-app/zig-services/` and `template/android-app/zig-services/` (mirrored in generated output).
+- **Android JNI**: Zig `export fn` in `jni/python_bridge.zig` replaces Djinni-generated JNI glue. See `docs/guides/legacy-djinni.md`.
 - **Keep Gradle** for `:app`, `:core`, and `:cli` — Zig owns generated native binaries only.
 - **Pin Zig 0.14.x** in `misc/client-setup/env.sh`; Android needs NDK (API ≥ 29); Zig does not ship Bionic.

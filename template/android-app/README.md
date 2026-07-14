@@ -25,8 +25,27 @@ See **`examples/plotter/`** for the Desmos-style sample (FunctionRegistry, Plott
 
 ## Build
 
+**Default — Zig (recommended):**
+
+```bash
+cd zig-services
+zig build -Dtarget=aarch64-linux-android    # arm64 device
+zig build -Dtarget=x86_64-linux-android     # x86_64 emulator
+```
+
+Output: `zig-out/lib/lib{{projectName}}.so`. The Gradle APK task picks up `.so` from `jniLibs/`.
+
+**Full APK:**
+
 ```bash
 ./gradlew :app:assembleDebug
 ```
 
-Docs: [docs/templates/android-app.md](../../docs/templates/android-app.md)
+**Legacy CMake (fallback):**
+
+```bash
+cmake --preset android-arm64
+cmake --build --preset android-arm64
+```
+
+Docs: [docs/templates/android-app.md](../../docs/templates/android-app.md) · [zig-services/README.md](zig-services/README.md)

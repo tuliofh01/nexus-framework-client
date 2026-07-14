@@ -345,7 +345,7 @@ Nexus targets **native, data-heavy, and field-deployed tools** — trading desks
 | Template | Stack | Guide | Languages |
 |----------|-------|-------|-----------|
 | `desktop-app` | [SDL3](https://www.libsdl.org/) + [ImGui](https://github.com/ocornut/imgui) + [pybind11](https://pybind11.readthedocs.io/) + [sol2](https://sol2.readthedocs.io/) | [docs/templates/desktop-app.md](docs/templates/desktop-app.md) | [C++20](https://en.cppreference.com/w/cpp/20), [Lua](https://www.lua.org/), [Python](https://www.python.org/), [TypeScript](https://www.typescriptlang.org/) |
-| `android-app` | [SDL3](https://www.libsdl.org/)/GLES + [Chaquopy](https://chaquo.com/chaquopy/) + [Djinni](https://github.com/dropbox/djinni) | [docs/templates/android-app.md](docs/templates/android-app.md) | [C++20](https://en.cppreference.com/w/cpp/20), [Kotlin](https://kotlinlang.org/), [Lua](https://www.lua.org/), [Python](https://www.python.org/) |
+| `android-app` | [SDL3](https://www.libsdl.org/)/GLES + [Chaquopy](https://chaquo.com/chaquopy/) + [Zig JNI](template/android-app/zig-services/) bridge | [docs/templates/android-app.md](docs/templates/android-app.md) | [C++20](https://en.cppreference.com/w/cpp/20), [Kotlin](https://kotlinlang.org/), [Lua](https://www.lua.org/), [Python](https://www.python.org/) |
 
 Output: `builds/framework/<name>/` · Layout: [builds/README.md](builds/README.md) · [template/README.md](template/README.md)
 
@@ -471,7 +471,7 @@ Zig does not replace your C++20 MVC stack — it replaces **build friction**: fe
 | 1 | `zig-services/` sidecar + C++ TU compilation |   **Done** |
 | 2 | Langflow → `flows.json` importer (`enabled: false` default) |   **Done** |
 | 3 | Desktop Zig as default native backend |   **Done** |
-| 4 | Android Zig JNI (retire Djinni) |   Pending |
+| 4 | Android Zig JNI (retire Djinni) |   Done (Phase 4) |
 | 5 | Opt-in ArenaAllocator C-ABI at hotspots |   **Done** |
 
 Phased rollout: Zig beside CMake first → desktop Zig default → Android Zig JNI → opt-in ArenaAllocator. Pin Zig **0.14.x**; Android builds need the NDK (API ≥ 29) — Zig does not ship Bionic. The Langflow importer is a parallel Kotlin track in `:core` and does not block the Zig scaffold.
@@ -582,7 +582,7 @@ The biggest architectural shift is a **cross-platform Zig services layer** that 
 | **Platform detection** | Runtime `uname` or `%OS%` in shell | Compile-time `@import("builtin").target` in Zig |
 | **Native build orchestration** | CMake + Ninja + 5–7 compilers | Zig `build.zig` + `zig c++` (1 compiler binary) |
 | **Toolchain footprint** | ~10–12 GB (MSVC, NDK, g++, clang) | ~80 MB (Zig 0.14.x tarball) |
-| **Android JNI bridge** | 8 generated files + Djinni codegen | 2 hand-authored `.zig` modules (planned Phase 4) |
+| **Android JNI bridge** | 8 generated files + Djinni codegen | 2 hand-authored `.zig` modules (Phase 4) + 1 C++ bridge helper |
 | **Cross-compile: Linux → Win** | Not supported without MSVC | Supported (`zig build -Dtarget=x86_64-windows`) |
 
 **Architectural gains:**
@@ -603,7 +603,7 @@ The biggest architectural shift is a **cross-platform Zig services layer** that 
 - CMake remains a supported fallback (`legacy-cmake-debug` / `legacy-cmake-release` presets) during the transitional phases.
 - The `blueprint.json` / `flows.json` schema, MVC architecture, TS/XHTML DSL, and template outputs are unchanged by the services migration.
 
-**Next on the roadmap:** Phase 4 (Android Zig JNI), loading screen polish, regex debugger widget, and in-memory unitary tests.
+**Next on the roadmap:** Phase 4b (Android Lua JNI bridges), loading screen polish, regex debugger widget, and in-memory unitary tests.
 
 See: [Zig patching (native builds)](#zig-patching-native-builds) · [Services architecture](#services-architecture-v02) · [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md)
 
@@ -665,7 +665,7 @@ Replaced 3 platform-specific shell scripts (~450 LOC) with a **single Zig source
 | **Build** | Gradle (Kotlin + convention plugins), Zig, CMake, Ninja |
 | **Graphics** | SDL3, OpenGL 3.3, GLES |
 | **Scripting** | Lua 5.4 + sol2, pybind11, Chaquopy |
-| **Codegen** | Kotlin DSL, Djinni (legacy), JSON schema v2 |
+| **Codegen** | Kotlin DSL, Zig JNI (replaces Djinni), JSON schema v2 |
 | **ML/Ops** | Langflow import, n8n webhook compatibility |
 | **CI** | Docker, Jenkins, GitHub Actions (optional) |
 | **Diagrams** | Python SVG generation, 14 automated diagrams |

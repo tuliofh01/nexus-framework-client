@@ -1,9 +1,9 @@
 # {{projectName}} — Nexus Framework Android native library.
 #
-# Built by the Gradle Android Gradle Plugin via externalNativeBuild, or
-# standalone with the android-arm64 / android-x86_64 CMake presets.
+# LEGACY FALLBACK — use zig-services/ for the primary build path.
+# Built by Gradle AGP via externalNativeBuild if not using Zig.
 # Python is NOT embedded here — Chaquopy owns CPython on the JVM side and
-# talks to this library through the Djinni PythonBridge.
+# talks to this library through the Zig JNI bridge (or legacy Djinni).
 
 cmake_minimum_required(VERSION 3.24)
 project({{projectName}} VERSION 0.1.0 LANGUAGES C CXX)
