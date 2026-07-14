@@ -36,13 +36,21 @@ export namespace nxs::view {
 /// Python error bar. Created once in main() and called every frame.
 export class AppView {
 public:
-    explicit AppView(controller::AppController& controller)
+    explicit AppView(controller::AppController& controller) noexcept
         : m_controller(controller) {}
+
+    /// Non-copyable — references binding to controller.
+    AppView(const AppView&) = delete;
+    AppView& operator=(const AppView&) = delete;
+    AppView(AppView&&) = delete;
+    AppView& operator=(AppView&&) = delete;
+
+    ~AppView() = default;
 
     /// Called once per frame from the main loop. Lays out all widgets
     /// inside a fullscreen decorated window.
     void draw() {
-        const auto* vp = ImGui::GetMainViewport();
+        const auto* const vp = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(vp->WorkPos);
         ImGui::SetNextWindowSize(vp->WorkSize);
         ImGui::Begin("{{projectName}}", nullptr,

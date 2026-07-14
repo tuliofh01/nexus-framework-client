@@ -6,6 +6,11 @@
 // background interval loops, event triggers, and startup flows. A NO-OP when
 // flows.json is missing or flows are disabled in nxs_config.json.
 //
+// == RAII ==
+// FlowRunner owns its flow definitions by value (std::vector<LoadedFlow>).
+// No heap allocations escape the class. Construction is cheap; load() parses
+// once, tick() dispatches lazily.
+//
 // == JSON PARSING ==
 // v1 uses lightweight string extraction (no nlohmann) to keep the template
 // dependency-light. Schema correctness is enforced at generation time by
@@ -21,11 +26,14 @@
 module;  // global module fragment
 
 // ── Standard library ──
+#include <algorithm>
 #include <cstdio>
 #include <cstdint>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 export module nxs.desktop.flow;
@@ -39,7 +47,7 @@ import nxs.desktop.controller;
 
 namespace {
 
-std::string readFile(const std::string& path) {
+[[nodiscard]] auto readFile(const std::string& path) -> std::string {
     std::ifstream in(path);
     if (!in) return {};
     std::ostringstream ss;
@@ -47,8 +55,9 @@ std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-bool extractJsonBool(const std::string& json, const std::string& key,
-                     bool defaultValue) {
+[[nodiscard]] auto extractJsonBool(const std::string& json,
+                                   const std::string& key,
+                                   bool defaultValue) -> bool {
     const auto needle = "\"" + key + "\"";
     auto pos = json.find(needle);
     if (pos == std::string::npos) return defaultValue;
@@ -62,8 +71,8 @@ bool extractJsonBool(const std::string& json, const std::string& key,
     return defaultValue;
 }
 
-std::string extractJsonString(const std::string& json,
-                              const std::string& key) {
+[[nodiscard]] auto extractJsonString(const std::string& json,
+                                     const std::string& key) -> std::string {
     const auto needle = "\"" + key + "\"";
     auto pos = json.find(needle);
     if (pos == std::string::npos) return {};
@@ -76,9 +85,9 @@ std::string extractJsonString(const std::string& json,
     return json.substr(pos + 1, end - pos - 1);
 }
 
-std::int64_t extractJsonInt64(const std::string& json,
-                              const std::string& key,
-                              std::int64_t fallback = 0) {
+[[nodiscard]] auto extractJsonInt64(const std::string& json,
+                                    const std::string& key,
+                                    std::int64_t fallback = 0) -> std::int64_t {
     const auto needle = "\"" + key + "\"";
     auto pos = json.find(needle);
     if (pos == std::string::npos) return fallback;
@@ -95,16 +104,17 @@ std::int64_t extractJsonInt64(const std::string& json,
     }
     while (pos < json.size() &&
            json[pos] >= '0' && json[pos] <= '9') {
-        value = value * 10 + (json[pos] - '0');
+        value = value * 10 + static_cast<std::int64_t>(json[pos] - '0');
         ++pos;
     }
     return negative ? -value : value;
 }
 
-std::string substituteState(const std::string& text, int counter) {
+[[nodiscard]] auto substituteState(const std::string& text,
+                                   int counter) -> std::string {
     std::string out = text;
     constexpr std::string_view token = "${state.counter}";
-    auto pos = out.find(token);
+    const auto pos = out.find(token);
     if (pos != std::string::npos) {
         out.replace(pos, token.size(), std::to_string(counter));
     }
@@ -133,15 +143,25 @@ export struct LoadedFlow {
 
 /// Loads flows.json and dispatches automations. Created in main() and
 /// ticked every frame. A NO-OP when flows are disabled or absent.
+///
+/// RAII: owns LoadedFlow definitions by value; no heap escapes.
 export class FlowRunner {
 public:
-    explicit FlowRunner(controller::AppController& controller)
+    explicit FlowRunner(controller::AppController& controller) noexcept
         : m_controller(controller) {}
+
+    /// Non-copyable — references binding to controller.
+    FlowRunner(const FlowRunner&) = delete;
+    FlowRunner& operator=(const FlowRunner&) = delete;
+    FlowRunner(FlowRunner&&) = delete;
+    FlowRunner& operator=(FlowRunner&&) = delete;
+
+    ~FlowRunner() = default;
 
     /// Parse nxs_config.json for the enabled flag, then scan flows.json
     /// for trigger blocks. Returns true if at least one flow is active.
-    bool load(const std::string& configPath = "nxs_config.json",
-              const std::string& flowsPath = "flows/flows.json") {
+    auto load(const std::string& configPath = "nxs_config.json",
+              const std::string& flowsPath = "flows/flows.json") -> bool {
         m_flows.clear();
         m_active = false;
 
@@ -276,12 +296,12 @@ public:
         }
     }
 
-    bool isActive() const { return m_active; }
+    [[nodiscard]] auto isActive() const noexcept -> bool { return m_active; }
 
 private:
     void runFlow(const LoadedFlow& flow) {
         if (!flow.invokeTarget.empty()) {
-            const int counter = m_controller.model().counter();
+            const auto counter = m_controller.model().counter();
             dispatchInvoke(flow.invokeTarget,
                            substituteState(flow.invokeArg, counter));
         }

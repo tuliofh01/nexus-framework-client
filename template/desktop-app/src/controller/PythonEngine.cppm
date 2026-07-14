@@ -11,6 +11,10 @@
 // importing modules never see <pybind11/embed.h>. This keeps compilation
 // units that only `import nxs.desktop.python;` free of Python headers.
 //
+// == RAII ==
+// Constructor starts the interpreter, destructor finalizes it. Only one
+// interpreter can exist per process (pybind11 limitation).
+//
 // == DESKTOP VS ANDROID ==
 // Desktop uses pybind11 embed — CPython inside the native process.
 // Android uses Chaquopy on the JVM (see nxs.android.python).
@@ -28,6 +32,7 @@ module;  // global module fragment
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 export module nxs.desktop.python;
@@ -48,13 +53,18 @@ export namespace nxs::controller {
 /// PythonEngine starts the interpreter and imports `python/functions.py`;
 /// destroying it finalizes the interpreter. Only one interpreter can
 /// exist per process (pybind11 limitation).
+///
+/// RAII: construction = py::scoped_interpreter start,
+///        destruction = finalize.
 export class PythonEngine {
 public:
     PythonEngine();   // starts the interpreter and imports python/functions.py
     ~PythonEngine();  // finalizes the interpreter
 
     PythonEngine(const PythonEngine&) = delete;
-    auto operator=(const PythonEngine&) -> PythonEngine& = delete;
+    PythonEngine& operator=(const PythonEngine&) = delete;
+    PythonEngine(PythonEngine&&) = delete;
+    PythonEngine& operator=(PythonEngine&&) = delete;
 
     /// Evaluate the named function over [xMin, xMax] with `samples` points.
     /// Fills xs/ys (resized as needed) and returns false on Python errors,
@@ -68,7 +78,7 @@ public:
     [[nodiscard]] auto greeting(std::string_view projectName) -> std::string;
 
     /// The last Python error message, or empty if no error.
-    [[nodiscard]] auto lastError() const -> const std::string& {
+    [[nodiscard]] auto lastError() const noexcept -> const std::string& {
         return m_lastError;
     }
 
@@ -84,7 +94,7 @@ namespace {
 
 /// Prefer packed python.dat in release; fall back to plaintext python/ for
 /// development iteration. Returns true if the archive was loaded successfully.
-bool importFromArchive(py::module_& out) {
+auto importFromArchive(py::module_& out) -> bool {
     const auto archivePath = runtime::Paths::pythonArchive();
     if (!std::filesystem::exists(archivePath)) {
         return false;
@@ -104,7 +114,7 @@ bool importFromArchive(py::module_& out) {
     auto mod = py::module_::create("functions");
     py::exec(source, mod.attr("__dict__"));
     sys.attr("modules")["functions"] = mod;
-    out = mod;
+    out = std::move(mod);
     return true;
 }
 
@@ -116,8 +126,8 @@ struct PythonEngine::Impl {
     py::module_ functions;
 };
 
-PythonEngine::PythonEngine() {
-    m_impl = std::make_unique<Impl>();
+PythonEngine::PythonEngine()
+    : m_impl(std::make_unique<Impl>()) {
     if (!importFromArchive(m_impl->functions)) {
         auto sys = py::module_::import("sys");
         sys.attr("path").attr("insert")(0, "python");

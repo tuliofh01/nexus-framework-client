@@ -22,6 +22,7 @@ module;  // global module fragment
 // ── Standard library ──
 #include <algorithm>
 #include <string>
+#include <string_view>
 
 export module nxs.desktop.plot;
 
@@ -48,21 +49,33 @@ export struct ChartSettings {
 
 /// Responds to user chart commands and drives Python evaluation. Owned
 /// by main(); the view and LuaPanels both reference it.
+///
+/// RAII: owns ChartSettings by value; references to registry and python
+///       are non-owning (created in main() before controller).
 export class PlotController {
 public:
-    PlotController(model::FunctionRegistry& registry, PythonEngine& python)
+    PlotController(model::FunctionRegistry& registry,
+                   PythonEngine& python) noexcept
         : m_registry(registry), m_python(python) {}
+
+    /// Non-copyable — references binding to registry and python.
+    PlotController(const PlotController&) = delete;
+    PlotController& operator=(const PlotController&) = delete;
+    PlotController(PlotController&&) = delete;
+    PlotController& operator=(PlotController&&) = delete;
+
+    ~PlotController() = default;
 
     // ── Curve management ──────────────────────────────────────────────
 
     /// Activate a function by spec id. The new series starts dirty and
     /// gets sampled on the next refresh() call.
-    void addFunction(const std::string& specId) {
+    void addFunction(const std::string_view specId) {
         m_registry.activate(specId);
     }
 
     /// Deactivate and remove a function from the active set.
-    void removeFunction(const std::string& specId) {
+    void removeFunction(const std::string_view specId) {
         m_registry.deactivate(specId);
     }
 
@@ -70,7 +83,7 @@ public:
 
     /// Update the visible X range. Degenerate ranges (min >= max) are
     /// silently ignored to avoid half-typed input issues.
-    void setRange(double xMin, double xMax) {
+    constexpr void setRange(double xMin, double xMax) noexcept {
         if (xMin >= xMax) return;
         m_settings.xMin = xMin;
         m_settings.xMax = xMax;
@@ -94,7 +107,7 @@ public:
     void refresh() {
         for (auto& series : m_registry.active()) {
             if (!series.dirty) continue;
-            const bool ok = m_python.evaluate(
+            const auto ok = m_python.evaluate(
                 series.spec.pythonName,
                 m_settings.xMin, m_settings.xMax,
                 m_settings.sampleCount, series.xs, series.ys);
@@ -110,9 +123,17 @@ public:
 
     // ── Accessors ─────────────────────────────────────────────────────
 
-    ChartSettings& settings() { return m_settings; }
-    model::FunctionRegistry& registry() { return m_registry; }
-    const std::string& lastPythonError() const {
+    [[nodiscard]] auto settings() noexcept -> ChartSettings& {
+        return m_settings;
+    }
+    [[nodiscard]] auto settings() const noexcept -> const ChartSettings& {
+        return m_settings;
+    }
+    [[nodiscard]] auto registry() noexcept -> model::FunctionRegistry& {
+        return m_registry;
+    }
+    [[nodiscard]] auto lastPythonError() const noexcept
+        -> const std::string& {
         return m_python.lastError();
     }
 

@@ -7,6 +7,11 @@
 // The `nxs.*` Lua API (add_function, set_range, register_panel, etc.)
 // is wired in bindApi().
 //
+// == RAII ==
+// sol::state owns the VM by value; construction opens libs + binds API,
+// destruction closes Lua cleanly. Panels and hotkeys are std::vector of
+// move-only types (sol::protected_function is move-only).
+//
 // == DESKTOP VS ANDROID ==
 // Desktop LuaPanels binds to PlotController (Desmos-style plotter).
 // Android LuaPanels binds to AppController (simpler counter API).
@@ -27,6 +32,7 @@ module;  // global module fragment
 #include <cstdio>
 #include <filesystem>
 #include <string>
+#include <utility>
 #include <vector>
 
 export module nxs.android.lua;
@@ -45,15 +51,26 @@ export namespace nxs::view {
 /// Manages the sol2 Lua state and pumps registered panel callbacks each
 /// frame. Constructing LuaPanels opens Lua standard libraries and wires
 /// the `nxs.*` API via bindApi(); call loadScripts() to load user panels.
+///
+/// RAII: sol::state owns the Lua VM; construction opens libs + binds API,
+///       destruction closes Lua cleanly.
 export class LuaPanels {
 public:
     /// Bind the `nxs.*` API and open base/math/string/table libs.
     explicit LuaPanels(controller::AppController& controller)
-        : m_controller(controller) {
+        : m_controller{controller} {
         m_lua.open_libraries(sol::lib::base, sol::lib::math,
                              sol::lib::string, sol::lib::table);
         bindApi();
     }
+
+    /// Non-copyable — sol::state owns the Lua VM.
+    LuaPanels(const LuaPanels&) = delete;
+    LuaPanels& operator=(const LuaPanels&) = delete;
+    LuaPanels(LuaPanels&&) = delete;
+    LuaPanels& operator=(LuaPanels&&) = delete;
+
+    ~LuaPanels() = default;
 
     /// Load (or reload) panels from the packed `lua.dat` archive or
     /// plaintext `scripts/panels.lua`. Safe to call at runtime for
@@ -62,10 +79,10 @@ public:
         m_panels.clear();
         m_hotkeys.clear();
 
-        const std::string archivePath = runtime::Paths::luaArchive();
+        const auto archivePath = runtime::Paths::luaArchive();
         if (std::filesystem::exists(archivePath)) {
-            runtime::ScriptArchive archive(
-                runtime::ScriptArchive::MAGIC_LUA);
+            runtime::ScriptArchive archive{
+                runtime::ScriptArchive::MAGIC_LUA};
             if (archive.load(archivePath)) {
                 std::string source;
                 if (archive.getSource("panels", source)) {
@@ -96,19 +113,23 @@ public:
         for (const auto& hotkey : m_hotkeys) {
             if (ImGui::IsKeyPressed(
                     static_cast<ImGuiKey>(hotkey.keycode), false)) {
-                if (auto r = hotkey.action(); !r.valid())
+                if (auto r = hotkey.action(); !r.valid()) {
                     m_lastError = sol::error(r).what();
+                }
             }
         }
         for (const auto& panel : m_panels) {
             ImGui::Begin(panel.title.c_str());
-            if (auto r = panel.body(); !r.valid())
+            if (auto r = panel.body(); !r.valid()) {
                 m_lastError = sol::error(r).what();
+            }
             ImGui::End();
         }
     }
 
-    const std::string& lastError() const { return m_lastError; }
+    [[nodiscard]] auto lastError() const -> const std::string& {
+        return m_lastError;
+    }
 
 private:
     struct Panel {
@@ -137,11 +158,11 @@ private:
 
         nxs.set_function("register_panel",
             [this](const std::string& title, sol::protected_function fn) {
-                m_panels.push_back({title, std::move(fn)});
+                m_panels.push_back(Panel{title, std::move(fn)});
             });
         nxs.set_function("register_hotkey",
             [this](int imguiKey, sol::protected_function fn) {
-                m_hotkeys.push_back({imguiKey, std::move(fn)});
+                m_hotkeys.push_back(Hotkey{imguiKey, std::move(fn)});
             });
 
         sol::table ui = m_lua.create_named_table("ui");

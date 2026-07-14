@@ -6,6 +6,10 @@
 // nxs.desktop.view: draws greeting, counter, three buttons, and optional
 // Python error bar. Stateless — reads from the controller every frame.
 //
+// == MODERN C++ ==
+// Uses RAII (non-owning reference to controller), [[nodiscard]] on const
+// getters, noexcept on constructor, deleted copy/move, and brace init.
+//
 // == MODULE STRUCTURE ==
 // Dear ImGui headers live in the global module fragment so importing
 // modules never see them.
@@ -29,15 +33,25 @@ export namespace nxs::view {
 
 /// Single-page ImGui view: greeting, counter, three buttons, optional
 /// Python error bar. Created once in main() and called every frame.
+///
+/// RAII: non-owning reference to controller; no heap allocations.
 export class AppView {
 public:
-    explicit AppView(controller::AppController& controller)
-        : m_controller(controller) {}
+    explicit AppView(controller::AppController& controller) noexcept
+        : m_controller{controller} {}
+
+    /// Non-copyable — references binding to controller.
+    AppView(const AppView&) = delete;
+    AppView& operator=(const AppView&) = delete;
+    AppView(AppView&&) = delete;
+    AppView& operator=(AppView&&) = delete;
+
+    ~AppView() = default;
 
     /// Called once per frame from the main loop. Lays out all widgets
     /// inside a fullscreen decorated window.
     void draw() {
-        const ImGuiViewport* vp = ImGui::GetMainViewport();
+        const auto* const vp = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(vp->WorkPos);
         ImGui::SetNextWindowSize(vp->WorkSize);
         ImGui::Begin("{{projectName}}", nullptr,

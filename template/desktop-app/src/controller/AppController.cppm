@@ -43,22 +43,34 @@ export class AppController {
 public:
     /// Store references to the model and Python engine. Both outlive the
     /// controller because they are created in main() before the controller.
-    AppController(model::AppModel& model, PythonEngine& python)
+    AppController(model::AppModel& model, PythonEngine& python) noexcept
         : m_model(model), m_python(python) {}
+
+    /// Non-copyable, non-movable — references bind to main() locals.
+    AppController(const AppController&) = delete;
+    AppController& operator=(const AppController&) = delete;
+    AppController(AppController&&) = delete;
+    AppController& operator=(AppController&&) = delete;
+
+    ~AppController() = default;
 
     // ── Counter commands ───────────────────────────────────────────────
 
     /// Increase the counter by one. Called by the Increment button or
     /// a Lua/flow `nxs.increment` invoke.
-    void increment() noexcept { m_model.setCounter(m_model.counter() + 1); }
+    constexpr void increment() noexcept {
+        m_model.setCounter(m_model.counter() + 1);
+    }
 
     /// Decrease the counter by one. Called by the Decrement button or
     /// a Lua `nxs.decrement` invoke.
-    void decrement() noexcept { m_model.setCounter(m_model.counter() - 1); }
+    constexpr void decrement() noexcept {
+        m_model.setCounter(m_model.counter() - 1);
+    }
 
     /// Reset the counter to zero. Called by the Reset button or a
     /// Lua/flow `nxs.reset` invoke.
-    void reset() noexcept { m_model.setCounter(0); }
+    constexpr void reset() noexcept { m_model.setCounter(0); }
 
     // ── Python greeting refresh ────────────────────────────────────────
 
@@ -67,7 +79,7 @@ public:
     /// Errors are silently swallowed — the view surfaces them via
     /// lastPythonError().
     void refresh() {
-        const auto greeting = m_python.greeting("{{projectName}}");
+        const auto greeting = m_python.greeting("{{projectName}}"sv);
         if (!greeting.empty()) {
             m_model.setGreeting(greeting);
         }
@@ -76,10 +88,13 @@ public:
     // ── Accessors for the view layer ───────────────────────────────────
 
     /// Mutable model reference — the view reads state through this.
-    [[nodiscard]] auto model() noexcept -> model::AppModel& { return m_model; }
+    [[nodiscard]] constexpr auto model() noexcept -> model::AppModel& {
+        return m_model;
+    }
 
     /// Forward the last Python error string to the error bar in the view.
-    [[nodiscard]] auto lastPythonError() const -> const std::string& {
+    [[nodiscard]] constexpr auto lastPythonError() const noexcept
+        -> const std::string& {
         return m_python.lastError();
     }
 
@@ -89,3 +104,5 @@ private:
 };
 
 }  // namespace nxs::controller
+
+using namespace std::string_view_literals;

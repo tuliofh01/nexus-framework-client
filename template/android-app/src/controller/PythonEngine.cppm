@@ -6,14 +6,18 @@
 // embeds CPython on Android — JVM owns the interpreter. The C++ side only
 // delegates calls through the bridge shared_ptr.
 //
-// == DESKTOP VS ANDROID ==
-// Desktop uses pybind11 embed (see nxs.desktop.python).
-// Android uses Chaquopy on the JVM + a Zig JNI bridge (see zig-services/).
+// == RAII ==
+// Singleton via Meyer's static (thread-safe in C++11+). The shared_ptr
+// to PythonBridge is set by the Kotlin MainActivity before SDL_main().
 //
 // == SINGLETON PATTERN ==
 // PythonEngine::instance() returns a process-wide singleton. The Kotlin
 // MainActivity calls AppCore.installPythonBridge() to wire the Chaquopy
 // bridge before SDL_main() starts.
+//
+// == DESKTOP VS ANDROID ==
+// Desktop uses pybind11 embed (see nxs.desktop.python).
+// Android uses Chaquopy on the JVM + a Zig JNI bridge (see zig-services/).
 //==============================================================================
 
 module;  // global module fragment
@@ -25,6 +29,7 @@ module;  // global module fragment
 // ── Standard library ──
 #include <memory>
 #include <string>
+#include <utility>
 
 export module nxs.android.python;
 
@@ -40,9 +45,12 @@ export namespace nxs::controller {
 
 /// Singleton facade over Chaquopy. Does not own the interpreter — it
 /// delegates to the PythonBridge set by the Kotlin MainActivity.
+///
+/// RAII: Meyer's singleton (thread-safe in C++11+). The shared_ptr
+///       to PythonBridge is non-owning from the C++ side.
 export class PythonEngine {
 public:
-    static PythonEngine& instance() {
+    [[nodiscard]] static auto instance() -> PythonEngine& {
         static PythonEngine engine;
         return engine;
     }
@@ -54,21 +62,30 @@ public:
     }
 
     /// Delegate to the bridge's greeting() method.
-    std::string greeting(const std::string& name) {
+    auto greeting(const std::string& name) -> std::string {
         if (!m_bridge) {
             m_lastError =
                 "PythonBridge not installed (call AppCore.installPythonBridge first)";
             return {};
         }
-        const std::string result = m_bridge->greeting(name);
+        const auto result = m_bridge->greeting(name);
         m_lastError.clear();
         return result;
     }
 
-    const std::string& lastError() const { return m_lastError; }
+    [[nodiscard]] auto lastError() const -> const std::string& {
+        return m_lastError;
+    }
 
 private:
     PythonEngine() = default;
+    ~PythonEngine() = default;
+
+    PythonEngine(const PythonEngine&) = delete;
+    PythonEngine& operator=(const PythonEngine&) = delete;
+    PythonEngine(PythonEngine&&) = delete;
+    PythonEngine& operator=(PythonEngine&&) = delete;
+
     std::shared_ptr<PythonBridgeImpl> m_bridge;
     std::string m_lastError;
 };

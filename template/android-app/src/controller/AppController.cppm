@@ -7,6 +7,11 @@
 // only difference is that Android methods are not noexcept (matches the
 // original Android codebase style).
 //
+// == MODERN C++ ==
+// Uses RAII (non-owning references to main() locals), [[nodiscard]] on
+// const getters, constexpr on simple accessors, deleted copy/move,
+// trailing return types, and brace initialization.
+//
 // == MVC ROLE ==
 //   View (user clicks)  ──►  Controller  ──►  Model (state)
 //                                     │
@@ -18,6 +23,8 @@ module;  // global module fragment
 // ── Standard library ──
 #include <cstdio>
 #include <string>
+#include <string_view>
+#include <utility>
 
 export module nxs.android.controller;
 
@@ -36,24 +43,36 @@ public:
     /// Store references to the model and Python engine. Both outlive the
     /// controller because they are created in main() before the controller.
     AppController(model::AppModel& model, PythonEngine& python)
-        : m_model(model), m_python(python) {}
+        : m_model{model}, m_python{python} {}
+
+    /// Non-copyable, non-movable — references bind to main() locals.
+    AppController(const AppController&) = delete;
+    AppController& operator=(const AppController&) = delete;
+    AppController(AppController&&) = delete;
+    AppController& operator=(AppController&&) = delete;
+
+    ~AppController() = default;
 
     // ── Counter commands ───────────────────────────────────────────────
 
     /// Increase the counter by one.
-    void increment() { m_model.setCounter(m_model.counter() + 1); }
+    constexpr void increment() {
+        m_model.setCounter(m_model.counter() + 1);
+    }
 
     /// Decrease the counter by one.
-    void decrement() { m_model.setCounter(m_model.counter() - 1); }
+    constexpr void decrement() {
+        m_model.setCounter(m_model.counter() - 1);
+    }
 
     /// Reset the counter to zero.
-    void reset() { m_model.setCounter(0); }
+    constexpr void reset() { m_model.setCounter(0); }
 
     // ── Python greeting refresh ────────────────────────────────────────
 
     /// Evaluate helpers.greeting() via the Chaquopy/Djinni bridge.
     void refresh() {
-        const std::string greeting = m_python.greeting("{{projectName}}");
+        const auto greeting = m_python.greeting("{{projectName}}"sv);
         if (!greeting.empty()) {
             m_model.setGreeting(greeting);
         }
@@ -61,8 +80,10 @@ public:
 
     // ── Accessors for the view layer ───────────────────────────────────
 
-    model::AppModel& model() { return m_model; }
-    const std::string& lastPythonError() const { return m_python.lastError(); }
+    [[nodiscard]] auto model() -> model::AppModel& { return m_model; }
+    [[nodiscard]] auto lastPythonError() const -> const std::string& {
+        return m_python.lastError();
+    }
 
 private:
     model::AppModel& m_model;
@@ -70,3 +91,5 @@ private:
 };
 
 }  // namespace nxs::controller
+
+using namespace std::string_view_literals;

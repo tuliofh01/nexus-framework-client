@@ -7,6 +7,11 @@
 // register panels and hotkeys via the `nxs.*` API. This class pumps those
 // registrations every frame.
 //
+// == RAII ==
+// sol2 state is owned by value — construction opens libraries + binds API,
+// destruction closes Lua cleanly. Panels and hotkeys are RAII containers
+// (std::vector of move-only types).
+//
 // == TS/XHTML DSL ==
 // The TypeScript + XHTML authoring layer (see ui/) lowers into the same
 // nxs.register_panel(), ui.button(), etc. calls that Lua scripts use
@@ -27,9 +32,10 @@ module;  // global module fragment
 #include <imgui.h>
 
 // ── Standard library ──
+#include <cstdio>
 #include <filesystem>
-#include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 export module nxs.desktop.lua;
@@ -48,6 +54,9 @@ export namespace nxs::view {
 /// Manages the sol2 Lua state and pumps registered panel callbacks each
 /// frame. Constructing LuaPanels opens Lua standard libraries and wires
 /// the `nxs.*` API via bindApi(); call loadScripts() to load user panels.
+///
+/// RAII: sol::state owns the Lua VM; construction opens libs + binds API,
+///        destruction closes Lua cleanly.
 export class LuaPanels {
 public:
     /// Bind the `nxs.*` API and open base/math/string/table libs.
@@ -57,6 +66,14 @@ public:
                              sol::lib::string, sol::lib::table);
         bindApi();
     }
+
+    /// Non-copyable — sol::state owns the Lua VM.
+    LuaPanels(const LuaPanels&) = delete;
+    LuaPanels& operator=(const LuaPanels&) = delete;
+    LuaPanels(LuaPanels&&) = delete;
+    LuaPanels& operator=(LuaPanels&&) = delete;
+
+    ~LuaPanels() = default;
 
     /// Load (or reload) panels from the packed `lua.dat` archive or
     /// plaintext `scripts/panels.lua`. Safe to call at runtime for
@@ -121,7 +138,9 @@ public:
     }
 
     /// The last Lua error message, or empty if no error.
-    const std::string& lastError() const { return m_lastError; }
+    [[nodiscard]] auto lastError() const noexcept -> const std::string& {
+        return m_lastError;
+    }
 
 private:
     struct Panel {
