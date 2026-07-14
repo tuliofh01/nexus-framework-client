@@ -94,7 +94,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: n/a (already complete)
   Commit: N
 
-- [ ] 1. Convert desktop AppModel → `nxs.desktop.model`
+- [x] 1. Convert desktop AppModel → `nxs.desktop.model`
   What to do / Must NOT do: Read `template/desktop-app/src/model/AppModel.hpp` + `AppModel.cpp`. Create `template/desktop-app/src/model/AppModel.cppm` with `module;` global fragment, `export module nxs.desktop.model;`, all method defs inlined, educational comments (NO ASCII-art). Delete the original `.hpp`/`.cpp` after verified. Must NOT change behavior, add deps, or use box-drawing in comments.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9 (desktop main)
   References (executor has NO interview context): `/tmp/opencode/cppm-conversion-brief.md` (rules 1-7, module map); exemplar `template/desktop-app/src/bridge/NexusBridge.cppm`; source `template/desktop-app/src/model/AppModel.hpp`, `template/desktop-app/src/model/AppModel.cpp`
@@ -102,7 +102,7 @@ Your next move: approve this plan, then start work (execution follows the waves 
   QA scenarios: happy — `grep -l "export module nxs.desktop.model" template/desktop-app/src/model/AppModel.cppm` succeeds AND `ls template/desktop-app/src/model/AppModel.{hpp,cpp}` both fail. failure — module name mismatch or original files still present → reject. Evidence `.omo/evidence/task-1-cppm-conversion.md`
   Commit: Y | feat(template): convert desktop AppModel to C++20 module — then TIDY projects folder (remove temp/stray files) and `git add -A && git commit && git push`
 
-- [ ] 2. Convert desktop FunctionRegistry → `nxs.desktop.func`
+- [x] 2. Convert desktop FunctionRegistry → `nxs.desktop.func`
   What to do / Must NOT do: Read `template/desktop-app/src/model/FunctionRegistry.hpp` + `.cpp`. Create `template/desktop-app/src/model/FunctionRegistry.cppm` (`export module nxs.desktop.func;`), inline defs, educational comments. Delete originals after verified. Preserve exact behavior.
   Parallelization: Wave 1 | Blocked by: none | Blocks: task 9
   References: brief (rules, map); exemplar `NexusBridge.cppm`; `template/desktop-app/src/model/FunctionRegistry.hpp`, `.cpp`
