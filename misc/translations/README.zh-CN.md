@@ -58,7 +58,7 @@
 
 ## 什么是 Nexus？
 
-**The Nexus Framework** 是一个**开源原生应用构建器**。你将应用描述为可视化图 — 结构用 [`blueprint.json`](../../docs/templates/blueprint-schema.md)，可选 [`flows.json`](../../docs/templates/flows-schema.md) 用于应用内自动化 — Nexus 生成真实的 **C++**、**Lua** 和 **Python** 应用，支持**桌面**（Windows、macOS、Linux）和 **Android**。Kotlin Compose 客户端（`:app`）编写这些图；[`misc/core`](#misc-文件夹) 验证并写入 [`template/`](#构建你的应用) 项目，包含 SDL3 窗口、Dear ImGui 控件、sol2 脚本、TypeScript + XHTML UI 创作，以及内置 Python（桌面 pybind11，Android Chaquopy + Djinni）。
+**The Nexus Framework** 是一个**开源原生应用构建器**。你将应用描述为可视化图 — 结构用 [`blueprint.json`](../../docs/templates/blueprint-schema.md)，可选 [`flows.json`](../../docs/templates/blueprint-schema.md) 用于应用内自动化 — Nexus 生成真实的 **C++**、**Lua** 和 **Python** 应用，支持**桌面**（Windows、macOS、Linux）和 **Android**。Kotlin Compose 客户端（`:app`）编写这些图；[`misc/core`](#misc-文件夹) 验证并写入 [`template/`](#构建你的应用) 项目，包含 SDL3 窗口、Dear ImGui 控件、sol2 脚本、TypeScript + XHTML UI 创作，以及内置 Python（桌面 pybind11，Android Chaquopy + Djinni）。
 
 这**不是**浏览器壳或托管 flow runtime。Nexus 交付编译后的二进制 — SDL3 + ImGui + ImPlot — 进程内 Lua 与 Python。生成后，你在常规代码层（`cpp.model`、`python.module`、`ui.page`、Lua 面板）中迭代。与 Electron、n8n、Langflow 或从零开始的区别见 [Nexus 如何比较](#nexus-如何比较)。
 
@@ -242,7 +242,7 @@ Nexus 在构建时镜像的视觉模式参考图（非 runtime）：
 | `background` | 应用存活期间 | 每 5000 ms 的 `interval` |
 | `triggered` | 仅满足条件时 | `event` `curve.added`、`startup`、`manual` |
 
-**在客户端编辑：** `./gradlew :app:run` → **Generate Project** → **Edit flows** — 列出 flows、启用/禁用、JSON 预览（v1.1 可视化编辑器）。Schema：[docs/templates/flows-schema.md](../../docs/templates/flows-schema.md)
+**在客户端编辑：** `./gradlew :app:run` → **Generate Project** → **Edit flows** — 列出 flows、启用/禁用、JSON 预览（v1.1 可视化编辑器）。Schema：[docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
 
 在 `flows` 数组中追加多个 flow（每个需唯一 `id`）。全局禁用：`nxs_config.json` → `"flows": { "enabled": false }`；单个 flow：`"enabled": false`。
 
@@ -272,7 +272,7 @@ Nexus 在构建时镜像的视觉模式参考图（非 runtime）：
 
 ![Langflow 导出到 flows.json 采用流程](../../docs/assets/diagrams/langflow-adoption-workflow.svg)
 
-1. **翻译**导出为 [flows schema](../../docs/templates/flows-schema.md)（v1 手动；v1.1 importer）。
+1. **翻译**导出为 [flows schema](../../docs/templates/blueprint-schema.md)（v1 手动；v1.1 importer）。
 2. **放置**于 `flows/flows.json` 或在客户端 **Edit flows** 中粘贴。
 3. **启用**于 `nxs_config.json` → `"flows": { "enabled": true }`。FlowRunner 在启动时注册触发器。
 
@@ -396,7 +396,7 @@ Gradle 通过 [settings.gradle.kts](../../settings.gradle.kts) 将 `:core` 与 `
 - **Python** — 桌面：`pip install`，编辑 `python/`，重建；Android：在 `app/build.gradle.kts` 中 Chaquopy `pip { install(...) }`
 - **Lua** — 将 `.lua` 放入 `scripts/`，从 `panels.lua` `require`；重建打包 `lua.dat`
 
-完整 walkthrough：**[docs/guides/adding-dependencies.md](../../docs/guides/adding-dependencies.md)**
+完整 walkthrough：**[docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)**
 
 ---
 
@@ -505,7 +505,7 @@ MVP 前剩余工作：[通往 MVP](#通往-mvp)。
 | [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) | UI、MVC、Python、Lua、主题 |
 | [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md) | ProjectGenerator、CLI、Docker |
 | [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | `blueprint.json` schema |
-| [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md) | `flows.json` schema |
+| [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | `flows.json` schema |
 | [AGENTS.md](../../AGENTS.md) | 编码助手构建命令 |
 
 ### 生态

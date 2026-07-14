@@ -58,7 +58,7 @@
 
 ## Was ist Nexus?
 
-**The Nexus Framework** ist ein **Open-Source-Builder für native Apps**. Du beschreibst deine App als visuellen Graphen — [`blueprint.json`](../../docs/templates/blueprint-schema.md) für die Struktur, optionales [`flows.json`](../../docs/templates/flows-schema.md) für In-App-Automatisierungen — und Nexus generiert eine echte Anwendung in **C++**, **Lua** und **Python** für **Desktop** (Windows, macOS, Linux) und **Android**. Der Kotlin-Compose-Client (`:app`) erstellt diese Graphen; [`misc/core`](#der-misc-ordner) validiert sie und schreibt Projekte aus [`template/`](#deine-app-bauen) mit SDL3-Fenstern, Dear-ImGui-Widgets, sol2-Scripting, TypeScript- + XHTML-UI-Autoring und eingebettetem Python (pybind11 auf Desktop, Chaquopy + Djinni auf Android).
+**The Nexus Framework** ist ein **Open-Source-Builder für native Apps**. Du beschreibst deine App als visuellen Graphen — [`blueprint.json`](../../docs/templates/blueprint-schema.md) für die Struktur, optionales [`flows.json`](../../docs/templates/blueprint-schema.md) für In-App-Automatisierungen — und Nexus generiert eine echte Anwendung in **C++**, **Lua** und **Python** für **Desktop** (Windows, macOS, Linux) und **Android**. Der Kotlin-Compose-Client (`:app`) erstellt diese Graphen; [`misc/core`](#der-misc-ordner) validiert sie und schreibt Projekte aus [`template/`](#deine-app-bauen) mit SDL3-Fenstern, Dear-ImGui-Widgets, sol2-Scripting, TypeScript- + XHTML-UI-Autoring und eingebettetem Python (pybind11 auf Desktop, Chaquopy + Djinni auf Android).
 
 Das ist **kein** Web-Shell und kein gehosteter Flow-Runtime. Nexus liefert kompilierte Binaries — SDL3 + ImGui + ImPlot — mit In-Process-Lua und Python. Du iterierst in normalen Code-Schichten (`cpp.model`, `python.module`, `ui.page`, Lua-Panels) nach der Generierung. Unterschiede zu Electron, n8n, Langflow oder Greenfield siehe [Wie sich Nexus vergleicht](#wie-sich-nexus-vergleicht).
 
@@ -242,7 +242,7 @@ Optionale Runtime-Services — Background-Loops, Event-Trigger, Zeitpläne.
 | `background` | Solange App lebt | `interval` alle 5000 ms |
 | `triggered` | Nur bei Bedingung | `event` `curve.added`, `startup`, `manual` |
 
-**Im Client bearbeiten:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — Flows listen, aktivieren/deaktivieren, JSON-Vorschau (visueller Editor v1.1). Schema: [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md).
+**Im Client bearbeiten:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — Flows listen, aktivieren/deaktivieren, JSON-Vorschau (visueller Editor v1.1). Schema: [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md).
 
 Mehrere Flows im `flows`-Array anhängen (jeder mit eindeutiger `id`). Global deaktivieren via `nxs_config.json` → `"flows": { "enabled": false }` oder pro Flow mit `"enabled": false`.
 
@@ -272,7 +272,7 @@ Beispiel: [template/desktop-app/flows/flows.json](../../template/desktop-app/flo
 
 ![Langflow-Export zu flows.json Adoptions-Workflow](../../docs/assets/diagrams/langflow-adoption-workflow.svg)
 
-1. **Übersetzen** Export in [Flows-Schema](../../docs/templates/flows-schema.md) (manuell v1; Importer v1.1).
+1. **Übersetzen** Export in [Flows-Schema](../../docs/templates/blueprint-schema.md) (manuell v1; Importer v1.1).
 2. **Platzieren** in `flows/flows.json` oder in **Edit flows** im Client einfügen.
 3. **Aktivieren** in `nxs_config.json` → `"flows": { "enabled": true }`. FlowRunner registriert Trigger beim Start.
 
@@ -396,7 +396,7 @@ Nach [client-setup](../client-setup/README.md) und **Generate Project** native A
 - **Python** — Desktop: `pip install`, `python/` bearbeiten, neu bauen; Android: Chaquopy `pip { install(...) }` in `app/build.gradle.kts`
 - **Lua** — `.lua` in `scripts/` ablegen, aus `panels.lua` `require`; Rebuild packt `lua.dat`
 
-Vollständiger Walkthrough: **[docs/guides/adding-dependencies.md](../../docs/guides/adding-dependencies.md)**
+Vollständiger Walkthrough: **[docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)**
 
 ---
 
@@ -505,7 +505,7 @@ Vollständiger Lizenztext: [Apache License 2.0](../../LICENSE) · [https://www.a
 | [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, Themes |
 | [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | `blueprint.json`-Schema |
-| [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md) | `flows.json`-Schema |
+| [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | `flows.json`-Schema |
 | [AGENTS.md](../../AGENTS.md) | Build-Befehle für Coding-Assistenten |
 
 ### Ökosystem

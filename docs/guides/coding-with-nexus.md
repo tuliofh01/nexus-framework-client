@@ -40,7 +40,7 @@ Nexus has a steeper ramp than Electron or Tauri, but the generated plotter gives
 
 ## Build UI (TypeScript + XHTML)
 
-Edit `ui/ui.xhtml` for structure and `ui/ui.ts` for logic. Tags map to ImGui widgets — see [shared-dsl.md](../templates/shared-dsl.md).
+Edit `ui/ui.xhtml` for structure and `ui/ui.ts` for logic. Tags map to ImGui widgets — see the [XHTML/TypeScript DSL section](#xhtmltypescript-dsl) below.
 
 ```xml
 <panel id="sidebar" title="Functions" width="320">

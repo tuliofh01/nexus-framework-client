@@ -43,4 +43,4 @@ Optional plotter: `-DBUILD_NEXUS_EXAMPLES=ON` → target `{{projectName}}_plotte
 - [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md) — C++20, Zig, Lua, TS, Python
 - [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
 - [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
-- [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md)
+- [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) (includes flows schema section)

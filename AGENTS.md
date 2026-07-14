@@ -18,7 +18,7 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 | `template/shared/` | Shared DSL, themes, runtime helpers |
 | `docs/assets/diagrams/` | Architecture SVGs referenced from README |
 
-**Generated-app stack:** For “what language does what” (historical lineage, runtime roles, authoring vs lowered), read **[docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)** first. Summary: C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Zig JNI** + Chaquopy (Djinni deprecated). Compose `:app` still needs **JDK 26** — generated desktop apps do not.
+**Generated-app stack:** For “what language does what” (historical lineage, runtime roles, authoring vs lowered), see **[docs/architecture/overview.md](docs/architecture/overview.md#language-stack-runtime)** (Language stack section). Summary: C++ + Lua (**sol2**) + TypeScript/XHTML + Python on **SDL3**; Android uses **Zig JNI** + Chaquopy (Djinni deprecated). Compose `:app` still needs **JDK 26** — generated desktop apps do not.
 
 ## First run (human or agent)
 
@@ -123,14 +123,12 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 
 ## Docs
 
-- **Stack map (start here):** [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md)
+- **Architecture overview (start here):** [docs/architecture/overview.md](docs/architecture/overview.md)
 - Hub: [docs/README.md](docs/README.md)
 - Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
 - Generation: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
-- Architecture risks: [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md)
 - Client setup: [misc/client-setup/README.md](misc/client-setup/README.md)
-- Legacy Djinni: [docs/guides/legacy-djinni.md](docs/guides/legacy-djinni.md)
 
 ## Zig patching
 
@@ -139,6 +137,6 @@ Phased native-build orchestration for **generated template apps** — see [docs/
 - **Do not** replace all CMake in one PR; CMake stays the fallback during transition.
 - **Phase order:** 0 install → 1 `zig-services/` sidecar → 2 Langflow importer (parallel Kotlin track) → 3 desktop Zig default → 4 Android JNI → 5 ArenaAllocator opt-in → 6 docs/diagrams.
 - **`zig-services/`** lives under `template/desktop-app/zig-services/` and `template/android-app/zig-services/` (mirrored in generated output).
-- **Android JNI**: Zig `export fn` in `jni/python_bridge.zig` replaces Djinni-generated JNI glue. See `docs/guides/legacy-djinni.md`.
+- **Android JNI**: Zig `export fn` in `jni/python_bridge.zig` replaces Djinni-generated JNI glue (Djinni retired).
 - **Keep Gradle** for `:app`, `:core`, and `:cli` — Zig owns generated native binaries only.
 - **Pin Zig 0.14.x** in `misc/client-setup/env.sh`; Android needs NDK (API ≥ 29); Zig does not ship Bionic.

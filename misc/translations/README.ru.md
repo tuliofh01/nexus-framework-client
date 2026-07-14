@@ -58,7 +58,7 @@
 
 ## Что такое Nexus?
 
-**The Nexus Framework** — **open source конструктор нативных приложений**. Вы описываете приложение визуальным графом — [`blueprint.json`](../../docs/templates/blueprint-schema.md) для структуры, опциональный [`flows.json`](../../docs/templates/flows-schema.md) для in-app автоматизаций — и Nexus генерирует реальное приложение на **C++**, **Lua** и **Python** для **desktop** (Windows, macOS, Linux) и **Android**. Клиент Kotlin Compose (`:app`) создаёт эти графы; [`misc/core`](#папка-misc) валидирует и записывает проекты из [`template/`](#создание-приложения) с окнами SDL3, виджетами Dear ImGui, скриптингом sol2, авторингом UI TypeScript + XHTML и встроенным Python (pybind11 на desktop, Chaquopy + Djinni на Android).
+**The Nexus Framework** — **open source конструктор нативных приложений**. Вы описываете приложение визуальным графом — [`blueprint.json`](../../docs/templates/blueprint-schema.md) для структуры, опциональный [`flows.json`](../../docs/templates/blueprint-schema.md) для in-app автоматизаций — и Nexus генерирует реальное приложение на **C++**, **Lua** и **Python** для **desktop** (Windows, macOS, Linux) и **Android**. Клиент Kotlin Compose (`:app`) создаёт эти графы; [`misc/core`](#папка-misc) валидирует и записывает проекты из [`template/`](#создание-приложения) с окнами SDL3, виджетами Dear ImGui, скриптингом sol2, авторингом UI TypeScript + XHTML и встроенным Python (pybind11 на desktop, Chaquopy + Djinni на Android).
 
 Это **не** web-shell и не hosted flow runtime. Nexus поставляет скомпилированные бинарники — SDL3 + ImGui + ImPlot — с in-process Lua и Python. После генерации вы итерируете в обычных слоях кода (`cpp.model`, `python.module`, `ui.page`, Lua-панели). Отличия от Electron, n8n, Langflow или старта с нуля — в [Как Nexus сравнивается](#как-nexus-сравнивается).
 
@@ -242,7 +242,7 @@ Build-time граф в корне проекта. Узлы объявляют м
 | `background` | Пока app жива | `interval` каждые 5000 ms |
 | `triggered` | Только по условию | `event` `curve.added`, `startup`, `manual` |
 
-**Редактировать в клиенте:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — список flows, enable/disable, JSON preview (визуальный редактор v1.1). Schema: [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md).
+**Редактировать в клиенте:** `./gradlew :app:run` → **Generate Project** → **Edit flows** — список flows, enable/disable, JSON preview (визуальный редактор v1.1). Schema: [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md).
 
 Добавляйте несколько flows в массив `flows` (каждый с уникальным `id`). Отключайте глобально через `nxs_config.json` → `"flows": { "enabled": false }` или по flow с `"enabled": false`.
 
@@ -272,7 +272,7 @@ Build-time граф в корне проекта. Узлы объявляют м
 
 ![Langflow export → flows.json adoption workflow](../../docs/assets/diagrams/langflow-adoption-workflow.svg)
 
-1. **Перевести** экспорт в [flows schema](../../docs/templates/flows-schema.md) (вручную v1; importer v1.1).
+1. **Перевести** экспорт в [flows schema](../../docs/templates/blueprint-schema.md) (вручную v1; importer v1.1).
 2. **Разместить** в `flows/flows.json` или вставить в **Edit flows** в клиенте.
 3. **Включить** в `nxs_config.json` → `"flows": { "enabled": true }`. FlowRunner регистрирует triggers при старте.
 
@@ -396,7 +396,7 @@ Gradle мапит `:core` и `:cli` из `misc/` via [settings.gradle.kts](../..
 - **Python** — desktop: `pip install`, редактируйте `python/`, rebuild; Android: Chaquopy `pip { install(...) }` в `app/build.gradle.kts`
 - **Lua** — положите `.lua` в `scripts/`, `require` из `panels.lua`; rebuild упаковывает `lua.dat`
 
-Полный walkthrough: **[docs/guides/adding-dependencies.md](../../docs/guides/adding-dependencies.md)**
+Полный walkthrough: **[docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)**
 
 ---
 
@@ -505,7 +505,7 @@ Nexus сохраняет node-and-edge mental model, но генерирует *
 | [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes |
 | [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | Schema `blueprint.json` |
-| [docs/templates/flows-schema.md](../../docs/templates/flows-schema.md) | Schema `flows.json` |
+| [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | Schema `flows.json` |
 | [AGENTS.md](../../AGENTS.md) | Build commands для coding assistants |
 
 ### Экосистема

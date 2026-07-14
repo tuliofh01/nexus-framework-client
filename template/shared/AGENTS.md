@@ -94,7 +94,7 @@ Shared `runtime/` code is target-agnostic; embedding differs per template (`pybi
 
 ## Docs
 
-- [docs/templates/shared-dsl.md](../../docs/templates/shared-dsl.md)
+- [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) (includes XHTML/TypeScript DSL section)
 - [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
 - [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
 - [docs/templates/android-app.md](../../docs/templates/android-app.md)

@@ -268,7 +268,7 @@ Optional runtime services that execute inside the app process:
 | `manual` | User action | On-demand analysis pipeline |
 
 **Sample:** [template/desktop-app/flows/flows.json](template/desktop-app/flows/flows.json)  
-**Schema:** [docs/templates/flows-schema.md](docs/templates/flows-schema.md)
+**Schema:** [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) (flows section)
 
 ### Langflow import
 
@@ -539,6 +539,95 @@ IDEA ──→ BLUEPRINT ──→ GENERATE ──→ CODE ──→ BUILD ─�
 
 ---
 
+## Modern C++ at the core
+
+Nexus templates are **C++20 from the ground up** — no C-with-classes, no raw pointers masquerading as ownership, no hidden header spaghetti. Every line in the generated app's `src/` and `runtime/` directories is written to modern C++20 conventions.
+
+### C++20 modules (not headers)
+
+The old `.h` + `.cpp` split is gone. Nexus templates use **module interface units** (`.cppm` files) — **22 of them** across the shared runtime and both app templates. Each module declares exactly what it exports and nothing leaks:
+
+```
+// ❌ Old way: #include "model.h" — drags in every transitive header
+// ✅ Nexus way: import nxs.desktop.model;
+
+export module nxs.desktop.model;   // declare module
+export class AppModel { ... };     // only this is visible to importers
+```
+
+The global module fragment (everything before `export module`) is private — standard headers stay internal. Importers see only the public API. No macro leaks, no ODR violations, no circular includes.
+
+### Every modern C++20 idiom, in practice
+
+The generated code reads like a living style guide:
+
+| C++20 feature | Where Nexus uses it |
+|---------------|-------------------|
+| **Modules** (`.cppm`) | All model, controller, view, service, and runtime classes — 22 interface units |
+| **`[[nodiscard]]`** | Every getter, query, and factory function — compiler catches unused results |
+| **`constexpr`** | All trivial accessors, size queries, and compile-time constants |
+| **`noexcept`** | Move constructors, swap, trivial setters — enables optimal vector reallocation |
+| **Trailing return types** | `auto counter() const -> int` — consistent syntax across all functions |
+| **`= default` / `= delete`** | Explicit special members: model is a value type, bridge classes are non-copyable |
+| **Brace initialization `{}`** | Every member — zero-initializes scalars, prevents narrowing |
+| **Pass-by-value + `std::move`** | Sink parameters for strings and owning types — at most one copy, often zero |
+| **`std::unique_ptr` with custom deleters** | RAII wrappers for SDL_Window, SDL_GLContext — automatic cleanup on scope exit |
+| **`std::optional`, `std::variant`** | Flow runner state, polymorphic event payloads |
+| **`std::ranges`** | Pipeline data transformations in controller logic |
+
+### Example: RAII SDL3 resource management
+
+```cpp
+// Unique deleters enable unique_ptr for SDL resources
+struct SdlWindowDeleter {
+    void operator()(SDL_Window* w) const noexcept {
+        if (w) SDL_DestroyWindow(w);
+    }
+};
+using UniqueWindow = std::unique_ptr<SDL_Window, SdlWindowDeleter>;
+
+auto window = UniqueWindow(
+    SDL_CreateWindow("MyApp", 1280, 800, SDL_WINDOW_OPENGL));
+// destructor fires automatically — no goto cleanup, no close_window label
+```
+
+### Blueprint-generated C++
+
+The `blueprint.json` graph directly controls what C++ modules are generated:
+
+| Blueprint node | Generates | C++20 features involved |
+|----------------|-----------|------------------------|
+| `cpp.model` | `src/model/AppModel.cppm` | `class`, `constexpr`, `[[nodiscard]]`, `noexcept`, `std::string` |
+| `cpp.controller` | `src/controller/AppController.cppm` | Module imports, `std::function` callbacks, pybind11 bridge |
+| `ui.page` | Reference to view classes | Modules importing model types for display bindings |
+| `lua.script` | sol2 panel registrations | `std::function`, lambda captures, `auto` |
+
+### Why C++20 and not Rust
+
+This question comes up often enough to address directly. Rust's memory safety guarantees are excellent, and Nexus evaluated it during early architecture work. Here's why C++20 won for the **generated app runtime**:
+
+| Concern | C++20 in Nexus | Rust equivalent | Nexus's take |
+|---------|---------------|-----------------|-------------|
+| **Blueprint codegen** | Kotlin writes `class`, `constexpr getter`, `auto setter` — simple text substituion | Rust requires `pub struct`, `impl` blocks, lifetime annotations, derive macros | C++ templates are simpler to generate correctly from non-Rust tooling |
+| **In-process scripting bridges** | pybind11 and sol2 are mature C++ libraries — years of edge-case testing | pyo3 and mlua exist but have more restrictive licensing and smaller ecosystems | ~15 years of pybind11 production mileage vs ~5 for pyo3 |
+| **SDL3 / ImGui interop** | C++ is SDL3 and ImGui's native language — zero glue code | Rust needs sys crate wrappers, CStr conversions, and unsafe blocks everywhere | C++ calls them directly; Rust wraps them in unsafe, reducing the safety advantage |
+| **Android JNI** | `zig c++` compiles the same C++20 `.cppm` to ARM — no extra build step | Rust needs `cargo-ndk`, a separate Rust toolchain, and NDK `-lgcc` compat shims | One Zig binary serves C++ compilation and Zig orchestration already |
+| **Team familiarity** | C++ is assumed knowledge for systems programmers working with SDL/ImGui | Rust is an additional language requirement for what is already a multi-language tool | Nexus already demands C++, Lua, Python, Zig, and TypeScript — adding Rust raises the bar without proportional benefit |
+| **Determinism for generated code** | C++ has one obvious way to write most constructs — the generator output is predictable | Multiple valid Rust patterns for the same thing (owned vs borrowed, dyn vs impl, Arc vs Rc) | Generated code should be boring and predictable, not idiomatic and diverse |
+| **Safety posture** | RAII + `[[nodiscard]]` + `constexpr` + sanitizers + Zig's strict compiler flags | Borrow checker guarantees memory safety at compile time | A fair loss — but Nexus apps are single-threaded ImGui loops, not multi-threaded servers. The safety gap is narrower in practice than on paper |
+
+**The honest summary:** Rust would have been a reasonable choice, but C++20 was the better fit for a **code-generated, multi-language, SDL3-native** project. The killer arguments were pybind11/sol2 maturity and the zero-glue SDL3 interop — C++ talks to ImGui and SDL3 natively, while Rust wraps them in unsafe blocks that erode its headline safety advantage. Nexus apps are also single-threaded ImGui loops where the borrow checker's hardest-won guarantees (data race prevention) provide less marginal benefit than in a concurrent server.
+
+**If you prefer Rust for your own generated code:** Nexus generates C++20, but nothing stops you from adding Rust modules via FFI. The generated `build.zig` can vendor a Cargo workspace, and pybind11 modules can call Rust libraries through a C-compatible layer. Nexus picks a default to ship a coherent product — it doesn't lock you out of the ecosystem.
+
+### Why C++20 and not an earlier standard
+
+Nexus targets C++20 because that's the version where modules became practically usable in major compilers (GCC 14+, Clang 18+, MSVC 2022 17.5+). The Zig `zig c++` compiler (Clang-based) fully supports `.cppm` modules, so the generated code compiles the same way on every platform — no preprocessor hacks, no platform-specific `#ifdef` guards for module support.
+
+**The result:** generated C++ code that would not look out of place in a CppCon talk. Students learn modern idioms by reading the output. Senior engineers find nothing to fix. And the Zig compiler enforces it all consistently across Windows, macOS, Linux, and Android.
+
+---
+
 ## The Zig story
 
 Over the course of v0.1 → v0.3, Zig progressively replaced a tangled stack of build tooling in generated apps — without touching the Kotlin generator or the Compose client. This is a case study in incremental replacement:
@@ -555,8 +644,7 @@ Over the course of v0.1 → v0.3, Zig progressively replaced a tangled stack of 
 
 **The bottom line:** one language for build orchestration instead of four tools, ~99% smaller toolchain, 100% offline builds, cross-compilation as a first-class feature.
 
-Full plan: [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md)  
-Services: [docs/architecture/services-architecture.md](docs/architecture/services-architecture.md)
+Full plan: [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md)
 
 ---
 
@@ -616,18 +704,16 @@ Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 | Doc                                                             | What it covers                                    |
 |-----------------------------------------------------------------|---------------------------------------------------|
 | [docs/README.md](docs/README.md)                                | Documentation hub                                 |
-| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes — practical guide  |
+| [docs/README.md](docs/README.md)                                | Documentation hub (10 docs)                             |
+| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes, XHTML DSL, adding deps  |
 | [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md) | How generation works end to end            |
 | [docs/guides/coding-styles.md](docs/guides/coding-styles.md)    | C++20, Zig, Kotlin, Lua, TS, Python rules        |
-| [docs/guides/adding-dependencies.md](docs/guides/adding-dependencies.md) | Adding C++, Lua, and Python packages      |
-| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` full reference           |
-| [docs/templates/flows-schema.md](docs/templates/flows-schema.md) | `flows.json` full reference                     |
-| [docs/templates/shared-dsl.md](docs/templates/shared-dsl.md)    | TypeScript + XHTML DSL reference                 |
-| [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md) | Language ecosystem map — which language does what |
+| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` + `flows.json` full reference |
+| [docs/architecture/overview.md](docs/architecture/overview.md)  | Architecture layers, language stack, risk analysis   |
 | [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md) | Zig build orchestration — full plan and phases |
-| [docs/architecture/services-architecture.md](docs/architecture/services-architecture.md) | Zig services layer |
-| [docs/architecture/risk-analysis.md](docs/architecture/risk-analysis.md) | Architecture risks and mitigations    |
-| [docs/archives/legacy-djinni.md](docs/archives/legacy-djinni.md) | Archived Djinni documentation                   |
+| [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md) | AI agent onboarding score, gaps, fixes       |
+| [docs/templates/desktop-app.md](docs/templates/desktop-app.md)  | Desktop template — SDL3, ImGui, pybind11, Lua, TS   |
+| [docs/templates/android-app.md](docs/templates/android-app.md)  | Android template — Zig JNI, Chaquopy, GLES          |
 | [AGENTS.md](AGENTS.md)                                         | Build commands for AI coding assistants           |
 | [misc/ROADMAP.md](misc/ROADMAP.md)                             | v0.4.0 roadmap                                   |
 

@@ -2,7 +2,7 @@
 
 Generated Nexus apps share one layered design. The scaffold client (`app/`) uses **MVC in Kotlin Compose**; generated C++ templates mirror it under `src/model/`, `src/controller/`, and `src/view/`.
 
-For a multi-dimensional map — **historical lineage** (CMake→Zig, Djinni→Zig JNI, Langflow UX), **functional responsibilities** per language at runtime, and **syntactic authoring** (what you write vs what gets lowered) — see **[runtime-stack.md](runtime-stack.md)**.
+For a multi-dimensional map — **historical lineage** (CMake→Zig, Djinni→Zig JNI, Langflow UX), **functional responsibilities** per language at runtime, and **syntactic authoring** (what you write vs what gets lowered) — see the [Language stack section](#language-stack-runtime) below.
 
 ## Full stack + blueprint authoring
 
