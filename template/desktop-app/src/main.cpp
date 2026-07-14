@@ -5,14 +5,23 @@
 //   controller.refresh()  -> optional Python greeting refresh
 //   view.draw()           -> ImGui single-page UI
 //   luaPanels.drawFrame() -> script-registered panels and hotkeys
-#include "controller/AppController.hpp"
-#include "controller/PythonEngine.hpp"
-#include "model/AppModel.hpp"
-#include "service/FlowRunner.hpp"
-#include "view/AppView.hpp"
-#include "view/LuaPanels.hpp"
-#include "FontConfig.hpp"
-#include "NexusTheme.hpp"
+//
+// === C++20 Module Imports ===
+// All MVC and shared classes are now imported via module interface units
+// (`.cppm`). The only #include directives are third-party SDL/ImGui headers
+// which do not ship as C++20 modules yet.
+
+import nxs.desktop.model;
+import nxs.desktop.func;
+import nxs.desktop.controller;
+import nxs.desktop.python;
+import nxs.desktop.view;
+import nxs.desktop.lua;
+import nxs.desktop.flow;
+import nxs.desktop.plot;
+
+import nexus.shared.font_config;
+import nexus.shared.theme;
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_opengl.h>
@@ -36,7 +45,8 @@ struct SdlGlContextDeleter {
 };
 
 using UniqueWindow   = std::unique_ptr<SDL_Window, SdlWindowDeleter>;
-using UniqueGlContext = std::unique_ptr<std::remove_pointer_t<SDL_GLContext>, SdlGlContextDeleter>;
+using UniqueGlContext = std::unique_ptr<std::remove_pointer_t<SDL_GLContext>,
+                                        SdlGlContextDeleter>;
 
 int main(int, char**) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -46,20 +56,25 @@ int main(int, char**) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+                        SDL_GL_CONTEXT_PROFILE_CORE);
 
     auto window = UniqueWindow(
         SDL_CreateWindow("{{windowTitle}}", 1280, 800,
-                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY));
+                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE |
+                         SDL_WINDOW_HIGH_PIXEL_DENSITY));
     if (!window) {
-        std::fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
+        std::fprintf(stderr, "SDL_CreateWindow failed: %s\n",
+                     SDL_GetError());
         return 1;
     }
 
     auto glContext = UniqueGlContext(
-        static_cast<std::remove_pointer_t<SDL_GLContext>>(SDL_GL_CreateContext(window.get())));
+        static_cast<std::remove_pointer_t<SDL_GLContext>>(
+            SDL_GL_CreateContext(window.get())));
     if (!glContext) {
-        std::fprintf(stderr, "SDL_GL_CreateContext failed: %s\n", SDL_GetError());
+        std::fprintf(stderr, "SDL_GL_CreateContext failed: %s\n",
+                     SDL_GetError());
         return 1;
     }
 
@@ -68,19 +83,20 @@ int main(int, char**) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    nxs::runtime::NexusTheme::applyFromFile("assets/themes/nexus-dark.json");
+    nxs::runtime::NexusTheme::applyFromFile(
+        "assets/themes/nexus-dark.json");
     ImGui_ImplSDL3_InitForOpenGL(window.get(), glContext.get());
     ImGui_ImplOpenGL3_Init("#version 330");
     nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
-    const auto model = nxs::model::AppModel{};
-    auto python      = nxs::controller::PythonEngine{};
-    auto controller  = nxs::controller::AppController{model, python};
-    auto view        = nxs::view::AppView{controller};
-    auto luaPanels   = nxs::view::LuaPanels{controller};
+    const auto model    = nxs::model::AppModel{};
+    auto python         = nxs::controller::PythonEngine{};
+    auto controller     = nxs::controller::AppController{model, python};
+    auto view           = nxs::view::AppView{controller};
+    auto luaPanels      = nxs::view::LuaPanels{controller};
     luaPanels.loadScripts();
 
-    auto flowRunner = nxs::service::FlowRunner{controller};
+    auto flowRunner     = nxs::service::FlowRunner{controller};
     flowRunner.load("nxs_config.json", "flows/flows.json");
     flowRunner.onStartup();
 
@@ -116,7 +132,7 @@ int main(int, char**) {
         SDL_GL_SwapWindow(window.get());
     }
 
-    // unique_ptr destructors fire in reverse order — glContext before window, as required by SDL.
+    // unique_ptr destructors fire in reverse order — glContext before window.
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();

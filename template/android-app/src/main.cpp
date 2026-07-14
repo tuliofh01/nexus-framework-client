@@ -1,12 +1,19 @@
 // {{projectName}} — Android entry (SDL3 + GLES3).
-#include "controller/AppController.hpp"
-#include "controller/PythonEngine.hpp"
-#include "model/AppModel.hpp"
-#include "service/FlowRunner.hpp"
-#include "view/AppView.hpp"
-#include "view/LuaPanels.hpp"
-#include "FontConfig.hpp"
-#include "NexusTheme.hpp"
+//
+// === C++20 Module Imports ===
+// All MVC and shared classes are now imported via module interface units
+// (`.cppm`). The only #include directives are third-party SDL/ImGui headers
+// which do not ship as C++20 modules yet.
+
+import nxs.android.model;
+import nxs.android.controller;
+import nxs.android.python;
+import nxs.android.view;
+import nxs.android.lua;
+import nxs.android.flow;
+
+import nexus.shared.font_config;
+import nexus.shared.theme;
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -26,11 +33,13 @@ int main(int, char**) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+                        SDL_GL_CONTEXT_PROFILE_ES);
 
     SDL_Window* window =
         SDL_CreateWindow("{{windowTitle}}", 1280, 720,
-                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE |
+                         SDL_WINDOW_HIGH_PIXEL_DENSITY);
     if (!window) {
         return 1;
     }
@@ -40,14 +49,16 @@ int main(int, char**) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    nxs::runtime::NexusTheme::applyFromFile("assets/themes/nexus-field.json");
+    nxs::runtime::NexusTheme::applyFromFile(
+        "assets/themes/nexus-field.json");
     ImGui_ImplSDL3_InitForOpenGL(window, glContext);
     ImGui_ImplOpenGL3_Init("#version 300 es");
     nxs::view::FontConfig::setIconScale(1.25f);
     nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
     nxs::model::AppModel model;
-    nxs::controller::PythonEngine& python = nxs::controller::PythonEngine::instance();
+    nxs::controller::PythonEngine& python =
+        nxs::controller::PythonEngine::instance();
     nxs::controller::AppController controller(model, python);
     nxs::view::AppView view(controller);
     nxs::view::LuaPanels luaPanels(controller);
