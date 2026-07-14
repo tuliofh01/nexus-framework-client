@@ -7,19 +7,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import nexus.opensource.controller.CounterController
-import nexus.opensource.controller.GenerateController
-import nexus.opensource.model.NexusBranding
-import nexus.opensource.view.CounterScreen
-import nexus.opensource.view.BlueprintEditorScreen
-import nexus.opensource.view.FlowsEditorScreen
-import nexus.opensource.view.GenerateProjectScreen
+import nexus.opensource.framework.controller.GenerateController
+import nexus.opensource.framework.controller.LoadingController
+import nexus.opensource.framework.model.DebuggerService
+import nexus.opensource.framework.model.TestRunner
+import nexus.opensource.framework.model.NexusBranding
+import nexus.opensource.framework.view.BlueprintEditorScreen
+import nexus.opensource.framework.view.DashboardScreen
+import nexus.opensource.framework.view.DebuggerPanel
+import nexus.opensource.framework.view.FlowsEditorScreen
+import nexus.opensource.framework.view.GenerateProjectScreen
+import nexus.opensource.framework.view.LoadingScreen
+import nexus.opensource.framework.view.TestRunnerPanel
 
 enum class AppScreen {
-    Counter,
+    Loading,
+    Dashboard,
     Generate,
     BlueprintEditor,
     FlowsEditor,
+    Debugger,
+    TestRunner,
 }
 
 fun main() = application {
@@ -27,18 +35,23 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = NexusBranding.windowTitle("Nexus Framework Client"),
     ) {
-        var screen by remember { mutableStateOf(AppScreen.Counter) }
-        val counterController = remember { CounterController() }
+        var screen by remember { mutableStateOf(AppScreen.Loading) }
+        val loadingController = remember { LoadingController() }
         val generateController = remember { GenerateController() }
+        val debuggerService = remember { DebuggerService() }
+        val testRunner = remember { TestRunner() }
         MaterialTheme {
             when (screen) {
-                AppScreen.Counter -> CounterScreen(
-                    controller = counterController,
-                    onOpenGenerate = { screen = AppScreen.Generate },
+                AppScreen.Loading -> LoadingScreen(
+                    controller = loadingController,
+                    onComplete = { screen = AppScreen.Dashboard },
+                )
+                AppScreen.Dashboard -> DashboardScreen(
+                    onNavigate = { screen = it },
                 )
                 AppScreen.Generate -> GenerateProjectScreen(
                     controller = generateController,
-                    onBack = { screen = AppScreen.Counter },
+                    onBack = { screen = AppScreen.Dashboard },
                     onEditBlueprint = { screen = AppScreen.BlueprintEditor },
                     onEditFlows = { screen = AppScreen.FlowsEditor },
                 )
@@ -49,6 +62,14 @@ fun main() = application {
                 AppScreen.FlowsEditor -> FlowsEditorScreen(
                     controller = generateController.flowsEditor,
                     onBack = { screen = AppScreen.Generate },
+                )
+                AppScreen.Debugger -> DebuggerPanel(
+                    debugger = debuggerService,
+                    onBack = { screen = AppScreen.Dashboard },
+                )
+                AppScreen.TestRunner -> TestRunnerPanel(
+                    runner = testRunner,
+                    onBack = { screen = AppScreen.Dashboard },
                 )
             }
         }

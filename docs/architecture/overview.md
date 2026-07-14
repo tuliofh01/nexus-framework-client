@@ -2,6 +2,8 @@
 
 Generated Nexus apps share one layered design. The scaffold client (`app/`) uses **MVC in Kotlin Compose**; generated C++ templates mirror it under `src/model/`, `src/controller/`, and `src/view/`.
 
+For a multi-dimensional map — **historical lineage** (CMake→Zig, Djinni→JNI, Langflow UX), **functional responsibilities** per language at runtime, and **syntactic authoring** (what you write vs what gets lowered) — see **[runtime-stack.md](runtime-stack.md)**.
+
 ## Full stack + blueprint authoring
 
 ### Nexus full-stack architecture
@@ -95,6 +97,7 @@ Both templates share the same `blueprint.json` node graph; only the Python bridg
 
 ## Related
 
+- [Runtime stack map](runtime-stack.md)
 - [Blueprint schema](../templates/blueprint-schema.md)
 - [Flows schema](../templates/flows-schema.md)
 - [Coding with Nexus](../guides/coding-with-nexus.md)

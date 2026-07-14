@@ -7,10 +7,10 @@ namespace nxs::model {
 
 class AppModel {
 public:
-    int counter() const { return m_counter; }
-    void setCounter(int value) { m_counter = value; }
+    [[nodiscard]] auto counter() const -> int { return m_counter; }
+    void setCounter(int value) noexcept { m_counter = value; }
 
-    const std::string& greeting() const { return m_greeting; }
+    [[nodiscard]] auto greeting() const -> const std::string& { return m_greeting; }
     void setGreeting(std::string value) { m_greeting = std::move(value); }
 
 private:

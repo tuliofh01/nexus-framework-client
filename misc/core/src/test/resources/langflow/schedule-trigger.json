@@ -1,0 +1,74 @@
+{
+  "id": "sched-456ghi",
+  "name": "Daily Report Generator",
+  "description": "Scheduled flow that generates and sends a daily report",
+  "data": {
+    "nodes": [
+      {
+        "id": "schedule-1",
+        "type": "Schedule",
+        "data": {
+          "node": {
+            "type": "Schedule",
+            "display_name": "Daily Schedule",
+            "template": {
+              "type": "Schedule",
+              "_display_name": "Daily Schedule"
+            }
+          }
+        },
+        "position": { "x": 100, "y": 200 }
+      },
+      {
+        "id": "python-2",
+        "type": "PythonFunction",
+        "data": {
+          "node": {
+            "type": "PythonFunction",
+            "display_name": "Generate Report Data",
+            "template": {
+              "type": "PythonFunction",
+              "_display_name": "Generate Report Data"
+            }
+          }
+        },
+        "position": { "x": 400, "y": 200 }
+      },
+      {
+        "id": "llm-3",
+        "type": "LLM",
+        "data": {
+          "node": {
+            "type": "LLM",
+            "display_name": "Summarize Report",
+            "template": {
+              "type": "LLM",
+              "_display_name": "Summarize Report"
+            }
+          }
+        },
+        "position": { "x": 700, "y": 200 }
+      },
+      {
+        "id": "output-4",
+        "type": "ChatOutput",
+        "data": {
+          "node": {
+            "type": "ChatOutput",
+            "display_name": "Report Output",
+            "template": {
+              "type": "ChatOutput",
+              "_display_name": "Report Output"
+            }
+          }
+        },
+        "position": { "x": 1000, "y": 200 }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "schedule-1", "target": "python-2" },
+      { "id": "e2", "source": "python-2", "target": "llm-3" },
+      { "id": "e3", "source": "llm-3", "target": "output-4" }
+    ]
+  }
+}

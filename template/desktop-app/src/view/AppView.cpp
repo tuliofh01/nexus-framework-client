@@ -7,7 +7,7 @@ namespace nxs::view {
 AppView::AppView(controller::AppController& controller) : m_controller(controller) {}
 
 void AppView::draw() {
-    const ImGuiViewport* vp = ImGui::GetMainViewport();
+    const auto* vp = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(vp->WorkPos);
     ImGui::SetNextWindowSize(vp->WorkSize);
     ImGui::Begin("{{projectName}}", nullptr,

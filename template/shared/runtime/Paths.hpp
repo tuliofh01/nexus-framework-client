@@ -6,15 +6,21 @@
 namespace nxs::runtime {
 
 struct Paths {
-    static std::string executableDir() {
+    [[nodiscard]] static auto executableDir() -> std::string {
         return std::filesystem::current_path().string();
     }
 
-    static std::string miscDir() { return executableDir() + "/misc"; }
+    [[nodiscard]] static auto miscDir() -> std::string {
+        return executableDir() + "/misc";
+    }
 
-    static std::string luaArchive() { return miscDir() + "/lua.dat"; }
+    [[nodiscard]] static auto luaArchive() -> std::string {
+        return miscDir() + "/lua.dat";
+    }
 
-    static std::string pythonArchive() { return miscDir() + "/python.dat"; }
+    [[nodiscard]] static auto pythonArchive() -> std::string {
+        return miscDir() + "/python.dat";
+    }
 };
 
 }  // namespace nxs::runtime

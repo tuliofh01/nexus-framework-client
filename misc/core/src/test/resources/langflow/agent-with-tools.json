@@ -1,0 +1,91 @@
+{
+  "id": "agent-789def",
+  "name": "Research Agent with Tools",
+  "description": "Agent that uses web search and calculator tools",
+  "data": {
+    "nodes": [
+      {
+        "id": "webhook-1",
+        "type": "Webhook",
+        "data": {
+          "node": {
+            "type": "Webhook",
+            "display_name": "Webhook Trigger",
+            "template": {
+              "type": "Webhook",
+              "_display_name": "Webhook Trigger"
+            }
+          }
+        },
+        "position": { "x": 100, "y": 100 }
+      },
+      {
+        "id": "agent-2",
+        "type": "Agent",
+        "data": {
+          "node": {
+            "type": "Agent",
+            "display_name": "Research Agent",
+            "template": {
+              "type": "Agent",
+              "_display_name": "Research Agent"
+            }
+          }
+        },
+        "position": { "x": 400, "y": 100 }
+      },
+      {
+        "id": "tool-3",
+        "type": "Tool",
+        "data": {
+          "node": {
+            "type": "Tool",
+            "display_name": "Web Search",
+            "template": {
+              "type": "Tool",
+              "_display_name": "Web Search"
+            }
+          }
+        },
+        "position": { "x": 400, "y": 300 }
+      },
+      {
+        "id": "tool-4",
+        "type": "Tool",
+        "data": {
+          "node": {
+            "type": "Tool",
+            "display_name": "Calculator",
+            "template": {
+              "type": "Tool",
+              "_display_name": "Calculator"
+            }
+          }
+        },
+        "position": { "x": 700, "y": 200 }
+      },
+      {
+        "id": "output-5",
+        "type": "ChatOutput",
+        "data": {
+          "node": {
+            "type": "ChatOutput",
+            "display_name": "Agent Response",
+            "template": {
+              "type": "ChatOutput",
+              "_display_name": "Agent Response"
+            }
+          }
+        },
+        "position": { "x": 1000, "y": 200 }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "webhook-1", "target": "agent-2" },
+      { "id": "e2", "source": "agent-2", "target": "tool-3" },
+      { "id": "e3", "source": "agent-2", "target": "tool-4" },
+      { "id": "e4", "source": "tool-3", "target": "output-5" },
+      { "id": "e5", "source": "tool-4", "target": "output-5" }
+    ]
+  }
+}

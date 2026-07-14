@@ -23,6 +23,9 @@
       "minCMake": "3.24"
     }
   },
+  "allocator": {
+    "zigArena": false
+  },
   "features": {
     "imgui": true,
     "implot": true,
@@ -49,6 +52,6 @@
   },
   "build": {
     "outputDir": "../../builds/framework/{{projectName}}",
-    "presets": "CMakePresets.json"
+    "nativeBackend": "zig"
   }
 }

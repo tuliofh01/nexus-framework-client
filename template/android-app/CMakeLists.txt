@@ -61,7 +61,7 @@ FetchContent_Declare(sol2
     GIT_TAG        v3.3.1)
 FetchContent_MakeAvailable(sol2)
 
-set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+set(NXS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
 
 if(NOT ANDROID)
     add_executable(pack_archive

@@ -1,5 +1,23 @@
 #!/usr/bin/env python3
-"""Generate styled architecture/example SVG diagrams for docs/assets/."""
+"""Generate styled architecture/example SVG diagrams for docs/assets/.
+
+INTEGRITY RULE (for AI coding assistants):
+  Every time you modify architecture, template layout, build system, or any
+  component represented in docs/assets/diagrams/*.svg, you MUST regenerate
+  the affected SVGs by running this script. The SVGs are the SINGLE SOURCE
+  OF TRUTH for visual documentation — ASCII art is NEVER allowed in committed
+  files (see .omo/plans/zig-integration-diagrams.md § Phase 6).
+
+  To regenerate all SVGs:
+    $ python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py
+
+  New diagram functions: add a def new_diagram_name() that returns SVG string,
+  then call it from __main__ and write the output to docs/assets/diagrams/.
+
+  Palette reference:
+    bg="#f8fafc", blue="#2563eb", green="#059669", orange="#d97706",
+    purple="#7c3aed", slate="#475569", teal="#0d9488", red="#dc2626"
+"""
 
 from pathlib import Path
 

@@ -22,12 +22,23 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 
 ## First run (human or agent)
 
+**Option A — Zig bootstrap (recommended, cross-platform):**
+
+```bash
+zig run misc/client-setup/setup.zig   # installs Zig 0.14.0 + writes env files
+source misc/client-setup/env.sh       # Linux/macOS
+call misc\client-setup\env.bat        # Windows
+```
+
+**Option B — Legacy shell scripts (fallback):**
+
 ```bash
 ./misc/client-setup/linux/setup.sh    # or macos/setup.sh / windows/setup.bat
 source misc/client-setup/env.sh       # Windows: call misc\client-setup\env.bat
 ```
 
-JDK **26** is required (`misc/build-logic` `jvmToolchain(26)`). Do not assume JDK 21.
+JDK **26** is required (`misc/build-logic` `jvmToolchain(26)`). Do not assume JDK 21.  
+Zig **0.14.0** is required for generated native app builds — the bootstrap installs it automatically.
 
 ## Build / run
 

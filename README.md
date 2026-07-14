@@ -29,6 +29,7 @@
   <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin 2.4 Compose Desktop project generator" /></a>
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3 desktop and Android" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/Dear%20ImGui-immediate--mode-orange?style=flat-square" alt="Dear ImGui immediate-mode UI" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/version-0.3.0-blueviolet?style=flat-square" alt="v0.3.0 Dashboard UI · Framework Package · Modern C++" /></a>
 </p>
 
 > [!TIP]
@@ -119,7 +120,7 @@ Structure graphs map to [`blueprint.json`](#app-structure-blueprintjson); automa
 | Path | Role |
 |------|------|
 | [`app/`](app/) | Compose Desktop client (`:app`) — Generate Project, blueprint/flows editors |
-| [`misc/`](misc/) | `:core` generator, `:cli`, client-setup, scripts, Docker — see [The `misc/` folder](#the-misc-folder) |
+| [`misc/`](misc/) | `:core` generator, `:cli`, Zig bootstrap services, scripts, Docker — see [The `misc/` folder](#the-misc-folder) |
 | [`template/`](template/) | desktop-app · android-app · shared — copied to `builds/framework/<name>/` |
 | [`builds/`](builds/) | Client artifacts → `builds/client/` · generated apps → `builds/framework/` |
 | [`docs/`](docs/) | Documentation hub → [docs/README.md](docs/README.md) |
@@ -130,13 +131,16 @@ This is the **Framework** monorepo (`:app`, `:core`, `:cli`). It is not the sepa
 
 ## Quick start
 
-**1. First-run setup** — install JDK 26 + Git (once per machine):
+**1. First-run setup** — install JDK 26 + Zig 0.14.0 (once per machine):
 
-| Platform | Setup | Env |
-|----------|-------|-----|
-| Linux | `./misc/client-setup/linux/setup.sh` | `source misc/client-setup/env.sh` |
-| macOS | `./misc/client-setup/macos/setup.sh` | `source misc/client-setup/env.sh` |
-| Windows | `misc\client-setup\windows\setup.bat` | `call misc\client-setup\env.bat` |
+A single cross-platform Zig source handles all OSes — no shell scripts:
+
+```bash
+zig run misc/client-setup/setup.zig   # installs Zig 0.14.0 + writes env files
+source misc/client-setup/env.sh       # Linux/macOS
+```
+
+Your system **Zig** (the compiler you run `setup.zig` with) can be any recent version — the bootstrap installs a pinned **0.14.0** for all subsequent native builds. No `apt`, `brew`, `choco`, or platform-specific scripts needed.
 
 Details: [misc/client-setup/README.md](misc/client-setup/README.md).
 
@@ -195,6 +199,43 @@ JDK 26 setup → Gradle `:core` / `:cli` / `:app` → `ProjectGenerator` writes 
 One `blueprint.json` wires MVC on both templates; only the Python bridge and packaging differ per platform.
 
 Layer reference: [docs/architecture/overview.md](docs/architecture/overview.md) · Blueprint/flows: [Blueprint & flows](#blueprint--flows--two-layers) · Python split: [Python on desktop vs Android](#python-on-desktop-vs-android)
+
+### Services architecture (v0.2+)
+
+A **cross-platform Zig orchestration layer** that replaces platform-specific shell scripts with a single procedural source. The bootstrap services form the foundation for all subsequent native tooling.
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Services Layer (Zig 0.16+ — system compiler)      │
+│                                                     │
+│  setup.zig ─────► bootstrap.zig ─────► env.sh/.bat  │
+│    entry point       │                              │
+│                      ▼                              │
+│                 ziglang.org                         │
+│                 zig-0.14.0.tar.xz                   │
+│                      │                              │
+│                      ▼                              │
+│               /usr/local/zig-0.14.0/                │
+│                                                     │
+│  Gain: 3+ shell scripts → 1 Zig source              │
+│  Gain: compile-time platform detection               │
+│  Gain: same build.rs-run semantics across OS         │
+└─────────────────────────────────────────────────────┘
+```
+
+**How it works:**
+
+| Component | Role | Platform scope |
+|-----------|------|----------------|
+| `setup.zig` | User entry point — orchestrates install steps | Linux / macOS / Windows |
+| `bootstrap.zig` | Downloads + extracts pinned Zig 0.14.0 from ziglang.org | x86_64, aarch64 |
+| `env.sh` / `env.bat` | Shell env files — `ZIG_HOME`, `PATH` prepend | POSIX / Windows |
+
+**Key design decisions:**
+- Single source of truth: one Zig file detects platform at **compile time** via `@import("builtin").target` — no runtime `uname`, no `.sh` vs `.bat` forks
+- Chain of trust: `setup.zig` runs on the **system Zig** (any 0.16+), which installs the **pinned 0.14.0** that all generated apps target
+- Process-based: all I/O (download, extract, file write, mkdir) goes through `std.process.run(allocator, io, .{})` — consistent semantics across OSes
+- Maintenance surface: **~130 LOC** replaces **~450+ LOC** of shell scripts
 
 ### Runtime stack map
 
@@ -301,10 +342,10 @@ Nexus targets **native, data-heavy, and field-deployed tools** — trading desks
 
 ### Templates (desktop & Android)
 
-| Template | Stack | Guide |
-|----------|-------|-------|
-| `desktop-app` | SDL3 + ImGui + pybind11 + sol2 | [docs/templates/desktop-app.md](docs/templates/desktop-app.md) |
-| `android-app` | SDL3/GLES + Chaquopy + Djinni | [docs/templates/android-app.md](docs/templates/android-app.md) |
+| Template | Stack | Guide | Languages |
+|----------|-------|-------|-----------|
+| `desktop-app` | [SDL3](https://www.libsdl.org/) + [ImGui](https://github.com/ocornut/imgui) + [pybind11](https://pybind11.readthedocs.io/) + [sol2](https://sol2.readthedocs.io/) | [docs/templates/desktop-app.md](docs/templates/desktop-app.md) | [C++20](https://en.cppreference.com/w/cpp/20), [Lua](https://www.lua.org/), [Python](https://www.python.org/), [TypeScript](https://www.typescriptlang.org/) |
+| `android-app` | [SDL3](https://www.libsdl.org/)/GLES + [Chaquopy](https://chaquo.com/chaquopy/) + [Djinni](https://github.com/dropbox/djinni) | [docs/templates/android-app.md](docs/templates/android-app.md) | [C++20](https://en.cppreference.com/w/cpp/20), [Kotlin](https://kotlinlang.org/), [Lua](https://www.lua.org/), [Python](https://www.python.org/) |
 
 Output: `builds/framework/<name>/` · Layout: [builds/README.md](builds/README.md) · [template/README.md](template/README.md)
 
@@ -382,7 +423,7 @@ The `misc/` folder consolidates **Framework repo tooling** — Gradle modules, c
 | [misc/core/](misc/core/) | `:core` — `ProjectGenerator`, `TemplateEngine`, `nxs_config.json` schema (v2) |
 | [misc/cli/](misc/cli/) | `:cli` — headless `generate` command |
 | [misc/build-logic/](misc/build-logic/) | Included build — JVM toolchain 26, convention plugins |
-| [misc/client-setup/](misc/client-setup/) | First-run installers (JDK 26 + Git) |
+| [misc/client-setup/](misc/client-setup/) | First-run installers — **Zig bootstrap** (`setup.zig` + `bootstrap.zig`, cross-platform) |
 | [misc/scripts/](misc/scripts/) | [dev/](misc/scripts/dev/) · [test-gen/](misc/scripts/test-gen/) · [generate-diagrams/](misc/scripts/generate-diagrams/) |
 | [misc/docker/](misc/docker/) | Containerized generation |
 | [misc/jenkins/](misc/jenkins/) | Optional Jenkins CI |
@@ -426,12 +467,12 @@ Zig does not replace your C++20 MVC stack — it replaces **build friction**: fe
 
 | Phase | Focus | Status |
 |-------|-------|--------|
-| 0 | Zig **0.14.x** install in `misc/client-setup` | ⬜ Planned |
-| 1 | `zig-services/` sidecar beside CMake | ⬜ Planned |
-| 2 | Langflow → `flows.json` importer (`enabled: false` on import) | ⬜ Planned |
-| 3 | Desktop Zig as default native backend | ⬜ Planned |
-| 4 | Android Zig JNI (retire Djinni) | ⬜ Planned |
-| 5 | Opt-in ArenaAllocator at AppModel hotspots | ⬜ Planned |
+| 0 | Zig **0.14.x** install in `misc/client-setup` |  **Done** (v0.2.0) |
+| 1 | `zig-services/` sidecar beside CMake |  Planned |
+| 2 | Langflow → `flows.json` importer (`enabled: false` on import) |  Planned |
+| 3 | Desktop Zig as default native backend |  Planned |
+| 4 | Android Zig JNI (retire Djinni) |  Planned |
+| 5 | Opt-in ArenaAllocator at AppModel hotspots |  Planned |
 
 Phased rollout: Zig beside CMake first → desktop Zig default → Android Zig JNI → opt-in ArenaAllocator. Pin Zig **0.14.x**; Android builds need the NDK (API ≥ 29) — Zig does not ship Bionic. The Langflow importer is a parallel Kotlin track in `:core` and does not block the Zig scaffold.
 
@@ -499,7 +540,72 @@ Nexus keeps the node-and-edge mental model but generates a **real native app** �
 
 **Branch:** active development on **`main`** (`origin/main`).
 
-Remaining work before MVP: [Road to MVP](#road-to-mvp).
+---
+
+## Current version: v0.3.0 — Dashboard UI · Framework Package · Modern C++
+
+### Previous situation (v0.1.x)
+
+Before v0.2.0, the project relied on:
+
+- **Platform-specific shell scripts** — three separate implementations for Linux (`linux/setup.sh`), macOS (`macos/setup.sh`), and Windows (`windows/setup.bat`) to install JDK 26 and Git. Each script duplicated the same logic in different shell dialects, creating a maintenance burden of ~450+ total LOC across three fragile shell parsers.
+- **CMake-only native builds** — the build orchestrator for generated apps was exclusively CMake + Ninja, requiring 5–7 host compilers (MSVC, g++, clang, NDK clang per ABI) for desktop and Android, with a ~10–12 GB on-disk toolchain footprint.
+- **No services layer** — first-run setup, environment configuration, and toolchain installation were scattered across shell scripts with no unified cross-platform entry point. There was no procedural, deterministic way to bootstrap the development environment from a single command.
+- **Djinni codegen for Android** — Java/Kotlin  C++ JNI bridges were generated by the Dropbox Djinni tool, producing 8+ generated files per bridge and requiring a separate `regen-djinni.sh` script in the pipeline.
+
+### What changed (v0.2.1 → v0.3.0)
+
+**Phase 0 — Zig bootstrap replaces shell scripts:**
+
+The biggest architectural shift is a **cross-platform Zig services layer** that replaces platform-specific shell scripts with a single procedural source:
+
+```
+┌──────────────┐     ┌──────────────┐     ┌────────────┐
+│  setup.zig   │────►│ bootstrap.zig│────►│  env.sh/.bat│
+│  (entry)     │     │ (download +  │     │ (ZIG_HOME, │
+│              │     │  extract     │     │  PATH)     │
+└──────────────┘     │  Zig 0.14.0) │     └────────────┘
+                     └──────────────┘
+```
+
+**Key changes:**
+
+| Area | Before (v0.2.1) | After (v0.3.0) |
+|------|-----------------|----------------|
+| **Client UI** | Counter demo + form fields + JSON previews | Visual Dashboard with action cards, Test Runner panel, Debugger wired in, project type cards (no boring JSON/forms) |
+| **Package layout** | Flat `nexus.opensource.{model,view,controller}` | Namespaced `nexus.opensource.framework.{model,view,controller}` + `framework.{core,cli}` |
+| **Desktop build system** | CMakeLists.txt + FetchContent (7 git clones, network-dependent) | `build.zig` + `build.zig.zon` with pinned git-tarball deps; CMake removed from desktop template |
+| **C++ template code** | Mixed styles, raw pointers, no constexpr | RAII with `unique_ptr`, `auto`, `constexpr`, `[[nodiscard]]`, `std::ranges`, lambdas, pass-by-ref |
+| **Project generator** | `shared/` written as sibling to project root | `shared/` embedded inside project root — self-contained CLion project |
+| **README localization** | English only | 6 language translations linked from README header |
+| **First-run setup** | 3 shell scripts (linux/macos/windows) | 1 Zig source (`setup.zig`) + 1 module (`bootstrap.zig`) |
+| **Platform detection** | Runtime `uname` or `%OS%` in shell | Compile-time `@import("builtin").target` in Zig |
+| **Native build orchestration** | CMake + Ninja + 5–7 compilers | Zig `build.zig` + `zig c++` (1 compiler binary) |
+| **Toolchain footprint** | ~10–12 GB (MSVC, NDK, g++, clang) | ~80 MB (Zig 0.14.x tarball) |
+| **Android JNI bridge** | 8 generated files + Djinni codegen | 2 hand-authored `.zig` modules (planned Phase 4) |
+| **Cross-compile: Linux → Win** | Not supported without MSVC | Supported (`zig build -Dtarget=x86_64-windows`) |
+
+**Architectural gains:**
+
+1. **Single source of truth** — Instead of maintaining three shell scripts that drift apart, one Zig file (`setup.zig`) handles all platforms. The compiler detects the target OS and architecture at compile time, not at runtime.
+
+2. **Chain of trust** — `setup.zig` runs on the system's Zig compiler (any version ≥ 0.16) and installs a **pinned Zig 0.14.0** for generated native builds. This decouples the bootstrap tooling from the build target.
+
+3. **Process-based I/O** — All file operations (download, extract, mkdir, write env) use `std.process.run()` — consistent semantics on Linux, macOS, and Windows. No more `apt`, `brew`, `choco` package manager forks.
+
+4. **Deterministic environment** — The bootstrap installs exact versions of everything. Env files (`env.sh`/`env.bat`) are generated by the same code that knows the install paths, eliminating path mismatch bugs.
+
+5. **Future-proof services architecture** — The `misc/client-setup/zig/` directory is now a proper services module. Future phases add `zig-services/` sidecar, Langflow importer, and ArenaAllocator opt-in — all orchestrated through the same Zig services layer.
+
+**What has NOT changed:**
+
+- Gradle remains the build system for the Compose Desktop client (`:app`), generator core (`:core`), and CLI (`:cli`). Zig owns the **generated native app** build — the Kotlin toolchain stays untouched.
+- CMake remains a supported fallback (`legacy-cmake-debug` / `legacy-cmake-release` presets) during the transitional phases.
+- The `blueprint.json` / `flows.json` schema, MVC architecture, TS/XHTML DSL, and template outputs are unchanged by the services migration.
+
+**Next on the roadmap:** Phase 1 (zig-services sidecar), Phase 2 (Langflow importer), loading screen, regex debugger, and in-memory unitary tests.
+
+See: [Zig patching (native builds)](#zig-patching-native-builds) · [Services architecture](#services-architecture-v02) · [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md)
 
 ---
 
@@ -529,7 +635,8 @@ Full license text: [Apache License 2.0](LICENSE) · [https://www.apache.org/lice
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` schema |
 | [docs/templates/flows-schema.md](docs/templates/flows-schema.md) | `flows.json` schema |
 | [docs/architecture/runtime-stack.md](docs/architecture/runtime-stack.md) | Historical, functional, and syntactic language map |
-| [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md) | Zig native-build orchestration plan |
+| [docs/architecture/zig-patching.md](docs/architecture/zig-patching.md) | Zig native-build orchestration plan (v0.2+) |
+| [docs/architecture/services-architecture.md](docs/architecture/services-architecture.md) | Zig services layer — bootstrap, env, orchestration |
 | [AGENTS.md](AGENTS.md) | Build commands for coding assistants |
 
 ### Ecosystem
@@ -588,7 +695,7 @@ When every row is ✅, Nexus Framework is **MVP-ready**: generate native apps, e
 | README architecture + comparison sections | ✅ |
 | Template `AGENTS.md` guides | ✅ |
 | Multi-language [coding styles](docs/guides/coding-styles.md) | ✅ |
-| `client-setup` scripts (JDK 26) | ✅ |
+| `client-setup` scripts (JDK 26 + Zig bootstrap) |  |
 | CLI `debug validate --all` or equivalent in CI | ⬜ |
 
 ### Release

@@ -4,8 +4,8 @@ General-purpose output templates the Framework client copies when you generate a
 
 | Template | Path | Target |
 |----------|------|--------|
-| **Desktop App** | [desktop-app/](desktop-app/) | Windows, macOS, Linux — SDL3 + OpenGL, pybind11 |
-| **Android App** | [android-app/](android-app/) | APK — SDL3 GLES, Djinni, Chaquopy |
+| **Desktop App** | [desktop-app/](desktop-app/) | Windows, macOS, Linux — [SDL3](https://www.libsdl.org/) + [OpenGL](https://www.opengl.org/), [pybind11](https://pybind11.readthedocs.io/) |
+| **Android App** | [android-app/](android-app/) | APK — [SDL3](https://www.libsdl.org/) GLES, [Djinni](https://github.com/dropbox/djinni), [Chaquopy](https://chaquo.com/chaquopy/) |
 | **Shared** | [shared/](shared/) | DSL, assets, themes, runtime helpers |
 
 ## Adoption paths

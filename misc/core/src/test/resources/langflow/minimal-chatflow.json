@@ -1,0 +1,58 @@
+{
+  "id": "chatflow-abc123",
+  "name": "Customer Support Bot",
+  "description": "Simple chat flow with LLM response",
+  "data": {
+    "nodes": [
+      {
+        "id": "input-1",
+        "type": "ChatInput",
+        "data": {
+          "node": {
+            "type": "ChatInput",
+            "display_name": "Chat Input",
+            "template": {
+              "type": "ChatInput",
+              "_display_name": "Chat Input"
+            }
+          }
+        },
+        "position": { "x": 100, "y": 200 }
+      },
+      {
+        "id": "llm-2",
+        "type": "LLM",
+        "data": {
+          "node": {
+            "type": "LLM",
+            "display_name": "OpenAI LLM",
+            "template": {
+              "type": "LLM",
+              "_display_name": "OpenAI LLM"
+            }
+          }
+        },
+        "position": { "x": 400, "y": 200 }
+      },
+      {
+        "id": "output-3",
+        "type": "ChatOutput",
+        "data": {
+          "node": {
+            "type": "ChatOutput",
+            "display_name": "Chat Output",
+            "template": {
+              "type": "ChatOutput",
+              "_display_name": "Chat Output"
+            }
+          }
+        },
+        "position": { "x": 700, "y": 200 }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "input-1", "target": "llm-2" },
+      { "id": "e2", "source": "llm-2", "target": "output-3" }
+    ]
+  }
+}

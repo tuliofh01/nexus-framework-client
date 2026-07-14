@@ -5,6 +5,7 @@
 #include "model/AppModel.hpp"
 
 #include <string>
+#include <string_view>
 
 namespace nxs::controller {
 
@@ -12,15 +13,15 @@ class AppController {
 public:
     AppController(model::AppModel& model, PythonEngine& python);
 
-    void increment();
-    void decrement();
-    void reset();
+    void increment() noexcept;
+    void decrement() noexcept;
+    void reset() noexcept;
 
-    // Optional Python greeting refresh (helpers.greeting).
+    /// Optional Python greeting refresh (helpers.greeting).
     void refresh();
 
-    model::AppModel& model() { return m_model; }
-    const std::string& lastPythonError() const { return m_python.lastError(); }
+    [[nodiscard]] auto model() noexcept -> model::AppModel& { return m_model; }
+    [[nodiscard]] auto lastPythonError() const -> const std::string& { return m_python.lastError(); }
 
 private:
     model::AppModel& m_model;
