@@ -125,7 +125,59 @@ The software industry spent a decade convincing itself that shipping a browser i
 
 ---
 
-## Architecture overview
+## 🧱 C++ at the core — everything else is a tool
+
+The generated app is a **C++ program**. Not a Lua program with C bindings, not a Python script with native modules. The main loop, the model, the controller dispatch — all C++20. Every other language is a deliberate, scoped tool that exists to make the C++ core better at its job.
+
+### Why C++ owns the MVC
+
+MVC in a native app is about **memory layout, ownership, and direct hardware access**. C++ is the only language in the stack that gives you all three without a runtime:
+
+| MVC concern | What C++ provides | Why it matters |
+|:------------|:------------------|:---------------|
+| **Model** — domain state | `class`, RAII, `constexpr`, `[[nodiscard]]` | Deterministic lifetime. No GC pauses when a sensor thread writes to the model. Trivially copyable value types that fit in cache. |
+| **Controller** — command dispatch | `std::function`, module imports, `std::variant` | Type-safe routing. Controllers are pure C++ — every command path is visible at compile time, not dispatched through a string-keyed registry. |
+| **View** — rendering | SDL3 + ImGui direct API calls, `noexcept` move ops | Sub-millisecond redraw. No layout engine. No DOM diffing. `ImDrawList` is just vertex buffers you push directly. |
+
+The controller doesn't call Python to evaluate a command. Python calls C++. The model doesn't serialize state for Lua to read — Lua holds a `sol2` reference to the C++ object and reads memory directly. **C++ is the host; every other language is a guest.**
+
+### The toolchain around C++
+
+| Tool | Role | How it serves the C++ core |
+|:-----|:-----|:---------------------------|
+| **Zig** | Build orchestrator | `zig c++` compiles C++20 modules. `build.zig.zon` pins deps. Cross-compiles to any target from any host. CMake fully removed. |
+| **Lua** | Live scripting | `sol2` bound methods on C++ model objects. Edit `panels.lua`, hit reload — no recompile. The C++ controller stays unchanged. |
+| **Python** | Analytics | pybind11 modules expose C++ buffers to NumPy without copying. `python.module` nodes in blueprint declare what Python code the C++ model calls. |
+| **TypeScript/XHTML** | Declarative UI | XML markup + TS bindings lower to `ImGui` calls at build time. The output is C++ that calls `ImGui::SliderFloat`. No runtime interpreter. |
+
+### A concrete example: the plotter app
+
+```cpp
+// C++ model owns the data — no GC, no copy on write
+export class AppModel {
+    std::vector<double> samples_;
+    int sampleCount_{1024};
+public:
+    [[nodiscard]] auto sampleCount() const noexcept -> int;
+    void regenerate();
+};
+
+// Lua reads the C++ object directly via sol2 reference
+// -- scripts/panels.lua
+// for i = 1, model.sampleCount do ... end
+
+// Python gets a pointer to C++ memory — no serialization
+// # python/functions.py
+// def fft(samples: np.ndarray) -> np.ndarray: ...
+
+// Zig compiles it all and manages arena allocation
+// const c = @cImport(@cInclude("app_core.h"));
+// c.app_model_regenerate(model_ptr);
+```
+
+The C++ model never yields control. Lua, Python, and Zig operate on memory that C++ owns. That's the architecture in one sentence.
+
+> **New to C++?** You don't need to be an expert. The generated code follows consistent patterns — `class` for state, free functions for logic, modules for isolation. The blueprint graph handles the wiring. You write the domain logic in `src/model/` and let the framework handle the scaffolding.
 
 Nexus follows a three-layer architecture: you **author** a graph in a Compose Desktop client, the **generator** creates a native project tree, and the **runtime** executes it. Each layer is independently testable and replaceable.
 
@@ -163,7 +215,7 @@ The full architecture — from client through generation to runtime:
 
 Desktop vs Android runtime — same blueprint, different Python bridge:
 
-![Desktop vs Android Runtime — Shared MVC with pybind11 vs Chaquopy + Zig JNI](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+![Client source tree — :app MVC packages, :core pipeline, :cli headless entry](docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
 ### Tech stack — what each layer owns
 
@@ -533,7 +585,7 @@ Add `flows.json` with background loops, event triggers, and scheduled tasks. The
 
 ### The progression visualized
 
-![Desktop vs Android Runtime — Shared MVC with pybind11 vs Chaquopy + Zig JNI](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+![Client source tree — :app MVC packages, :core pipeline, :cli headless entry](docs/assets/diagrams/desktop-vs-android-runtime.svg)
 
 Each stage adds capabilities without breaking what came before.
 The blueprint graph encodes which stages are active.
