@@ -1,0 +1,148 @@
+.TH NEXUS 1 "2026-07-16" "0.1.0" "Nexus Framework CLI"
+.SH NAME
+nexus \- scaffold native desktop and Android apps from bundled templates
+.SH SYNOPSIS
+.B nexus generate
+\fI--type\fR \fIdesktop\fR|\fIandroid\fR \fI--name\fR \fINAME\fR [\fIoptions\fR]
+.br
+.B nexus version
+.br
+.B nexus help
+.SH DESCRIPTION
+\fBnexus\fR is the headless CLI for the Nexus Framework. It reads a
+\fBblueprint.json\fR node graph, applies the matching template
+(\fIdesktop-app\fR or \fIandroid-app\fR), substitutes placeholders, and
+emits a complete native project tree under
+\fBbuilds/framework/\fR\fI{name}\fR\fB/\fR.
+
+The generated project uses a C++20 MVC architecture with SDL3, Dear ImGui,
+sol2 (Lua), pybind11 (Python), and an optional TS/XHTML DSL.  Android
+builds use Zig JNI + Chaquopy instead of pybind11.
+
+All native builds are orchestrated by Zig 0.14.  CMake, Ninja, the NDK,
+and Djinni have been fully removed from both templates.
+.SH COMMANDS
+.TP
+.B generate
+Scaffold a project from bundled templates.  See OPTIONS below.
+.TP
+.B version
+Print the CLI version and exit.
+.TP
+.B help
+Display usage information (same as \fB\-\-help\fR or \fB\-h\fR).
+.SH GENERATE OPTIONS
+.TP
+\fB\-\-type\fR \fIdesktop\fR|\fIandroid\fR
+App template to use.  Required.
+.RS
+.TP
+\(bu \fIdesktop\fR \(em SDL3 + ImGui + pybind11 native binary
+.TP
+\(bu \fIandroid\fR \(em SDL3/GLES + Chaquopy + Zig JNI bridge APK
+.RE
+.TP
+\fB\-\-name\fR \fINAME\fR
+Project name.  Used as the output directory name, C++ namespace, and
+window title (unless overridden).  Required.
+.TP
+\fB\-\-output\fR \fIPATH\fR
+Output directory.  Default:
+\fBbuilds/framework/\fR\fI{name}\fR
+.TP
+\fB\-\-window\-title\fR \fITITLE\fR
+Override the window title.  Default:
+\fI{name}\fR \- built with The Nexus Framework
+.TP
+\fB\-\-cpp\-standard\fR \fIN\fR
+C++ language standard.  Default: 20.  Currently only 20 is supported.
+.TP
+\fB\-\-license\fR \fILICENSE\fR
+SPDX license identifier.  Default: Apache-2.0.
+.TP
+\fB\-\-script\-protection\fR \fIbool\fR
+Encrypt Lua and Python asset packs (lua.dat, python.dat).  Default: true.
+Set to false to emit plaintext scripts for debugging.
+.TP
+\fB\-\-dry\-run\fR
+Preview generated file paths and template substitutions without writing
+anything to disk.  Useful for debugging blueprint.json graphs.
+.TP
+\fB\-\-force\fR
+Overwrite the output directory if it already exists and is non-empty.
+Without this flag, the command fails if the output directory exists.
+.TP
+\fB\-\-verbose\fR
+Enable verbose logging from the template engine, including every
+placeholder substitution.  Implied by $DEBUG environment variable.
+.SH EXAMPLES
+.TP
+Preview a desktop project (no files written):
+.RS
+nexus generate \-\-type desktop \-\-name PlotterApp \-\-dry-run
+.RE
+.TP
+Generate an Android project to a custom path:
+.RS
+nexus generate \-\-type android \-\-name MyApp \-\-output builds/framework/MyApp
+.RE
+.TP
+Generate a desktop project with encryption disabled:
+.RS
+nexus generate \-\-type desktop \-\-name DebugApp \-\-script-protection false
+.RE
+.SH INVOCATION
+The CLI is distributed as a Gradle application.  Invoke it from the
+repository root:
+.PP
+.RS
+./gradlew :cli:run \-\-args="\fIarguments\fR"
+.RE
+.PP
+The Gradle wrapper bootstraps the JDK 26 toolchain automatically.
+There is no standalone \fBnexus\fR binary; the man page documents the
+command-line contract that the Gradle task implements.
+.SH EXIT STATUS
+.TP
+0
+Success.
+.TP
+1
+Missing required flag, invalid argument, or generation failure.
+.SH FILES
+.TP
+\fBtemplate/desktop-app/\fR
+Desktop template skeleton (build.zig, C++ sources, Lua/Python stubs).
+.TP
+\fBtemplate/android-app/\fR
+Android template skeleton (Gradle project, Zig JNI, Chaquopy config).
+.TP
+\fBtemplate/shared/\fR
+Shared runtime modules, DSL definitions, and themes.
+.TP
+\fBbuilds/framework/\fR\fI{name}\fR\fB/\fR
+Default output directory for generated projects.
+.TP
+\fBbuilds/client/\fR
+Packaged Compose Desktop distributions and OS installers.
+.SH ENVIRONMENT
+.TP
+\fBZIG_HOME\fR
+Path to Zig 0.14.0 installation (set by \fBmisc/client-setup/env.sh\fR).
+.TP
+\fBANDROID_NDK\fR
+Required when building the generated Android project's native .so.
+.TP
+\fBDEBUG\fR
+If set, enables verbose template engine logging (same as \fB\-\-verbose\fR).
+.SH STANDARDS
+The generated projects conform to Apache 2.0 licensing.  C++20 modules
+follow the standard \fB.cppm\fR convention.  Zig builds use the 0.14.x
+stable release channel.
+.SH REPORTING BUGS
+File issues at https://github.com/anomalyco/opencode/issues
+.SH SEE ALSO
+.BR gradle (1),
+.BR zig (1),
+.BR cmake (1) \-
+legacy, no longer used by Nexus
