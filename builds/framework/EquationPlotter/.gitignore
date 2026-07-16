@@ -1,0 +1,35 @@
+# Zig build outputs and caches
+.zig-cache/
+zig-out/
+zig-services/deps/
+zig-services/zig-pkg/
+build/
+
+# Build outputs go to builds/
+builds/*
+!builds/.gitkeep
+!builds/README.md
+
+# Compiler artifacts
+compile_commands.json
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Packed script archives (generated)
+lua.dat
+python.dat
+
+# Editors
+.vscode/
+.idea/
+*.swp
