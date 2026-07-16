@@ -79,8 +79,6 @@ builds/framework/*
 !builds/framework/.gitkeep
 !builds/framework/_fixture/
 !builds/framework/_fixture/**
-!builds/framework/EquationPlotter/
-!builds/framework/EquationPlotter/**
 !builds/README.md
 
 ### Secrets / local env (never commit) ###

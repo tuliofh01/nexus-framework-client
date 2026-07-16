@@ -39,18 +39,16 @@ class TemplateEngine(
             paths.filter { Files.isRegularFile(it) }.forEach { src ->
                 val relativePath = sourceRoot.relativize(src).toString()
                 val destRelative = render(relativePath, vars)
-                val rawContent = Files.readString(src)
-                val rendered = if (isTextLike(relativePath)) render(rawContent, vars) else rawContent
-                val preview = if (previewLines > 0 && isTextLike(relativePath)) {
+                val textLike = isTextLike(relativePath)
+                val rendered = if (textLike) render(Files.readString(src), vars) else null
+                val preview = if (previewLines > 0 && rendered != null) {
                     rendered.lineSequence().take(previewLines).toList()
                 } else {
                     emptyList()
                 }
-                val unresolved = if (isTextLike(relativePath)) {
-                    findUnresolvedPlaceholders(rendered)
-                } else {
-                    findUnresolvedPlaceholders(destRelative)
-                }
+                val unresolved =
+                    rendered?.let(::findUnresolvedPlaceholders)
+                        ?: findUnresolvedPlaceholders(destRelative)
                 debugLog("dry-run: $destRelative (${unresolved.size} unresolved)")
                 results += RenderedFilePreview(destRelative, preview, unresolved)
             }
