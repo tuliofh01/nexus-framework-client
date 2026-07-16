@@ -1,7 +1,7 @@
 {
   "$schema": "https://nexus.dev/schemas/blueprint-1.json",
   "name": "{{projectName}} flow",
-  "description": "General-purpose Nexus app graph. Optional plotter sample under examples/plotter/.",
+  "description": "General-purpose Nexus app graph.",
   "editor": { "tool": "imnodes", "version": "0.5", "grid_snap": 16, "paradigm": "langflow" },
   "nodes": [
     {

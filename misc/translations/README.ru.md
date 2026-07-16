@@ -1,5 +1,5 @@
 <!--
-  description: Nexus Framework генерирует нативные десктопные и Android приложения на C++/Lua/Python из визуальных blueprints. Никакого Electron, облаков или браузера — только скомпилированный бинарный файл под вашим контролем. SDL3 + ImGui + Zig 0.14.
+  description: Nexus Framework генерирует нативные десктопные и Android приложения на C++/Lua/Python из визуальных blueprints. Никакого Electron, облаков или браузера — только скомпилированный бинарный файл под вашим контролем. SDL3 + ImGui + Zig 0.16.
   keywords: генератор нативных приложений, C++ фреймворк, модули C++20, Lua скриптинг, встроенный Python, SDL3, ImGui, Zig сборка, Zig JNI, Compose Desktop, разработка на основе blueprint, кроссплатформенный десктоп, нативное Android приложение, без Electron, генератор проектов, графовая архитектура, arena allocator, pybind11, sol2, Chaquopy
 -->
 # Nexus Framework — Генератор Нативных Приложений: C++ + Lua + Python из визуальных Blueprint

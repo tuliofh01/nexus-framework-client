@@ -19,6 +19,6 @@ class ChaquopyPythonBridge : PythonBridge() {
         xMax: Double,
         samples: Int,
     ): EvalResult {
-        return EvalResult(false, "evaluate() reserved for examples/plotter/", ArrayList(), ArrayList())
+        return EvalResult(false, "evaluate() not implemented — override in python/functions.py", ArrayList(), ArrayList())
     }
 }

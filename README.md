@@ -1,5 +1,5 @@
 <!--
-  description: Nexus Framework generates native C++/Lua/Python desktop and Android apps from visual blueprints. No Electron, no cloud, no browser — just a compiled binary you control. SDL3 + ImGui + Zig 0.14 build system. 
+  description: Nexus Framework 1.0.1 generates native C++/Lua/Python desktop and Android apps from visual blueprints. No Electron, no cloud, no browser — just a compiled binary you control. SDL3 + ImGui + Zig 0.16 sidecars and C++20 modules built with GCC.
   keywords: native app generator, C++ framework, C++20 modules, Lua scripting, Python embedded, SDL3, ImGui, Zig build, Zig JNI, Compose Desktop, blueprint-driven development, cross-platform desktop, Android native app, no Electron, project generator, graph-based architecture, arena allocator, pybind11, sol2, Chaquopy
 -->
 # The Nexus Framework — Native App Generator: C++ + Lua + Python from Visual Blueprints
@@ -25,7 +25,7 @@
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache License 2.0" /></a>
   <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin" alt="Kotlin 2.4" /></a>
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3 Cross Platform" /></a>
-  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.14-orange?style=flat-square&logo=zig" alt="Zig 0.14" /></a>
+  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.16.0-orange?style=flat-square&logo=zig" alt="Zig 0.16.0" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui" /></a>
   <a href="#"><img src="https://img.shields.io/badge/version-1.0.1-blueviolet?style=flat-square" alt="Version 1.0.1" /></a>
 </p>
@@ -40,16 +40,17 @@
 
 <!-- This avoids the ToC being completely massive; sections below are the main beats. -->
 
-| # | Section | Vibe |
-|:--|:--------|:-----|
-| 1 | [🎯 What is Nexus?](#-what-is-nexus) | The pitch, the promise, the binary |
-| 2 | [⚡ Why native matters](#-why-native-matters) | Web shell tax vs real performance |
-| 3 | [🎨 What you can build](#-what-you-can-build) | Templates in action |
-| 4 | [🧠 Architecture](#-architecture) | Layers, blueprint, flow, polyglot design |
-| 5 | [🛠️ Build & ship](#-build--ship) | Generate, code, compile, deploy |
-| 6 | [🥊 Nexus vs the alternatives](#-nexus-vs-the-alternatives) | Electron, Tauri, Flutter, n8n, bare CMake |
-| 7 | [💎 Under the hood](#-under-the-hood) | C++20, Zig, evolution, where we are |
-| 8 | [📚 Community & docs](#-community--docs) | Contribute, misc, roadmap, license |
+| # | Section | Covers |
+|:--|:--------|:-------|
+| 1 | [🎯 What is Nexus?](#-what-is-nexus) | The pitch, audience, and limits |
+| 2 | [⚡ Why native matters](#-why-native-matters) | Performance and footprint |
+| 3 | [🎨 What you can build](#-what-you-can-build) | Desktop and Android use cases |
+| 4 | [🧱 C++ at the core](#-c-at-the-core--everything-else-is-a-tool) | Architecture and language boundaries |
+| 5 | [Building your app](#building-your-app) | Generate, set up, compile, and run |
+| 6 | [Nexus vs the alternatives](#nexus-vs-the-alternatives) | Electron, Tauri, Flutter, n8n, CMake |
+| 7 | [Modern C++ and Zig](#modern-c-at-the-core) | Modules, Zig sidecars, and build roles |
+| 8 | [Project evolution](#project-evolution) | How version 1.0.1 reached the current design |
+| 9 | [Docs & resources](#docs--resources) | Guides, ecosystem, and ownership |
 
 ---
 
@@ -59,7 +60,7 @@
 
 You sketch your app's architecture as a directed graph: drop in a UI page, wire a Python module for analytics, connect a Lua panel for live scripting, define automations in a flow file. Nexus reads that graph and writes out a complete, buildable project tree. No hand-rolling build systems. No wiring language bridges. No CMake. No ceremony.
 
-**Simple when you want it.** A counter app with ImGui? One `generate` command. You get SDL3 windowing, input handling, a working UI loop — add your logic, `zig build`, ship. You don't need to understand the whole stack.
+**Simple when you want it.** A counter app with ImGui? One `generate` command. You get SDL3 windowing, input handling, a working UI loop — add your logic, run `./build_app.sh`, ship. You don't need to understand the whole stack.
 
 **Powerful when you need it.** Python analytics in-process. Lua panels that hot-reload. TypeScript UI that lowers to native ImGui calls. Add a node to the blueprint, re-generate, the layer stacks on top of what you already had. Seven languages, one process, zero serialization overhead.
 
@@ -71,7 +72,7 @@ You sketch your app's architecture as a directed graph: drop in a UI page, wire 
 |:-----------|:---------------|
 | **Building a desktop or Android app** | From data plotter to multi-engine trading terminal |
 | **Tired of the Electron tax** | 3–20 MB binary, < 200 ms boot, 15–40 MB RAM at idle |
-| **Valuing simplicity** | One command generates a project; one language (Zig) replaces four build tools |
+| **Valuing simplicity** | One generated `build_app.sh` coordinates Python, Zig, GCC, and platform packaging |
 | **Needing multiple languages in one process** | C++ for speed, Python for analysis, Lua for scripting, TS for UI — all in-process |
 | **Working offline** | Factory floor, boat, field, tablet without connectivity |
 | **Done hand-rolling CMake + pybind11 + sol2** | Templates own that complexity, you own your domain logic |
@@ -120,10 +121,10 @@ The software industry spent a decade convincing itself that shipping a browser i
 | **Build a configurable dashboard with hot reload**             | Blueprint nodes per panel + `flows.json` automations + Lua at runtime           |
 | **Ship a desktop tool with web-style UI (but native)**         | XHTML + TypeScript that lowers to ImGui calls — no browser                      |
 | **C++ perf + Python analysis in one process**                  | Both in-process — no IPC, no serialization, no numpy-copy overhead              |
-| **Cross-compile Linux to Windows from CI**                     | `zig build -Dtarget=x86_64-windows` — no MSVC VM                                |
+| **Build a mixed C++/Zig app reproducibly**                     | One generated script owns setup, dependency fetches, modules, and linking       |
 *This isn't aspirational — these are the existing templates in action.*
 
-> 📦 **See for yourself:** [`builds/framework/PlotterApp/`](builds/framework/PlotterApp/) is a real generated project living in this repo. It's the output of running the generator with the `desktop-app` template — a complete C++20 MVC project with Lua panels, Python helpers, a blueprint graph, and a plotter example. Open it, read its README, and run `zig build` to see what Nexus produces.
+> 📦 **See for yourself:** [`template/desktop-app/`](template/desktop-app/) ships the build-verified equation plotter source. Generate a desktop app, enter equations such as `y=sin(x)` or `y=x^3-2*x`, then build it with `./build_app.sh`.
 
 ---
 
@@ -147,7 +148,8 @@ The controller doesn't call Python to evaluate a command. Python calls C++. The 
 
 | Tool | Role | How it serves the C++ core |
 |:-----|:-----|:---------------------------|
-| **Zig** | Build orchestrator | `zig c++` compiles C++20 modules. `build.zig.zon` pins deps. Cross-compiles to any target from any host. CMake fully removed. |
+| **Zig 0.16.0** | Native sidecars | Builds the desktop C-ABI library and Android JNI library. It deliberately does not compile named C++ modules. |
+| **GCC 14+** | C++ module compiler | `g++ -fmodules-ts` compiles `.cppm` units in dependency order; `build_app.sh` coordinates the BMI cache and final link. |
 | **Lua** | Live scripting | `sol2` bound methods on C++ model objects. Edit `panels.lua`, hit reload — no recompile. The C++ controller stays unchanged. |
 | **Python** | Analytics | pybind11 modules expose C++ buffers to NumPy without copying. `python.module` nodes in blueprint declare what Python code the C++ model calls. |
 | **TypeScript/XHTML** | Declarative UI | XML markup + TS bindings lower to `ImGui` calls at build time. The output is C++ that calls `ImGui::SliderFloat`. No runtime interpreter. |
@@ -172,7 +174,7 @@ public:
 // # python/functions.py
 // def fft(samples: np.ndarray) -> np.ndarray: ...
 
-// Zig compiles it all and manages arena allocation
+// Zig supplies the optional C-ABI allocator sidecar
 // const c = @cImport(@cInclude("app_core.h"));
 // c.app_model_regenerate(model_ptr);
 ```
@@ -227,15 +229,24 @@ One toolchain, two targets — the complete software stack from application code
 
 ### Interface overview — mockups
 
-The Compose Desktop client provides five main screens. Here's what each one looks like:
+The Compose Desktop client provides five main screens:
 
-| Screen               | Mockup                                                   | What it does                                                               |
-|:---------------------|:---------------------------------------------------------|:---------------------------------------------------------------------------|
-| **Dashboard**        | ![Dashboard](docs/assets/examples/mockup-dashboard.svg)  | 5-card launchpad: Generate, Blueprint Editor, Flows, Debugger, Test Runner  |
-| **Generate Project** | ![Generate](docs/assets/examples/mockup-generate-project.svg) | Project name, type selector, output path, Generate button                   |
-| **Blueprint Editor** | ![Blueprint](docs/assets/examples/mockup-blueprint-editor.svg) | Visual DAG canvas — drag nodes, draw edges, inspector sidebar               |
-| **Flows Editor**     | ![Flows](docs/assets/examples/mockup-flows-editor.svg)   | Flow definitions with enable/disable toggles, reload, preview               |
-| **Debugger**         | ![Debugger](docs/assets/examples/mockup-debugger.svg)    | Pattern-based log scanner with live filtering and result history            |
+- **Dashboard** — 5-card launchpad for Generate, Blueprint Editor, Flows,
+  Debugger, and Test Runner.
+  ![Dashboard](docs/assets/examples/mockup-dashboard.svg)
+- **Generate Project** — project name, type selector, output path, and Generate
+  action.
+  ![Generate Project](docs/assets/examples/mockup-generate-project.svg)
+- **Blueprint Editor** — visual DAG canvas with draggable nodes, edges, and an
+  inspector sidebar.
+  ![Blueprint Editor](docs/assets/examples/mockup-blueprint-editor.svg)
+- **Flows Editor** — flow definitions with enable/disable toggles, reload, and
+  preview.
+  ![Flows Editor](docs/assets/examples/mockup-flows-editor.svg)
+- **Debugger** — pattern-based log scanner with live filtering and result
+  history.
+  ![Debugger](docs/assets/examples/mockup-debugger.svg)
+
 ### Polyglot design: 7 languages, 3 boundaries
 
 Nexus doesn't force one language to do everything. Each language lives in its natural layer:
@@ -244,13 +255,13 @@ Nexus doesn't force one language to do everything. Each language lives in its na
 |:-----------------|:------------------------------------|:------------------------------------------------------------|
 | **Kotlin**       | `:app` / `:core` / `:cli`           | Compose Desktop UI + generation pipeline + CLI               |
 | **C++20**        | `src/` in generated project         | Runtime MVC — RAII, `std::ranges`, `[[nodiscard]]`           |
-| **Zig 0.14**     | `zig-services/` + `client-setup/`   | Build orchestration, cross-compilation, arena allocator      |
+| **Zig 0.16.0**   | `zig-services/` + `client-setup/`   | C-ABI/JNI sidecars and arena allocator                        |
 | **Lua 5.4**      | `scripts/` in generated project     | sol2 scripting — panels, hotkeys, runtime iteration          |
 | **Python 3.11+** | `python/` in generated project      | pybind11 embedded NumPy / scipy analytics                    |
 | **TypeScript**   | `ui/ui.ts`                          | Declarative UI bindings (lowers to Lua)                      |
 | **XHTML**        | `ui/ui.xhtml`                       | XML UI markup (lowers to ImGui calls)                        |
-The **generation boundary** is crossed by `ProjectGenerator` (Kotlin → native source trees).  
-The **build boundary** is crossed by Zig (`build.zig` → compiled binary).  
+The **generation boundary** is crossed by `ProjectGenerator` (Kotlin → native source trees).
+The **build boundary** is crossed by `build_app.sh`: GCC compiles C++20 modules, Zig builds native sidecars, and Gradle packages Android.
 The **runtime boundary** is crossed by sol2, pybind11, and Chaquopy (in-process language bridges).
 
 ### Cross-language bridge
@@ -289,8 +300,10 @@ Generated project tree layout (output in `builds/framework/<name>/`):
 
 ```
 builds/framework/MyApp/
-├── build.zig              # Zig build orchestration
-├── build.zig.zon          # Zig dependency manifest
+├── build_app.sh           # One-shot setup + build entry point
+├── zig-services/          # Zig 0.16 C-ABI/JNI sidecar
+│   ├── build.zig
+│   └── build.zig.zon
 ├── nxs_config.json        # Project config (v2 schema)
 ├── src/                   # C++20 model + controller
 ├── python/                # Python analytics
@@ -303,8 +316,8 @@ builds/framework/MyApp/
 - **Templates are bundled, not fetched** — `misc/templates/` lives in the repo. No network at generation time.
 - **Placeholders use `{{doubleCurly}}`** — consistent across all template files for all languages.
 - **Generation is additive** — if a file already exists in the output directory, it's not overwritten. You can regenerate without losing your work.
-- **Build files are generated** — `build.zig` and `build.zig.zon` come from the template, so the output tree is immediately buildable with zero configuration.
-- **You never outgrow it** — use the blueprint for rapid iteration, then edit the generated project directly when you need freedom. The output is a normal Zig/C++ tree, not a framework runtime you're locked into.
+- **Build files are generated** — `build_app.sh` and `zig-services/` come from the template, so the output tree is immediately buildable.
+- **You never outgrow it** — use the blueprint for rapid iteration, then edit the generated project directly when you need freedom. The output is a normal C++/Zig tree, not a framework runtime you're locked into.
 
 ---
 
@@ -422,8 +435,10 @@ When you run `generate`, the pipeline writes a complete, buildable project tree 
 
 ```
 builds/framework/MyApp/
-├── build.zig              # Zig build graph — compile C++, link SDL3, pack archives
-├── build.zig.zon          # Zig dependency manifest — pinned tarballs, no network after vendor
+├── build_app.sh           # setup venv/deps, compile modules, link app
+├── zig-services/          # Zig C-ABI sidecar (desktop) / JNI sidecar (Android)
+│   ├── build.zig
+│   └── build.zig.zon
 ├── nxs_config.json        # Project identity — name, version, template, dependencies (v2 schema)
 ├── src/                   # YOUR C++20 code — MVC from blueprint
 │   ├── model/             #   domain state (AppModel.cppm)
@@ -435,7 +450,6 @@ builds/framework/MyApp/
 │   ├── ui.xhtml           #   markup (sliders, plots, panels)
 │   └── ui.ts              #   bindings (state(), on-click, items-source)
 ├── flows/                 # YOUR runtime automations (flows.json) — triggers + steps
-├── zig-services/          # Zig build sidecar — c_abi/, jni/ (Android only)
 └── shared/                # Runtime helpers — theme, fonts, script archive code
 ```
 
@@ -448,14 +462,20 @@ builds/framework/MyApp/
 | Write a Python analysis pipeline | `python/functions.py`                 |
 | Add a Lua hotkey or panel        | `scripts/panels.lua`                  |
 | Wire a new automation flow       | `flows/flows.json`                    |
-| Add a C++ dependency             | `build.zig.zon` + `build.zig`         |
+| Add a native dependency          | `build_app.sh` and `zig-services/build.zig.zon` |
 | Configure the project            | `nxs_config.json`                     |
 **Build after every change:**
 
 ```bash
-zig build                    # incremental — < 30s after first build
-./build/MyApp                # run the binary (Linux/macOS)
+./build_app.sh                    # setup + incremental compile + link
+source .venv/bin/activate
+./build/bin/MyApp                 # run the desktop binary
 ```
+
+The script creates `.venv`, installs `requirements.txt`, fetches pinned native
+dependencies, runs Zig 0.16.0 for `nexus_zig`, compiles C++20 modules with
+`g++ -fmodules-ts`, and links the application. `cd zig-services && zig build
+app` delegates to the same script.
 
 The blueprint is consumed at **generation time** only. Once emitted, the generated tree is a normal C++/Zig project — you can edit files, add dependencies, and restructure freely. Regeneration is additive (doesn't overwrite existing files), so you can fix a mistake in the blueprint and re-run `generate` without losing custom code.
 
@@ -463,7 +483,7 @@ The blueprint is consumed at **generation time** only. Once emitted, the generat
 
 | You are...                         | Your entry point                                                     |
 |:----------------------------------|:---------------------------------------------------------------------|
-| **Just want a working app fast**   | Generate, write `src/`, `zig build` — binary in five minutes          |
+| **Just want a working app fast**   | Generate, write `src/`, run `./build_app.sh`                           |
 | **Game dev** (ImGui comfortable)   | `scripts/panels.lua` — hotkeys, overlay panels, quick-add buttons     |
 | **C++ backend engineer**           | `src/model/` + `src/controller/` — extend logic, generate UI          |
 | **Web developer** exploring native | `ui/ui.xhtml` + `ui/ui.ts` — declarative markup, no browser           |
@@ -475,7 +495,7 @@ Nexus's templates ship with everything wired. Here's how little code you need to
 
 | Goal                 | What you do                             | What you get                              |
 |:--------------------|:----------------------------------------|:------------------------------------------|
-| C++ + ImGui window   | Generate → edit model → `zig build`     | 3 MB binary with ImGui UI                  |
+| C++ + ImGui window   | Generate → edit model → `./build_app.sh` | Native binary with ImGui UI                |
 | Add a Lua panel      | Add `lua.script` node → re-generate     | Hot-reloadable console + panels            |
 | Add Python analytics | Add `python.module` node → re-generate  | In-process NumPy, zero-copy C++ access     |
 | Add a plot           | Already there — ImPlot ships by default | `ImPlot::PlotLine()` in your view code     |
@@ -488,10 +508,10 @@ Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
 
 | Aspect          | Desktop (pybind11)                  | Android (Chaquopy)                   |
 |:----------------|:-------------------------------------|:------------------------------------|
-| **Bridge**      | CPython linked into native process   | Jython on JVM + Zig JNI bridge       |
+| **Bridge**      | CPython linked into native process   | Chaquopy on Android runtime + Zig JNI |
 | **Source tree** | `python/functions.py`                | `app/src/main/python/`               |
 | **Archive**     | `python.dat` packed at build time    | Bundled in APK by Gradle             |
-| **Rebuild**     | `zig build` re-packs `python.dat`    | `./gradlew :app:assembleDebug`       |
+| **Rebuild**     | `./build_app.sh`                     | `./build_app.sh` or Gradle            |
 ![Python Desktop vs Android Embedding Flow — pybind11 vs Chaquopy](docs/assets/diagrams/python-desktop-vs-android-flow.svg)
 
 ### TypeScript + XHTML UI
@@ -514,7 +534,9 @@ Start here: [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml)
 
 ### vs Electron, Tauri, Flutter
 
-|                   | Electron             | Tauri                | Flutter              | **Nexus**                   |
+#### Desktop application frameworks
+
+| Criterion         | Electron             | Tauri                | Flutter              | **Nexus**                   |
 |:------------------|:---------------------|:---------------------|:---------------------|:-----------------------------|
 | **Runtime**        | Chromium + Node.js   | OS WebView + Rust    | Dart + Skia          | **C++20 + SDL3 native**      |
 | **Binary size**    | 120–200 MB           | 5–15 MB              | 15–50 MB             | **3–20 MB**                  |
@@ -525,7 +547,7 @@ Start here: [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml)
 | **Platforms**      | Desktop              | Desktop + mobile WV  | Desktop + mobile     | **Desktop + Android SDL3**   |
 | **Codegen**        | —                    | —                    | —                    | **Blueprint-driven**         |
 | **Offline**        | Partial (cache API)  | Partial              | Full                 | **Full (always offline)**    |
-| **SDK footprint**  | npm + node_modules   | Rust toolchain       | Flutter SDK + Dart   | **Zig 0.14 (~80 MB)**        |
+| **SDK footprint**  | npm + node_modules   | Rust toolchain       | Flutter SDK + Dart   | **Zig 0.16 + GCC/SDK tools** |
 **When Nexus wins:** sub-millisecond UI response, consistent codebase from trading terminal to Android field tablet, in-process Python for NumPy/CUDA without serialization, offline-first requirement, small binary requirement.
 
 **When alternatives win:** your team is HTML/CSS-first, iOS is required from the same codebase, or you're building a traditional consumer app where ecosystem matters more than performance.
@@ -534,7 +556,9 @@ Start here: [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml)
 
 This is the most common confusion. **Nexus is NOT a workflow engine.** Here's the distinction:
 
-|                    | n8n / Langflow                    | **Nexus**                                         |
+#### Workflow and visual-authoring platforms
+
+| Criterion          | n8n / Langflow                    | **Nexus**                                         |
 |:-------------------|:----------------------------------|:-------------------------------------------------|
 | **Output**          | Cloud automations, API workflows  | **Native desktop / Android binary**               |
 | **Runtime**         | Node.js on a server               | **SDL3 + ImGui on your hardware**                 |
@@ -551,7 +575,7 @@ n8n connects SaaS APIs. Langflow connects LLM chains. Nexus connects C++ models,
 You can hand-roll SDL3 + ImGui + pybind11. Many of us have. Nexus exists because:
 
 - **Blueprint iteration is cheaper than CMake refactoring** — changing a node type regenerates the build graph, no manual target editing
-- **Cross-platform Zig builds** — one `build.zig` replaces platform-specific CMake presets (CMake fully removed from both templates)
+- **Generated build orchestration** is easier to audit than hand-written platform-specific CMake presets: one script coordinates the compiler and sidecars.
 - **Scripting bridges are pre-tested** — pybind11 and sol2 bindings come generated and tested
 - **Deterministic generation** — CI can regenerate and diff the output tree
 
@@ -607,10 +631,10 @@ Generated apps are lean because the toolchain is lean and there's no browser inv
 | **RAM under load** | 50–150 MB (with embedded Python + NumPy)                     |
 | **Cold start**     | < 200 ms to first ImGui frame                                |
 | **UI refresh**     | Full redraw < 0.5 ms (immediate mode on GPU)                 |
-| **Build (cold)**   | 15–60 s first build (Zig downloads + compiles deps)          |
+| **Build (cold)**   | 15–60 s first build (script fetches and compiles deps)        |
 | **Build (incr.)**  | < 10 s after changing a single `.cppm`/`.lua`/`.py` file     |
-| **Cross-compile**  | `zig build -Dtarget=x86_64-windows` from Linux, no MSVC      |
-| **Toolchain size** | ~80 MB (Zig 0.14.0) — CMake, NDK, Djinni all removed        |
+| **Native sidecar** | Zig 0.16.0 builds the desktop C ABI and Android JNI bridge    |
+| **Toolchain**      | Zig 0.16.0 + GCC 14+; Android additionally requires SDK/NDK   |
 | **Template size**  | ~2.5 MB (both templates + shared, legacy removed)            |
 
 These aren't aspirational targets — they're measurements from the existing templates.
@@ -620,7 +644,7 @@ These aren't aspirational targets — they're measurements from the existing tem
 ## Quick start
 
 ```bash
-# 1. Bootstrap (once per machine) — installs JDK 26 + Zig 0.14.0
+# 1. Bootstrap (once per machine) — installs JDK 26 + Zig 0.16.0
 zig run misc/client-setup/setup.zig
 source misc/client-setup/env.sh
 
@@ -631,12 +655,15 @@ source misc/client-setup/env.sh
 ./gradlew :cli:run --args="generate --type desktop --name MyApp"
 
 # 4. Build the generated app
-cd builds/framework/MyApp && zig build
+cd builds/framework/MyApp && ./build_app.sh
 
 # 5. Edit the blueprint, edit the flows, ship the binary
 ```
 
-Your system Zig (any version) runs the bootstrap once, which pins a known-good **Zig 0.14.0** for all native builds. Full details: [misc/client-setup/README.md](misc/client-setup/README.md).
+Your system Zig runs the bootstrap once, which pins **Zig 0.16.0** for generated
+native sidecars. Desktop C++20 modules require GCC 14+ because Zig's bundled
+Clang does not currently compile the template's named modules. Full details:
+[misc/client-setup/README.md](misc/client-setup/README.md).
 
 **Compile and test the generator:** `./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test`
 
@@ -652,31 +679,8 @@ Your system Zig (any version) runs the bootstrap once, which pins a known-good *
 1. **Sketch** — Define modules in `blueprint.json`. Add automations in `flows.json`. Use the Compose Desktop client or a text editor.
 2. **Generate** — The Kotlin pipeline reads your graph and materializes a complete project tree into `builds/framework/<name>/`.
 3. **Code** — Write your domain logic: C++ for performance, Python for analysis, Lua for scripting, TypeScript for UI structure.
-4. **Build** — One command. Zig orchestrates C++ compilation, Lua bytecode, Python archives, and TypeScript lowering.
+4. **Build** — One command. `build_app.sh` coordinates GCC module compilation, Zig sidecars, Python setup, and platform packaging.
 5. **Ship** — A native binary (~3-20 MB) or Android APK. Platform installers via Gradle deploy tasks. Always offline.
-
----
-
-## Who is this for?
-
-**You should use Nexus if:**
-
-- You're building a **desktop or Android application** — from a simple data plotter to a multi-engine trading terminal
-- You want **native performance and small footprint** without the Electron tax
-- You value **simplicity** — one command generates a working project, one language (Zig) replaces four build tools
-- You need **multiple languages in one process** — C++ for speed, Python for analysis, Lua for scripting, TypeScript for UI
-- Your app must work **offline** — factory floor, boat, field, tablet without connectivity
-- You're tired of **hand-rolling CMake + pybind11 + sol2** for the tenth time
-
-**There's no "who should wait" here.** Nexus scales down to single-node C++ apps and up to polyglot pipelines. If you need a native binary, you're the target audience. The only genuine gaps:
-
-| Not yet                     | Coming in                             |
-|:---------------------------|:--------------------------------------|
-| iOS support                 | v0.5+ (not on current roadmap)        |
-| Pixel-perfect marketing UIs | ImGui improving but not CSS           |
-| Pure-Python toolkit         | Nexus expects C++ at the core          |
-| Beginner-friendly docs      | We're working on it — PRs welcome      |
----
 
 ## What makes it special
 
@@ -688,7 +692,10 @@ Your system Zig (any version) runs the bootstrap once, which pins a known-good *
 
 **Progressive language layers.** C++ for the hot path. Python for analysis. Lua for quick iteration. TypeScript for UI structure. Each language does what it's best at — no one-language-fits-all compromise. They communicate in-process through generated bindings, not over IPC or REST.
 
-**Zig-native builds.** One tool (80 MB) replaces CMake + Ninja + NDK-build + Djinni CLI (10-12 GB). Offline-first dependency management. Cross-compilation as a first-class feature. CMake is fully removed from both templates — Zig handles C++ compilation, JNI bridges, and host tooling.
+**Explicit multi-tool builds.** `build_app.sh` is the stable entry point: GCC
+compiles C++20 named modules, Zig 0.16.0 builds C-ABI/JNI sidecars, Python uses
+an isolated venv, and Gradle packages Android. The template no longer pretends
+one compiler supports every language boundary.
 
 **Offline by design.** No cloud dependency, no telemetry, no runtime that phones home. Your binary works wherever your users are.
 
@@ -770,7 +777,7 @@ This question comes up often enough to address directly. Rust's memory safety gu
 | **Blueprint codegen**              | Kotlin writes `class`, `constexpr`, `auto` — simple substitution     | `pub struct`, `impl` blocks, lifetimes, derive macros                | C++ is simpler to generate correctly from non-Rust tooling                                                       |
 | **In-process scripting**           | pybind11 + sol2 are mature — ~15 years of edge-case testing          | pyo3 + mlua exist but smaller ecosystems, more restrictive licensing | ~15 years of pybind11 production vs ~5 for pyo3                                                                  |
 | **SDL3 / ImGui interop**           | C++ is SDL3/ImGui's native language — zero glue code                 | sys crate wrappers, CStr conversions, unsafe blocks everywhere       | C++ calls directly; Rust wraps in unsafe, eroding headline safety advantage                                      |
-| **Android JNI**                    | `zig c++` compiles the same `.cppm` to ARM — no extra build step     | `cargo-ndk` + separate Rust toolchain + NDK compat shims             | One Zig binary serves both C++ compilation and Zig orchestration                                                  |
+| **Android JNI**                    | Zig exports the JNI C ABI; Gradle packages the APK                    | `cargo-ndk` + separate Rust toolchain + NDK compat shims             | A small Zig sidecar keeps the JVM boundary explicit; Android SDK/NDK are still required                          |
 | **Team familiarity**               | C++ is baseline for SDL/ImGui systems programmers                    | Extra language requirement on top of already-polyglot stack           | Nexus already needs C++, Lua, Python, Zig, TS — Rust raises the bar without proportional benefit                 |
 | **Determinism for generated code** | One obvious way to write most constructs — output is predictable      | Multiple valid patterns (owned/borrowed, dyn/impl, Arc/Rc)           | Generated code should be boring and predictable, not idiomatic and diverse                                        |
 | **Safety posture**                 | RAII + `[[nodiscard]]` + `constexpr` + sanitizers + Zig's flags      | Borrow checker guarantees memory safety at compile time              | A fair loss — but Nexus apps are single-threaded ImGui loops, safety gap narrower in practice than on paper      |
@@ -780,53 +787,56 @@ This question comes up often enough to address directly. Rust's memory safety gu
 
 ### Why C++20 and not an earlier standard
 
-Nexus targets C++20 because that's the version where modules became practically usable in major compilers (GCC 14+, Clang 18+, MSVC 2022 17.5+). The Zig `zig c++` compiler (Clang-based) fully supports `.cppm` modules, so the generated code compiles the same way on every platform — no preprocessor hacks, no platform-specific `#ifdef` guards for module support.
+Nexus targets C++20 because that's the version where modules entered the
+language standard. In the current 1.0.1 templates, GCC 14+ compiles `.cppm`
+units with `-fmodules-ts`. Zig 0.16.0's bundled Clang does not process this
+named-module graph, so `build_app.sh` assigns that job to GCC explicitly.
 
-**The result:** generated C++ code that would not look out of place in a CppCon talk. Students learn modern idioms by reading the output. Senior engineers find nothing to fix. And the Zig compiler enforces it all consistently across Windows, macOS, Linux, and Android.
+**The result:** generated C++ code that would not look out of place in a CppCon
+talk, with a build pipeline that reflects what each tool actually supports.
 
 ---
 
-## The Zig story
+## The Zig 0.16.0 story
 
-Nexus uses **Zig 0.14** as its native build orchestrator, C++ compiler driver, JNI bridge runtime, and arena allocator backend. Zig replaced four separate tools (CMake, Ninja, NDK-build, Djinni CLI) and eliminated ~11 GB of SDK weight. Here is what Zig concretely buys you:
+Version 1.0.1 uses Zig where it is strongest: small native sidecars with a
+stable C ABI. It does not use Zig's Clang driver for the C++20 named-module
+graph.
 
-### Performance
+### Tool responsibilities
 
-- **80 MB toolchain** replaces **10–12 GB** of SDKs (MSVC, NDK, g++, clang, Djinni CLI). `zig build` downloads and self-caches all dependencies as pinned tarballs — no system package manager required.
-- **Arena allocator** (opt-in) replaces per-frame `malloc`/`free` for plot samples and frame buffers. The Zig `std.heap.ArenaAllocator` bumps a pointer on allocation and reclaims everything on reset — zero fragmentation, zero per-object free cost. Enabled by defining `NXS_ZIG_LINKED` in the build — C++ calls `nxs_alloc()` / `nxs_reset_arena()` through a C ABI.
-- **Cross-compilation** is a one-flag operation: `zig build -Dtarget=x86_64-windows` from Linux produces a Windows binary. No cross-toolchain setup, no MSVC licenses.
+| Tool | Current responsibility |
+|:-----|:-----------------------|
+| **`build_app.sh`** | Stable user entry point; creates the venv, fetches dependencies, invokes compilers, and links/packages outputs |
+| **GCC 14+** | Compiles desktop C++20 module interfaces with `-fmodules-ts` |
+| **Zig 0.16.0** | Builds `nexus_zig` on desktop and the JNI/C-ABI shared library on Android |
+| **Python venv** | Isolates host tooling and installs `requirements.txt` |
+| **Gradle + Android SDK/NDK** | Builds the APK and provides Android/Bionic headers and libraries |
 
-### Ease of maintenance
+### Why Zig remains useful
 
-- **One `build.zig`** replaces CMakeLists.txt + CMakePresets.json + NDK-build scripts + Djinni IDL. All compilation flags, dependency resolution, module scanning, and archive packing live in the same file.
-- **C++20 modules** (`.cppm` files) need `-fmodules-ts` + `-fmodules-codegen` flags that `build.zig` sets uniformly — no per-target CMake `target_compile_features` or generator expressions.
-- **Android JNI bridge** went from **7 C++ files** (classes, headers, virtual dispatch, shared_ptr) to **1 pure-Zig file** (`python_bridge.zig`) that exports 5 C ABI functions. The call chain collapsed from 5 layers (Kotlin → Djinni → C++ singleton → virtual dispatch → JNI) to 3 (Kotlin → Zig C ABI → JNI). No codegen regeneration step, no IDL compiler.
-- **Offline dependencies**: `build.zig.zon` pins exact tarball digests. No `FetchContent` network calls on rebuild. `zig build --fetch` vendors everything once.
+- **Stable C ABI:** C++ calls `nxs_alloc`, `nxs_free`, and
+  `nxs_reset_arena` without importing Zig implementation details.
+- **Pure-Zig JNI:** Android's `python_bridge.zig` exports the symbol Kotlin
+  loads through `AppCore`.
+- **Pinned sidecar dependencies:** `build.zig.zon` records the Zig package
+  identity; the generated script repairs the required package fingerprint
+  after project-name rendering.
+- **Smoke testing:** `zig build smoke` verifies the C++ ↔ Zig ABI independently
+  of the full app.
 
-### Design simplification
+### Build entry points
 
-- **Zig replaces the C++ bridge layer entirely**. Before, Python→C++→Zig required virtual dispatch through a C++ singleton (`PythonBridgeImpl`) with `std::shared_ptr` ownership. After, C++ calls Zig C ABI functions directly — `zig_python_greeting("MyApp")` returns a heap-allocated `const char*` through a plain `extern "C"` declaration. No constructors, no destructors, no reference counting.
-- **No header explosion**: A C++ bridge file like `app_core.hpp` pulled in JNI headers, NDK types, and `shared_ptr`. The Zig replacement has zero non-standard `#include` directives — it accesses JNI through the `JavaVM*` pointer it stores at init time.
-- **Unified build graph**: The same `build.zig` compiles C++20 modules, links system SDL3, fetches and builds ImGui from source, compiles Zig C ABI exports, and packs Lua/Python archives into `.dat` files. No `ExternalProject_Add`, no `add_custom_target`, no shell scripts.
+```bash
+# Generated desktop project
+./build_app.sh
 
-### Where Zig runs
+# Same desktop build, delegated from Zig
+cd zig-services && zig build app
 
-| Context             | What Zig does                                                       |
-|:-------------------|:--------------------------------------------------------------------|
-| **Build time** (host)  | Compiles C++20 modules, links deps, packs archives, runs smoke tests |
-| **Desktop runtime**    | Arena allocator (opt-in frame allocation) via C ABI                  |
-| **Android runtime**    | JNI bridge — stores `JavaVM*`, dispatches `greeting`/`evaluate`     |
-
-### Concrete numbers
-
-| Metric                    | Before (CMake + Djinni)     | After (Zig 0.14)            |
-|:--------------------------|:----------------------------|:----------------------------|
-| SDK size                  | ~10–12 GB                   | ~80 MB                      |
-| Build tools               | 4 (CMake, Ninja, NDK, Djinni) | 1 (`zig build`)           |
-| Android bridge files      | 7 C++, ~240 LOC             | 1 Zig, ~120 LOC             |
-| Call chain layers         | 5                           | 3                           |
-| Cross-compile setup       | Per-target toolchains       | `-Dtarget=x86_64-windows`   |
-| Dependency freshness      | Network fetch per build     | Pinned tarball digest       |
+# Android JNI sidecar (requires the NDK)
+zig build -Dtarget=aarch64-linux-android -Dandroid-ndk="$ANDROID_NDK"
+```
 
 ---
 
@@ -840,7 +850,10 @@ CMake-based build with 7× FetchContent dependencies. Djinni IDL for Android JNI
 
 ### Phase 2 — Zig sidecar (v0.2)
 
-`zig-services/` directory added to both templates as a Zig build sidecar. C++ sources compiled via `zig c++`. ImGui/ImPlot/ImNodes fetched via `build.zig.zon` instead of CMake FetchContent. CMake remained the default — Zig was opt-in. The `pack_archive` host tool migrated from CMake to `zig build-exe`.
+`zig-services/` was added to both templates as an experimental sidecar. An
+early `zig c++` path was evaluated, but it could not process the named-module
+graph used by the templates; version 1.0.1 therefore delegates `.cppm`
+compilation to GCC. CMake remained the default during this historical phase.
 
 ### Phase 3 — Zig default (v0.3)
 
@@ -848,11 +861,18 @@ Zig became the default build path for desktop. CMake demoted to fallback (`legac
 
 ### Phase 4 — Zig JNI + CMake/Djinni removal (v1.0.0 → v1.0.1)
 
-**The big cleanup.** Android switched from Djinni IDL codegen to hand-authored C++ JNI bridge files in `zig-services/jni/` — 3 files replacing 8 Djinni-generated stubs + the `regen-djinni.sh` script. CMakeLists.txt and CMakePresets.json deleted from both templates. All template source files converted from `.cpp` to `.cppm` (C++20 module interface units, 22 across shared runtime and both templates). The generator schema was updated: `nxs_config.json` dropped `djinni` and `presets` keys, gained `nativeBackend: "zig"`.
+**The big cleanup.** Android moved from Djinni IDL codegen to a pure-Zig JNI
+bridge in `zig-services/jni/`. CMakeLists.txt and CMakePresets.json were
+deleted from both templates. Template source files moved to C++20 module
+interface units, and `nxs_config.json` gained `nativeBackend: "zig"`.
 
 ### Phase 5 — Industrialization + Template hardening (v1.0.1)
 
-Mockup SVGs added for all client screens (dashboard, generate, blueprint editor, flows editor). Architecture diagrams regenerated with Catppuccin theme, CMake→Zig annotations, and corrected phase indicators. README overhaul: SEO metadata, persona-based quick-start table, "What makes it special" tagline, restructured sections. All legacy Djinni/CMake references purged from docs, configs, and template AGENTS files. Agent working artifacts (`.omo/`) removed. Toolchain metric updated: "CMake removed" not "no CMake needed". Template obsolete files (NEXUS-BRIDGE.md, plotter README, empty dirs) removed. Docs consolidated to 4 files + hub with cross-refs fixed.
+Mockup SVGs were added for the client screens and the documentation was
+restructured around the real generation pipeline. The templates removed their
+bundled plotter examples and legacy bridge/build files. The final build fix
+made `build_app.sh` the explicit orchestrator: GCC handles named C++ modules
+while Zig 0.16.0 handles C-ABI/JNI sidecars.
 
 **C++20 template modernization:** Every non-modular `.cpp` file in both templates was brought inline with modern C++20 idioms — trailing return types, `[[nodiscard]]` on every getter and factory, `std::string_view` for read-only parameters, `noexcept` on move/swap operations, `constexpr` on compile-time constants, `std::ranges::copy` replacing raw `std::memcpy` on byte vectors, and concept constraints (`streamable`) on template parameters. RAII `unique_ptr` deleters now manage SDL resources automatically — no manual `goto cleanup` labels, no resource leaks.
 
@@ -862,14 +882,14 @@ Mockup SVGs added for all client screens (dashboard, generate, blueprint editor,
 
 | Metric                | Before (v0.1)                               | After (v1.0.1)                                           |
 |:----------------------|:---------------------------------------------|:----------------------------------------------------------|
-| **Build tools**       | CMake + Ninja + NDK + Djinni (4 tools)       | `zig build` (1 tool)                                       |
+| **Build entry point** | CMake presets + generated bridge steps        | `./build_app.sh`                                            |
 | **Android JNI**       | 8 Djinni files + `regen-djinni.sh`           | 1 pure-Zig file — 5 C ABI exports                          |
-| **Bootstrap**         | 3 shell scripts per OS (~450 LOC)            | 1 `setup.zig` (~130 LOC)                                   |
-| **Toolchain weight**  | MSVC + NDK + g++ + clang (~10–12 GB)         | Zig 0.14.0 (~80 MB)                                        |
+| **Bootstrap**         | 3 shell scripts per OS (~450 LOC)            | 1 `setup.zig` targeting Zig 0.16.0                         |
+| **Desktop modules**   | CMake/compiler-specific configuration         | GCC 14+ via `build_app.sh`                                 |
 | **C++ source format** | `.cpp` + `.hpp` (traditional)                | `.cppm` — 22 C++20 module interface units                   |
 | **C++20 idioms**      | Mixed C++98/17 across files                  | Uniform: `[[nodiscard]]`, trailing returns, `constexpr`     |
 | **Shared runtime**    | `.hpp` + `.cpp` pairs + module impls         | Single self-contained `.cppm` per module + docs             |
-| **Cross-compilation** | Not supported (needed MSVC)                  | `zig build -Dtarget=x86_64-windows`                        |
+| **Android toolchain** | NDK-build + generated glue                    | Zig JNI sidecar + required Android SDK/NDK                  |
 | **Dependencies**      | 7 FetchContent clones, network-dependent     | `.zon` pinned tarballs, offline                             |
 | **Docs**              | Sparse, Djinni-focused, 10 files             | 4 docs + hub, cross-refs fixed, SVG diagrams                |
 | **Template files**    | CMake + Djinni + backups (~30 KB)            | Purged obsolete files (~10 KB saved)                        |

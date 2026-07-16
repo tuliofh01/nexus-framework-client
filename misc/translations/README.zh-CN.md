@@ -1,5 +1,5 @@
 <!--
-  description: Nexus Framework 从可视化蓝图中生成本地 C++/Lua/Python 桌面和 Android 应用。无需 Electron，无需云服务，无需浏览器——只有一个你掌控的编译二进制文件。SDL3 + ImGui + Zig 0.14 构建系统。
+  description: Nexus Framework 从可视化蓝图中生成本地 C++/Lua/Python 桌面和 Android 应用。无需 Electron，无需云服务，无需浏览器——只有一个你掌控的编译二进制文件。SDL3 + ImGui + Zig 0.16 构建系统。
   keywords: 原生应用生成器, C++ 框架, C++20 模块, Lua 脚本, 嵌入式 Python, SDL3, ImGui, Zig 构建, Zig JNI, Compose Desktop, 蓝图驱动开发, 跨平台桌面, Android 原生应用, 无 Electron, 项目生成器, 基于图的架构, arena 分配器, pybind11, sol2, Chaquopy
 -->
 # Nexus Framework — 原生应用生成器：从可视化蓝图生成 C++ + Lua + Python 应用

@@ -91,19 +91,20 @@ class TemplateEngine(
 
     fun isTextLike(path: String): Boolean {
         val lower = path.lowercase()
-        return lower.endsWith(".cpp") || lower.endsWith(".hpp") || lower.endsWith(".h") ||
-            lower.endsWith(".lua") || lower.endsWith(".py") || lower.endsWith(".txt") ||
-            lower.endsWith(".md") || lower.endsWith(".json") || lower.endsWith(".toml") ||
-            lower.endsWith(".yaml") || lower.endsWith(".yml") ||
-            lower.endsWith(".in") ||
+        return lower.endsWith(".cpp") || lower.endsWith(".cppm") || lower.endsWith(".hpp") ||
+            lower.endsWith(".h") || lower.endsWith(".lua") || lower.endsWith(".py") ||
+            lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".json") ||
+            lower.endsWith(".toml") || lower.endsWith(".yaml") || lower.endsWith(".yml") ||
+            lower.endsWith(".cmake") || lower.endsWith(".in") ||
+            lower.endsWith("cmakelists.txt") ||
             lower.endsWith(".gitignore") || lower.endsWith(".clang-tidy") ||
             lower.endsWith(".clang-format") || lower.endsWith(".editorconfig") ||
             lower.endsWith(".luarc.json") || lower.endsWith(".properties") ||
             lower.endsWith(".gradle") || lower.endsWith(".kts") || lower.endsWith(".xml") ||
             lower.endsWith(".workflow") || lower.endsWith(".sh") || lower.endsWith(".java") ||
-            lower.endsWith(".dockerignore") || lower.endsWith(".clangd") ||
+            lower.endsWith(".kt") || lower.endsWith(".dockerignore") || lower.endsWith(".clangd") ||
             lower.endsWith(".xhtml") || lower.endsWith(".ts") || lower.endsWith(".zig") ||
-            lower.endsWith(".bat") || lower.endsWith(".template")
+            lower.endsWith(".zon") || lower.endsWith(".bat") || lower.endsWith(".template")
     }
 
     private fun debugLog(message: String) {

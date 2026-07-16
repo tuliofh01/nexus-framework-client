@@ -70,7 +70,8 @@ pub const ZigEvalResult = extern struct {
 // JNI entry point: AppCore.installPythonBridge(bridge)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export fn Java_com_nexus_{{packageName}}_AppCore_installPythonBridge(
+// Matches Kotlin `AppCore.installPythonBridgeNative` (wrapper calls this).
+export fn Java_com_nexus_{{packageName}}_AppCore_installPythonBridgeNative(
     env: ?*jni.JNIEnv,
     _: jni.jclass,
     bridge: jni.jobject,

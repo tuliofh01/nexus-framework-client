@@ -42,7 +42,7 @@ Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It gener
 **Option A — Zig bootstrap (recommended, cross-platform):**
 
 ```bash
-zig run misc/client-setup/setup.zig   # installs Zig 0.14.0 + writes env files
+zig run misc/client-setup/setup.zig   # installs Zig 0.16.0 + writes env files
 source misc/client-setup/env.sh       # Linux/macOS
 call misc\client-setup\env.bat        # Windows
 ```
@@ -55,7 +55,7 @@ source misc/client-setup/env.sh       # Windows: call misc\client-setup\env.bat
 ```
 
 JDK **26** is required (`misc/build-logic` `jvmToolchain(26)`). Do not assume JDK 21.  
-Zig **0.14.0** is required for generated native app builds — the bootstrap installs it automatically.
+Zig **0.16.0** is required for generated native app sidecars — the bootstrap installs it automatically.
 
 ## Build / run
 
@@ -156,4 +156,4 @@ Phased native-build orchestration for **generated template apps** — see [docs/
 - **`zig-services/`** lives under `template/desktop-app/zig-services/` and `template/android-app/zig-services/` (mirrored in generated output).
 - **Android JNI**: Zig `export fn` in `jni/python_bridge.zig` replaces Djinni-generated JNI glue (Djinni retired).
 - **Keep Gradle** for `:app`, `:core`, and `:cli` — Zig owns generated native binaries only.
-- **Pin Zig 0.14.x** in `misc/client-setup/env.sh`; Android needs NDK (API ≥ 29); Zig does not ship Bionic.
+- **Pin Zig 0.16.0** in `misc/client-setup/env.sh`; Android needs NDK (API ≥ 29); Zig does not ship Bionic.

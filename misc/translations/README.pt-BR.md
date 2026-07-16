@@ -1,5 +1,5 @@
 <!--
-  description: O Nexus Framework gera aplicativos nativos desktop e Android em C++/Lua/Python a partir de blueprints visuais. Sem Electron, sem nuvem, sem navegador — apenas um binário compilado que você controla. SDL3 + ImGui + Zig 0.14.
+  description: O Nexus Framework gera aplicativos nativos desktop e Android em C++/Lua/Python a partir de blueprints visuais. Sem Electron, sem nuvem, sem navegador — apenas um binário compilado que você controla. SDL3 + ImGui + Zig 0.16.
   keywords: gerador de aplicativos nativos, framework C++, módulos C++20, scripting Lua, Python embarcado, SDL3, ImGui, Zig build, Zig JNI, Compose Desktop, desenvolvimento orientado a blueprint, desktop multiplataforma, app Android nativo, sem Electron, gerador de projetos, arquitetura baseada em grafo, arena allocator, pybind11, sol2, Chaquopy
 -->
 # Nexus Framework — Gerador de Apps Nativos: C++ + Lua + Python a partir de Blueprints Visuais
@@ -15,7 +15,7 @@
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache License 2.0" /></a>
   <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin" alt="Kotlin 2.4" /></a>
-  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.14-orange?style=flat-square&logo=zig" alt="Zig 0.14" /></a>
+  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.16.0-orange?style=flat-square&logo=zig" alt="Zig 0.16.0" /></a>
   <a href="#"><img src="https://img.shields.io/badge/version-1.0.1-blueviolet?style=flat-square" alt="Versão 1.0.1" /></a>
 </p>
 
@@ -81,7 +81,7 @@
 | **C++ + Python no mesmo processo** | pybind11 — sem IPC, sem serialização, sem cópia numpy |
 | **Cross-compile Linux para Windows no CI** | `zig build -Dtarget=x86_64-windows` |
 
-> 📦 **Veja você mesmo:** [`builds/framework/PlotterApp/`](../../builds/framework/PlotterApp/) é um projeto real gerado por este repositório. Abra, leia o README, execute `zig build`.
+> 📦 **Veja você mesmo:** [`template/desktop-app/`](../../template/desktop-app/) contém o código-fonte rastreado do plotter de equações. Gere um app desktop e compile com `./build_app.sh`.
 
 ---
 
@@ -143,7 +143,7 @@ Ambos os templates compartilham o mesmo núcleo C++20 MVC, mas diferem no embedd
 ## Início rápido
 
 ```bash
-# 1. Bootstrap (uma vez) — instala JDK 26 + Zig 0.14.0
+# 1. Bootstrap (uma vez) — instala JDK 26 + Zig 0.16.0
 zig run misc/client-setup/setup.zig
 source misc/client-setup/env.sh
 

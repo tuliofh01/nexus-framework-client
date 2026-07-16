@@ -64,6 +64,10 @@ module;  // ── global module fragment (private to this TU) ──
 // fragment so that `import nxs.desktop.view;` never exposes ImGui to
 // downstream translation units.
 #include <imgui.h>
+#include <implot.h>
+
+#include <array>
+#include <string>
 
 export module nxs.desktop.view;
 
@@ -73,6 +77,8 @@ export module nxs.desktop.view;
 // actions. It does NOT import the model directly — the controller is
 // the single gateway.
 import nxs.desktop.controller;
+import nxs.desktop.func;
+import nxs.desktop.plot;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // nxs::view — ImGui Viewport Renderer
@@ -85,12 +91,13 @@ export namespace nxs::view {
 ///
 /// Lifetime: lives on the stack in main(). Holds a reference to the
 /// controller — must outlive the controller it references.
-export class AppView {
+class AppView {
 public:
     /// explicit: prevents implicit conversion from AppController& to AppView.
     /// noexcept: guarantees no exceptions from construction.
-    explicit AppView(controller::AppController& controller) noexcept
-        : m_controller{controller} {}  // {} brace-init for reference member
+    explicit AppView(controller::AppController& controller,
+                     controller::PlotController& plot) noexcept
+        : m_controller{controller}, m_plot{plot} {}
 
     // ── Rule of Five: delete copy and move ─────────────────────────────
     //
@@ -140,38 +147,57 @@ public:
                      ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-        // ── Read state through the controller ──────────────────────────
-        //
-        // auto& model: deduces AppModel& from controller.model().
-        // We never call model methods directly — always through controller.
-        auto& model = m_controller.model();
-
-        // TextUnformatted: raw string display, no printf-style parsing.
-        // model.greeting() returns std::string; .c_str() gives the const
-        // char* that ImGui's C API expects.
-        ImGui::TextUnformatted(model.greeting().c_str());
-        ImGui::Separator();
-        ImGui::Text("Counter: %d", model.counter());
-
-        // ── Button row ─────────────────────────────────────────────────
-        //
-        // ImGui::Button() returns true on the frame it was clicked.
-        // This is the immediate-mode pattern: no callbacks, no event
-        // handlers. We check the return value and call the controller.
-        //
-        // SameLine(): places the next widget on the same horizontal line.
-        // Without it, each button would be on its own row.
-
-        if (ImGui::Button("Increment")) {
-            m_controller.increment();  // controller mutates model
-        }
+        ImGui::TextUnformatted("Plot any real-valued 2D function");
+        ImGui::SetNextItemWidth(-100.0f);
+        const auto submitted = ImGui::InputText(
+            "##equation", m_equation.data(), m_equation.size(),
+            ImGuiInputTextFlags_EnterReturnsTrue);
         ImGui::SameLine();
-        if (ImGui::Button("Decrement")) {
-            m_controller.decrement();
+        if ((submitted || ImGui::Button("Plot")) && m_equation[0] != '\0') {
+            m_plot.addExpression(m_equation.data());
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Reset")) {
-            m_controller.reset();
+
+        auto& settings = m_plot.settings();
+        double range[2]{settings.xMin, settings.xMax};
+        ImGui::SetNextItemWidth(260.0f);
+        if (ImGui::InputScalarN(
+                "X range", ImGuiDataType_Double, range, 2, nullptr, nullptr,
+                "%.3f")) {
+            m_plot.setRange(range[0], range[1]);
+        }
+        auto sampleCount = settings.sampleCount;
+        ImGui::SetNextItemWidth(180.0f);
+        if (ImGui::SliderInt("Samples", &sampleCount, 64, 4096)) {
+            m_plot.setSampleCount(sampleCount);
+        }
+
+        std::string removeId;
+        for (auto& series : m_plot.registry().active()) {
+            ImGui::PushID(series.spec.id.c_str());
+            ImGui::Checkbox("##visible", &series.visible);
+            ImGui::SameLine();
+            ImGui::TextUnformatted(series.spec.label.c_str());
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Remove")) {
+                removeId = series.spec.id;
+            }
+            ImGui::PopID();
+        }
+        if (!removeId.empty()) {
+            m_plot.removeFunction(removeId);
+        }
+
+        if (ImPlot::BeginPlot("Functions", ImVec2{-1.0f, -1.0f})) {
+            ImPlot::SetupAxes("x", "y", ImPlotAxisFlags_AutoFit,
+                              ImPlotAxisFlags_AutoFit);
+            for (const auto& series : m_plot.registry().active()) {
+                if (series.visible && !series.xs.empty()) {
+                    ImPlot::PlotLine(series.spec.label.c_str(),
+                                     series.xs.data(), series.ys.data(),
+                                     static_cast<int>(series.xs.size()));
+                }
+            }
+            ImPlot::EndPlot();
         }
 
         // ── Error display ──────────────────────────────────────────────
@@ -182,11 +208,11 @@ public:
         // IM_COL32(r,g,b,a): packs four 8-bit channels into a 32-bit uint.
         // TextWrapped: word-wraps long error messages.
 
-        if (!m_controller.lastPythonError().empty()) {
+        if (!m_plot.lastPythonError().empty()) {
             ImGui::Spacing();
             ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 96, 96, 255));
             ImGui::TextWrapped("Python: %s",
-                               m_controller.lastPythonError().c_str());
+                               m_plot.lastPythonError().c_str());
             ImGui::PopStyleColor();  // RAII: restore original colour
         }
 
@@ -198,6 +224,10 @@ private:
     // or destroy the controller. The reference is immutable (cannot be
     // reseated after construction).
     controller::AppController& m_controller;
+    controller::PlotController& m_plot;
+    std::array<char, 256> m_equation{
+        'y', '=', 's', 'i', 'n', '(', 'x', ')', '\0',
+    };
 };
 
 }  // namespace nxs::view

@@ -1,6 +1,6 @@
 # Client setup — first run
 
-Run **one** bootstrap **before** your first `./gradlew :app:run`. Installs **Zig 0.14.0** and pins a known-good JDK 26 for Gradle.
+Run **one** bootstrap **before** your first `./gradlew :app:run`. Installs **Zig 0.16.0** and pins a known-good JDK 26 for Gradle.
 
 ## Quick start
 
@@ -30,10 +30,11 @@ call misc\client-setup\env.bat
 
 | Component | Required | Notes |
 |-----------|----------|-------|
-| **Zig 0.14.0** | Yes | Builds generated native apps |
+| **Zig 0.16.0** | Yes | Builds generated C-ABI/JNI sidecars |
 | **JDK 26** | Yes | Via Foojay Toolchains Gradle plugin |
 | **Git** | Yes | Clone, templates, version control |
-| **gcc/g++/make** (Linux) | Recommended | System libraries for Zig |
+| **GCC/g++ 14+** | Desktop | Compiles generated C++20 named modules |
+| **Android SDK + NDK** | Android | Gradle packaging and Zig/Bionic cross-linking |
 
 Source `misc/client-setup/env.sh` (or `env.bat`) in each new shell, or add to `~/.bashrc` / `~/.zshrc`.
 

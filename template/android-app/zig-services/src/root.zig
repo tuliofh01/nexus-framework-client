@@ -1,7 +1,14 @@
-//! Module root — C ABI exports + JNI bridge stubs for Android.
+//! Module root — C ABI exports + JNI bridges for Android.
+//!
+//! C++20 named modules live under `src/` / `shared/` and are NOT compiled
+//! by Zig. This library only exports the allocator C ABI and the Kotlin/JNI
+//! entry points for Chaquopy (python_bridge) and Lua stubs (lua_bridge).
+//!
+//! JNI sources are pulled in via the `jni_python` / `jni_lua` modules added
+//! from build.zig (they live next to `src/`, not inside it).
 comptime {
-    _ = @import("nexus_exports.zig");  // C ABI: nxs_alloc, nxs_free, nxs_reset_arena, nexus_zig_version
-    _ = @import("memory.zig");         // arena-backed allocator
-    _ = @import("jni/python_bridge.zig");  // JNI exports for Chaquopy Python bridge
-    _ = @import("jni/lua_bridge.zig");     // JNI Lua runtime hooks (Phase 4b)
+    _ = @import("nexus_exports.zig");
+    _ = @import("memory.zig");
+    _ = @import("jni_python");
+    _ = @import("jni_lua");
 }

@@ -145,7 +145,7 @@ object FlowsJson {
         ),
     )
 
-    /** Plotter-specific flows — see template/examples/plotter/. */
+    /** Optional plotter-specific flows (legacy; examples/ removed from templates). */
     fun samplePlotter(): FlowsFile = FlowsFile(
         version = 1,
         flows = listOf(

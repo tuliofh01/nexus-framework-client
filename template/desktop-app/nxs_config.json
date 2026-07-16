@@ -36,10 +36,7 @@
       "sourceDir": "python",
       "requirements": "requirements.txt"
     },
-    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" },
-    "examples": {
-      "plotter": { "enabled": false, "path": "examples/plotter",       "examplesFlag": "BUILD_NEXUS_EXAMPLES" }
-    }
+    "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" }
   },
   "blueprint": {
     "flow": "blueprint.json",

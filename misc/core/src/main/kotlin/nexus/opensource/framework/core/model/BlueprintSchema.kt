@@ -198,7 +198,7 @@ object BlueprintJson {
         )
     }
 
-    /** Desmos-style plotter sample — see template/examples/plotter/. */
+    /** Optional plotter feature flag (legacy; examples/ removed from templates). */
     fun samplePlotter(projectName: String, appType: AppType): BlueprintFile {
         val pySource = if (appType == AppType.ANDROID) {
             "app/src/main/python/functions.py"

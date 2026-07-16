@@ -6,8 +6,7 @@
 //! source misc/client-setup/env.sh          # Linux/macOS
 //! ```
 //!
-//! Installs Zig 0.14.0 and writes environment files.
-//! Compatible with Zig 0.16+ via `main(init: std.process.Init)`.
+//! Installs Zig 0.16.0 and writes environment files.
 
 const std = @import("std");
 const bootstrap = @import("zig/bootstrap.zig");
@@ -18,7 +17,7 @@ pub fn main(init: std.process.Init) !void {
 
     std.debug.print("=== Nexus Framework — first-run setup ===\n\n", .{});
 
-    // Step 1: Install Zig 0.14.0
+    // Step 1: Install Zig 0.16.0
     std.debug.print("Step 1/2: Installing Zig {s}...\n", .{bootstrap.zig_version});
     const installed = try bootstrap.installZig(gpa, io, .{});
     if (installed) {

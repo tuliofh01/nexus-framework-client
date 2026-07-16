@@ -1,12 +1,13 @@
 # Nexus templates
 
-General-purpose output templates the Framework client copies when you generate a project. Each ships a **minimal starter** (hello + counter) with full Nexus feature support; optional **plotter examples** live under `examples/plotter/`.
+General-purpose output templates the Framework client copies when you generate a project. Each ships a **minimal starter** (hello + counter) with full Nexus feature support.
 
 | Template        | Path                         | Target                                                                                                                                    |
 |----------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | **Desktop App** | [desktop-app/](desktop-app/) | Windows, macOS, Linux — [SDL3](https://www.libsdl.org/) + [OpenGL](https://www.opengl.org/), [pybind11](https://pybind11.readthedocs.io/) |
 | **Android App** | [android-app/](android-app/) | APK — [SDL3](https://www.libsdl.org/) GLES, [Zig JNI](android-app/zig-services/) bridge, [Chaquopy](https://chaquo.com/chaquopy/)         |
 | **Shared**      | [shared/](shared/)           | DSL, assets, themes, runtime helpers                                                                                                      |
+
 ## Adoption paths
 
 | Path                  | What you get                                             |
@@ -14,16 +15,11 @@ General-purpose output templates the Framework client copies when you generate a
 | **Custom code**       | Edit `src/`, `ui/`, `scripts/` — omit or disable flows   |
 | **Blueprint only**    | Wire `blueprint.json` nodes; minimal shell compiles      |
 | **Blueprint + flows** | Add `flows/flows.json` for background/triggered services |
+
 ## Blueprint graph
 
 Each app template ships a generic **`blueprint.json`** with all five Langflow-style node types (`python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script`). Schema: [docs/templates/blueprint-schema.md](../docs/templates/blueprint-schema.md).
 
-## Optional examples
-
-| Example                  | Path                            | Notes                              |
-|-------------------------|---------------------------------|-----------------------------------|
-| Desmos plotter           | `desktop-app/examples/plotter/` | `zig build -DBUILD_NEXUS_EXAMPLES` |
-| Desmos plotter (Android) | `android-app/examples/plotter/` | Reference sources only             |
 ## Shared resources
 
 | Resource     | Path                               |
@@ -32,4 +28,5 @@ Each app template ships a generic **`blueprint.json`** with all five Langflow-st
 | ImGui themes | [shared/themes/](shared/themes/)   |
 | TS/XHTML DSL | [shared/dsl/](shared/dsl/)         |
 | C++ runtime  | [shared/runtime/](shared/runtime/) |
+
 Docs: [docs/hub.md](../docs/hub.md) · Generate: `./gradlew :cli:run --args="generate --type desktop --name MyApp"`

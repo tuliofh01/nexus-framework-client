@@ -65,7 +65,7 @@ export namespace nxs::view {
 ///
 /// RAII: non-owning reference to controller; no heap allocations.
 /// Lifetime: stack-allocated in main(), must outlive the controller.
-export class AppView {
+class AppView {
 public:
     /// explicit: prevents implicit conversion from AppController& to AppView.
     /// noexcept: guarantees no exceptions from construction.

@@ -64,7 +64,7 @@ export namespace nxs::model {
 /// The controller is the sole mutator. The view reads through the
 /// controller. This is the MVC "M" — it knows nothing about UI or
 /// Python.
-export class AppModel {
+class AppModel {
 public:
     AppModel() = default;
     ~AppModel() = default;

@@ -1,179 +1,98 @@
 const std = @import("std");
 
+/// Zig 0.16 build — Android JNI + C-ABI sidecar for {{projectName}}.
+///
+/// Zig owns:
+///   * `nexus_zig` static library (allocator / C ABI exports)
+///   * `lib{{projectName}}.so` with JNI entry points from
+///     `jni/python_bridge.zig` and `jni/lua_bridge.zig`
+///
+/// Zig does NOT compile C++20 named modules (`.cppm`). Zig's bundled Clang
+/// cannot process them; the app's C++ modules stay in `src/` / `shared/` and
+/// are not part of this sidecar. Kotlin loads this `.so` for the Chaquopy
+/// bridge; see `../build_app.sh` for venv + Gradle orchestration.
+///
+/// Cross-compile (needs NDK — Zig does not ship Bionic):
+///   zig build -Dtarget=aarch64-linux-android -Dandroid-ndk=$ANDROID_NDK -Dandroid-api=29
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // ---- Source roots ----
-    const src_root    = b.path("../src");
-    const shared_root = b.path("../shared");
+    const ndk_path = b.option([]const u8, "android-ndk", "Path to the Android NDK (required for android targets)");
+    const api_level = b.option(u32, "android-api", "Android API level (default 29)") orelse 29;
 
-    // ---- C++20 module compilation flags ----
-    const cppm_flags = &.{
-        "-std=c++20",
-        "-fmodules-ts",
-        "-Xclang", "-fmodules-codegen",
-        "-Xclang", "-fmodules-debuginfo",
-        "-fvisibility=default",
-    };
-    const cpp_module_flags = &.{
-        "-std=c++20",
-        "-fmodules-ts",
-    };
+    const is_android = target.result.abi.isAndroid();
 
-    // ---- Nexus Zig library (C ABI + JNI exports) ----
+    // ── Shared module: C ABI + JNI exports ─────────────────────────────
+    const root_mod = b.createModule(.{
+        .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    root_mod.addIncludePath(b.path("c_abi"));
+
+    // jni/ is a sibling of src/; expose it as named modules so root.zig can
+    // `@import("jni_python")` / `@import("jni_lua")` without `../` (illegal).
+    const jni_python = b.createModule(.{
+        .root_source_file = b.path("jni/python_bridge.zig"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    const jni_lua = b.createModule(.{
+        .root_source_file = b.path("jni/lua_bridge.zig"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = true,
+    });
+    root_mod.addImport("jni_python", jni_python);
+    root_mod.addImport("jni_lua", jni_lua);
+
+    if (is_android) {
+        if (ndk_path) |ndk| {
+            const host_tag = "linux-x86_64";
+            const sysroot = b.fmt("{s}/toolchains/llvm/prebuilt/{s}/sysroot", .{ ndk, host_tag });
+            const arch_dir = switch (target.result.cpu.arch) {
+                .aarch64 => "aarch64-linux-android",
+                .x86_64 => "x86_64-linux-android",
+                .arm => "arm-linux-androideabi",
+                else => "aarch64-linux-android",
+            };
+            const include_usr = b.fmt("{s}/usr/include", .{sysroot});
+            const include_arch = b.fmt("{s}/usr/include/{s}", .{ sysroot, arch_dir });
+            const lib_arch = b.fmt("{s}/usr/lib/{s}/{d}", .{ sysroot, arch_dir, api_level });
+            for ([_]*std.Build.Module{ root_mod, jni_python, jni_lua }) |mod| {
+                mod.addSystemIncludePath(.{ .cwd_relative = include_usr });
+                mod.addSystemIncludePath(.{ .cwd_relative = include_arch });
+                mod.addLibraryPath(.{ .cwd_relative = lib_arch });
+            }
+        } else {
+            std.log.warn("android target without -Dandroid-ndk=<path>; jni.h / Bionic link will fail", .{});
+        }
+    }
+
+    // Static C-ABI library (useful for host smoke / linking tests)
     const nexus_zig = b.addLibrary(.{
         .name = "nexus_zig",
         .linkage = .static,
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("src/root.zig"),
-            .target = target,
-            .optimize = optimize,
-            .link_libc = true,
-        }),
+        .root_module = root_mod,
     });
-    nexus_zig.root_module.?.addIncludePath(b.path("c_abi"));
     b.installArtifact(nexus_zig);
+    b.getInstallStep().dependOn(
+        &b.addInstallFile(b.path("c_abi/zig_allocator.h"), "include/zig_allocator.h").step,
+    );
 
-    // ---- App C++20 module interface units (src/) ----
-    const app_module_sources = [_][]const u8{
-        "model/AppModel.cppm",
-        "controller/AppController.cppm",
-        "controller/PythonEngine.cppm",
-        "view/AppView.cppm",
-        "view/LuaPanels.cppm",
-        "service/FlowRunner.cppm",
-    };
+    // Host builds validate Zig sources only — <jni.h> lives in the NDK.
+    if (!is_android) return;
 
-    // ---- Shared runtime C++20 module interface units ----
-    const shared_module_iface_sources = [_][]const u8{
-        "runtime/font_config.cppm",
-        "runtime/nexus_theme.cppm",
-        "runtime/paths.cppm",
-        "runtime/script_archive.cppm",
-        "runtime/script_crypto.cppm",
-        "runtime/script_protection.cppm",
-        "runtime/zig_allocator.cppm",
-    };
-
-    // ---- Shared runtime is fully consolidated into .cppm files ----
-    // (no separate module implementation .cpp files needed)
-
-    // ---- imgui bundle (fetched via build.zig.zon) ----
-    const imgui_bundle = blk: {
-        const imgui_dep  = b.dependency("imgui", .{});
-        const imgui_root = imgui_dep.path("");
-        const lib = b.addStaticLibrary(.{
-            .name = "imgui_bundle",
-            .target = target,
-            .optimize = optimize,
-        });
-        lib.linkLibCpp();
-        lib.addCSourceFiles(.{
-            .root = imgui_root,
-            .files = &[_][]const u8{
-                "imgui.cpp", "imgui_draw.cpp", "imgui_tables.cpp", "imgui_widgets.cpp",
-                "backends/imgui_impl_sdl3.cpp", "backends/imgui_impl_opengl3.cpp",
-            },
-            .flags = &.{ "-std=c++20", "-fvisibility=hidden" },
-        });
-        lib.addCSourceFiles(.{
-            .root = imgui_root,
-            .files = &[_][]const u8{
-                "misc/implot/implot.cpp", "misc/implot/implot_items.cpp",
-                "misc/imnodes/imnodes.cpp",
-            },
-            .flags = &.{ "-std=c++20", "-fvisibility=hidden" },
-        });
-        lib.addIncludePath(imgui_root);
-        lib.addIncludePath(imgui_root.path(b, "backends"));
-        lib.addIncludePath(imgui_root.path(b, "misc/implot"));
-        lib.addIncludePath(imgui_root.path(b, "misc/imnodes"));
-        lib.defineCMacro("IMNODES_NAMESPACE", "imnodes");
-        lib.defineCMacro("IMGUI_IMPL_OPENGL_ES3", null);
-        break :blk lib;
-    };
-
-    // ---- sol2 (header-only, fetched via zon) ----
-    const sol2_dep = b.dependency("sol2", .{});
-
-    // ---- Lua 5.4 (static, fetched via zon for Android cross-compile) ----
-    const lua_dep = b.dependency("lua", .{});
-
-    // ---- Module interface library ----
-    const module_lib = b.addStaticLibrary(.{
-        .name = "{{projectName}}_modules",
-        .target = target,
-        .optimize = optimize,
-    });
-    module_lib.linkLibCpp();
-
-    for (app_module_sources) |src| {
-        module_lib.addCSourceFile(.{ .file = src_root.path(b, src), .flags = cppm_flags });
-    }
-    for (shared_module_iface_sources) |src| {
-        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cppm_flags });
-    }
-    // (shared_module_impl_sources removed — all runtime modules are now
-    //  self-contained .cppm files that don't need separate impl files)
-
-    module_lib.addIncludePath(src_root);
-    module_lib.addIncludePath(shared_root.path(b, "runtime"));
-    module_lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
-    module_lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
-    module_lib.addIncludePath(b.path("c_abi"));
-
-    if (sol2_dep) |s| {
-        module_lib.addIncludePath(s.path("include"));
-    }
-
-    module_lib.linkLibrary(imgui_bundle);
-    module_lib.linkLibrary(lua_dep.artifact("lua"));
-
-    b.installArtifact(module_lib);
-
-    // ---- Target shared library: {{projectName}}.so ----
-    const lib = b.addLibrary(.{
+    // Shared library Kotlin loads via System.loadLibrary("{{projectName}}")
+    const jni_lib = b.addLibrary(.{
         .name = "{{projectName}}",
         .linkage = .dynamic,
-        .target = target,
-        .optimize = optimize,
+        .root_module = root_mod,
     });
-    lib.linkLibCpp();
-
-    // main.cpp imports C++20 modules compiled by module_lib
-    lib.addCSourceFile(.{ .file = src_root.path(b, "main.cpp"), .flags = cpp_module_flags });
-
-    // Note: JNI bridge is now pure Zig (jni/python_bridge.zig + jni/lua_bridge.zig).
-    // No C++ JNI files are compiled — the Zig library handles all JNI callbacks.
-    // See zig-services/jni/README.md for the C ABI interface docs.
-
-    // Include paths
-    lib.addIncludePath(src_root);
-    lib.addIncludePath(shared_root.path(b, "runtime"));
-    lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
-    lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
-    lib.addIncludePath(b.path("c_abi"));
-
-    if (sol2_dep) |s| {
-        lib.addIncludePath(s.path("include"));
-    }
-
-    // Link libraries
-    lib.linkLibrary(module_lib);
-    lib.linkLibrary(imgui_bundle);
-    lib.linkLibrary(nexus_zig);
-    lib.linkLibrary(lua_dep.artifact("lua"));
-    lib.linkSystemLibrary("android");
-    lib.linkSystemLibrary("log");
-    lib.linkSystemLibrary("GLESv3");
-    lib.linkSystemLibrary("EGL");
-
-    lib.defineCMacro("SDL_MAIN_USE_CALLBACKS", "0");
-
-    b.installArtifact(lib);
-
-    // ---- Install step alias ----
-    const install_step = b.step("install", "Build and install {{projectName}}.so for Android");
-    install_step.dependOn(&b.getInstallStep());
+    jni_lib.root_module.linkSystemLibrary("android", .{});
+    jni_lib.root_module.linkSystemLibrary("log", .{});
+    b.installArtifact(jni_lib);
 }

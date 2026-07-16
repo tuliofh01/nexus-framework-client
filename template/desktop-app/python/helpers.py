@@ -2,10 +2,10 @@
 
 Evaluated in-process by the C++ core:
   * Desktop: imported through pybind11 embed.
-  * Android: executed by Chaquopy via the Djinni PythonBridge.
+  * Android: executed by Chaquopy via the Zig JNI bridge.
 
 Replace or extend this module for your own logic. The optional plotter
-example lives under examples/plotter/ with python/functions.py.
+Plot helpers can be added in python/functions.py.
 """
 
 

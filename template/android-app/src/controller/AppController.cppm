@@ -44,12 +44,18 @@ module;  // ── global module fragment (private to this TU) ──
 
 export module nxs.android.controller;
 
+// `sv` suffix: \"text\"sv builds a std::string_view at compile time
+
 // ── Import peer modules ──
 //
 // The controller wires model state to the Python engine. It imports
 // both and mediates between them.
 import nxs.android.model;
 import nxs.android.python;
+
+// `sv` suffix: "text"sv builds a std::string_view at compile time
+// (no heap allocation). Must appear before first use in this file.
+using namespace std::string_view_literals;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // nxs::controller — Command Dispatcher (Android)
@@ -62,7 +68,7 @@ export namespace nxs::controller {
 /// Holds non-owning references to both the model and the Python engine.
 /// Created in main() after both dependencies; must be destroyed before
 /// them (reverse construction order).
-export class AppController {
+class AppController {
 public:
     /// Store references to the model and Python engine.
     ///
@@ -101,7 +107,7 @@ public:
 
     // ── Python greeting refresh ────────────────────────────────────────
 
-    /// Evaluate helpers.greeting() via the Chaquopy/Djinni bridge.
+    /// Evaluate helpers.greeting() via the Chaquopy/Zig JNI bridge.
     ///
     /// If the bridge returns a non-empty greeting, we update the model.
     /// On failure, the model keeps its previous greeting and the error
@@ -142,4 +148,3 @@ private:
 // The `using namespace` directive is file-scoped (not in a header, not in
 // a namespace block). It enables the `"..."sv` syntax used in refresh().
 // In a .cppm module, this is safe because it does not leak to importers.
-using namespace std::string_view_literals;

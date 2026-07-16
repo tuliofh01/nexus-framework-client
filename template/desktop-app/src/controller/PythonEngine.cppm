@@ -128,7 +128,7 @@ export namespace nxs::controller {
 ///
 /// Non-copyable, non-movable: the interpreter is a process-global
 /// resource. Copying would create two interpreters (undefined behaviour).
-export class PythonEngine {
+class PythonEngine {
 public:
     PythonEngine();   // starts the interpreter and imports python/functions.py
     ~PythonEngine();  // finalizes the interpreter
@@ -192,9 +192,14 @@ private:
     std::string m_lastError;
 };
 
+}  // export namespace nxs::controller
+
 // ═══════════════════════════════════════════════════════════════════════════
-// Implementation details (anonymous namespace — NOT exported)
+// Implementation details (non-exported: anonymous namespaces and definitions
+// must live OUTSIDE an `export namespace` block per [module.interface])
 // ═══════════════════════════════════════════════════════════════════════════
+
+namespace nxs::controller {
 
 namespace {
 
@@ -226,8 +231,11 @@ auto importFromArchive(py::module_& out) -> bool {
 
     // Execute the Python source in a new module, then register it in
     // sys.modules so `import functions` works from other Python code.
+    // types.ModuleType("functions") creates an empty module object —
+    // pybind11 has no direct "create plain module" helper for this.
     auto sys = py::module_::import("sys");
-    auto mod = py::module_::create("functions");
+    auto types = py::module_::import("types");
+    auto mod = types.attr("ModuleType")("functions").cast<py::module_>();
     py::exec(source, mod.attr("__dict__"));
     sys.attr("modules")["functions"] = mod;
 
@@ -263,7 +271,21 @@ PythonEngine::PythonEngine()
     if (!importFromArchive(m_impl->functions)) {
         auto sys = py::module_::import("sys");
         sys.attr("path").attr("insert")(0, "python");
-        m_impl->functions = py::module_::import("functions");
+        try {
+            m_impl->functions = py::module_::import("functions");
+        } catch (const py::error_already_set&) {
+            // Fall back to the minimal greeting helper if functions.py was
+            // removed while adapting the generated project.
+            try {
+                m_impl->functions = py::module_::import("helpers");
+            } catch (const py::error_already_set& e2) {
+                // Leave an empty module so calls fail soft via lastError
+                // instead of terminating the app during startup.
+                m_lastError = e2.what();
+                m_impl->functions = py::module_::import("types")
+                    .attr("ModuleType")("functions").cast<py::module_>();
+            }
+        }
     }
 }
 
@@ -298,7 +320,8 @@ auto PythonEngine::evaluate(std::string_view functionName,
         // Call the Python function: `functions.evaluate(name, min, max, n)`
         // Returns a Python tuple of two numpy arrays: (xs, ys).
         auto result = m_impl->functions.attr("evaluate")(functionName,
-                        xMin, xMax, samples);
+                        xMin, xMax, samples)
+                        .cast<py::tuple>();
 
         // Cast the Python tuple elements to pybind11 array_t<double>.
         // py::array::c_style: ensures C-contiguous memory layout.

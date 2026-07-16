@@ -6,10 +6,24 @@
 //   view.draw()           -> ImGui single-page UI
 //   luaPanels.drawFrame() -> script-registered panels and hotkeys
 //
+// === Includes before imports ===
+// GCC's -fmodules-ts mishandles textual #includes that appear after an
+// import declaration in the same TU, so third-party headers (SDL/ImGui —
+// not shipped as C++20 modules yet) come first.
+
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_sdl3.h>
+#include <implot.h>
+
+#include <cstdio>
+#include <memory>
+#include <type_traits>  // std::remove_pointer_t for the GL context alias
+
 // === C++20 Module Imports ===
-// All MVC and shared classes are now imported via module interface units
-// (`.cppm`). The only #include directives are third-party SDL/ImGui headers
-// which do not ship as C++20 modules yet.
+// All MVC and shared classes are imported via module interface units (.cppm).
 
 import nxs.desktop.model;
 import nxs.desktop.func;
@@ -22,15 +36,6 @@ import nxs.desktop.plot;
 
 import nexus.shared.font_config;
 import nexus.shared.theme;
-
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_opengl.h>
-#include <imgui.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_sdl3.h>
-
-#include <cstdio>
-#include <memory>
 
 // RAII deleters for SDL resources via unique_ptr.
 struct SdlWindowDeleter {
@@ -69,9 +74,10 @@ int main(int, char**) {
         return 1;
     }
 
-    auto glContext = UniqueGlContext(
-        static_cast<std::remove_pointer_t<SDL_GLContext>>(
-            SDL_GL_CreateContext(window.get())));
+    // SDL_GL_CreateContext already returns SDL_GLContext (a pointer);
+    // no cast needed — casting to the pointee type is ill-formed since
+    // SDL_GLContextState is an opaque (incomplete) struct.
+    auto glContext = UniqueGlContext(SDL_GL_CreateContext(window.get()));
     if (!glContext) {
         std::fprintf(stderr, "SDL_GL_CreateContext failed: %s\n",
                      SDL_GetError());
@@ -83,17 +89,22 @@ int main(int, char**) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     nxs::runtime::NexusTheme::applyFromFile(
         "assets/themes/nexus-dark.json");
     ImGui_ImplSDL3_InitForOpenGL(window.get(), glContext.get());
     ImGui_ImplOpenGL3_Init("#version 330");
     nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
-    const auto model    = nxs::model::AppModel{};
+    // MVC wiring. Construction order matters: objects created earlier
+    // outlive (and are referenced by) the ones created after them.
+    auto model          = nxs::model::AppModel{};
+    auto registry       = nxs::model::FunctionRegistry{};
     auto python         = nxs::controller::PythonEngine{};
     auto controller     = nxs::controller::AppController{model, python};
-    auto view           = nxs::view::AppView{controller};
-    auto luaPanels      = nxs::view::LuaPanels{controller};
+    auto plotController = nxs::controller::PlotController{registry, python};
+    auto view           = nxs::view::AppView{controller, plotController};
+    auto luaPanels      = nxs::view::LuaPanels{plotController};
     luaPanels.loadScripts();
 
     auto flowRunner     = nxs::service::FlowRunner{controller};
@@ -119,6 +130,7 @@ int main(int, char**) {
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
+        plotController.refresh();
         view.draw();
         luaPanels.drawFrame();
 
@@ -135,6 +147,7 @@ int main(int, char**) {
     // unique_ptr destructors fire in reverse order — glContext before window.
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
     glContext.reset();
     window.reset();

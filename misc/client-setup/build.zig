@@ -11,7 +11,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // Bootstrap executable — downloads and installs Zig 0.14.0.
+    // Bootstrap executable — downloads and installs Zig 0.16.0.
     // This can be run standalone, or called by setup.zig (the user entry point).
     const bootstrap_exe = b.addExecutable(.{
         .name = "zig-bootstrap",

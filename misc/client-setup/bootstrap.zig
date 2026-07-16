@@ -1,12 +1,11 @@
-//! Zig 0.14.0 bootstrap — cross-platform installer.
+//! Zig 0.16.0 bootstrap — cross-platform installer.
 //!
-//! Compatible with Zig 0.16+ using the `main(init: std.process.Init)` pattern.
 //! Downloads + extracts the pinned Zig version from ziglang.org.
-//! Once 0.14.0 is installed, subsequent Zig code targets that version.
+//! Once 0.16.0 is installed, subsequent Zig code targets that version.
 
 const std = @import("std");
 
-pub const zig_version: []const u8 = "0.14.0";
+pub const zig_version: []const u8 = "0.16.0";
 
 const platform = struct {
     url: []const u8,
@@ -18,39 +17,39 @@ fn detectPlatform() ?platform {
     const builtin = @import("builtin");
     const os = builtin.target.os.tag;
     const arch = builtin.target.cpu.arch;
-    const base = "https://ziglang.org/builds";
+    const base = "https://ziglang.org/download/0.16.0";
     return switch (os) {
         .linux => switch (arch) {
             .x86_64 => .{
-                .url = base ++ "/zig-linux-x86_64-0.14.0.tar.xz",
-                .file = "zig-linux-x86_64-0.14.0.tar.xz",
-                .install_dir = "/usr/local/zig-0.14.0",
+                .url = base ++ "/zig-x86_64-linux-0.16.0.tar.xz",
+                .file = "zig-x86_64-linux-0.16.0.tar.xz",
+                .install_dir = "/usr/local/zig-0.16.0",
             },
             .aarch64 => .{
-                .url = base ++ "/zig-linux-aarch64-0.14.0.tar.xz",
-                .file = "zig-linux-aarch64-0.14.0.tar.xz",
-                .install_dir = "/usr/local/zig-0.14.0",
+                .url = base ++ "/zig-aarch64-linux-0.16.0.tar.xz",
+                .file = "zig-aarch64-linux-0.16.0.tar.xz",
+                .install_dir = "/usr/local/zig-0.16.0",
             },
             else => return null,
         },
         .macos => switch (arch) {
             .x86_64 => .{
-                .url = base ++ "/zig-macos-x86_64-0.14.0.tar.xz",
-                .file = "zig-macos-x86_64-0.14.0.tar.xz",
-                .install_dir = "/usr/local/zig-0.14.0",
+                .url = base ++ "/zig-x86_64-macos-0.16.0.tar.xz",
+                .file = "zig-x86_64-macos-0.16.0.tar.xz",
+                .install_dir = "/usr/local/zig-0.16.0",
             },
             .aarch64 => .{
-                .url = base ++ "/zig-macos-aarch64-0.14.0.tar.xz",
-                .file = "zig-macos-aarch64-0.14.0.tar.xz",
-                .install_dir = "/usr/local/zig-0.14.0",
+                .url = base ++ "/zig-aarch64-macos-0.16.0.tar.xz",
+                .file = "zig-aarch64-macos-0.16.0.tar.xz",
+                .install_dir = "/usr/local/zig-0.16.0",
             },
             else => return null,
         },
         .windows => switch (arch) {
             .x86_64 => .{
-                .url = base ++ "/zig-windows-x86_64-0.14.0.zip",
-                .file = "zig-windows-x86_64-0.14.0.zip",
-                .install_dir = "C:\\tools\\zig-0.14.0",
+                .url = base ++ "/zig-x86_64-windows-0.16.0.zip",
+                .file = "zig-x86_64-windows-0.16.0.zip",
+                .install_dir = "C:\\tools\\zig-0.16.0",
             },
             else => return null,
         },
@@ -107,8 +106,8 @@ pub fn writeEnvFiles(gpa: std.mem.Allocator, io: std.Io) !void {
     _ = try std.process.run(gpa, io, .{ .argv = &.{
         "sh", "-c",
         "cat > misc/client-setup/env.sh << 'EOF'\n" ++
-        "export ZIG_VERSION=0.14.0\n" ++
-        "export ZIG_HOME=/usr/local/zig-0.14.0\n" ++
+        "export ZIG_VERSION=0.16.0\n" ++
+        "export ZIG_HOME=/usr/local/zig-0.16.0\n" ++
         "export PATH=$ZIG_HOME:$PATH\n" ++
         "# export ANDROID_NDK=$HOME/Android/Sdk/ndk/27.0.12077973\n" ++
         "EOF",
@@ -119,8 +118,8 @@ pub fn writeEnvFiles(gpa: std.mem.Allocator, io: std.Io) !void {
         "sh", "-c",
         "cat > misc/client-setup/env.bat << 'EOF'\n" ++
         "@echo off\n" ++
-        "set ZIG_VERSION=0.14.0\n" ++
-        "set ZIG_HOME=C:\\tools\\zig-0.14.0\n" ++
+        "set ZIG_VERSION=0.16.0\n" ++
+        "set ZIG_HOME=C:\\tools\\zig-0.16.0\n" ++
         "set PATH=%ZIG_HOME%;%PATH%\n" ++
         "EOF",
     }});

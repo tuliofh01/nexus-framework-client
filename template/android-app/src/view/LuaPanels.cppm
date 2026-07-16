@@ -76,7 +76,7 @@ export namespace nxs::view {
 ///
 /// RAII: sol::state owns the Lua VM; construction opens libs + binds API,
 ///       destruction closes Lua cleanly.
-export class LuaPanels {
+class LuaPanels {
 public:
     /// Bind the `nxs.*` API and open base/math/string/table libs.
     ///

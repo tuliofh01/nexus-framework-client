@@ -100,7 +100,7 @@ export namespace nxs::service {
 /// One loaded flow definition from flows.json.
 ///
 /// {} brace-init: all numeric members default to safe values.
-export struct LoadedFlow {
+struct LoadedFlow {
     std::string id;
     std::string triggerType;
     std::int64_t intervalMs{0};   ///< ms between interval triggers
@@ -117,7 +117,7 @@ export struct LoadedFlow {
 /// frame for parity with the desktop FlowRunner.
 ///
 /// RAII: owns LoadedFlow definitions by value; no heap escapes.
-export class FlowRunner {
+class FlowRunner {
 public:
     /// explicit: prevents implicit conversion from AppController&.
     /// noexcept: guarantees no exceptions from construction.

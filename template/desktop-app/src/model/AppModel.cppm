@@ -86,7 +86,7 @@ export module nxs.desktop.model;
 
 export namespace nxs::model {
 
-export class AppModel {
+class AppModel {
 public:
     // ── Construction / Destruction ─────────────────────────────────────
     //

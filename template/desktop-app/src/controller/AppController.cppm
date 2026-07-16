@@ -59,6 +59,8 @@ module;  // ── global module fragment (private to this TU) ──
 
 export module nxs.desktop.controller;
 
+// `sv` suffix: \"text\"sv builds a std::string_view at compile time
+
 // ── Import peer modules ──
 //
 // `import X;` replaces `#include "X.hpp"`. The compiler resolves these
@@ -68,6 +70,10 @@ export module nxs.desktop.controller;
 //   - Faster compilation (module BMI is pre-compiled)
 import nxs.desktop.model;
 import nxs.desktop.python;
+
+// `sv` suffix: "text"sv builds a std::string_view at compile time
+// (no heap allocation). Must appear before first use in this file.
+using namespace std::string_view_literals;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // nxs::controller — Command Dispatcher
@@ -88,7 +94,7 @@ export namespace nxs::controller {
 /// data beyond these references, and never calls ImGui or sol2 directly.
 ///
 /// Thread-safety: single-threaded (ImGui frame loop on main thread).
-export class AppController {
+class AppController {
 public:
     // ── Construction ───────────────────────────────────────────────────
     //
@@ -183,7 +189,7 @@ public:
     }
 
     /// Forward the last Python error string to the error bar in the view.
-    [[nodiscard]] constexpr auto lastPythonError() const noexcept
+    [[nodiscard]] auto lastPythonError() const noexcept
         -> const std::string& {
         return m_python.lastError();
     }
@@ -205,14 +211,3 @@ private:
 };
 
 }  // namespace nxs::controller
-
-// ── String literal operator ""sv ─────────────────────────────────────────
-//
-// `using namespace std::string_view_literals;` enables the `sv` suffix
-// on string literals, creating a std::string_view at compile time:
-//   "hello"sv  →  std::string_view{"hello", 5}
-//
-// This is more efficient than `std::string("hello")` because it avoids
-// heap allocation. We put it at file scope (after the namespace close)
-// so it doesn't pollute the exported API.
-using namespace std::string_view_literals;

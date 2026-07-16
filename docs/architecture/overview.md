@@ -158,7 +158,7 @@ Nexus uses 7 languages across 3 boundaries. Each lives in its natural layer — 
 
 - **Kotlin** — Compose Desktop UI + generation pipeline (`:app` / `:core` / `:cli`)
 - **C++20** — Runtime MVC with RAII, `std::ranges`, `constexpr` (`template/*/src/`)
-- **Zig 0.14** — Build orchestration, cross-compilation, C-ABI allocator (`zig-services/`)
+- **Zig 0.16.0** — C-ABI/JNI sidecars and allocator (`zig-services/`)
 - **Lua 5.4** — sol2 runtime scripting — panels, hotkeys, quick iteration (`scripts/`)
 - **Python 3.11+** — pybind11 embedded NumPy/scipy (desktop) or Chaquopy (Android)
 - **TypeScript + XHTML** — Declarative UI bindings and markup that lower to ImGui calls

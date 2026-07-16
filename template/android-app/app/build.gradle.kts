@@ -137,15 +137,22 @@ tasks.register<Exec>("zigBuildRelease") {
             "aarch64-linux-android" to "arm64-v8a",
             "x86_64-linux-android" to "x86_64",
         )
+        val ndkDir = System.getenv("ANDROID_NDK")
+            ?: System.getenv("ANDROID_NDK_HOME")
+            ?: (android.ndkDirectory.takeIf { it.exists() }?.absolutePath)
         for ((targetTriple, abiDir) in abis) {
             val zigOut = layout.buildDirectory.dir("zig-out/$abiDir")
             exec {
-                commandLine(
+                val args = mutableListOf(
                     "zig", "build",
                     "-Dtarget=$targetTriple",
                     "-Doptimize=ReleaseSafe",
                     "--prefix", zigOut.get().asFile.absolutePath,
                 )
+                if (ndkDir != null) {
+                    args += "-Dandroid-ndk=$ndkDir"
+                }
+                commandLine(args)
             }
             val soFile = zigOut.get().asFile.resolve("lib/${project.name}.so")
             if (soFile.exists()) {
