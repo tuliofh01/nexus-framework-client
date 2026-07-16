@@ -614,8 +614,8 @@ def generation_builds_flow() -> str:
 
     col_data = [
         [
-            ("Run misc/client-setup/", "Installs JDK 26 and Git before first build", "#E8F5E9", "#2E7D32", NF["wrench"]),
-            ("source env.sh", "Activates toolchain for Gradle and CMake", "#E8F5E9", "#2E7D32", NF["terminal"]),
+            ("Run misc/client-setup/", "Installs JDK 26 + Zig 0.14.0 before first build", "#E8F5E9", "#2E7D32", NF["wrench"]),
+            ("source env.sh", "Activates toolchain for Gradle and Zig", "#E8F5E9", "#2E7D32", NF["terminal"]),
         ],
         [
             ("./gradlew :app:run", "Launches Compose Desktop scaffold client", "#E3F2FD", "#1565C0", NF["desktop"]),
@@ -638,13 +638,12 @@ def generation_builds_flow() -> str:
             ("Desktop?", "Branch on project type selection", "#ECEFF1", "#455A64", NF["branch"]),
         ],
         [
-            ("cmake --preset debug", "Configure CMake + Ninja build files", "#E3F2FD", "#1565C0", NF["desktop"]),
-            ("cmake --build", "Compile C++ sources and link binary", "#E3F2FD", "#1565C0", NF["gear"]),
+            ("zig build", "Compile C++ and link native binary", "#E3F2FD", "#1565C0", NF["gear"]),
             ("Run native binary", "SDL3 desktop app with pybind11", "#E3F2FD", "#1565C0", NF["rocket"]),
         ],
         [
-            ("assembleDebug", "Gradle builds Android APK via NDK", "#FCE4EC", "#C2185B", NF["android"]),
-            ("Djinni + Chaquopy", "JNI bridge and embedded Python", "#FCE4EC", "#C2185B", NF["plug"]),
+            ("assembleDebug", "Gradle builds Android APK", "#FCE4EC", "#C2185B", NF["android"]),
+            ("Zig JNI + Chaquopy", "Native .so via zig build + Python embed", "#FCE4EC", "#C2185B", NF["plug"]),
             ("Install APK", "Deploy to device or emulator", "#FCE4EC", "#C2185B", NF["phone"]),
         ],
         [
@@ -677,7 +676,6 @@ def generation_builds_flow() -> str:
         arrow_between(c4[0], c5[0], "right", "left", via_y=100, lane=0),
         arrow_between(c4[0], c6[0], "right", "left", via_y=120, lane=LANE),
         arrow_between(c5[0], c5[1]),
-        arrow_between(c5[1], c5[2]),
         arrow_between(c6[0], c6[1]),
         arrow_between(c6[1], c6[2]),
         arrow_between(c6[2], c7[0], "right", "left", via_y=c7[0]["y"] + c7[0]["h"] // 2),
@@ -759,11 +757,11 @@ def desktop_vs_android() -> str:
 
     and_x = desk_x + desk_w + GAP_H
     and_r1, ar1, _ = hstack(and_x + 20, desk_y + 40, [
-        (240, 72, "#FFFFFF", "#C2185B", NF["android"], "Gradle + NDK", "APK build with native C++ libs"),
+        (240, 72, "#FFFFFF", "#C2185B", NF["android"], "Zig JNI build", "zig build --target aarch64-linux-android .so"),
         (260, 72, "#FFFFFF", "#C2185B", NF["desktop"], "SDL3 GLES", "Full-screen touch UI on GLES"),
     ])
     and_r2, ar2, _ = hstack(and_x + 20, ar1[0]["y"] + ar1[0]["h"] + GAP_V, [
-        (240, 72, "#FFFFFF", "#C2185B", NF["plug"], "Zig JNI bridge", "Hand-authored .zig modules (Djinni retired)"),
+        (240, 72, "#FFFFFF", "#C2185B", NF["plug"], "JNI bridge (C++ zig-services)", "Hand-authored jni/ files — no IDL codegen"),
         (260, 72, "#FFFFFF", "#C2185B", NF["python"], "Chaquopy", "app/src/main/python/ embedding"),
     ])
     and_w = max(ar1[-1]["x"] + ar1[-1]["w"], ar2[-1]["x"] + ar2[-1]["w"]) - and_x + 24
@@ -775,7 +773,7 @@ def desktop_vs_android() -> str:
         arrow_between(mvc_boxes[0], ui_boxes[0]),
         arrow_between(mvc_boxes[0], ui_boxes[1], "bottom", "top", via_x=ui_boxes[1]["x"] + ui_boxes[1]["w"] // 2),
         arrow_between(ui_boxes[0], dr1[0], "bottom", "top", "desktop", via_x=dr1[0]["x"] + dr1[0]["w"] // 2),
-        arrow_between(ui_boxes[1], ar1[0], "bottom", "top", "Android NDK", via_x=ar1[0]["x"] + ar1[0]["w"] // 2),
+        arrow_between(ui_boxes[1], ar1[0], "bottom", "top", "Android", via_x=ar1[0]["x"] + ar1[0]["w"] // 2),
         arrow_between(dr1[0], dr2[0]),
         arrow_between(dr1[1], dr2[1], "bottom", "top"),
         arrow_between(ar1[0], ar2[0]),
@@ -807,19 +805,18 @@ def desktop_vs_android() -> str:
 {and_r2}
 
 {chr(10).join(arrows)}
-{desk_note}
 
   <rect x="{note_x}" y="{shared_y + 30}" width="300" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="{note_x + 20}" y="{shared_y + 60}" class="small">Same plotter template on both targets.</text>
   <text x="{note_x + 20}" y="{shared_y + 80}" class="desc">blueprint.json declares the same node graph.</text>
 
-  <rect x="{(desk_x + and_x + and_w) // 2 - 180}" y="{legend_y - 56}" width="360" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
-  <text x="{(desk_x + and_x + and_w) // 2 - 160}" y="{legend_y - 26}" class="small">Lowest latency: Python runs in-process via pybind11.</text>
+  <rect x="{(desk_x + and_x + and_w) // 2 - 220}" y="{legend_y - 56}" width="440" height="50" class="panel" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="{(desk_x + and_x + and_w) // 2 - 200}" y="{legend_y - 26}" class="small">Zig is the only native build path — CMake fully removed from both templates.</text>
 
 {legend_box(32, legend_y, 500, 80, [
     ("#F3E5F5", "#6A1B9A", "Shared — blueprint + MVC + SDL3"),
-    ("#E3F2FD", "#1565C0", "Desktop — Zig build (primary) + pybind11"),
-    ("#FCE4EC", "#C2185B", "Android — Gradle + Zig JNI + Chaquopy"),
+    ("#E3F2FD", "#1565C0", "Desktop — Zig build + pybind11"),
+    ("#FCE4EC", "#C2185B", "Android — Zig JNI + Chaquopy"),
 ], "Runtime layers")}
 </svg>"""
 
@@ -1110,10 +1107,10 @@ def python_desktop_vs_android_flow() -> str:
     desk_x, desk_y = 48, bp_y + bp_bh + GAP_V
     desk_r1, dr1, _ = hstack(desk_x + 32, desk_y + 48, [
         (260, 72, "#FFFFFF", "#1565C0", NF["python"], "python/functions.py", "NumPy curve sampling source"),
-        (240, 72, "#FFFFFF", "#1565C0", NF["gear"], "CMake: pack_python_dat", "Build step packs PYAC archive"),
+        (240, 72, "#FFFFFF", "#1565C0", NF["gear"], "zig build: pack python dat", "PYAC archive defined in build.zig"),
     ], gap=gap)
     desk_r2, dr2, _ = hstack(desk_x + 32, dr1[0]["y"] + dr1[0]["h"] + GAP_V, [
-        (260, 72, "#FFFFFF", "#1565C0", NF["box"], "misc/python.dat (PYAC)", "Encrypted script pack in misc/"),
+        (260, 72, "#FFFFFF", "#1565C0", NF["box"], "misc/python.dat (PYAC)", "Encrypted script pack in build step"),
         (240, 72, "#FFFFFF", "#1565C0", NF["python"], "PythonEngine", "pybind11 embed in controller/"),
     ], gap=gap)
     desk_w = max(dr1[-1]["x"] + dr1[-1]["w"], dr2[-1]["x"] + dr2[-1]["w"]) - desk_x + 32
@@ -1126,7 +1123,7 @@ def python_desktop_vs_android_flow() -> str:
         (200, 72, "#FFFFFF", "#C2185B", NF["android"], "Gradle + Chaquopy", "No python.dat — sources in APK"),
     ], gap=gap)
     and_r2, ar2, _ = hstack(and_x + 32, ar1[0]["y"] + ar1[0]["h"] + GAP_V, [
-        (520, 80, "#FFFFFF", "#C2185B", NF["plug"], "ChaquopyPythonBridge (Djinni)", "Type-safe C++ ↔ Kotlin JNI bridge"),
+        (520, 80, "#FFFFFF", "#C2185B", NF["plug"], "ChaquopyPythonBridge (hand-authored C++)", "JNI methods call PythonBridge.kt via zig c++"),
     ], gap=gap)
     and_w = max(ar1[-1]["x"] + ar1[-1]["w"], ar2[-1]["x"] + ar2[-1]["w"]) - and_x + 32
     and_h = desk_h
@@ -1181,7 +1178,7 @@ def python_desktop_vs_android_flow() -> str:
 
 {legend_box(48, legend_y, 520, 70, [
     ("#E3F2FD", "#1565C0", "Desktop — pybind11 + python.dat"),
-    ("#FCE4EC", "#C2185B", "Android — Chaquopy + Djinni"),
+    ("#FCE4EC", "#C2185B", "Android — Chaquopy + hand-authored JNI"),
     ("#F3E5F5", "#6A1B9A", "Shared — controller → ImPlot"),
 ], "Python embed layers")}
 </svg>"""
@@ -1414,7 +1411,7 @@ def zig_orchestration_layer() -> str:
     and_x, and_y = setup_x, out_y + out_h + gap
     and_svg, and_boxes, and_end = hstack(and_x, and_y + 40, [
         (240, 72, "#FCE4EC", "#C2185B", NF["android"], "Android Zig JNI", "aarch64-linux-android .so target"),
-        (240, 72, "#FCE4EC", "#C2185B", NF["plug"], "Djinni retired", "Hand-authored .zig replaces codegen"),
+        (240, 72, "#FCE4EC", "#C2185B", NF["plug"], "C++ JNI bridge", "Hand-authored jni/ files"),
     ], gap=GAP_H)
     and_w = and_end - and_x + 24
     and_h = and_boxes[0]["h"] + 60
@@ -1473,10 +1470,10 @@ def cmake_to_zig_migration() -> str:
         ("Phase 1", "zig-services", "C++ TUs via zig c++", "#E3F2FD", "#1565C0", NF["gear"]),
         ("Phase 2", "Langflow imp.", "Kotlin service (parallel)", "#FFF3E0", "#EF6C00", NF["branch"]),
         ("Phase 3", "Desktop Zig default", "Zig primary + CMake fallback", "#F3E5F5", "#7B1FA2", NF["desktop"]),
-        ("Phase 4", "Android Zig JNI", "Retire Djinni .zig bridges", "#FCE4EC", "#C2185B", NF["phone"]),
+        ("Phase 4", "Android Zig JNI", "Retire Djinni — C++ jni/ files", "#FCE4EC", "#C2185B", NF["phone"]),
         ("Phase 5", "ArenaAllocator", "Opt-in C-ABI hotspots", "#E0F7FA", "#00838F", NF["database"]),
     ]
-    done_indicator = ["✅", "✅", "✅", "✅", "⬜", "✅"]
+    done_indicator = ["✅", "✅", "✅", "✅", "✅", "✅"]
 
     x, y = 60, 180
     parts = []
@@ -1520,8 +1517,8 @@ def cmake_to_zig_migration() -> str:
 {legend_box(x, legend_y, 520, 70, [
     ("#E8F5E9", "#2E7D32", "✅ Done — Phase 0 (Zig install)"),
     ("#E3F2FD", "#1565C0", "✅ Done — Phases 1, 3 (zig-services, desktop)"),
-    ("#FCE4EC", "#C2185B", "⬜ Phase 4 (Android Zig JNI — pending)"),
-    ("#E0F7FA", "#00838F", "✅ Done — Phase 5 (ArenaAllocator)"),
+    ("#FCE4EC", "#C2185B", "Phase 4 (Android Zig JNI)"),
+    ("#E0F7FA", "#00838F", "Phase 5 (ArenaAllocator)"),
 ], "Phase status")}
 </svg>"""
 
@@ -1609,8 +1606,155 @@ def langflow_import_pipeline() -> str:
     ("#FFF3E0", "#EF6C00", "Transform — LangflowTransformationEngine"),
     ("#F3E5F5", "#7B1FA2", "Output — flows.json + nxs_config.json"),
     ("#E0F7FA", "#00838F", "Runtime — FlowRunner triggers at startup"),
-], "Pipeline stages")}
+    ], "Pipeline stages")}
 </svg>"""
+
+
+# ──────────────────────────────────────────────
+# Interface mockups (docs/assets/examples/*.svg)
+# ──────────────────────────────────────────────
+
+MOCKUP_W = 800
+MOCKUP_H = 520
+MOCKUP_BG = "#1e1e2e"
+MOCKUP_SURFACE = "#313244"
+MOCKUP_TEXT = "#cdd6f4"
+MOCKUP_SUBTEXT = "#a6adc8"
+MOCKUP_BLUE = "#89b4fa"
+MOCKUP_GREEN = "#a6e3a1"
+MOCKUP_ORANGE = "#fab387"
+MOCKUP_RED = "#f38ba8"
+MOCKUP_MAUVE = "#cba6f7"
+MOCKUP_SKY = "#89dceb"
+
+def _mockup_frame(title: str, body: str) -> str:
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MOCKUP_W} {MOCKUP_H}" width="{MOCKUP_W}" height="{MOCKUP_H}">
+  <rect width="100%" height="100%" fill="{MOCKUP_BG}"/>
+  <rect x="0" y="0" width="100%" height="40" fill="{MOCKUP_SURFACE}"/>
+  <circle cx="20" cy="20" r="6" fill="#f38ba8"/>
+  <circle cx="38" cy="20" r="6" fill="#fab387"/>
+  <circle cx="56" cy="20" r="6" fill="#a6e3a1"/>
+  <text x="400" y="26" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">{title}</text>
+{body}
+</svg>"""
+
+def _mockup_card(x: int, y: int, w: int, h: int, accent: str, icon: str, label: str, desc: str) -> str:
+    return f"""  <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{MOCKUP_SURFACE}" stroke="{accent}" stroke-width="2"/>
+  <text x="{x + 16}" y="{y + 32}" font-family="sans-serif" font-size="20" fill="{accent}">{icon}</text>
+  <text x="{x + 16}" y="{y + 60}" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_TEXT}">{label}</text>
+  <text x="{x + 16}" y="{y + 78}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{desc}</text>"""
+
+def dashboard_mockup() -> str:
+    cards = [
+        (60, 70, 320, 100, MOCKUP_BLUE, "&#x2699;", "Generate Project", "Configure name, type, output path"),
+        (420, 70, 320, 100, MOCKUP_GREEN, "&#x2b22;", "Blueprint Editor", "Visual DAG canvas + JSON sync"),
+        (60, 200, 320, 100, MOCKUP_ORANGE, "&#x21c6;", "Flows Editor", "Runtime automations and triggers"),
+        (420, 200, 320, 100, MOCKUP_MAUVE, "&#x1f50d;", "Debugger", "Pattern-based log scanner"),
+        (240, 330, 320, 100, MOCKUP_SKY, "&#x2705;", "Test Runner", "In-memory assertion runner"),
+    ]
+    footer = f"""  <text x="400" y="480" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 &middot; ImGui &middot; Lua 5.4 &middot; Python 3.11 &middot; TS/XHTML &middot; Zig 0.14</text>"""
+    return _mockup_frame("Dashboard — The Nexus Framework", "\n".join(_mockup_card(*c) for c in cards) + f"\n{footer}")
+
+def generate_project_mockup() -> str:
+    body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Generate Project</text>
+
+  <rect x="60" y="110" width="300" height="32" rx="6" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="70" y="131" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">MyApp</text>
+  <text x="60" y="100" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Project name</text>
+
+  <rect x="60" y="170" width="220" height="80" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_BLUE}" stroke-width="2"/>
+  <text x="80" y="200" font-family="sans-serif" font-size="24" fill="{MOCKUP_BLUE}">&#x1f5a5;</text>
+  <text x="110" y="200" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_TEXT}">Desktop App</text>
+  <text x="110" y="218" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 + ImGui + pybind11</text>
+
+  <rect x="300" y="170" width="220" height="80" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="320" y="200" font-family="sans-serif" font-size="24" fill="{MOCKUP_GREEN}">&#x1f4f1;</text>
+  <text x="350" y="200" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_SUBTEXT}">Android App</text>
+  <text x="350" y="218" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 GLES + Chaquopy</text>
+
+  <text x="60" y="168" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">App type</text>
+
+  <rect x="60" y="280" width="460" height="32" rx="6" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="70" y="301" font-family="sans-serif" font-size="12" fill="{MOCKUP_SUBTEXT}">builds/framework/MyApp/</text>
+  <text x="60" y="270" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Output path</text>
+
+  <rect x="60" y="340" width="200" height="40" rx="8" fill="{MOCKUP_BLUE}"/>
+  <text x="160" y="365" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_BG}">Generate</text>
+
+  <rect x="280" y="340" width="140" height="40" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="350" y="365" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Blueprint</text>
+
+  <rect x="440" y="340" width="120" height="40" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="500" y="365" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Flows</text>"""
+    return _mockup_frame("Generate Project", body)
+
+def blueprint_editor_mockup() -> str:
+    arrow_sm = f"""  <defs>
+    <marker id="arrow-sm" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="{MOCKUP_SUBTEXT}"/>
+    </marker>
+  </defs>"""
+    body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Blueprint Editor</text>
+
+  <rect x="60" y="110" width="680" height="320" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_GREEN}" stroke-width="1"/>
+
+  <rect x="100" y="150" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_BLUE}" stroke-width="2"/>
+  <text x="180" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_BLUE}">ui.page</text>
+  <text x="180" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Dashboard</text>
+
+  <rect x="340" y="150" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_MAUVE}" stroke-width="2"/>
+  <text x="420" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_MAUVE}">cpp.controller</text>
+  <text x="420" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">AppController</text>
+
+  <rect x="580" y="150" width="120" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_ORANGE}" stroke-width="2"/>
+  <text x="640" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_ORANGE}">cpp.model</text>
+  <text x="640" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">AppModel</text>
+
+  <rect x="180" y="300" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_GREEN}" stroke-width="2"/>
+  <text x="260" y="330" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_GREEN}">python.module</text>
+  <text x="260" y="346" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Analytics</text>
+
+  <rect x="420" y="300" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_SKY}" stroke-width="2"/>
+  <text x="500" y="330" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SKY}">lua.script</text>
+  <text x="500" y="346" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Panels</text>
+
+  <line x1="260" y1="210" x2="340" y2="210" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
+  <line x1="580" y1="180" x2="580" y2="330" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
+  <line x1="420" y1="330" x2="340" y2="330" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
+
+  <text x="60" y="460" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Drag nodes to rearrange &middot; Click to select &middot; Right-click for inspector</text>{arrow_sm}"""
+    return _mockup_frame("Blueprint Editor", body)
+
+def flows_editor_mockup() -> str:
+    flows = [
+        (60, 110, MOCKUP_GREEN, "Data Refresh", "background", "interval: 5000ms", "ON"),
+        (60, 170, MOCKUP_ORANGE, "Alert Handler", "triggered", "event: sensor.alert", "ON"),
+        (60, 230, MOCKUP_MAUVE, "Init Pipeline", "startup", "runs once at app launch", "OFF"),
+        (60, 290, MOCKUP_SKY, "Manual Export", "manual", "hotkey: Ctrl+E", "ON"),
+    ]
+    cards = ""
+    for i, (x, y, color, name, mode, detail, state) in enumerate(flows):
+        toggle = f"""  <rect x="{x + 400}" y="{y + 10}" width="36" height="20" rx="10" fill="{MOCKUP_GREEN if state == 'ON' else MOCKUP_SURFACE}" stroke="{MOCKUP_GREEN if state == 'ON' else MOCKUP_SUBTEXT}"/>
+  <circle cx="{x + 410 if state == 'ON' else x + 426}" cy="{y + 20}" r="7" fill="#ffffff"/>"""
+        cards += f"""  <rect x="{x}" y="{y}" width="480" height="40" rx="8" fill="{MOCKUP_SURFACE}"/>
+  <circle cx="{x + 16}" cy="{y + 20}" r="5" fill="{color}"/>
+  <text x="{x + 30}" y="{y + 24}" font-family="sans-serif" font-size="13" font-weight="bold" fill="{MOCKUP_TEXT}">{name}</text>
+  <text x="{x + 140}" y="{y + 24}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{mode}</text>
+  <text x="{x + 260}" y="{y + 24}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{detail}</text>
+{toggle}"""
+
+    body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Flows Editor</text>
+  <rect x="60" y="110" width="480" height="220" rx="10" fill="none" stroke="{MOCKUP_ORANGE}" stroke-width="1"/>
+{cards}
+  <rect x="60" y="360" width="140" height="36" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="130" y="383" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Reload template</text>
+
+  <rect x="220" y="360" width="120" height="36" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <text x="280" y="383" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Preview JSON</text>
+
+  <text x="60" y="440" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">All imported flows default to disabled (enabled: false). Toggle each flow to opt in.</text>"""
+    return _mockup_frame("Flows Editor", body)
 
 
 def main() -> None:
@@ -1629,6 +1773,10 @@ def main() -> None:
         EXAMPLES / "langflow-rag-chatbot.svg": langflow_rag_chatbot(),
         EXAMPLES / "langflow-agent-tools.svg": langflow_agent_tools(),
         EXAMPLES / "nexus-blueprint-app-structure.svg": nexus_blueprint_app_structure(),
+        EXAMPLES / "mockup-dashboard.svg": dashboard_mockup(),
+        EXAMPLES / "mockup-generate-project.svg": generate_project_mockup(),
+        EXAMPLES / "mockup-blueprint-editor.svg": blueprint_editor_mockup(),
+        EXAMPLES / "mockup-flows-editor.svg": flows_editor_mockup(),
     }
     for path, content in outputs.items():
         path.write_text(content, encoding="utf-8")

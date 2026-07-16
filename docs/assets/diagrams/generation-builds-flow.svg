@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2683 1069" width="2683" height="1069">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2736 1069" width="2736" height="1069">
   <title>Generation &amp; builds flow</title>
   <defs>
     <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
@@ -28,15 +28,15 @@
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="2683" height="100%" fill="#f8fafc"/>
+  <rect width="2736" height="100%" fill="#f8fafc"/>
   <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
-  <text x="190" y="110" text-anchor="middle" class="layer-label">First run</text>
-  <text x="540" y="110" text-anchor="middle" class="layer-label">Scaffold client</text>
-  <text x="880" y="110" text-anchor="middle" class="layer-label">:core / :cli</text>
-  <text x="1207" y="110" text-anchor="middle" class="layer-label">Output</text>
-  <text x="1681" y="110" text-anchor="middle" class="layer-label">Native build</text>
-  <text x="2472" y="110" text-anchor="middle" class="layer-label">Optional</text>
+  <text x="206" y="110" text-anchor="middle" class="layer-label">First run</text>
+  <text x="572" y="110" text-anchor="middle" class="layer-label">Scaffold client</text>
+  <text x="912" y="110" text-anchor="middle" class="layer-label">:core / :cli</text>
+  <text x="1239" y="110" text-anchor="middle" class="layer-label">Output</text>
+  <text x="1713" y="110" text-anchor="middle" class="layer-label">Native build</text>
+  <text x="2525" y="110" text-anchor="middle" class="layer-label">Optional</text>
   <line x1="320" y1="120" x2="320" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="600" y1="120" x2="600" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="920" y1="120" x2="920" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
@@ -44,201 +44,194 @@
   <line x1="1400" y1="120" x2="1400" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="1760" y1="120" x2="1760" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="2080" y1="120" x2="2080" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
-  <rect x="40" y="140" width="300" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <rect x="40" y="140" width="332" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="56" y="169" class="icon">&#xf0ad;</text>
   <text x="78" y="171" class="label">
     <tspan x="78" dy="0">Run misc/client-setup/</tspan>
   </text>
   <text x="56" y="191" class="desc">
-    <tspan x="56" dy="0">Installs JDK 26 and Git before first</tspan>
+    <tspan x="56" dy="0">Installs JDK 26 + Zig 0.14.0 before first</tspan>
     <tspan x="56" dy="15">build</tspan>
   </text>
-  <rect x="40" y="281" width="288" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <rect x="40" y="281" width="275" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="56" y="310" class="icon">&#xf120;</text>
   <text x="78" y="312" class="label">
     <tspan x="78" dy="0">source env.sh</tspan>
   </text>
   <text x="56" y="332" class="desc">
-    <tspan x="56" dy="0">Activates toolchain for Gradle and CMake</tspan>
+    <tspan x="56" dy="0">Activates toolchain for Gradle and</tspan>
+    <tspan x="56" dy="15">Zig</tspan>
   </text>
-  <rect x="396" y="140" width="288" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="412" y="169" class="icon">&#xf108;</text>
-  <text x="434" y="171" class="label">
-    <tspan x="434" dy="0">./gradlew :app:run</tspan>
+  <rect x="428" y="140" width="288" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="444" y="169" class="icon">&#xf108;</text>
+  <text x="466" y="171" class="label">
+    <tspan x="466" dy="0">./gradlew :app:run</tspan>
   </text>
-  <text x="412" y="191" class="desc">
-    <tspan x="412" dy="0">Launches Compose Desktop scaffold client</tspan>
+  <text x="444" y="191" class="desc">
+    <tspan x="444" dy="0">Launches Compose Desktop scaffold client</tspan>
   </text>
-  <rect x="396" y="268" width="262" height="85" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="412" y="297" class="icon">&#xf5fd;</text>
-  <text x="434" y="299" class="label">
-    <tspan x="434" dy="0">Generate Project screen</tspan>
+  <rect x="428" y="268" width="262" height="85" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="444" y="297" class="icon">&#xf5fd;</text>
+  <text x="466" y="299" class="label">
+    <tspan x="466" dy="0">Generate Project screen</tspan>
   </text>
-  <text x="412" y="319" class="desc">
-    <tspan x="412" dy="0">Collects name, type, and output</tspan>
-    <tspan x="412" dy="15">path</tspan>
+  <text x="444" y="319" class="desc">
+    <tspan x="444" dy="0">Collects name, type, and output</tspan>
+    <tspan x="444" dy="15">path</tspan>
   </text>
-  <rect x="396" y="409" width="275" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="412" y="438" class="icon">&#xf126;</text>
-  <text x="434" y="440" class="label">
-    <tspan x="434" dy="0">Blueprint Editor?</tspan>
+  <rect x="428" y="409" width="275" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="444" y="438" class="icon">&#xf126;</text>
+  <text x="466" y="440" class="label">
+    <tspan x="466" dy="0">Blueprint Editor?</tspan>
   </text>
-  <text x="412" y="460" class="desc">
-    <tspan x="412" dy="0">Optional visual edit of</tspan>
-    <tspan x="412" dy="15">blueprint.json</tspan>
+  <text x="444" y="460" class="desc">
+    <tspan x="444" dy="0">Optional visual edit of</tspan>
+    <tspan x="444" dy="15">blueprint.json</tspan>
   </text>
-  <rect x="396" y="550" width="262" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="412" y="579" class="icon">&#xf013;</text>
-  <text x="434" y="581" class="label">
-    <tspan x="434" dy="0">BlueprintValidator</tspan>
+  <rect x="428" y="550" width="262" height="85" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="444" y="579" class="icon">&#xf013;</text>
+  <text x="466" y="581" class="label">
+    <tspan x="466" dy="0">BlueprintValidator</tspan>
   </text>
-  <text x="412" y="601" class="desc">
-    <tspan x="412" dy="0">Schema check before codegen</tspan>
-    <tspan x="412" dy="15">proceeds</tspan>
+  <text x="444" y="601" class="desc">
+    <tspan x="444" dy="0">Schema check before codegen</tspan>
+    <tspan x="444" dy="15">proceeds</tspan>
   </text>
-  <rect x="396" y="691" width="260" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
-  <text x="412" y="720" class="icon">&#xf135;</text>
-  <text x="434" y="722" class="label">
-    <tspan x="434" dy="0">ProjectGenerator</tspan>
+  <rect x="428" y="691" width="260" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="444" y="720" class="icon">&#xf135;</text>
+  <text x="466" y="722" class="label">
+    <tspan x="466" dy="0">ProjectGenerator</tspan>
   </text>
-  <text x="412" y="742" class="desc">
-    <tspan x="412" dy="0">Orchestrates template copy and emit</tspan>
+  <text x="444" y="742" class="desc">
+    <tspan x="444" dy="0">Orchestrates template copy and emit</tspan>
   </text>
-  <rect x="740" y="140" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="756" y="169" class="icon">&#xf487;</text>
-  <text x="778" y="171" class="label">
-    <tspan x="778" dy="0">Read template/</tspan>
+  <rect x="772" y="140" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="788" y="169" class="icon">&#xf487;</text>
+  <text x="810" y="171" class="label">
+    <tspan x="810" dy="0">Read template/</tspan>
   </text>
-  <text x="756" y="191" class="desc">
-    <tspan x="756" dy="0">desktop-app or android-app skeleton</tspan>
+  <text x="788" y="191" class="desc">
+    <tspan x="788" dy="0">desktop-app or android-app skeleton</tspan>
   </text>
-  <rect x="740" y="268" width="268" height="85" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="756" y="297" class="icon">&#xf121;</text>
-  <text x="778" y="299" class="label">
-    <tspan x="778" dy="0">TemplateEngine</tspan>
+  <rect x="772" y="268" width="268" height="85" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="788" y="297" class="icon">&#xf121;</text>
+  <text x="810" y="299" class="label">
+    <tspan x="810" dy="0">TemplateEngine</tspan>
   </text>
-  <text x="756" y="319" class="desc">
-    <tspan x="756" dy="0">Substitutes {{placeholders}} in</tspan>
-    <tspan x="756" dy="15">files</tspan>
+  <text x="788" y="319" class="desc">
+    <tspan x="788" dy="0">Substitutes {{placeholders}} in</tspan>
+    <tspan x="788" dy="15">files</tspan>
   </text>
-  <rect x="740" y="409" width="281" height="85" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="756" y="438" class="icon">&#xf15b;</text>
-  <text x="778" y="440" class="label">
-    <tspan x="778" dy="0">Validate blueprint.json</tspan>
+  <rect x="772" y="409" width="281" height="85" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="788" y="438" class="icon">&#xf15b;</text>
+  <text x="810" y="440" class="label">
+    <tspan x="810" dy="0">Validate blueprint.json</tspan>
   </text>
-  <text x="756" y="460" class="desc">
-    <tspan x="756" dy="0">Ensures graph nodes and edges are</tspan>
-    <tspan x="756" dy="15">valid</tspan>
+  <text x="788" y="460" class="desc">
+    <tspan x="788" dy="0">Ensures graph nodes and edges are</tspan>
+    <tspan x="788" dy="15">valid</tspan>
   </text>
-  <rect x="740" y="550" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="756" y="579" class="icon">&#xf466;</text>
-  <text x="778" y="581" class="label">
-    <tspan x="778" dy="0">Copy template/shared/</tspan>
+  <rect x="772" y="550" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="788" y="579" class="icon">&#xf466;</text>
+  <text x="810" y="581" class="label">
+    <tspan x="810" dy="0">Copy template/shared/</tspan>
   </text>
-  <text x="756" y="601" class="desc">
-    <tspan x="756" dy="0">DSL, themes, and runtime helpers</tspan>
+  <text x="788" y="601" class="desc">
+    <tspan x="788" dy="0">DSL, themes, and runtime helpers</tspan>
   </text>
-  <rect x="740" y="678" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
-  <text x="756" y="707" class="icon">&#xf15b;</text>
-  <text x="778" y="709" class="label">
-    <tspan x="778" dy="0">Write nxs_config.json</tspan>
+  <rect x="772" y="678" width="260" height="72" class="node" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="788" y="707" class="icon">&#xf15b;</text>
+  <text x="810" y="709" class="label">
+    <tspan x="810" dy="0">Write nxs_config.json</tspan>
   </text>
-  <text x="756" y="729" class="desc">
-    <tspan x="756" dy="0">Schema v2 project metadata on disk</tspan>
+  <text x="788" y="729" class="desc">
+    <tspan x="788" dy="0">Schema v2 project metadata on disk</tspan>
   </text>
-  <rect x="1077" y="140" width="260" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
-  <text x="1093" y="169" class="icon">&#xf466;</text>
-  <text x="1115" y="171" class="label">
-    <tspan x="1115" dy="0">Emit builds/framework/</tspan>
+  <rect x="1109" y="140" width="260" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="1125" y="169" class="icon">&#xf466;</text>
+  <text x="1147" y="171" class="label">
+    <tspan x="1147" dy="0">Emit builds/framework/</tspan>
   </text>
-  <text x="1093" y="191" class="desc">
-    <tspan x="1093" dy="0">Out-of-source native project tree</tspan>
+  <text x="1125" y="191" class="desc">
+    <tspan x="1125" dy="0">Out-of-source native project tree</tspan>
   </text>
-  <rect x="1393" y="140" width="260" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
-  <text x="1409" y="169" class="icon">&#xf126;</text>
-  <text x="1431" y="171" class="label">
-    <tspan x="1431" dy="0">Desktop?</tspan>
+  <rect x="1425" y="140" width="260" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1441" y="169" class="icon">&#xf126;</text>
+  <text x="1463" y="171" class="label">
+    <tspan x="1463" dy="0">Desktop?</tspan>
   </text>
-  <text x="1409" y="191" class="desc">
-    <tspan x="1409" dy="0">Branch on project type selection</tspan>
+  <text x="1441" y="191" class="desc">
+    <tspan x="1441" dy="0">Branch on project type selection</tspan>
   </text>
-  <rect x="1709" y="140" width="260" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="1725" y="169" class="icon">&#xf108;</text>
-  <text x="1747" y="171" class="label">
-    <tspan x="1747" dy="0">cmake --preset debug</tspan>
+  <rect x="1741" y="140" width="260" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="1757" y="169" class="icon">&#xf013;</text>
+  <text x="1779" y="171" class="label">
+    <tspan x="1779" dy="0">zig build</tspan>
   </text>
-  <text x="1725" y="191" class="desc">
-    <tspan x="1725" dy="0">Configure CMake + Ninja build files</tspan>
+  <text x="1757" y="191" class="desc">
+    <tspan x="1757" dy="0">Compile C++ and link native binary</tspan>
   </text>
-  <rect x="1709" y="268" width="260" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="1725" y="297" class="icon">&#xf013;</text>
-  <text x="1747" y="299" class="label">
-    <tspan x="1747" dy="0">cmake --build</tspan>
+  <rect x="1741" y="268" width="260" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="1757" y="297" class="icon">&#xf135;</text>
+  <text x="1779" y="299" class="label">
+    <tspan x="1779" dy="0">Run native binary</tspan>
   </text>
-  <text x="1725" y="319" class="desc">
-    <tspan x="1725" dy="0">Compile C++ sources and link binary</tspan>
+  <text x="1757" y="319" class="desc">
+    <tspan x="1757" dy="0">SDL3 desktop app with pybind11</tspan>
   </text>
-  <rect x="1709" y="396" width="260" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
-  <text x="1725" y="425" class="icon">&#xf135;</text>
-  <text x="1747" y="427" class="label">
-    <tspan x="1747" dy="0">Run native binary</tspan>
+  <rect x="2057" y="140" width="260" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="2073" y="169" class="icon">&#xf17b;</text>
+  <text x="2095" y="171" class="label">
+    <tspan x="2095" dy="0">assembleDebug</tspan>
   </text>
-  <text x="1725" y="447" class="desc">
-    <tspan x="1725" dy="0">SDL3 desktop app with pybind11</tspan>
+  <text x="2073" y="191" class="desc">
+    <tspan x="2073" dy="0">Gradle builds Android APK</tspan>
   </text>
-  <rect x="2025" y="140" width="260" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="2041" y="169" class="icon">&#xf17b;</text>
-  <text x="2063" y="171" class="label">
-    <tspan x="2063" dy="0">assembleDebug</tspan>
+  <rect x="2057" y="268" width="281" height="85" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="2073" y="297" class="icon">&#xf1e6;</text>
+  <text x="2095" y="299" class="label">
+    <tspan x="2095" dy="0">Zig JNI + Chaquopy</tspan>
   </text>
-  <text x="2041" y="191" class="desc">
-    <tspan x="2041" dy="0">Gradle builds Android APK via NDK</tspan>
+  <text x="2073" y="319" class="desc">
+    <tspan x="2073" dy="0">Native .so via zig build + Python</tspan>
+    <tspan x="2073" dy="15">embed</tspan>
   </text>
-  <rect x="2025" y="268" width="260" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="2041" y="297" class="icon">&#xf1e6;</text>
-  <text x="2063" y="299" class="label">
-    <tspan x="2063" dy="0">Djinni + Chaquopy</tspan>
+  <rect x="2057" y="409" width="260" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="2073" y="438" class="icon">&#xf3cd;</text>
+  <text x="2095" y="440" class="label">
+    <tspan x="2095" dy="0">Install APK</tspan>
   </text>
-  <text x="2041" y="319" class="desc">
-    <tspan x="2041" dy="0">JNI bridge and embedded Python</tspan>
+  <text x="2073" y="460" class="desc">
+    <tspan x="2073" dy="0">Deploy to device or emulator</tspan>
   </text>
-  <rect x="2025" y="396" width="260" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
-  <text x="2041" y="425" class="icon">&#xf3cd;</text>
-  <text x="2063" y="427" class="label">
-    <tspan x="2063" dy="0">Install APK</tspan>
+  <rect x="2394" y="140" width="262" height="85" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="2410" y="169" class="icon">&#xf0c2;</text>
+  <text x="2432" y="171" class="label">
+    <tspan x="2432" dy="0">deployToBuildsClient</tspan>
   </text>
-  <text x="2041" y="447" class="desc">
-    <tspan x="2041" dy="0">Deploy to device or emulator</tspan>
+  <text x="2410" y="191" class="desc">
+    <tspan x="2410" dy="0">Copy client distro to</tspan>
+    <tspan x="2410" dy="15">builds/client/</tspan>
   </text>
-  <rect x="2341" y="140" width="262" height="85" class="node" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="2357" y="169" class="icon">&#xf0c2;</text>
-  <text x="2379" y="171" class="label">
-    <tspan x="2379" dy="0">deployToBuildsClient</tspan>
-  </text>
-  <text x="2357" y="191" class="desc">
-    <tspan x="2357" dy="0">Copy client distro to</tspan>
-    <tspan x="2357" dy="15">builds/client/</tspan>
-  </text>
-  <line x1="190" y1="225" x2="184" y2="281" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="328" y1="317" x2="396" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="540" y1="212" x2="527" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="527" y1="353" x2="533" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="533" y1="494" x2="527" y2="550" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="527" y1="635" x2="526" y2="691" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M656,727 L656,176 L740,176 L740,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="870" y1="212" x2="874" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="874" y1="353" x2="880" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="880" y1="494" x2="870" y2="550" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="870" y1="622" x2="870" y2="678" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1000" y1="714" x2="1077" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1337" y1="176" x2="1393" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M1653,176 L1653,100 L1709,100 L1709,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M1653,176 L1665,120 L2037,120 L2025,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1839" y1="212" x2="1839" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="1839" y1="340" x2="1839" y2="396" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="2155" y1="212" x2="2155" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="2155" y1="340" x2="2155" y2="396" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M2285,432 L2285,182 L2341,182 L2341,182" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="206" y1="225" x2="177" y2="281" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="315" y1="323" x2="428" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="572" y1="212" x2="559" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="559" y1="353" x2="565" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="565" y1="494" x2="559" y2="550" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="559" y1="635" x2="558" y2="691" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M688,727 L688,176 L772,176 L772,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="902" y1="212" x2="906" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="906" y1="353" x2="912" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="912" y1="494" x2="902" y2="550" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="902" y1="622" x2="902" y2="678" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1032" y1="714" x2="1109" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1369" y1="176" x2="1425" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1685,176 L1685,100 L1741,100 L1741,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1685,176 L1697,120 L2069,120 L2057,176" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1871" y1="212" x2="1871" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="2187" y1="212" x2="2197" y2="268" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="2197" y1="353" x2="2187" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M2317,445 L2317,182 L2394,182 L2394,182" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
   <rect x="680" y="819" width="380" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
   <text x="700" y="847" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
   <text x="700" y="867" class="desc">Optional Docker path via misc/docker/</text>

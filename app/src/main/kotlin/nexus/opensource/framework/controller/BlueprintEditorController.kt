@@ -1,5 +1,8 @@
 package nexus.opensource.framework.controller
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import nexus.opensource.framework.core.RepoRoot
 import nexus.opensource.framework.core.model.AppType
 import nexus.opensource.framework.core.model.BlueprintEdge
@@ -8,6 +11,7 @@ import nexus.opensource.framework.core.model.BlueprintJson
 import nexus.opensource.framework.core.model.BlueprintNode
 import nexus.opensource.framework.core.model.BlueprintNodeType
 import nexus.opensource.framework.core.model.BlueprintPosition
+import nexus.opensource.framework.core.model.ProjectSpec
 import nexus.opensource.framework.core.service.BlueprintValidator
 import nexus.opensource.framework.core.service.ProjectGenerator
 import java.nio.file.Files
@@ -23,16 +27,16 @@ import java.nio.file.Path
 class BlueprintEditorController(
     private val validator: BlueprintValidator = BlueprintValidator(),
 ) {
-    var blueprint: BlueprintFile = BlueprintJson.sampleApp("MyApp", AppType.DESKTOP)
+    var blueprint: BlueprintFile by mutableStateOf(BlueprintJson.sampleApp("MyApp", AppType.DESKTOP))
         private set
-    var appType: AppType = AppType.DESKTOP
+    var appType: AppType by mutableStateOf(AppType.DESKTOP)
         private set
-    var projectName: String = "MyApp"
+    var projectName: String by mutableStateOf("MyApp")
         private set
-    var selectedNodeId: String? = null
-    var pendingEdgeSourceId: String? = null
-    var statusMessage: String = ""
-    var validationErrors: List<String> = emptyList()
+    var selectedNodeId: String? by mutableStateOf(null)
+    var pendingEdgeSourceId: String? by mutableStateOf(null)
+    var statusMessage: String by mutableStateOf("")
+    var validationErrors: List<String> by mutableStateOf(emptyList())
 
     private var loadedFromPath: Path? = null
 
@@ -51,7 +55,7 @@ class BlueprintEditorController(
         val repoRoot = RepoRoot.resolve()
         val generator = ProjectGenerator(repoRoot)
         val vars = generator.templateVars(
-            nexus.opensource.framework.core.model.ProjectSpec(
+            ProjectSpec(
                 projectName = projectName,
                 outputPath = ProjectGenerator.defaultOutputPath(projectName),
                 appType = appType,

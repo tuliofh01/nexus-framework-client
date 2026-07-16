@@ -24,24 +24,11 @@ android {
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++20 -Wall"
-                arguments += listOf("-DANDROID_STL=c++_shared")
-            }
-        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path = file("../CMakeLists.txt")
-            version = "3.24.0+"
         }
     }
 
@@ -58,10 +45,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            kotlin.srcDirs(
-                "src/main/java",
-                "$templateRoot/djinni-generated/kotlin",
-            )
+            kotlin.srcDirs("src/main/java")
             assets.srcDirs(
                 layout.buildDirectory.dir("assets"),
                 "$templateRoot/scripts",
@@ -114,15 +98,17 @@ tasks.register<Exec>("packLuaDat") {
         if (!packExe.get().asFile.exists()) {
             exec {
                 commandLine(
-                    "cmake", "-B", hostPackDir.get().asFile.absolutePath,
-                    "-S", templateRoot.absolutePath,
+                    "zig", "build-exe", "tools/pack_archive.cpp",
+                    "-target", "native",
+                    "--name", "pack_archive",
+                    "--cache-dir", hostPackDir.get().asFile.resolve("zig-cache").absolutePath,
+                    "--global-cache-dir", hostPackDir.get().asFile.resolve("global-cache").absolutePath,
                 )
             }
-            exec {
-                commandLine(
-                    "cmake", "--build", hostPackDir.get().asFile.absolutePath,
-                    "--target", "pack_archive", "-j",
-                )
+            val built = file("pack_archive")
+            if (built.exists()) {
+                built.copyTo(packExe.get().asFile, overwrite = true)
+                built.delete()
             }
         }
         val args = mutableListOf(
@@ -171,12 +157,8 @@ tasks.register<Exec>("zigBuildRelease") {
     }
 }
 
-// When using Zig backend, replace CMake externalNativeBuild with Zig .so
-// To enable: uncomment the below and comment out externalNativeBuild { cmake {...} }
-// android.defaultConfig.ndk.abiFilters = listOf("arm64-v8a", "x86_64")
-// tasks.named("preBuild") { dependsOn("zigBuildRelease") }
-// android.sourceSets.getByName("main") { jniLibs.srcDirs(layout.buildDirectory.dir("jniLibs")) }
+android.sourceSets.getByName("main") { jniLibs.srcDirs(layout.buildDirectory.dir("jniLibs")) }
 
 tasks.named("preBuild") {
-    dependsOn("copyBlueprintAsset", "packLuaDat")
+    dependsOn("copyBlueprintAsset", "packLuaDat", "zigBuildRelease")
 }

@@ -1,10 +1,14 @@
 package nexus.opensource.framework.controller
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import nexus.opensource.framework.core.RepoRoot
 import nexus.opensource.framework.core.model.AppType
 import nexus.opensource.framework.core.model.FlowDefinition
 import nexus.opensource.framework.core.model.FlowsFile
 import nexus.opensource.framework.core.model.FlowsJson
+import nexus.opensource.framework.core.model.ProjectSpec
 import nexus.opensource.framework.core.service.FlowsValidator
 import nexus.opensource.framework.core.service.ProjectGenerator
 import java.nio.file.Files
@@ -19,15 +23,15 @@ import java.nio.file.Path
 class FlowsEditorController(
     private val validator: FlowsValidator = FlowsValidator(),
 ) {
-    var flows: FlowsFile = FlowsJson.sampleApp()
+    var flows: FlowsFile by mutableStateOf(FlowsJson.sampleApp())
         private set
-    var appType: AppType = AppType.DESKTOP
+    var appType: AppType by mutableStateOf(AppType.DESKTOP)
         private set
-    var projectName: String = "MyApp"
+    var projectName: String by mutableStateOf("MyApp")
         private set
-    var flowsEnabled: Boolean = true
-    var statusMessage: String = ""
-    var validationErrors: List<String> = emptyList()
+    var flowsEnabled: Boolean by mutableStateOf(true)
+    var statusMessage: String by mutableStateOf("")
+    var validationErrors: List<String> by mutableStateOf(emptyList())
 
     private var loadedFromPath: Path? = null
 
@@ -45,7 +49,7 @@ class FlowsEditorController(
         val repoRoot = RepoRoot.resolve()
         val generator = ProjectGenerator(repoRoot)
         val vars = generator.templateVars(
-            nexus.opensource.framework.core.model.ProjectSpec(
+            ProjectSpec(
                 projectName = projectName,
                 outputPath = ProjectGenerator.defaultOutputPath(projectName),
                 appType = appType,

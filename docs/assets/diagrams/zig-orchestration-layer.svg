@@ -107,7 +107,7 @@
     <tspan x="332" dy="0">Packed script archives staged</tspan>
   </text>
 
-  <rect x="40" y="685" width="576" height="132" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <rect x="40" y="685" width="560" height="132" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
   <text x="54" y="709" class="layer-label">&#xf3cd; 4. Android output (Phase 4) — Zig JNI .so</text>
   <rect x="40" y="725" width="240" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
   <text x="56" y="754" class="icon">&#xf17b;</text>
@@ -117,13 +117,13 @@
   <text x="56" y="776" class="desc">
     <tspan x="56" dy="0">aarch64-linux-android .so target</tspan>
   </text>
-  <rect x="336" y="725" width="256" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <rect x="336" y="725" width="240" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
   <text x="352" y="754" class="icon">&#xf1e6;</text>
   <text x="374" y="756" class="label">
-    <tspan x="374" dy="0">Djinni retired</tspan>
+    <tspan x="374" dy="0">C++ JNI bridge</tspan>
   </text>
   <text x="352" y="776" class="desc">
-    <tspan x="352" dy="0">Hand-authored .zig replaces codegen</tspan>
+    <tspan x="352" dy="0">Hand-authored jni/ files</tspan>
   </text>
 
   <line x1="302" y1="162" x2="358" y2="162" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>

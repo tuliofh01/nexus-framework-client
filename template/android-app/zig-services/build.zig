@@ -7,7 +7,6 @@ pub fn build(b: *std.Build) void {
     // ---- Source roots ----
     const src_root    = b.path("../src");
     const shared_root = b.path("../shared");
-    const djinni_root = b.path("../djinni-generated");
 
     // ---- Nexus Zig library (C ABI + JNI exports) ----
     const nexus_zig = b.addLibrary(.{
@@ -42,14 +41,11 @@ pub fn build(b: *std.Build) void {
         "runtime/ScriptCrypto.cpp",
     };
 
-    // ---- Djinni JNI glue (replaced in Phase 4b, kept for MVP) ----
-    const djinni_sources = [_][]const u8{
-        "jni/NativePythonBridge.cpp",
-    };
-
-    // ---- JNI bridge helper (called from Zig exports) ----
-    const zig_jni_sources = [_][]const u8{
+    // ---- JNI bridge (hand-authored C++ replacing Djinni) ----
+    const jni_sources = [_][]const u8{
         "jni/jni_bridge.cpp",
+        "jni/NativePythonBridge.cpp",
+        "jni/app_core.cpp",
     };
 
     // ---- imgui bundle (fetched via build.zig.zon) ----
@@ -110,20 +106,15 @@ pub fn build(b: *std.Build) void {
     for (shared_sources) |src| {
         lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = &.{"-std=c++20"} });
     }
-    // Add Djinni JNI glue (until Phase 4b replaces with Zig exports)
-    for (djinni_sources) |src| {
-        lib.addCSourceFile(.{ .file = djinni_root.path(b, src), .flags = &.{"-std=c++20"} });
-    }
-    // Add Zig-callable JNI bridge helper
-    for (zig_jni_sources) |src| {
+    // Add JNI bridge C++ sources (hand-authored replacements for Djinni glue)
+    for (jni_sources) |src| {
         lib.addCSourceFile(.{ .file = b.path(src), .flags = &.{"-std=c++20"} });
     }
 
     // Include paths
     lib.addIncludePath(src_root);
     lib.addIncludePath(shared_root.path(b, "runtime"));
-    lib.addIncludePath(djinni_root.path(b, "cpp"));
-    lib.addIncludePath(djinni_root.path(b, "jni"));
+    lib.addIncludePath(b.path("jni"));
     lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
     lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
 

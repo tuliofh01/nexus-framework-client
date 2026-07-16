@@ -12,9 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import nexus.opensource.framework.controller.LoadingController
-import nexus.opensource.framework.model.NexusBranding
 
 /**
  * Loading/splash screen shown before the main UI.

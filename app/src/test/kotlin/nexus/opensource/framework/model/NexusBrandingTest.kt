@@ -2,6 +2,7 @@ package nexus.opensource.framework.model
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import nexus.opensource.framework.core.model.NexusBranding
 
 class NexusBrandingTest {
 

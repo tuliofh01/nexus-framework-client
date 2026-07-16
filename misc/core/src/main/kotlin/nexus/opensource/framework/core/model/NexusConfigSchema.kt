@@ -49,7 +49,8 @@ data class NexusProject(
 @Serializable
 data class NexusBuild(
     val outputDir: String = "builds",
-    val presets: String = "CMakePresets.json",
+    val presets: String = "",
+    val nativeBackend: String = "zig",
     val gradleModule: String? = null,
 )
 

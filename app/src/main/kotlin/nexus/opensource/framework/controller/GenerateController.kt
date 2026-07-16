@@ -1,19 +1,19 @@
 package nexus.opensource.framework.controller
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import nexus.opensource.framework.core.RepoRoot
 import nexus.opensource.framework.core.model.AppType
 import nexus.opensource.framework.core.model.ProjectSpec
 import nexus.opensource.framework.core.service.GenerateOptions
 import nexus.opensource.framework.core.service.ProjectGenerator
 
-/**
- * Minimal generation controller for the v1 Compose client stub.
- */
 class GenerateController {
-    var projectName: String = "MyApp"
-    var appType: AppType = AppType.DESKTOP
-    var statusMessage: String = ""
-    var isGenerating: Boolean = false
+    var projectName: String by mutableStateOf("MyApp")
+    var appType: AppType by mutableStateOf(AppType.DESKTOP)
+    var statusMessage: String by mutableStateOf("")
+    var isGenerating: Boolean by mutableStateOf(false)
     val blueprintEditor: BlueprintEditorController = BlueprintEditorController()
     val flowsEditor: FlowsEditorController = FlowsEditorController()
 
