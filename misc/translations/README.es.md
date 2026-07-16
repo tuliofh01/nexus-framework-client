@@ -27,7 +27,7 @@ cd builds/framework/MiApp && zig build
 ## Docs
 
 | Doc | Cubre |
-|----:|:-------|
+|:----|:-------|
 | [docs/hub.md](../docs/hub.md) | Hub de documentación |
 | [docs/architecture/overview.md](../docs/architecture/overview.md) | Arquitectura, lenguajes, pipeline, templates |
 | [docs/guides/coding-with-nexus.md](../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, temas |

@@ -27,7 +27,7 @@ cd builds/framework/MeineApp && zig build
 ## Dokumentation
 
 | Dokument | Beschreibung |
-|---------:|:-------------|
+|:---------|:-------------|
 | [docs/hub.md](../docs/hub.md) | Dokumentations-Hub |
 | [docs/architecture/overview.md](../docs/architecture/overview.md) | Architektur, Sprachen, Pipeline, Templates |
 | [docs/guides/coding-with-nexus.md](../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, Themes |

@@ -25,7 +25,7 @@ cd builds/framework/我的应用 && zig build
 ## 文档
 
 | 文档 | 内容 |
-|----:|:-----|
+|:----|:-----|
 | [docs/hub.md](../docs/hub.md) | 文档中心 |
 | [docs/architecture/overview.md](../docs/architecture/overview.md) | 架构、语言栈、流水线、模板 |
 | [docs/guides/coding-with-nexus.md](../docs/guides/coding-with-nexus.md) | UI、MVC、Python、Lua、主题 |

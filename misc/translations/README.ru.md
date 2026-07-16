@@ -25,7 +25,7 @@ cd builds/framework/MyApp && zig build
 ## Документация
 
 | Документ | Описание |
-|---------:|:---------|
+|:---------|:---------|
 | [docs/hub.md](../docs/hub.md) | Центр документации |
 | [docs/architecture/overview.md](../docs/architecture/overview.md) | Архитектура, языки, pipeline, шаблоны |
 | [docs/guides/coding-with-nexus.md](../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, темы |
