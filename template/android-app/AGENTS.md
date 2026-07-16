@@ -35,6 +35,6 @@ Application ID: `com.nexus.{{packageName}}` (derived from project name at genera
 
 ## Docs
 
-- [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md) — C++20, Kotlin, Lua, TS, Python
-- [docs/templates/android-app.md](../../docs/templates/android-app.md)
-- [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
+- [Architecture overview](../../docs/architecture/overview.md)
+- [Coding with Nexus](../../docs/guides/coding-with-nexus.md)
+- [Blueprint schema](../../docs/templates/blueprint-schema.md)

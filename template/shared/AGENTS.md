@@ -90,9 +90,7 @@ Shared `runtime/` code is target-agnostic; embedding differs per template (`pybi
 
 ## Docs
 
-- [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) (includes XHTML/TypeScript DSL section)
-- [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
-- [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
-- [docs/templates/android-app.md](../../docs/templates/android-app.md)
-- [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md)
-- [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md)
+- [Architecture overview](../../docs/architecture/overview.md) — layers, risk, templates, build orchestration
+- [Coding with Nexus](../../docs/guides/coding-with-nexus.md) — UI, MVC, Python, Lua, themes, DSL, coding styles
+- [Blueprint schema](../../docs/templates/blueprint-schema.md) — `blueprint.json` + `flows.json` reference
+- [Template README](../../template/README.md) — bundled template index

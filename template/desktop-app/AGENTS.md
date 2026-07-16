@@ -38,7 +38,6 @@ Optional plotter: `zig build -DBUILD_NEXUS_EXAMPLES`
 
 ## Docs
 
-- [docs/guides/coding-styles.md](../../docs/guides/coding-styles.md) — C++20, Zig, Lua, TS, Python
-- [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
-- [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md)
-- [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) (includes flows schema section)
+- [Architecture overview](../../docs/architecture/overview.md)
+- [Coding with Nexus](../../docs/guides/coding-with-nexus.md)
+- [Blueprint schema](../../docs/templates/blueprint-schema.md) — includes flows schema
