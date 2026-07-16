@@ -122,7 +122,7 @@ Grafos de estrutura → [`blueprint.json`](#estrutura-do-app-blueprintjson); aut
 | [`misc/`](../../misc/) | Gerador `:core`, `:cli`, client-setup, scripts, Docker — veja [A pasta `misc/`](#a-pasta-misc) |
 | [`template/`](../../template/) | desktop-app · android-app · shared — copiados para `builds/framework/<nome>/` |
 | [`builds/`](../../builds/) | Artefatos do cliente → `builds/client/` · apps gerados → `builds/framework/` |
-| [`docs/`](../../docs/) | Hub de documentação → [docs/README.md](../../docs/README.md) |
+| [`docs/`](../../docs/) | Hub de documentação → [docs/hub.md](../../docs/hub.md) |
 
 Este é o monorepo **Framework** (`:app`, `:core`, `:cli`). Não é o repositório separado [Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client) (wizard `:client-desktop` lá).
 
@@ -163,7 +163,7 @@ cd template/desktop-app && cmake --preset debug && cmake --build --preset debug
 # a saída também vai para builds/framework/<nome>/ após a geração
 ```
 
-**5. Ler a documentação** — [docs/README.md](../../docs/README.md) · [coding-with-nexus](../../docs/guides/coding-with-nexus.md) · [generation-pipeline](../../docs/guides/generation-pipeline.md)
+**5. Ler a documentação** — [docs/hub.md](../../docs/hub.md) · [coding-with-nexus](../../docs/guides/coding-with-nexus.md) · [generation-pipeline](../../docs/guides/generation-pipeline.md)
 
 Compilar e testar o gerador: `./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin :app:test`
 
@@ -300,7 +300,7 @@ O Nexus mira **ferramentas nativas, com uso intenso de dados ou implantadas em c
 | `desktop-app` | SDL3 + ImGui + pybind11 + sol2 | [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md) |
 | `android-app` | SDL3/GLES + Chaquopy + Djinni | [docs/templates/android-app.md](../../docs/templates/android-app.md) |
 
-Saída: `builds/framework/<nome>/` · Layout: [builds/README.md](../../builds/README.md) · [template/README.md](../../template/README.md)
+Saída: `builds/framework/<nome>/` · Layout: [builds/LAYOUT.md](../../builds/LAYOUT.md) · [template/README.md](../../template/README.md)
 
 ### Python no desktop vs Android
 
@@ -516,7 +516,7 @@ Texto completo: [Apache License 2.0](../../LICENSE) · [https://www.apache.org/l
 
 | Doc | Descrição |
 |-----|-----------|
-| [docs/README.md](../../docs/README.md) | Hub de documentação |
+| [docs/hub.md](../../docs/hub.md) | Hub de documentação |
 | [docs/guides/coding-with-nexus.md](../../docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, temas |
 | [docs/guides/generation-pipeline.md](../../docs/guides/generation-pipeline.md) | ProjectGenerator, CLI, Docker |
 | [docs/templates/blueprint-schema.md](../../docs/templates/blueprint-schema.md) | Schema `blueprint.json` |

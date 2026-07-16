@@ -35,4 +35,4 @@ cd ..
 ./gradlew :app:assembleDebug
 ```
 
-Docs: [docs/templates/android-app.md](../../docs/templates/android-app.md) · [zig-services/README.md](zig-services/README.md)
+Docs: [zig-services/BUILD.md](zig-services/BUILD.md)

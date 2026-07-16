@@ -39,7 +39,7 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 | **Domain**          | C++20 MVC                                   | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`)                            |
 | **Rendering**       | ImGui + ImPlot on **SDL3**                  | Desktop OpenGL, Android GLES                                                            |
 | **Python**          | pybind11 (desktop) / **Chaquopy** (Android) | `python.module` nodes — numpy, analytics                                                |
-| **Android bridge**  | **Zig JNI** (replaces Djinni)               | C++  Kotlin/JVM                                                                          |
+| **Android bridge**  | **Zig JNI** (replaces Djinni)               | C++  Kotlin/JVM                                                                         |
 ### Blueprint node types
 
 | `type`           | Generated artifact                      |

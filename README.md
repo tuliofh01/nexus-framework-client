@@ -298,7 +298,7 @@ Reference diagrams for AI flow patterns:
 |--------------|-------------------------------------------|-------------------------------------------------------------|
 | `desktop-app` | SDL3 + ImGui + pybind11 + sol2 + TS/XHTML | You need a native desktop binary with multi-language runtime |
 | `android-app` | SDL3/GLES + Chaquopy + Zig JNI            | You need the same app model on Android tablets               |
-Output goes to `builds/framework/<project-name>/`. See [builds/README.md](builds/README.md) for the layout.
+Output goes to `builds/framework/<project-name>/`. See [builds/LAYOUT.md](builds/LAYOUT.md) for the layout.
 
 ### Understanding your generated project
 
@@ -493,7 +493,7 @@ Generated apps are lean because the toolchain is lean and there's no browser inv
 | **UI refresh**     | Full redraw in < 0.5 ms (immediate mode on GPU)                |
 | **Build time**     | 15–60 seconds for a generated project (Zig incremental cache)  |
 | **Cross-compile**  | `zig build -Dtarget=x86_64-windows` from Linux, no MSVC        |
-| **Toolchain size** | ~80 MB (Zig 0.14.0) — CMake, NDK-build, and Djinni CLI removed |
+| **Toolchain size** | ~80 MB (Zig 0.14.0) — CMake, NDK-build, Djinni CLI all removed |
 These aren't aspirational targets — they're measurements from the existing templates.
 
 ---
@@ -685,20 +685,21 @@ Zig became the default build path for desktop. CMake demoted to fallback (`legac
 
 ### Phase 5 — Industrialization (v1.0.1 → v1.0.2)
 
-Mockup SVGs added for all client screens (dashboard, generate, blueprint editor, flows editor). Architecture diagrams regenerated with Catppuccin theme, CMake→Zig annotations, and corrected phase indicators. README overhaul: SEO metadata, persona-based quick-start table, "What makes it special" tagline, restructured sections. All legacy Djinni/CMake references purged from docs, configs, and template AGENTS files. Agent working artifacts (`.omo/`) removed. Toolchain metric updated: "CMake removed" not "no CMake needed".
+Mockup SVGs added for all client screens (dashboard, generate, blueprint editor, flows editor). Architecture diagrams regenerated with Catppuccin theme, CMake→Zig annotations, and corrected phase indicators. README overhaul: SEO metadata, persona-based quick-start table, "What makes it special" tagline, restructured sections. All legacy Djinni/CMake references purged from docs, configs, and template AGENTS files. Agent working artifacts (`.omo/`) removed. Toolchain metric updated: "CMake removed" not "no CMake needed". Template obsolete files (NEXUS-BRIDGE.md, plotter README, empty dirs) removed. Docs consolidated to 4 files + hub with cross-refs fixed.
 
 ### Where we are today
 
-| Metric                | Before (v0.1)                                    | After (v1.0.1)                                     |
-|----------------------|--------------------------------------------------|---------------------------------------------------|
-| **Build tools**       | CMake + Ninja + NDK-build + Djinni CLI (4 tools) | `zig build` (1 tool)                               |
-| **Android JNI**       | 8 Djinni-generated files + `regen-djinni.sh`     | 3 hand-authored C++ files in `jni/`                |
-| **Bootstrap**         | 3 shell scripts per OS (~450 LOC)                | 1 `setup.zig` (~130 LOC)                           |
-| **Toolchain weight**  | MSVC + NDK + g++ + clang (~10–12 GB)             | Zig 0.14.0 (~80 MB)                                |
-| **C++ source format** | `.cpp` + `.hpp` (traditional)                    | `.cppm` (C++20 modules, 22 interface units)        |
-| **Cross-compilation** | Not supported (needed MSVC for Windows)          | `zig build -Dtarget=x86_64-windows`                |
-| **Dependencies**      | 7 FetchContent clones, network-dependent         | `build.zig.zon` pinned tarballs, offline           |
-| **Docs**              | Sparse, Djinni-focused                           | Full architecture docs, SVG diagrams, mockups, SEO |
+| Metric                | Before (v0.1)                                    | After (v1.0.2)                                               |
+|----------------------|--------------------------------------------------|-------------------------------------------------------------|
+| **Build tools**       | CMake + Ninja + NDK-build + Djinni CLI (4 tools) | `zig build` (1 tool)                                         |
+| **Android JNI**       | 8 Djinni-generated files + `regen-djinni.sh`     | 3 hand-authored C++ files in `jni/`                          |
+| **Bootstrap**         | 3 shell scripts per OS (~450 LOC)                | 1 `setup.zig` (~130 LOC)                                     |
+| **Toolchain weight**  | MSVC + NDK + g++ + clang (~10–12 GB)             | Zig 0.14.0 (~80 MB)                                          |
+| **C++ source format** | `.cpp` + `.hpp` (traditional)                    | `.cppm` (C++20 modules, 22 interface units)                  |
+| **Cross-compilation** | Not supported (needed MSVC for Windows)          | `zig build -Dtarget=x86_64-windows`                          |
+| **Dependencies**      | 7 FetchContent clones, network-dependent         | `build.zig.zon` pinned tarballs, offline                     |
+| **Docs**              | Sparse, Djinni-focused, 10 files                 | Consolidated to 4 docs + hub, cross-refs fixed, SVG diagrams |
+| **Template files**    | CMake + Djinni + backup files (~30 KB)           | Purged obsolete files, empty dirs removed (~10 KB saved)     |
 ---
 
 ## Community & contributions
@@ -806,7 +807,7 @@ Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 
 | Doc                                                                      | What it covers                                                     |
 |-------------------------------------------------------------------------|-------------------------------------------------------------------|
-| [docs/README.md](docs/README.md)                                         | Documentation hub                                                  |
+| [docs/hub.md](docs/hub.md)                                               | Documentation hub                                                  |
 | [docs/architecture/overview.md](docs/architecture/overview.md)           | Architecture, language stack, generation pipeline, templates, risk |
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)     | UI, MVC, Python, Lua, themes, coding styles, adding deps           |
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` + `flows.json` full reference                     |
@@ -870,7 +871,7 @@ The one nuance: if you copy template files directly (not generated, but literall
 ## See also
 
 - **[misc/ROADMAP.md](misc/ROADMAP.md)** — v1.0.x roadmap and remaining milestones
-- **[docs/README.md](docs/README.md)** — full documentation hub
+- **[docs/hub.md](docs/hub.md)** — full documentation hub
 - **[AGENTS.md](AGENTS.md)** — condensed build commands for AI coding assistants
 - **[The Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client)** — separate distribution for the Compose Desktop wizard
 - **[API Integration Skills](https://github.com/tuliofh01/api-integration-skills)** — turnkey tutorials for Flask, FastAPI, chart.js, Vercel, Clerk, more

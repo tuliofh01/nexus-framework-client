@@ -11,7 +11,7 @@ General-purpose Nexus desktop starter: one window, greeting + counter, with full
 | Scripting        | [Lua 5.4](https://www.lua.org/) via [sol2](https://sol2.readthedocs.io/)                                                                        | `src/view/LuaPanels.*`, `scripts/panels.lua`         | [Lua](https://www.lua.org/)                   |
 | Authoring        | [TypeScript](https://www.typescriptlang.org/) + [XHTML](https://www.w3.org/TR/xhtml1/)                                                          | `ui/ui.xhtml`, `ui/ui.ts`                            | [TypeScript](https://www.typescriptlang.org/) |
 | Python           | [CPython](https://www.python.org/) via [pybind11](https://pybind11.readthedocs.io/)                                                             | `src/controller/PythonEngine.*`, `python/helpers.py` | [Python](https://www.python.org/)             |
-| Build system     | [Zig](https://ziglang.org/) / CMake                                                                                                             | `zig-services/` / root                               | [Zig](https://ziglang.org/)                   |
+| Build system     | [Zig](https://ziglang.org/)                                                                                                                     | `zig-services/build.zig`                             | [Zig](https://ziglang.org/)                   |
 | App graph        | `blueprint.json`                                                                                                                                | project root                                         | JSON                                          |
 | Flows (optional) | `flows/flows.json`                                                                                                                              | background/triggered services                        | JSON                                          |
 ## Layout (MVC)
@@ -31,21 +31,14 @@ src/
 
 ## Optional plotter example
 
-Desmos-style function plotter lives under **`examples/plotter/`**. Build with:
-
-```bash
-cmake --preset debug -DBUILD_NEXUS_EXAMPLES=ON
-cmake --build --preset debug --target {{projectName}}_plotter
-```
-
-Delete `examples/plotter/` if you do not need the sample.
+Desmos-style function plotter lives under **`examples/plotter/`**. Delete it if you do not need the sample.
 
 ## Build
 
 ```bash
-cmake --preset debug
-cmake --build --preset debug
-./../../builds/framework/{{projectName}}/debug/{{projectName}}
+cd zig-services
+zig build
+./zig-out/bin/{{projectName}}
 ```
 
-Docs: [docs/templates/desktop-app.md](../../docs/templates/desktop-app.md)
+Docs: [zig-services/BUILD.md](zig-services/BUILD.md)

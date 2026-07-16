@@ -55,7 +55,7 @@ Zig **0.14.0** is required for generated native app builds — the bootstrap ins
 
 ### Deploy artifacts (`builds/client/`)
 
-Top-level `builds/` layout — see [builds/README.md](builds/README.md):
+Top-level `builds/` layout — see [builds/LAYOUT.md](builds/LAYOUT.md):
 
 | Path | Contents |
 |------|----------|
@@ -124,7 +124,7 @@ Generation logic lives in `:core` (`nexus.opensource.core`).
 ## Docs
 
 - **Architecture overview (start here):** [docs/architecture/overview.md](docs/architecture/overview.md)
-- Hub: [docs/README.md](docs/README.md)
+- Hub: [docs/hub.md](docs/hub.md)
 - Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
 - Generation: [docs/guides/generation-pipeline.md](docs/guides/generation-pipeline.md)
 - Agent gaps: [docs/architecture/agent-readiness.md](docs/architecture/agent-readiness.md)
