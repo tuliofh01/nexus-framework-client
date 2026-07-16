@@ -291,8 +291,8 @@ Optional runtime services that execute inside the app process:
 
 Reference diagrams for AI flow patterns:
 
-- [RAG Chatbot](docs/assets/diagrams/langflow-rag-chatbot.svg) — map retrieval-augmented generation steps to blueprint node types
-- [Agent with Tools](docs/assets/diagrams/langflow-agent-tools.svg) — agent loop maps to `python.module`, `cpp.controller`, and Lua panels
+- [RAG Chatbot](docs/assets/examples/langflow-rag-chatbot.svg) — map retrieval-augmented generation steps to blueprint node types
+- [Agent with Tools](docs/assets/examples/langflow-agent-tools.svg) — agent loop maps to `python.module`, `cpp.controller`, and Lua panels
 
 #### Practical walkthrough: Langflow → Nexus flow
 
