@@ -1,60 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" width="700" height="420">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 640" width="650" height="640">
   <title>Blueprint authoring — design vs runtime</title>
   <rect width="100%" height="100%" fill="#1e1e2e"/>
+
+  <!-- Title bar -->
   <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
   <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
   <circle cx="34" cy="18" r="5" fill="#fab387"/>
   <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="350" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Blueprint authoring — design-time vs runtime</text>
+  <text x="325" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Blueprint authoring — design-time vs runtime</text>
 
   <!-- ====== Design-time ====== -->
-  <rect x="40" y="60" width="280" height="310" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="40" y="60" width="280" height="30" rx="12" fill="#fab387"/>
-  <rect x="40" y="75" width="280" height="15" fill="#fab387"/>
-  <text x="180" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Design-time</text>
+  <rect x="30" y="60" width="275" height="420" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <rect x="30" y="60" width="275" height="30" rx="12" fill="#fab387"/>
+  <rect x="30" y="75" width="275" height="15" fill="#fab387"/>
+  <text x="167.5" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Design-time</text>
 
-  <text x="60" y="120" font-family="sans-serif" font-size="11" fill="#fab387" font-weight="bold">blueprint.json</text>
-  <text x="60" y="140" font-family="sans-serif" font-size="10" fill="#a6adc8">Node graph · edges · ports</text>
-  <text x="60" y="158" font-family="sans-serif" font-size="10" fill="#a6adc8">Consumed at generation</text>
+  <text x="50" y="125" font-family="sans-serif" font-size="11" fill="#fab387" font-weight="bold">blueprint.json</text>
+  <text x="50" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">Node graph · edges · ports</text>
+  <text x="50" y="175" font-family="sans-serif" font-size="10" fill="#a6adc8">Consumed at generation</text>
 
-  <line x1="60" y1="175" x2="300" y2="175" stroke="#585b70" stroke-width="1"/>
+  <line x1="50" y1="200" x2="285" y2="200" stroke="#585b70" stroke-width="1"/>
 
-  <text x="60" y="198" font-family="sans-serif" font-size="10" fill="#a6adc8">Node types:</text>
-  <text x="75" y="218" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">cpp.model</text>
-  <text x="75" y="236" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">cpp.controller</text>
-  <text x="75" y="254" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">python.module</text>
-  <text x="75" y="272" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">lua.script</text>
-  <text x="75" y="290" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">ui.page</text>
+  <text x="50" y="230" font-family="sans-serif" font-size="10" fill="#a6adc8">Node types:</text>
+  <text x="65" y="260" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">cpp.model</text>
+  <text x="65" y="285" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">cpp.controller</text>
+  <text x="65" y="310" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">python.module</text>
+  <text x="65" y="335" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">lua.script</text>
+  <text x="65" y="360" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">ui.page</text>
 
   <!-- ====== Runtime ====== -->
-  <rect x="380" y="60" width="280" height="310" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <rect x="380" y="60" width="280" height="30" rx="12" fill="#a6e3a1"/>
-  <rect x="380" y="75" width="280" height="15" fill="#a6e3a1"/>
-  <text x="520" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Runtime</text>
+  <rect x="345" y="60" width="275" height="420" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <rect x="345" y="60" width="275" height="30" rx="12" fill="#a6e3a1"/>
+  <rect x="345" y="75" width="275" height="15" fill="#a6e3a1"/>
+  <text x="482.5" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Runtime</text>
 
-  <text x="400" y="120" font-family="sans-serif" font-size="11" fill="#a6e3a1" font-weight="bold">flows.json</text>
-  <text x="400" y="140" font-family="sans-serif" font-size="10" fill="#a6adc8">Optional automation scripts</text>
-  <text x="400" y="158" font-family="sans-serif" font-size="10" fill="#a6adc8">Loaded at app startup</text>
+  <text x="365" y="125" font-family="sans-serif" font-size="11" fill="#a6e3a1" font-weight="bold">flows.json</text>
+  <text x="365" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">Optional automation scripts</text>
+  <text x="365" y="175" font-family="sans-serif" font-size="10" fill="#a6adc8">Loaded at app startup</text>
 
-  <line x1="400" y1="175" x2="640" y2="175" stroke="#585b70" stroke-width="1"/>
+  <line x1="365" y1="200" x2="600" y2="200" stroke="#585b70" stroke-width="1"/>
 
-  <text x="400" y="198" font-family="sans-serif" font-size="10" fill="#a6adc8">Flow modes:</text>
-  <text x="415" y="218" font-family="sans-serif" font-size="10" fill="#a6adc8">background (interval loop)</text>
-  <text x="415" y="236" font-family="sans-serif" font-size="10" fill="#a6adc8">triggered (event + condition)</text>
-  <text x="415" y="254" font-family="sans-serif" font-size="10" fill="#a6adc8">manual (hotkey / CLI)</text>
+  <text x="365" y="230" font-family="sans-serif" font-size="10" fill="#a6adc8">Flow modes:</text>
+  <text x="380" y="260" font-family="sans-serif" font-size="10" fill="#a6adc8">background (interval loop)</text>
+  <text x="380" y="285" font-family="sans-serif" font-size="10" fill="#a6adc8">triggered (event + condition)</text>
+  <text x="380" y="310" font-family="sans-serif" font-size="10" fill="#a6adc8">manual (hotkey / CLI)</text>
 
-  <line x1="400" y1="275" y2="640" y2="275" stroke="#585b70" stroke-width="1"/>
+  <line x1="365" y1="345" x2="600" y2="345" stroke="#585b70" stroke-width="1"/>
 
-  <text x="400" y="298" font-family="sans-serif" font-size="10" fill="#a6adc8">Runtime: FlowRunner</text>
+  <text x="365" y="380" font-family="sans-serif" font-size="10" fill="#a6adc8">Runtime: FlowRunner</text>
 
   <!-- ====== Relationship ====== -->
-  <line x1="320" y1="215" x2="375" y2="215" stroke="#cba6f7" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="348" y="208" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#cba6f7">split</text>
+  <line x1="305" y1="245" x2="340" y2="245" stroke="#cba6f7" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="322.5" y="238" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#cba6f7">split</text>
 
   <!-- ====== Bottom note ====== -->
-  <rect x="40" y="390" width="620" height="24" rx="6" fill="#313244" stroke="#585b70" stroke-width="1"/>
-  <text x="350" y="406" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Same Langflow-style canvas — structure → blueprint.json · automation → flows.json</text>
+  <rect x="30" y="510" width="590" height="24" rx="6" fill="#313244" stroke="#585b70" stroke-width="1"/>
+  <text x="325" y="526" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Same Langflow-style canvas — structure → blueprint.json · automation → flows.json</text>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">

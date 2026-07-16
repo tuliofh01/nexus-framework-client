@@ -99,6 +99,12 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                     Divider(color = DividerColor, thickness = 1.dp)
                     Spacer(Modifier.height(20.dp))
 
+                    RepoPleaSection()
+
+                    Spacer(Modifier.height(28.dp))
+                    Divider(color = DividerColor, thickness = 1.dp)
+                    Spacer(Modifier.height(20.dp))
+
                     SalesPitchSection()
 
                     Spacer(Modifier.height(28.dp))
@@ -125,6 +131,69 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                     Spacer(Modifier.height(8.dp))
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun RepoPleaSection() {
+    Text(
+        text = "❤️ Nexus Framework is open source and built by the community.",
+        style = MaterialTheme.typography.body1.copy(
+            color = TextPrimary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+        ),
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(16.dp))
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = BrandPurple.copy(alpha = 0.15f),
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "⭐ Star & Share",
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = BrandPurple,
+                    fontSize = 18.sp,
+                ),
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = "https://github.com/anomalyco/Framework",
+                style = MaterialTheme.typography.body2.copy(
+                    color = FlamingoPink,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                modifier = Modifier.clickable {
+                    java.awt.Desktop.getDesktop().browse(
+                        java.net.URI("https://github.com/anomalyco/Framework")
+                    )
+                },
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "Liking and sharing the repo helps more people discover it. As an open-source project, your support is what keeps new updates coming. Every star and share matters \u2014 thank you! \uD83D\uDE80",
+                style = MaterialTheme.typography.body2.copy(
+                    color = TextSecondary,
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                ),
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

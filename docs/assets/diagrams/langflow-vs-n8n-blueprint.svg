@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 420" width="750" height="420">
-  <title>Nexus vs Langflow — blueprint scope</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 640" width="700" height="640">
+  <title>Nexus vs Langflow vs n8n — blueprint scope</title>
   <rect width="100%" height="100%" fill="#1e1e2e"/>
-  <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
-  <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="18" r="5" fill="#fab387"/>
-  <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="375" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Nexus vs Langflow vs n8n — blueprint scope</text>
+  <rect x="0" y="0" width="100%" height="42" fill="#313244"/>
+  <circle cx="18" cy="21" r="5" fill="#f38ba8"/>
+  <circle cx="34" cy="21" r="5" fill="#fab387"/>
+  <circle cx="50" cy="21" r="5" fill="#a6e3a1"/>
+  <text x="350" y="27" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Nexus vs Langflow vs n8n — blueprint scope</text>
 
   <!-- Langflow -->
-  <rect x="30" y="60" width="210" height="300" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="30" y="60" width="210" height="30" rx="12" fill="#fab387"/>
-  <rect x="30" y="75" width="210" height="15" fill="#fab387"/>
-  <text x="135" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Langflow</text>
+  <rect x="22" y="70" width="204" height="280" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <rect x="22" y="70" width="204" height="30" rx="12" fill="#fab387"/>
+  <rect x="22" y="85" width="204" height="15" fill="#fab387"/>
+  <text x="124" y="90" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Langflow</text>
 
-  <text x="50" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">ML / LLM workflow DAG</text>
-  <line x1="50" y1="135" x2="220" y2="135" stroke="#585b70" stroke-width="1"/>
-  <text x="50" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">AI pipelines</text>
-  <text x="50" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">Prompt → LLM → Output</text>
-  <text x="50" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">Visual DAG editor</text>
-  <text x="50" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">REST API endpoints</text>
-  <text x="50" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">Python function nodes</text>
+  <text x="42" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">ML / LLM workflow DAG</text>
+  <line x1="42" y1="135" x2="216" y2="135" stroke="#585b70" stroke-width="1"/>
+  <text x="42" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">AI pipelines</text>
+  <text x="42" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">Prompt → LLM → Output</text>
+  <text x="42" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">Visual DAG editor</text>
+  <text x="42" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">REST API endpoints</text>
+  <text x="42" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">Python function nodes</text>
 
   <!-- n8n -->
-  <rect x="270" y="60" width="210" height="300" rx="12" fill="#313244" stroke="#f38ba8" stroke-width="2"/>
-  <rect x="270" y="60" width="210" height="30" rx="12" fill="#f38ba8"/>
-  <rect x="270" y="75" width="210" height="15" fill="#f38ba8"/>
-  <text x="375" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">n8n</text>
+  <rect x="248" y="70" width="204" height="280" rx="12" fill="#313244" stroke="#f38ba8" stroke-width="2"/>
+  <rect x="248" y="70" width="204" height="30" rx="12" fill="#f38ba8"/>
+  <rect x="248" y="85" width="204" height="15" fill="#f38ba8"/>
+  <text x="350" y="90" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">n8n</text>
 
-  <text x="290" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">Workflow automation</text>
-  <line x1="290" y1="135" x2="460" y2="135" stroke="#585b70" stroke-width="1"/>
-  <text x="290" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">API orchestration</text>
-  <text x="290" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">200+ integrations</text>
-  <text x="290" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">Webhook triggers</text>
-  <text x="290" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">Cloud / self-hosted</text>
-  <text x="290" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">JSONata transforms</text>
+  <text x="268" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">Workflow automation</text>
+  <line x1="268" y1="135" x2="442" y2="135" stroke="#585b70" stroke-width="1"/>
+  <text x="268" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">API orchestration</text>
+  <text x="268" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">200+ integrations</text>
+  <text x="268" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">Webhook triggers</text>
+  <text x="268" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">Cloud / self-hosted</text>
+  <text x="268" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">JSONata transforms</text>
 
   <!-- Nexus -->
-  <rect x="510" y="60" width="210" height="300" rx="12" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <rect x="510" y="60" width="210" height="30" rx="12" fill="#89b4fa"/>
-  <rect x="510" y="75" width="210" height="15" fill="#89b4fa"/>
-  <text x="615" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Nexus</text>
+  <rect x="474" y="70" width="204" height="280" rx="12" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
+  <rect x="474" y="70" width="204" height="30" rx="12" fill="#89b4fa"/>
+  <rect x="474" y="85" width="204" height="15" fill="#89b4fa"/>
+  <text x="576" y="90" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Nexus</text>
 
-  <text x="530" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">Native app generation</text>
-  <line x1="530" y1="135" x2="700" y2="135" stroke="#585b70" stroke-width="1"/>
-  <text x="530" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">C++20 + SDL3 binary</text>
-  <text x="530" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">MVC code generation</text>
-  <text x="530" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">In-process Python/Lua</text>
-  <text x="530" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">Desktop + Android</text>
-  <text x="530" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">Zig build (CMake removed)</text>
+  <text x="494" y="120" font-family="sans-serif" font-size="10" fill="#a6adc8">Native app generation</text>
+  <line x1="494" y1="135" x2="668" y2="135" stroke="#585b70" stroke-width="1"/>
+  <text x="494" y="155" font-family="sans-serif" font-size="10" fill="#a6adc8">C++20 + SDL3 binary</text>
+  <text x="494" y="173" font-family="sans-serif" font-size="10" fill="#a6adc8">MVC code generation</text>
+  <text x="494" y="191" font-family="sans-serif" font-size="10" fill="#a6adc8">In-process Python/Lua</text>
+  <text x="494" y="209" font-family="sans-serif" font-size="10" fill="#a6adc8">Desktop + Android</text>
+  <text x="494" y="227" font-family="sans-serif" font-size="10" fill="#a6adc8">Zig build (CMake removed)</text>
 
   <!-- Overlap notes -->
-  <rect x="30" y="380" width="690" height="30" rx="8" fill="#313244" stroke="#585b70" stroke-width="1"/>
-  <text x="375" y="399" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Nexus imports Langflow JSON (v0.3.0) · n8n webhooks usable as app edge — not a replacement</text>
+  <rect x="20" y="400" width="660" height="26" rx="8" fill="#313244" stroke="#585b70" stroke-width="1"/>
+  <text x="350" y="417" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Nexus imports Langflow JSON (v0.3.0) · n8n webhooks usable as app edge — not a replacement</text>
 </svg>

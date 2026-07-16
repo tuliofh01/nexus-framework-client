@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 600" width="680" height="600">
   <rect width="100%" height="100%" fill="#1e1e2e"/>
   <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
   <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
   <circle cx="34" cy="18" r="5" fill="#fab387"/>
   <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="400" y="24" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">Development Workflow — Edit-Compile-Debug Cycle</text>
+  <text x="340" y="24" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">Development Workflow — Edit-Compile-Debug Cycle</text>
 
-  <!-- Blueprint box -->
-  <rect x="30" y="70" width="140" height="90" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <text x="100" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89b4fa">Edit Blueprint</text>
-  <text x="100" y="114" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">blueprint.json</text>
-  <text x="100" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">or Compose client</text>
-  <text x="100" y="148" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">~30s</text>
+  <!-- Row 1: Edit Blueprint (left), Generate (right) -->
+  <rect x="80" y="65" width="160" height="90" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
+  <text x="160" y="91" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89b4fa">Edit Blueprint</text>
+  <text x="160" y="109" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">blueprint.json</text>
+  <text x="160" y="125" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">or Compose client</text>
+  <text x="160" y="143" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">~30s</text>
 
-  <!-- Generate box -->
-  <rect x="230" y="70" width="140" height="90" rx="8" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <text x="300" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#a6e3a1">Generate</text>
-  <text x="300" y="114" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">./gradlew :cli:run</text>
-  <text x="300" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">--args="generate..."</text>
-  <text x="300" y="148" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">~5s</text>
+  <rect x="440" y="65" width="160" height="90" rx="8" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <text x="520" y="91" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#a6e3a1">Generate</text>
+  <text x="520" y="109" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">./gradlew :cli:run</text>
+  <text x="520" y="125" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">--args="generate..."</text>
+  <text x="520" y="143" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">~5s</text>
 
-  <!-- Code box -->
-  <rect x="430" y="70" width="140" height="90" rx="8" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <text x="500" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#fab387">Write Code</text>
-  <text x="500" y="114" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">src/model/</text>
-  <text x="500" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">python/functions.py</text>
-  <text x="500" y="148" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">your domain logic</text>
+  <!-- Row 2: Write Code (left), Build (right) -->
+  <rect x="80" y="205" width="160" height="90" rx="8" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <text x="160" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#fab387">Write Code</text>
+  <text x="160" y="249" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">src/model/</text>
+  <text x="160" y="265" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">python/functions.py</text>
+  <text x="160" y="283" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">your domain logic</text>
 
-  <!-- Build box -->
-  <rect x="630" y="70" width="140" height="90" rx="8" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
-  <text x="700" y="96" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#cba6f7">Build</text>
-  <text x="700" y="114" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig build</text>
-  <text x="700" y="130" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">~/zig-out/bin/</text>
-  <text x="700" y="148" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">15–60s</text>
+  <rect x="440" y="205" width="160" height="90" rx="8" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
+  <text x="520" y="231" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#cba6f7">Build</text>
+  <text x="520" y="249" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig build</text>
+  <text x="520" y="265" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">~/zig-out/bin/</text>
+  <text x="520" y="283" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">15–60s</text>
 
-  <!-- Run/Test box -->
-  <rect x="330" y="210" width="140" height="80" rx="8" fill="#45475a" stroke="#89dceb" stroke-width="2"/>
-  <text x="400" y="238" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89dceb">Run & Debug</text>
-  <text x="400" y="258" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig build run</text>
-  <text x="400" y="274" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">lldb ./zig-out/bin/</text>
+  <!-- Row 3: Run & Debug (centered) -->
+  <rect x="270" y="365" width="140" height="80" rx="8" fill="#45475a" stroke="#89dceb" stroke-width="2"/>
+  <text x="340" y="393" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89dceb">Run & Debug</text>
+  <text x="340" y="413" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig build run</text>
+  <text x="340" y="429" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">lldb ./zig-out/bin/</text>
 
   <!-- Arrows -->
-  <line x1="170" y1="115" x2="225" y2="115" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="370" y1="115" x2="425" y2="115" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="570" y1="115" x2="625" y2="115" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="700" y1="160" x2="700" y2="205" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="540" y1="250" x2="475" y2="250" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="330" y1="250" x2="240" y2="115" stroke="#585b70" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"/>
+  <!-- 1. Edit Blueprint → Generate -->
+  <line x1="240" y1="110" x2="436" y2="110" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- 2. Generate → Write Code (down-left L) -->
+  <path d="M 520 155 L 520 180 L 160 180 L 160 201" stroke="#585b70" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <!-- 3. Write Code → Build -->
+  <line x1="240" y1="250" x2="436" y2="250" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- 4. Build → Run & Debug (down-left L) -->
+  <path d="M 520 295 L 520 320 L 340 320 L 340 361" stroke="#585b70" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <!-- 5. Right-entry arrow into Run & Debug -->
+  <line x1="540" y1="405" x2="406" y2="405" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- 6. Iterative loop (dashed) back to Edit Blueprint -->
+  <path d="M 270 405 L 40 405 L 40 110 L 76 110" stroke="#585b70" stroke-width="1.5" stroke-dasharray="4" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Labels -->
-  <text x="340" y="170" font-family="sans-serif" font-size="9" fill="#585b70">iterative loop</text>
+  <!-- Label -->
+  <text x="340" y="340" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">iterative loop</text>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
