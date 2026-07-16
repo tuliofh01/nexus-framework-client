@@ -1034,6 +1034,22 @@ The one nuance: if you copy template files directly (not generated, but literall
 | Do I need to credit Nexus in my UI? | **No.** No attribution requirement in generated code. |
 | Can my legal team audit this? | **Yes.** Full license in [LICENSE](LICENSE) — 98 words of legible terms. |
 | Third-party dependency licenses? | `build.zig.zon` + `nxs_config.json` list all. Review before shipping. |
+
+### Linking back to Nexus
+
+You're never required to link back, but if you want to help others discover the framework, here are ways to reference it:
+
+| Context | How to link |
+|:--------|:------------|
+| **In your app's README or docs** | Add a note: *"Built with [The Nexus Framework](https://github.com/anomalyco/Framework)"* |
+| **In your app's About dialog or splash screen** | Display *"Powered by Nexus"* with a link to the repository |
+| **In your source code comments** | Drop a file header: `// Generated with The Nexus Framework — https://github.com/anomalyco/Framework` |
+| **On social media / product pages** | Tag `#NexusFramework` or mention @anomalyco |
+| **In published binaries** | Include a `CREDITS` or `THIRD_PARTY_NOTICES` file referencing Nexus (Apache 2.0 compatible) |
+| **In academic papers / talks** | Cite the repository URL and the framework's concept — blueprint-driven native code generation |
+
+All of these are optional but appreciated. They help the project gain visibility so we can keep shipping updates.
+
 ### The copyright line
 
  2026 Nexus Framework contributors. The Nexus Framework Client, bundled templates, documentation, and build tooling are developed in the open by contributors. Each contributor retains copyright over their individual contributions under the Apache 2.0 terms.

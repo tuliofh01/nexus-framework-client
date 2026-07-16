@@ -11,12 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import androidx.compose.animation.core.*
 
 private const val VERSION = "1.0.1"
 private val FlamingoPink = Color(0xFFF38BA8)
@@ -29,11 +30,23 @@ private val AccentGreen = Color(0xFF00E676)
 
 @Composable
 fun WhatsNewDialog(onDismiss: () -> Unit) {
+    var dismissEnabled by remember { mutableStateOf(false) }
+    var secondsLeft by remember { mutableIntStateOf(6) }
+
+    LaunchedEffect(Unit) {
+        for (i in 6 downTo 1) {
+            secondsLeft = i
+            delay(1000L)
+        }
+        secondsLeft = 0
+        dismissEnabled = true
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.65f))
-            .clickable(onClick = onDismiss),
+            .clickable(enabled = dismissEnabled, onClick = onDismiss),
         contentAlignment = Alignment.Center,
     ) {
         Box(
@@ -116,13 +129,16 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                             .height(48.dp),
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = BrandPurple,
+                            backgroundColor = if (dismissEnabled) BrandPurple else BrandPurple.copy(alpha = 0.4f),
                             contentColor = Color.White,
+                            disabledBackgroundColor = BrandPurple.copy(alpha = 0.4f),
+                            disabledContentColor = Color.White.copy(alpha = 0.6f),
                         ),
+                        enabled = dismissEnabled,
                         elevation = ButtonDefaults.elevation(defaultElevation = 4.dp),
                     ) {
                         Text(
-                            text = "Got it! \uD83D\uDE80",
+                            text = if (dismissEnabled) "Got it! \uD83D\uDE80" else "Hold on... $secondsLeft s",
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                         )
@@ -158,11 +174,20 @@ private fun RepoPleaSection() {
             modifier = Modifier.padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val infiniteTransition = rememberInfiniteTransition()
+            val blinkAlpha by infiniteTransition.animateFloat(
+                initialValue = 1f, targetValue = 0.2f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(800, easing = EaseInOutCubic),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+            )
+
             Text(
                 text = "⭐ Star & Share",
                 style = MaterialTheme.typography.h5.copy(
                     fontWeight = FontWeight.Bold,
-                    color = BrandPurple,
+                    color = BrandPurple.copy(alpha = blinkAlpha),
                     fontSize = 18.sp,
                 ),
             )
