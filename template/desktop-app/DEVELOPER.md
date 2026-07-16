@@ -82,15 +82,14 @@ zig build -Doptimize=ReleaseSafe
 
 Dependencies are managed in `build.zig.zon`. The build system currently uses:
 
-| Library | How it's provided | Language |
-|---------|------------------|----------|
-| **[SDL3](https://www.libsdl.org/)** | System package or vendored | [C](https://en.cppreference.com/w/c) |
-| **[Dear ImGui](https://github.com/ocornut/imgui)** | Vendored sources in `zig build` | [C++](https://isocpp.org/) |
-| **[ImPlot](https://github.com/epezent/implot)** / **[ImNodes](https://github.com/Nelarius/imnodes)** | Vendored sources | [C++](https://isocpp.org/) |
-| **[sol2](https://sol2.readthedocs.io/)** + **[Lua 5.4](https://www.lua.org/)** | System package or vendored | [Lua](https://www.lua.org/) |
-| **[pybind11](https://pybind11.readthedocs.io/)** + **[Python3](https://www.python.org/)** | System package (`pkg-config` / `python3-config`) | [Python](https://www.python.org/) |
-| **[Zig](https://ziglang.org/)** build system | Pinned 0.14.x via `setup.zig` | [Zig](https://ziglang.org/) |
-
+| Library                                                                                              | How it's provided                                | Language                             |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------|-------------------------------------|
+| **[SDL3](https://www.libsdl.org/)**                                                                  | System package or vendored                       | [C](https://en.cppreference.com/w/c) |
+| **[Dear ImGui](https://github.com/ocornut/imgui)**                                                   | Vendored sources in `zig build`                  | [C++](https://isocpp.org/)           |
+| **[ImPlot](https://github.com/epezent/implot)** / **[ImNodes](https://github.com/Nelarius/imnodes)** | Vendored sources                                 | [C++](https://isocpp.org/)           |
+| **[sol2](https://sol2.readthedocs.io/)** + **[Lua 5.4](https://www.lua.org/)**                       | System package or vendored                       | [Lua](https://www.lua.org/)          |
+| **[pybind11](https://pybind11.readthedocs.io/)** + **[Python3](https://www.python.org/)**            | System package (`pkg-config` / `python3-config`) | [Python](https://www.python.org/)    |
+| **[Zig](https://ziglang.org/)** build system                                                         | Pinned 0.14.x via `setup.zig`                    | [Zig](https://ziglang.org/)          |
 To add a new dependency:
 
 ```bash
@@ -199,13 +198,13 @@ lldb ./zig-out/bin/{{projectName}}
 
 ## Where to go next
 
-| Task | File |
-|------|------|
-| Add a new C++ module | `src/` → update `build.zig` |
-| Change the UI layout | `src/view/AppView.cpp` |
-| Add Lua panels | `scripts/panels.lua` |
-| Add Python analytics | `python/functions.py` |
-| Edit the app graph | `blueprint.json` |
-| Add runtime automations | `flows/flows.json` |
-| Customize theme colors | `assets/themes/nexus-dark.json` |
-| Edit the XHTML/TS UI | `ui/ui.xhtml`, `ui/ui.ts` |
+| Task                    | File                            |
+|------------------------|--------------------------------|
+| Add a new C++ module    | `src/` → update `build.zig`     |
+| Change the UI layout    | `src/view/AppView.cpp`          |
+| Add Lua panels          | `scripts/panels.lua`            |
+| Add Python analytics    | `python/functions.py`           |
+| Edit the app graph      | `blueprint.json`                |
+| Add runtime automations | `flows/flows.json`              |
+| Customize theme colors  | `assets/themes/nexus-dark.json` |
+| Edit the XHTML/TS UI    | `ui/ui.xhtml`, `ui/ui.ts`       |

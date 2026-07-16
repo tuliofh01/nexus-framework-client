@@ -28,29 +28,27 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 - **n8n:** workflow automation with triggers and integrations at **runtime** — Nexus blueprint is **build-time only**; optional n8n-style hooks are roadmap.
 - **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** → custom graph passed via `ProjectSpec.blueprint` to `ProjectGenerator`.
 
-| Layer | Technology | Role |
-|-------|------------|------|
-| **Scaffold client** | Kotlin Compose MVC (`:app`) | **Generate Project** + **Edit blueprint** + **Edit flows** (v1 Compose editors) |
-| **Blueprint graph** | `blueprint.json` (imnodes schema) | Langflow-style nodes + edges — generation consumes the graph |
-| **Runtime flows** | `flows/flows.json` (optional) | Background/triggered services — `FlowRunner` no-op when disabled |
-| **Generation** | `:core`, `:cli` in `misc/` | `ProjectGenerator`, `BlueprintValidator`, `FlowsValidator` → `builds/framework/<name>/` |
-| **Authoring** | TS/XHTML, Lua, Python files | UI components and runtime panels referenced by blueprint nodes |
-| **Scripting** | Lua 5.4 + **sol2** | Runtime panels, hotkeys (`lua.script` nodes) |
-| **Domain** | C++20 MVC | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`) |
-| **Rendering** | ImGui + ImPlot on **SDL3** | Desktop OpenGL, Android GLES |
-| **Python** | pybind11 (desktop) / **Chaquopy** (Android) | `python.module` nodes — numpy, analytics |
-| **Android bridge** | **Zig JNI** (replaces Djinni) | C++  Kotlin/JVM — see [zig-patching.md](zig-patching.md) |
-
+| Layer               | Technology                                  | Role                                                                                    |
+|--------------------|---------------------------------------------|----------------------------------------------------------------------------------------|
+| **Scaffold client** | Kotlin Compose MVC (`:app`)                 | **Generate Project** + **Edit blueprint** + **Edit flows** (v1 Compose editors)         |
+| **Blueprint graph** | `blueprint.json` (imnodes schema)           | Langflow-style nodes + edges — generation consumes the graph                            |
+| **Runtime flows**   | `flows/flows.json` (optional)               | Background/triggered services — `FlowRunner` no-op when disabled                        |
+| **Generation**      | `:core`, `:cli` in `misc/`                  | `ProjectGenerator`, `BlueprintValidator`, `FlowsValidator` → `builds/framework/<name>/` |
+| **Authoring**       | TS/XHTML, Lua, Python files                 | UI components and runtime panels referenced by blueprint nodes                          |
+| **Scripting**       | Lua 5.4 + **sol2**                          | Runtime panels, hotkeys (`lua.script` nodes)                                            |
+| **Domain**          | C++20 MVC                                   | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`)                            |
+| **Rendering**       | ImGui + ImPlot on **SDL3**                  | Desktop OpenGL, Android GLES                                                            |
+| **Python**          | pybind11 (desktop) / **Chaquopy** (Android) | `python.module` nodes — numpy, analytics                                                |
+| **Android bridge**  | **Zig JNI** (replaces Djinni)               | C++  Kotlin/JVM                                                                          |
 ### Blueprint node types
 
-| `type` | Generated artifact |
-|--------|-------------------|
-| `python.module` | `python/functions.py` — sampling, numpy |
-| `cpp.model` | `src/model/` — domain state |
-| `cpp.controller` | `src/controller/` — commands |
-| `ui.page` | `ui/ui.ts`, `ui/ui.xhtml` |
-| `lua.script` | `scripts/panels.lua` |
-
+| `type`           | Generated artifact                      |
+|-----------------|----------------------------------------|
+| `python.module`  | `python/functions.py` — sampling, numpy |
+| `cpp.model`      | `src/model/` — domain state             |
+| `cpp.controller` | `src/controller/` — commands            |
+| `ui.page`        | `ui/ui.ts`, `ui/ui.xhtml`               |
+| `lua.script`     | `scripts/panels.lua`                    |
 Edges wire data flow (e.g. `evaluate` → `sampleCache` → `activeCurves` → `commands`). See [blueprint-schema.md](../templates/blueprint-schema.md) and template samples under `template/*/blueprint.json`.
 
 **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1.1 adds a native imnodes panel using the same JSON.
@@ -59,12 +57,11 @@ Edges wire data flow (e.g. `evaluate` → `sampleCache` → `activeCurves` → `
 
 `blueprint.json` follows a **Langflow-style** typed graph: nodes are app modules, edges are data/command ports inside the generated MVC stack. **n8n** sits at a different layer — workflow automation across external services (webhooks, REST, schedules). Nexus does not replace n8n; a generated app can call an n8n webhook from Python or Lua while the blueprint documents internal wiring only.
 
-| Layer | Tool | Role |
-|-------|------|------|
-| In-app authoring | Nexus `blueprint.json` | Structure C++/Python/Lua/UI modules and their connections |
-| AI flow authoring | Langflow | Chain LLM and tool nodes (analogous mental model, different domain) |
-| External automation | n8n | Integrate SaaS, cron jobs, webhooks outside the native binary |
-
+| Layer               | Tool                   | Role                                                                |
+|--------------------|------------------------|--------------------------------------------------------------------|
+| In-app authoring    | Nexus `blueprint.json` | Structure C++/Python/Lua/UI modules and their connections           |
+| AI flow authoring   | Langflow               | Chain LLM and tool nodes (analogous mental model, different domain) |
+| External automation | n8n                    | Integrate SaaS, cron jobs, webhooks outside the native binary       |
 Full comparison table: [blueprint-schema.md § Langflow vs n8n](../templates/blueprint-schema.md#langflow-style-nodes-vs-n8n).
 
 ## Generation and builds
@@ -114,35 +111,30 @@ The **runtime boundary** by sol2, pybind11, and Chaquopy (in-process language br
 
 **Overall score: 72 / 100 — High Risk.** Main concerns:
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Doc–code drift (README oversells wizard features) | High — agent/contributor confusion | Wave 3 README rewrite reduces gap; `nxs_config.json` v2 schema is source of truth |
-| Dual-repo template sync (this repo  nexus-framework-client) | Medium — stale templates | CI-generated, diff-gated on release |
-| Synchronous Python on UI thread | Medium — frame drops on heavy inference | Async queue planned for v0.4 |
-| FetchContent network dependency | Low — Zig pinned tarballs are offline-capable | `build.zig.zon` with vendored fallback |
-
+| Risk                                                        | Impact                                        | Mitigation                                                                        |
+|------------------------------------------------------------|-----------------------------------------------|----------------------------------------------------------------------------------|
+| Doc–code drift (README oversells wizard features)           | High — agent/contributor confusion            | Wave 3 README rewrite reduces gap; `nxs_config.json` v2 schema is source of truth |
+| Dual-repo template sync (this repo  nexus-framework-client) | Medium — stale templates                      | CI-generated, diff-gated on release                                               |
+| Synchronous Python on UI thread                             | Medium — frame drops on heavy inference       | Async queue planned for v0.4                                                      |
+| FetchContent network dependency                             | Low — Zig pinned tarballs are offline-capable | `build.zig.zon` with vendored fallback                                            |
 Full retrospective in [misc/README.md](../../misc/README.md).
 
 ## Architecture diagrams
 
-| Diagram | File |
-|---------|------|
-| Full-stack architecture | [full-stack-architecture.svg](../assets/diagrams/full-stack-architecture.svg) |
-| Generation and builds flow | [generation-builds-flow.svg](../assets/diagrams/generation-builds-flow.svg) |
-| Desktop vs Android runtime | [desktop-vs-android-runtime.svg](../assets/diagrams/desktop-vs-android-runtime.svg) |
-| Blueprint vs flows | [blueprint-vs-flows-layers.svg](../assets/diagrams/blueprint-vs-flows-layers.svg) |
-| Python desktop vs Android | [python-desktop-vs-android-flow.svg](../assets/diagrams/python-desktop-vs-android-flow.svg) |
-| Langflow adoption | [langflow-adoption-workflow.svg](../assets/diagrams/langflow-adoption-workflow.svg) |
-| Langflow vs n8n vs blueprint | [langflow-vs-n8n-blueprint.svg](../assets/diagrams/langflow-vs-n8n-blueprint.svg) |
-| Nexus blueprint structure | [nexus-blueprint-app-structure.svg](../assets/diagrams/nexus-blueprint-app-structure.svg) |
-| RAG chatbot flow | [langflow-rag-chatbot.svg](../assets/diagrams/langflow-rag-chatbot.svg) |
-| Agent with tools | [langflow-agent-tools.svg](../assets/diagrams/langflow-agent-tools.svg) |
-
+| Diagram                      | File                                                                                        |
+|-----------------------------|--------------------------------------------------------------------------------------------|
+| Full-stack architecture      | [full-stack-architecture.svg](../assets/diagrams/full-stack-architecture.svg)               |
+| Generation and builds flow   | [generation-builds-flow.svg](../assets/diagrams/generation-builds-flow.svg)                 |
+| Desktop vs Android runtime   | [desktop-vs-android-runtime.svg](../assets/diagrams/desktop-vs-android-runtime.svg)         |
+| Blueprint vs flows           | [blueprint-vs-flows-layers.svg](../assets/diagrams/blueprint-vs-flows-layers.svg)           |
+| Python desktop vs Android    | [python-desktop-vs-android-flow.svg](../assets/diagrams/python-desktop-vs-android-flow.svg) |
+| Langflow adoption            | [langflow-adoption-workflow.svg](../assets/diagrams/langflow-adoption-workflow.svg)         |
+| Langflow vs n8n vs blueprint | [langflow-vs-n8n-blueprint.svg](../assets/diagrams/langflow-vs-n8n-blueprint.svg)           |
+| Nexus blueprint structure    | [nexus-blueprint-app-structure.svg](../assets/diagrams/nexus-blueprint-app-structure.svg)   |
+| RAG chatbot flow             | [langflow-rag-chatbot.svg](../assets/diagrams/langflow-rag-chatbot.svg)                     |
+| Agent with tools             | [langflow-agent-tools.svg](../assets/diagrams/langflow-agent-tools.svg)                     |
 ## Related
 
 - [Blueprint schema](../templates/blueprint-schema.md)
 - [Coding with Nexus](../guides/coding-with-nexus.md)
-- [Generation pipeline](../guides/generation-pipeline.md)
-- [Desktop template](../templates/desktop-app.md)
-- [Android template](../templates/android-app.md)
-- [Zig patching](zig-patching.md)
+- [Docs hub](../README.md)

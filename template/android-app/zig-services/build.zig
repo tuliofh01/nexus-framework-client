@@ -8,6 +8,19 @@ pub fn build(b: *std.Build) void {
     const src_root    = b.path("../src");
     const shared_root = b.path("../shared");
 
+    // ---- C++20 module compilation flags ----
+    const cppm_flags = &.{
+        "-std=c++20",
+        "-fmodules-ts",
+        "-Xclang", "-fmodules-codegen",
+        "-Xclang", "-fmodules-debuginfo",
+        "-fvisibility=default",
+    };
+    const cpp_module_flags = &.{
+        "-std=c++20",
+        "-fmodules-ts",
+    };
+
     // ---- Nexus Zig library (C ABI + JNI exports) ----
     const nexus_zig = b.addLibrary(.{
         .name = "nexus_zig",
@@ -22,26 +35,36 @@ pub fn build(b: *std.Build) void {
     nexus_zig.root_module.?.addIncludePath(b.path("c_abi"));
     b.installArtifact(nexus_zig);
 
-    // ---- App C++ sources (src/) ----
-    const app_sources = [_][]const u8{
-        "main.cpp",
-        "model/AppModel.cpp",
-        "controller/AppController.cpp",
-        "controller/PythonEngine.cpp",
-        "view/AppView.cpp",
-        "view/LuaPanels.cpp",
-        "service/FlowRunner.cpp",
+    // ---- App C++20 module interface units (src/) ----
+    const app_module_sources = [_][]const u8{
+        "model/AppModel.cppm",
+        "controller/AppController.cppm",
+        "controller/PythonEngine.cppm",
+        "view/AppView.cppm",
+        "view/LuaPanels.cppm",
+        "service/FlowRunner.cppm",
     };
 
-    // ---- Shared runtime C++ sources ----
-    const shared_sources = [_][]const u8{
-        "runtime/NexusTheme.cpp",
-        "runtime/FontConfig.cpp",
-        "runtime/ScriptArchive.cpp",
-        "runtime/ScriptCrypto.cpp",
+    // ---- Shared runtime C++20 module interface units ----
+    const shared_module_iface_sources = [_][]const u8{
+        "runtime/font_config.cppm",
+        "runtime/nexus_theme.cppm",
+        "runtime/paths.cppm",
+        "runtime/script_archive.cppm",
+        "runtime/script_crypto.cppm",
+        "runtime/script_protection.cppm",
+        "runtime/zig_allocator.cppm",
     };
 
-    // ---- JNI bridge (hand-authored C++ replacing Djinni) ----
+    // ---- Shared runtime C++20 module implementation units ----
+    const shared_module_impl_sources = [_][]const u8{
+        "runtime/font_config.cpp",
+        "runtime/nexus_theme.cpp",
+        "runtime/script_archive.cpp",
+        "runtime/script_crypto.cpp",
+    };
+
+    // ---- JNI bridge C++ sources (no modules — hand-authored C++ JNI glue) ----
     const jni_sources = [_][]const u8{
         "jni/jni_bridge.cpp",
         "jni/NativePythonBridge.cpp",
@@ -89,7 +112,40 @@ pub fn build(b: *std.Build) void {
     // ---- Lua 5.4 (static, fetched via zon for Android cross-compile) ----
     const lua_dep = b.dependency("lua", .{});
 
-    // ---- Target library: {{projectName}}.so ----
+    // ---- Module interface library ----
+    const module_lib = b.addStaticLibrary(.{
+        .name = "{{projectName}}_modules",
+        .target = target,
+        .optimize = optimize,
+    });
+    module_lib.linkLibCpp();
+
+    for (app_module_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = src_root.path(b, src), .flags = cppm_flags });
+    }
+    for (shared_module_iface_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cppm_flags });
+    }
+    for (shared_module_impl_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cpp_module_flags });
+    }
+
+    module_lib.addIncludePath(src_root);
+    module_lib.addIncludePath(shared_root.path(b, "runtime"));
+    module_lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
+    module_lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
+    module_lib.addIncludePath(b.path("c_abi"));
+
+    if (sol2_dep) |s| {
+        module_lib.addIncludePath(s.path("include"));
+    }
+
+    module_lib.linkLibrary(imgui_bundle);
+    module_lib.linkLibrary(lua_dep.artifact("lua"));
+
+    b.installArtifact(module_lib);
+
+    // ---- Target shared library: {{projectName}}.so ----
     const lib = b.addLibrary(.{
         .name = "{{projectName}}",
         .linkage = .dynamic,
@@ -98,15 +154,9 @@ pub fn build(b: *std.Build) void {
     });
     lib.linkLibCpp();
 
-    // Add all app C++ sources
-    for (app_sources) |src| {
-        lib.addCSourceFile(.{ .file = src_root.path(b, src), .flags = &.{"-std=c++20"} });
-    }
-    // Add all shared runtime C++ sources
-    for (shared_sources) |src| {
-        lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = &.{"-std=c++20"} });
-    }
-    // Add JNI bridge C++ sources (hand-authored replacements for Djinni glue)
+    // main.cpp imports C++20 modules compiled by module_lib
+    lib.addCSourceFile(.{ .file = src_root.path(b, "main.cpp"), .flags = cpp_module_flags });
+    // JNI bridge files are regular C++ (no module imports)
     for (jni_sources) |src| {
         lib.addCSourceFile(.{ .file = b.path(src), .flags = &.{"-std=c++20"} });
     }
@@ -117,12 +167,14 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(b.path("jni"));
     lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
     lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
+    lib.addIncludePath(b.path("c_abi"));
 
     if (sol2_dep) |s| {
         lib.addIncludePath(s.path("include"));
     }
 
     // Link libraries
+    lib.linkLibrary(module_lib);
     lib.linkLibrary(imgui_bundle);
     lib.linkLibrary(nexus_zig);
     lib.linkLibrary(lua_dep.artifact("lua"));
@@ -131,8 +183,6 @@ pub fn build(b: *std.Build) void {
     lib.linkSystemLibrary("GLESv3");
     lib.linkSystemLibrary("EGL");
 
-    // Android JNI headers come from the NDK sysroot — Zig resolves this
-    // via the target triple (aarch64-linux-android, etc.)
     lib.defineCMacro("SDL_MAIN_USE_CALLBACKS", "0");
 
     b.installArtifact(lib);

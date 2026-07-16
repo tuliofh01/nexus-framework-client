@@ -10,19 +10,18 @@ An optional **Desmos-style plotter** sample lives under `examples/plotter/` — 
 
 ## Key directories
 
-| Path | Role |
-|------|------|
-| `src/model/` | `AppModel` — counter + greeting |
-| `src/controller/` | `AppController`, `PythonEngine` (pybind11) |
-| `src/view/` | `AppView` (ImGui), `LuaPanels` (sol2) |
-| `src/service/` | `FlowRunner` — optional flows runtime |
-| `ui/` | `ui.xhtml` + `ui.ts#AppPage` (TS/XHTML DSL) |
-| `scripts/` | `panels.lua` (Lua runtime panels) |
-| `python/` | `helpers.py` (embedded Python) |
-| `blueprint.json` | Langflow-style app graph |
-| `flows/flows.json` | Optional background/triggered services |
-| `examples/plotter/` | Optional plotter demo (delete if unused) |
-
+| Path                | Role                                        |
+|--------------------|--------------------------------------------|
+| `src/model/`        | `AppModel` — counter + greeting             |
+| `src/controller/`   | `AppController`, `PythonEngine` (pybind11)  |
+| `src/view/`         | `AppView` (ImGui), `LuaPanels` (sol2)       |
+| `src/service/`      | `FlowRunner` — optional flows runtime       |
+| `ui/`               | `ui.xhtml` + `ui.ts#AppPage` (TS/XHTML DSL) |
+| `scripts/`          | `panels.lua` (Lua runtime panels)           |
+| `python/`           | `helpers.py` (embedded Python)              |
+| `blueprint.json`    | Langflow-style app graph                    |
+| `flows/flows.json`  | Optional background/triggered services      |
+| `examples/plotter/` | Optional plotter demo (delete if unused)    |
 ## Adoption paths
 
 1. **Custom** — edit `src/`, disable flows in `nxs_config.json`

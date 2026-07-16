@@ -29,26 +29,58 @@ pub fn build(b: *std.Build) void {
     const src_root    = b.path("../src");
     const shared_root = b.path("../shared");
 
-    // ---- App C++ sources (src/) ----
-    const app_sources = [_][]const u8{
-        "main.cpp",
-        "model/AppModel.cpp",
-        "model/FunctionRegistry.cpp",
-        "controller/AppController.cpp",
-        "controller/PythonEngine.cpp",
-        "controller/PlotController.cpp",
-        "view/AppView.cpp",
-        "view/LuaPanels.cpp",
-        "service/FlowRunner.cpp",
+    // ---- C++20 module compilation flags ----
+    // Module interface units (.cppm) produce both a .pcm and a .o file.
+    const cppm_flags = &.{
+        "-std=c++20",
+        "-fmodules-ts",
+        "-Xclang", "-fmodules-codegen",
+        "-Xclang", "-fmodules-debuginfo",
+        "-fvisibility=default",
+    };
+    // Module implementation units (.cpp) and importers (main.cpp) just need -fmodules-ts.
+    const cpp_module_flags = &.{
+        "-std=c++20",
+        "-fmodules-ts",
     };
 
-    // ---- Shared runtime C++ sources ----
-    const shared_sources = [_][]const u8{
-        "runtime/NexusTheme.cpp",
-        "runtime/FontConfig.cpp",
+    // ---- App C++20 module interface units (src/) ----
+    const app_module_sources = [_][]const u8{
+        "model/AppModel.cppm",
+        "model/FunctionRegistry.cppm",
+        "controller/AppController.cppm",
+        "controller/PythonEngine.cppm",
+        "controller/PlotController.cppm",
+        "view/AppView.cppm",
+        "view/LuaPanels.cppm",
+        "service/FlowRunner.cppm",
+        "bridge/NexusBridge.cppm",
+    };
+
+    // ---- Shared runtime C++20 module interface units ----
+    const shared_module_iface_sources = [_][]const u8{
+        "runtime/font_config.cppm",
+        "runtime/nexus_theme.cppm",
+        "runtime/paths.cppm",
+        "runtime/script_archive.cppm",
+        "runtime/script_crypto.cppm",
+        "runtime/script_protection.cppm",
+        "runtime/zig_allocator.cppm",
+    };
+
+    // ---- Shared runtime C++20 module implementation units ----
+    const shared_module_impl_sources = [_][]const u8{
+        "runtime/font_config.cpp",
+        "runtime/nexus_theme.cpp",
+        "runtime/script_archive.cpp",
+        "runtime/script_crypto.cpp",
+    };
+
+    // ---- Standard C++ sources (no module declarations/imports) ----
+    // These legacy .cpp files are used by pack_archive and smoke_test.
+    const legacy_shared_sources = [_][]const u8{
         "runtime/ScriptArchive.cpp",
         "runtime/ScriptCrypto.cpp",
-        "runtime/ZigAllocator.cpp",
     };
 
     // ---- imgui bundle (fetched via build.zig.zon) ----
@@ -69,7 +101,6 @@ pub fn build(b: *std.Build) void {
             },
             .flags = &.{ "-std=c++20", "-fvisibility=hidden" },
         });
-        // ImPlot + ImNodes (vendored under misc/)
         lib.addCSourceFiles(.{
             .root = imgui_root,
             .files = &[_][]const u8{
@@ -111,6 +142,47 @@ pub fn build(b: *std.Build) void {
     // ---- pybind11 (header-only, fetched via zon) ----
     const pybind11_dep = b.dependency("pybind11", .{});
 
+    // ---- Module interface library ----
+    // Compile all C++20 module interface units and implementation units as a
+    // static library FIRST, so the .pcm files are cached before any importers
+    // (like main.cpp) are compiled.  The executable links against this library
+    // for symbols.
+    const module_lib = b.addStaticLibrary(.{
+        .name = "{{projectName}}_modules",
+        .target = target,
+        .optimize = optimize,
+    });
+    module_lib.linkLibCpp();
+
+    for (app_module_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = src_root.path(b, src), .flags = cppm_flags });
+    }
+    for (shared_module_iface_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cppm_flags });
+    }
+    for (shared_module_impl_sources) |src| {
+        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cpp_module_flags });
+    }
+
+    module_lib.addIncludePath(src_root);
+    module_lib.addIncludePath(shared_root.path(b, "runtime"));
+    module_lib.addIncludePath(imgui_bundle.getEmittedIncludeTree().path(b, ""));
+    module_lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree().path(b, "")), "backends" }));
+    module_lib.addIncludePath(b.path("c_abi"));
+
+    if (sol2_dep) |s| {
+        module_lib.addIncludePath(s.path("include"));
+    }
+    if (pybind11_dep) |p| {
+        module_lib.addIncludePath(p.path("include"));
+    }
+
+    module_lib.linkLibrary(imgui_bundle);
+    module_lib.linkLibrary(sdl3);
+    if (lua) |l| module_lib.linkLibrary(l);
+
+    b.installArtifact(module_lib);
+
     // ---- Main executable ----
     const exe = b.addExecutable(.{
         .name = "{{projectName}}",
@@ -119,20 +191,15 @@ pub fn build(b: *std.Build) void {
     });
     exe.linkLibCpp();
 
-    // Add all app C++ sources
-    for (app_sources) |src| {
-        exe.addCSourceFile(.{ .file = src_root.path(b, src), .flags = &.{"-std=c++20"} });
-    }
-    // Add all shared runtime C++ sources
-    for (shared_sources) |src| {
-        exe.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = &.{"-std=c++20"} });
-    }
+    // main.cpp imports modules compiled by module_lib.
+    exe.addCSourceFile(.{ .file = src_root.path(b, "main.cpp"), .flags = cpp_module_flags });
 
     // Include paths
     exe.addIncludePath(src_root);
     exe.addIncludePath(shared_root.path(b, "runtime"));
     exe.addIncludePath(imgui_bundle.getEmittedIncludeTree().path(b, ""));
     exe.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree().path(b, "")), "backends" }));
+    exe.addIncludePath(b.path("c_abi"));
 
     if (sol2_dep) |s| {
         exe.addIncludePath(s.path("include"));
@@ -141,7 +208,8 @@ pub fn build(b: *std.Build) void {
         exe.addIncludePath(p.path("include"));
     }
 
-    // Link libraries
+    // Link libraries — module_lib provides the module interface symbols
+    exe.linkLibrary(module_lib);
     exe.linkLibrary(imgui_bundle);
     exe.linkLibrary(nexus_zig);
     exe.linkLibrary(sdl3);
@@ -158,7 +226,7 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Build and run {{projectName}}");
     run_step.dependOn(&run_cmd.step);
 
-    // ---- pack_archive tool for Lua/Python archive packing ----
+    // ---- pack_archive tool (no C++20 modules — uses legacy PascalCase .cpp) ----
     const pack_archive = b.addExecutable(.{
         .name = "pack_archive",
         .target = target,
@@ -166,15 +234,14 @@ pub fn build(b: *std.Build) void {
     });
     pack_archive.linkLibCpp();
     pack_archive.addCSourceFile(.{ .file = shared_root.path(b, "tools/pack_archive.cpp"), .flags = &.{"-std=c++20"} });
-    pack_archive.addCSourceFile(.{ .file = shared_root.path(b, "runtime/ScriptArchive.cpp"), .flags = &.{"-std=c++20"} });
-    pack_archive.addCSourceFile(.{ .file = shared_root.path(b, "runtime/ScriptCrypto.cpp"), .flags = &.{"-std=c++20"} });
+    for (legacy_shared_sources) |src| {
+        pack_archive.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = &.{"-std=c++20"} });
+    }
     pack_archive.addIncludePath(shared_root.path(b, "runtime"));
     pack_archive.addIncludePath(shared_root.path(b, "tools"));
     b.installArtifact(pack_archive);
 
-    // ---- smoke-test: C++ ↔ Zig link verification (NOT the app entry point) ----
-    // This is a standalone C++ smoke test that verifies C ABI exports from nexus_zig.
-    // The actual app entry point is src/main.cpp (compiled above under app_sources).
+    // ---- smoke-test: C++ ↔ Zig link verification (no C++20 modules) ----
     const smoke_test = b.addExecutable(.{
         .name = "smoke_test",
         .root_module = b.createModule(.{
@@ -189,23 +256,4 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(smoke_test);
     const smoke_step = b.step("run-smoke-test", "Build and run C++/Zig C ABI smoke test");
     smoke_step.dependOn(&b.addRunArtifact(smoke_test).step);
-
-    // ---- C++20 module compilation (bridge/NexusBridge.cppm) ----
-    if (std.fs.accessAbsolute(b.pathJoin(&.{ b.pathSlice(src_root), "bridge/NexusBridge.cppm" }), .{})) {
-        // Compile the C++20 module interface unit first
-        // zig c++ (Clang) uses -fmodules-ts for module support
-        // The .pcm file is emitted alongside the object; we use -Xclang -fmodules-codegen
-        // to also produce a .o file we can link.
-        const cppm_flags = &.{
-            "-std=c++20",
-            "-Xclang", "-fmodules-ts",
-            "-Xclang", "-fmodules-codegen",
-            "-Xclang", "-fmodules-debuginfo",
-            "-fvisibility=default",
-        };
-        exe.addCSourceFile(.{ .file = src_root.path(b, "bridge/NexusBridge.cppm"), .flags = cppm_flags });
-        exe.addIncludePath(src_root.path(b, "bridge"));
-        std.log.info("C++20 module bridge/NexusBridge.cppm enabled — ensure all importers have -fmodules-ts", .{});
-    } else {
-        std.log.warn("bridge/NexusBridge.cppm not found — C++20 module bridge disabled", .{});
-    }
+}

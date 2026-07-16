@@ -47,7 +47,7 @@ Platform scripts are thin wrappers; all logic lives in [common/generate-tests.sh
 |------|---------|
 | `tests/smoke_test.cpp` | Minimal CTest-compatible smoke stub |
 | `tests/run_smoke.sh` | Build preset + run binary if present |
-| `tests/nexus_generated/cmake_snippet.txt` | Paste-into `CMakeLists.txt` CTest block |
+| `tests/nexus_generated/zig_build_snippet.txt` | Paste-into `build.zig` CTest-like smoke block |
 | `tests/nexus_generated/README.fragment.md` | Integration notes |
 | `tests/nexus_generated/metadata.json` | Manifest of generated artifacts |
 

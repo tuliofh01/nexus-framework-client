@@ -10,31 +10,28 @@ How to build applications with generated Nexus templates: UI layers, MVC, Python
 
 Nexus has a steeper ramp than Electron or Tauri, but the generated plotter gives you a working app immediately. Follow this path:
 
-| Step | What you do | Skills |
-|------|-------------|--------|
-| 1 | Run the generated template as-is | CMake or Gradle, basic C++ |
-| 2 | Tweak MVC — add a function to `FunctionRegistry`, expose it in `PlotController` | C++ |
-| 3 | Add Python sampling in `python/functions.py` | Python, numpy |
-| 4 | Script panels in `scripts/panels.lua` — hotkeys, quick-add buttons | Lua, sol2 |
-| 5 | Author UI in `ui/ui.xhtml` + `ui/ui.ts` | TypeScript, XHTML DSL |
-| 6 | Rewire `blueprint.json` in the Compose blueprint editor (`:app`) | Visual flow authoring (imnodes native panel in v1.1) |
-| 7 | Apply themes and Nerd Font icons | JSON presets, font assets |
-
+| Step | What you do                                                                     | Skills                                               |
+|-----|---------------------------------------------------------------------------------|-----------------------------------------------------|
+| 1    | Run the generated template as-is                                                | CMake or Gradle, basic C++                           |
+| 2    | Tweak MVC — add a function to `FunctionRegistry`, expose it in `PlotController` | C++                                                  |
+| 3    | Add Python sampling in `python/functions.py`                                    | Python, numpy                                        |
+| 4    | Script panels in `scripts/panels.lua` — hotkeys, quick-add buttons              | Lua, sol2                                            |
+| 5    | Author UI in `ui/ui.xhtml` + `ui/ui.ts`                                         | TypeScript, XHTML DSL                                |
+| 6    | Rewire `blueprint.json` in the Compose blueprint editor (`:app`)                | Visual flow authoring (imnodes native panel in v1.1) |
+| 7    | Apply themes and Nerd Font icons                                                | JSON presets, font assets                            |
 **Honest take:** web-only teams will move faster in Electron/Tauri. Nexus pays off when you need native throughput, small binaries, SDL3 cross-platform parity, or Android field tablets without a WebView.
 
 ---
 
 ## Language assignment
 
-| Layer | Language | Responsibility |
-|-------|----------|----------------|
-| **UI (immediate-mode)** | Lua, TS/XHTML | Panels, widgets, layout |
-| **Domain** | C++20 MVC | State, algorithms, bindings |
-| **Analytics / plots** | Python | numpy, curve sampling |
-| **Android host** | Kotlin + Djinni | JVM bridge, Chaquopy |
-| **Scaffold client** | Kotlin Compose | Wizard only — not the generated app |
-
-**Call rule:** Lua and TS never call Python directly. They invoke C++ controllers; controllers call `PythonEngine` (pybind11 or Chaquopy via Djinni).
+| Layer                   | Language         | Responsibility              |
+|------------------------|------------------|----------------------------|
+| **UI (immediate-mode)** | Lua, TS/XHTML    | Panels, widgets, layout     |
+| **Domain**              | C++20 MVC        | State, algorithms, bindings |
+| **Analytics / plots**   | Python           | numpy, curve sampling       |
+| **Android host**        | Kotlin + Zig JNI | JVM bridge, Chaquopy        |
+**Call rule:** Lua and TS never call Python directly. They invoke C++ controllers; controllers call `PythonEngine` (pybind11 or Chaquopy via Zig JNI).
 
 ---
 
@@ -76,9 +73,9 @@ Add a feature:
 
 `PythonEngine` embeds CPython at startup and imports `python/functions.py`. numpy arrays cross via buffer protocol — samples stay in native memory.
 
-### Android (Chaquopy + Djinni)
+### Android (Chaquopy + Zig JNI)
 
-`ChaquopyPythonBridge.kt` implements the Djinni `PythonBridge` interface. `PlotterCore.installPythonBridge()` hands it to C++ before `SDL_main`.
+`PythonBridge.kt` defines the abstract interface. C++ `NativePythonBridge.cpp` calls back into it via JNI. `AppCore.installPythonBridge()` hands it to native code before `SDL_main`.
 
 ---
 
@@ -101,12 +98,11 @@ Schema reference: [blueprint-schema.md](../templates/blueprint-schema.md)
 
 Presets in `template/shared/themes/`:
 
-| Id | File | Use |
-|----|------|-----|
-| `nexus-dark` | `nexus-dark.json` | Default desktop |
-| `nexus-light` | `nexus-light.json` | Bright environments |
+| Id            | File               | Use                   |
+|--------------|--------------------|----------------------|
+| `nexus-dark`  | `nexus-dark.json`  | Default desktop       |
+| `nexus-light` | `nexus-light.json` | Bright environments   |
 | `nexus-field` | `nexus-field.json` | Android field tablets |
-
 Set in `nxs_config.json`:
 
 ```json
@@ -164,7 +160,7 @@ state["module"] = module;
 
 **C++** (FetchContent):
 ```bash
-# In CMakeLists.txt:
+# In build.zig:
 include(FetchContent)
 FetchContent_Declare(glm GIT_REPOSITORY ...)
 # Or add to build.zig.zon for the Zig build path
@@ -186,21 +182,20 @@ Use case: rapid UI prototyping in a familiar syntax without touching C++. The DS
 
 ## Use cases
 
-| Scenario | Nexus strength |
-|----------|----------------|
-| Trading desk | Sub-ms UI; C++ feeds; Python models in-process |
-| CAD / 3D viewer | SDL3 GPU viewport; retained geometry in C++ |
-| Scientific viz | numpy arrays never leave native address space |
-| Game tools | Immediate-mode UI like engine debug overlays |
-| Audio DSP | Low-latency C++ signal path |
-| Field tablet | SDL3 GLES + Djinni + Chaquopy; no WebView |
-| Robotics panel | Touch ImGui + `android.*` Lua bindings |
-| Infra monitor | Lightweight native binary, always-on |
-
+| Scenario        | Nexus strength                                 |
+|----------------|-----------------------------------------------|
+| Trading desk    | Sub-ms UI; C++ feeds; Python models in-process |
+| CAD / 3D viewer | SDL3 GPU viewport; retained geometry in C++    |
+| Scientific viz  | numpy arrays never leave native address space  |
+| Game tools      | Immediate-mode UI like engine debug overlays   |
+| Audio DSP       | Low-latency C++ signal path                    |
+| Field tablet    | SDL3 GLES + Zig JNI + Chaquopy; no WebView     |
+| Robotics panel  | Touch ImGui + `android.*` Lua bindings         |
+| Infra monitor   | Lightweight native binary, always-on           |
 ---
 
 ## Related
 
 - [Architecture overview](../architecture/overview.md)
-- [Desktop template](../templates/desktop-app.md)
-- [Android template](../templates/android-app.md)
+- [Blueprint schema](../templates/blueprint-schema.md)
+- [Docs hub](../README.md)

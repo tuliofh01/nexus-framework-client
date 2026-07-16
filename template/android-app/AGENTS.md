@@ -22,14 +22,13 @@ Output `.so` lands in `zig-out/lib/`.
 
 ## Key directories
 
-| Path | Role |
-|------|------|
-| `app/src/main/java/com/nexus/{{packageName}}/` | Kotlin (`MainActivity`, `AppCore`, `PythonBridge`) |
-| `src/` | C++ MVC (`AppModel`, `AppController`, `AppView`) |
-| `zig-services/` | **Zig JNI bridge** — `build.zig`, `jni/python_bridge.zig`, `jni/lua_bridge.zig` |
-| `app/src/main/python/` | `helpers.py` (Chaquopy) |
-| `examples/plotter/` | Optional Desmos-style sample |
-
+| Path                                           | Role                                                                            |
+|-----------------------------------------------|--------------------------------------------------------------------------------|
+| `app/src/main/java/com/nexus/{{packageName}}/` | Kotlin (`MainActivity`, `AppCore`, `PythonBridge`)                              |
+| `src/`                                         | C++ MVC (`AppModel`, `AppController`, `AppView`)                                |
+| `zig-services/`                                | **Zig JNI bridge** — `build.zig`, `jni/python_bridge.zig`, `jni/lua_bridge.zig` |
+| `app/src/main/python/`                         | `helpers.py` (Chaquopy)                                                         |
+| `examples/plotter/`                            | Optional Desmos-style sample                                                    |
 ## Package
 
 Application ID: `com.nexus.{{packageName}}` (derived from project name at generation).

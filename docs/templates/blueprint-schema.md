@@ -10,14 +10,13 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 
 ![Langflow vs n8n vs Nexus blueprint](../assets/diagrams/langflow-vs-n8n-blueprint.svg)
 
-| | **Nexus `blueprint.json`** | **Langflow** | **n8n** |
-|---|---------------------------|--------------|---------|
-| **Purpose** | Author in-app MVC wiring for generated native apps | Author LLM / component chains for AI apps | Automate external services (webhooks, APIs, schedules) |
-| **Node types** | `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script` | LLM, Prompt, Tool, Memory, … | HTTP, Webhook, Cron, CRM connectors, … |
-| **Execution** | Consumed at generation; runtime is C++/Lua/Python on SDL3 | Flow runtime executes the graph server-side | Workflow engine on n8n host |
-| **Where it runs** | Generated desktop binary or Android APK | Langflow server / desktop | n8n cloud or self-hosted |
-| **When to use** | Rewire screens, controllers, Python sampling inside your app | Prototype and ship AI agent pipelines | Ops glue, ETL, third-party integrations |
-
+|                   | **Nexus `blueprint.json`**                                              | **Langflow**                                | **n8n**                                                |
+|------------------|-------------------------------------------------------------------------|---------------------------------------------|-------------------------------------------------------|
+| **Purpose**       | Author in-app MVC wiring for generated native apps                      | Author LLM / component chains for AI apps   | Automate external services (webhooks, APIs, schedules) |
+| **Node types**    | `python.module`, `cpp.model`, `cpp.controller`, `ui.page`, `lua.script` | LLM, Prompt, Tool, Memory, …                | HTTP, Webhook, Cron, CRM connectors, …                 |
+| **Execution**     | Consumed at generation; runtime is C++/Lua/Python on SDL3               | Flow runtime executes the graph server-side | Workflow engine on n8n host                            |
+| **Where it runs** | Generated desktop binary or Android APK                                 | Langflow server / desktop                   | n8n cloud or self-hosted                               |
+| **When to use**   | Rewire screens, controllers, Python sampling inside your app            | Prototype and ship AI agent pipelines       | Ops glue, ETL, third-party integrations                |
 **Nexus does not replace n8n.** Use `blueprint.json` for **internal** app structure (Langflow mental model). Use n8n when the generated app must trigger external automation — e.g. call an n8n webhook from `python/functions.py` or `scripts/panels.lua` while the blueprint stays focused on MVC edges (`evaluate` → `sampleCache` → `commands`).
 
 **Structure vs automation:** Langflow exports that wire screens, controllers, and Python modules map here. Runtime automation (timers, event hooks, background loops) maps to `flows.json` instead (see the [Runtime flows section](#runtime-flows-flowsjson) below).
@@ -27,34 +26,31 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 
 ## Top-level fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `$schema` | string | `https://nexus.dev/schemas/blueprint-1.json` |
-| `name` | string | Human-readable flow name (e.g. `MyApp flow`) |
-| `description` | string | Optional notes |
-| `editor` | object | Authoring metadata (`tool`, `version`, `grid_snap`, `paradigm`) |
-| `nodes` | array | Graph nodes |
-| `edges` | array | Directed connections between nodes |
-
+| Field         | Type   | Description                                                     |
+|--------------|--------|----------------------------------------------------------------|
+| `$schema`     | string | `https://nexus.dev/schemas/blueprint-1.json`                    |
+| `name`        | string | Human-readable flow name (e.g. `MyApp flow`)                    |
+| `description` | string | Optional notes                                                  |
+| `editor`      | object | Authoring metadata (`tool`, `version`, `grid_snap`, `paradigm`) |
+| `nodes`       | array  | Graph nodes                                                     |
+| `edges`       | array  | Directed connections between nodes                              |
 ### `editor.paradigm`
 
-| Value | Meaning |
-|-------|---------|
-| `langflow` (default) | Typed DAG nodes — all v1 node types |
-| `n8n` | Reserved for future runtime automation hooks — no v1 node types |
-
+| Value                | Meaning                                                         |
+|---------------------|----------------------------------------------------------------|
+| `langflow` (default) | Typed DAG nodes — all v1 node types                             |
+| `n8n`                | Reserved for future runtime automation hooks — no v1 node types |
 ## Node types
 
 All v1 types use the **Langflow-style** paradigm (`BlueprintParadigm.LANGFLOW`). Each maps to generated source artifacts:
 
-| `type` | Role | Typical `data` keys |
-|--------|------|---------------------|
-| `python.module` | Python sampling / analytics | `source`, `exports`, `packages` |
-| `cpp.model` | C++ domain state | `class`, `catalog` |
-| `cpp.controller` | Commands + orchestration | `class`, `settings` |
-| `ui.page` | TS/XHTML page | `source`, `controllerScript`, `widgets` |
-| `lua.script` | Runtime Lua panels | `source`, `hotkeys` |
-
+| `type`           | Role                        | Typical `data` keys                     |
+|-----------------|-----------------------------|----------------------------------------|
+| `python.module`  | Python sampling / analytics | `source`, `exports`, `packages`         |
+| `cpp.model`      | C++ domain state            | `class`, `catalog`                      |
+| `cpp.controller` | Commands + orchestration    | `class`, `settings`                     |
+| `ui.page`        | TS/XHTML page               | `source`, `controllerScript`, `widgets` |
+| `lua.script`     | Runtime Lua panels          | `source`, `hotkeys`                     |
 Each node:
 
 ```json
@@ -104,11 +100,10 @@ Bundled plotter samples:
 
 **flows.json** (optional) adds runtime automation to a generated app — background loops, event triggers, and scheduled tasks. Distinct from `blueprint.json` which wires design-time MVC.
 
-| Schema | Purpose | Editor |
-|--------|---------|--------|
-| `blueprint.json` | App structure (pages, models, services) | Compose Canvas |
-| `flows/flows.json` | Runtime service automations | Enable/disable list |
-
+| Schema             | Purpose                                 | Editor              |
+|-------------------|-----------------------------------------|--------------------|
+| `blueprint.json`   | App structure (pages, models, services) | Compose Canvas      |
+| `flows/flows.json` | Runtime service automations             | Enable/disable list |
 Flows live under `runtimes/flows/` in the generated app tree. Enable via `nxs_config.json`:
 ```json
 { "flows": { "enabled": true, "max_scheduled": 10, "max_concurrent": 4 } }
@@ -118,9 +113,8 @@ Flows live under `runtimes/flows/` in the generated app tree. Enable via `nxs_co
 
 ## Editor path (v1 vs v1.1)
 
-| Version | UI | Notes |
-|---------|-----|-------|
-| **v1 (shipped)** | Compose Canvas + JSON inspector in `:app` | Add/remove nodes, drag positions, connect edges, preview JSON |
-| **v1.1 (planned)** | imnodes native panel | Same file; grid snap from `editor.grid_snap` |
-
+| Version            | UI                                        | Notes                                                         |
+|-------------------|-------------------------------------------|--------------------------------------------------------------|
+| **v1 (shipped)**   | Compose Canvas + JSON inspector in `:app` | Add/remove nodes, drag positions, connect edges, preview JSON |
+| **v1.1 (planned)** | imnodes native panel                      | Same file; grid snap from `editor.grid_snap`                  |
 Run `./gradlew :app:run` → **Generate Project** → **Edit blueprint**.

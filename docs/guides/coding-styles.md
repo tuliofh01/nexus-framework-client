@@ -108,10 +108,9 @@ Use IDE / `ktfmt` if configured; match surrounding file style (4-space indent in
 On non-trivial logic (archive crypto, flow dispatch, generation pipeline, Zig C ABI), add comments that explain **why**, not **what**:
 
 - Invariants and failure modes
-- Cross-language contracts (C ABI, Djinni, pybind11 GIL)
-- Versioning / migration notes
+- Cross-language contracts (C ABI, Zig JNI, pybind11 GIL)
 
-Skip comments on trivial getters, one-line delegates, and generated Djinni stubs.
+Skip comments on trivial getters, one-line delegates, and generated JNI stubs.
 
 ---
 

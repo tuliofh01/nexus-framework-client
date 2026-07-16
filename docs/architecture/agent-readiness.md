@@ -44,7 +44,7 @@ This report captures an [API Readiness Analyzer](https://github.com/tuliofh01/ne
 
 - **`AGENTS.md`** — build commands, MVC map, edit locations (for the Counter client)
 - **`docs/README.md`** hub — architecture, templates, coding guide linked
-- **Templates** — desktop/android plotter samples, `blueprint.json`, `nxs_config.json`, `CMakePresets.json`, shared themes/DSL/runtime
+- **Templates** — desktop/android plotter samples, `blueprint.json`, `nxs_config.json`, `build.zig`, shared themes/DSL/runtime
 - **`template/README.md`** — clear index of desktop/android/shared
 - **Bilingual README** (EN + pt-BR)
 - **Build succeeds** with `JAVA_HOME=/usr/lib/jvm/java-26-openjdk` + `./gradlew :app:compileKotlin :app:test`

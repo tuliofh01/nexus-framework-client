@@ -145,13 +145,12 @@ const result = c.nxs_bridge_call("counter.get", "");
 
 ## Language Pair Reference
 
-| From ↓  | To → C++ | To → Python | To → Lua | To → Zig |
-|---------|----------|-------------|----------|----------|
-| **C++** | `registry::call("name", ...)` | `python::call("fn", ...)` | `lua::call("fn", ...)` | `zig::alloc()/free()` |
-| **Python** | `call_cpp("name", arg)` | `eval("2+2")` | Via C++ bridge | Via C++ bridge |
-| **Lua** | `nxs.bridge.call_cpp(...)` | `nxs.bridge.call_python(...)` | `run("script")` | `nxs.bridge.call_zig(...)` |
-| **Zig** | `c.nxs_bridge_call(...)` | Via C++ bridge | Via C++ bridge | Direct Zig fn |
-
+| From ↓     | To → C++                      | To → Python                   | To → Lua               | To → Zig                   |
+|-----------|-------------------------------|-------------------------------|------------------------|---------------------------|
+| **C++**    | `registry::call("name", ...)` | `python::call("fn", ...)`     | `lua::call("fn", ...)` | `zig::alloc()/free()`      |
+| **Python** | `call_cpp("name", arg)`       | `eval("2+2")`                 | Via C++ bridge         | Via C++ bridge             |
+| **Lua**    | `nxs.bridge.call_cpp(...)`    | `nxs.bridge.call_python(...)` | `run("script")`        | `nxs.bridge.call_zig(...)` |
+| **Zig**    | `c.nxs_bridge_call(...)`      | Via C++ bridge                | Via C++ bridge         | Direct Zig fn              |
 ## Status & Testing
 
 Run the bridge status check from any language:

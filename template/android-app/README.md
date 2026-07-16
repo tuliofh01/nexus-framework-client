@@ -4,15 +4,14 @@ General-purpose Nexus Android starter with SDL3 + ImGui, Chaquopy Python, and Zi
 
 ## Stack
 
-| Layer | Tech | Where | Language |
-|-------|------|-------|----------|
-| Activity | [Kotlin](https://kotlinlang.org/) + [SDL3](https://www.libsdl.org/) | `app/src/main/java/com/nexus/{{packageName}}/` | [Kotlin](https://kotlinlang.org/) |
-| Native | [C++20](https://en.cppreference.com/w/cpp/20) | `src/` (AppModel, AppController, AppView) | [C++](https://isocpp.org/) |
-| Python | [Chaquopy](https://chaquo.com/chaquopy/) | `app/src/main/python/helpers.py` | [Python](https://www.python.org/) |
-| Bridge | **Zig JNI** (hand-authored C++ in `zig-services/`) | `zig-services/jni/` | C++ / Zig |
-| Scripting | [Lua 5.4](https://www.lua.org/) via [sol2](https://sol2.readthedocs.io/) | `src/view/LuaPanels.*` | [Lua](https://www.lua.org/) |
-| Flows (optional) | `flows/flows.json` | native FlowRunner | JSON |
-
+| Layer            | Tech                                                                     | Where                                          | Language                          |
+|-----------------|--------------------------------------------------------------------------|------------------------------------------------|----------------------------------|
+| Activity         | [Kotlin](https://kotlinlang.org/) + [SDL3](https://www.libsdl.org/)      | `app/src/main/java/com/nexus/{{packageName}}/` | [Kotlin](https://kotlinlang.org/) |
+| Native           | [C++20](https://en.cppreference.com/w/cpp/20)                            | `src/` (AppModel, AppController, AppView)      | [C++](https://isocpp.org/)        |
+| Python           | [Chaquopy](https://chaquo.com/chaquopy/)                                 | `app/src/main/python/helpers.py`               | [Python](https://www.python.org/) |
+| Bridge           | **Zig JNI** (hand-authored C++ in `zig-services/`)                       | `zig-services/jni/`                            | C++ / Zig                         |
+| Scripting        | [Lua 5.4](https://www.lua.org/) via [sol2](https://sol2.readthedocs.io/) | `src/view/LuaPanels.*`                         | [Lua](https://www.lua.org/)       |
+| Flows (optional) | `flows/flows.json`                                                       | native FlowRunner                              | JSON                              |
 ## Boot sequence
 
 1. `AppCore` loads the native .so via `System.loadLibrary`.
