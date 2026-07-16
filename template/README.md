@@ -2,11 +2,11 @@
 
 General-purpose output templates the Framework client copies when you generate a project. Each ships a **minimal starter** (hello + counter) with full Nexus feature support; optional **plotter examples** live under `examples/plotter/`.
 
-| Template        | Path                         | Target                                                                                                                                                |
-|----------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Desktop App** | [desktop-app/](desktop-app/) | Windows, macOS, Linux — [SDL3](https://www.libsdl.org/) + [OpenGL](https://www.opengl.org/), [pybind11](https://pybind11.readthedocs.io/)             |
-| **Android App** | [android-app/](android-app/) | APK — [SDL3](https://www.libsdl.org/) GLES, [Zig JNI](android-app/zig-services/) bridge (Djinni deprecated), [Chaquopy](https://chaquo.com/chaquopy/) |
-| **Shared**      | [shared/](shared/)           | DSL, assets, themes, runtime helpers                                                                                                                  |
+| Template        | Path                         | Target                                                                                                                                    |
+|----------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| **Desktop App** | [desktop-app/](desktop-app/) | Windows, macOS, Linux — [SDL3](https://www.libsdl.org/) + [OpenGL](https://www.opengl.org/), [pybind11](https://pybind11.readthedocs.io/) |
+| **Android App** | [android-app/](android-app/) | APK — [SDL3](https://www.libsdl.org/) GLES, [Zig JNI](android-app/zig-services/) bridge, [Chaquopy](https://chaquo.com/chaquopy/)         |
+| **Shared**      | [shared/](shared/)           | DSL, assets, themes, runtime helpers                                                                                                      |
 ## Adoption paths
 
 | Path                  | What you get                                             |
@@ -20,10 +20,10 @@ Each app template ships a generic **`blueprint.json`** with all five Langflow-st
 
 ## Optional examples
 
-| Example                  | Path                            | Build flag (desktop)        |
-|-------------------------|---------------------------------|----------------------------|
-| Desmos plotter           | `desktop-app/examples/plotter/` | `-DBUILD_NEXUS_EXAMPLES=ON` |
-| Desmos plotter (Android) | `android-app/examples/plotter/` | reference sources           |
+| Example                  | Path                            | Notes                              |
+|-------------------------|---------------------------------|-----------------------------------|
+| Desmos plotter           | `desktop-app/examples/plotter/` | `zig build -DBUILD_NEXUS_EXAMPLES` |
+| Desmos plotter (Android) | `android-app/examples/plotter/` | Reference sources only             |
 ## Shared resources
 
 | Resource     | Path                               |
