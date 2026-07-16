@@ -32,11 +32,10 @@ An optional **Desmos-style plotter** sample lives under `examples/plotter/` — 
 ## Build
 
 ```bash
-cmake --preset debug
-cmake --build --preset debug
+zig build
 ```
 
-Optional plotter: `-DBUILD_NEXUS_EXAMPLES=ON` → target `{{projectName}}_plotter`
+Optional plotter: `zig build -DBUILD_NEXUS_EXAMPLES`
 
 ## Docs
 

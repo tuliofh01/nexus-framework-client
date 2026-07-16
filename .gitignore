@@ -91,6 +91,12 @@ misc/client-setup/env.bat
 ### Session continuation state (opencode internal — never commit) ###
 .omo/run-continuation/*.json
 
+### Local agent artifacts (drafts, plans, evidence — never commit) ###
+.omo/
+
+### Code graph caches (local tooling — never commit) ###
+.codegraph/
+
 ### Zig build artifacts (caches and output dirs in zig-services/) ###
 .zig-cache/
 zig-out/

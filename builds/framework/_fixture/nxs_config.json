@@ -14,8 +14,7 @@
   "targets": {
     "desktop": {
       "backend": "sdl3",
-      "renderer": "opengl3",
-      "minCMake": "3.24"
+      "renderer": "opengl3"
     }
   },
   "features": {
@@ -25,6 +24,6 @@
   },
   "build": {
     "outputDir": "../../builds/framework/_fixture",
-    "presets": "CMakePresets.json"
+    "nativeBackend": "zig"
   }
 }

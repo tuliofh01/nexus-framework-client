@@ -1,12 +1,13 @@
-# Out-of-source builds live in builds/ (see builds/README.md)
+# Zig build outputs and caches
+.zig-cache/
+zig-out/
+
+# Build outputs go to builds/
 builds/*
 !builds/.gitkeep
 !builds/README.md
 
-# CMake / compiler artifacts anywhere else
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
+# Compiler artifacts
 compile_commands.json
 *.o
 *.obj
@@ -15,10 +16,6 @@ compile_commands.json
 *.dylib
 *.dll
 *.exe
-
-# FetchContent / dependency caches
-_deps/
-.cache/
 
 # Python
 __pycache__/

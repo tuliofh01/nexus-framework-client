@@ -1,18 +1,16 @@
-# builds/ (project-local pointer)
+# builds/ (project-local output pointer)
 
-Standalone NDK CMake presets write to the **Framework repo** central folder:
+Generated native binaries and APK artifacts land in the Framework repo's central folder:
 
 ```
-../../builds/framework/{{projectName}}/<preset>/
+../../builds/framework/{{projectName}}/
 ```
 
-(e.g. `../../builds/framework/{{projectName}}/android-arm64`).
-
-Day-to-day APK builds use Gradle's `.cxx/` cache instead — both are git-ignored.
+Day-to-day builds use Zig (`zig-services/`) and Gradle caches — neither is tracked.
 
 ```bash
-cmake --preset android-arm64   # requires ANDROID_NDK in the environment
-cmake --build --preset android-arm64
+cd zig-services
+zig build -Dtarget=aarch64-linux-android
 ```
 
 See `nxs_config.json` → `build.outputDir` for the resolved path.

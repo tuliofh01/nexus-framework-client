@@ -1,10 +1,15 @@
-# The Nexus Framework — Native App Generation from Visual Blueprints
+<!--
+  description: Nexus Framework generates native C++/Lua/Python desktop and Android apps from visual blueprints. 
+  keywords: native app generator, C++ framework, Lua scripting, Python embedded, SDL3, ImGui, Zig build, 
+  Compose Desktop, blueprint-driven development, cross-platform, no Electron, project generator, graph-based architecture
+-->
+# The Nexus Framework — Native App Generator: C++ + Lua + Python from Visual Blueprints
 
 <p align="center">
   <img src="docs/assets/nexus-logo.png" alt="Nexus Framework — Native C++ Lua Python Project Generator" width="240" />
 </p>
 
-<p align="center"><strong>🧩 Sketch an app as a graph. Get a compiled native binary. No browser. No Electron. No cloud. No complexity you didn't ask for.</strong></p>
+<p align="center"><strong>🧩 Sketch an app as a graph. Get a compiled native binary. No browser. No Electron. No cloud. Simple when you want it. Powerful when you need it.</strong></p>
 
 <p align="center">
   🌐 <strong>Translations:</strong>
@@ -30,12 +35,13 @@
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3 Cross Platform" /></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.14-orange?style=flat-square&logo=zig" alt="Zig 0.14 Native Builds" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui Native UI" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/version-0.3.0-blueviolet?style=flat-square" alt="Version 0.3.0" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/version-1.0.1-blueviolet?style=flat-square" alt="Version 1.0.1" /></a>
 </p>
 
 > **🚀 Fastest path from zero to running:**  
 > `zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh && ./gradlew :app:run`  
-> Five minutes. No Chrome download. No Docker. No npm install.
+> Five minutes. No Chrome download. No Docker. No npm install.  
+> **No web framework. No Electron. No cloud dependency — just a native binary you control.**
 
 ---
 
@@ -72,8 +78,10 @@
 
 **It works for any app, simple or complex:**
 
-- **Simple app** — A C++ counter with ImGui? Generate it in one command. The template gives you SDL3 windowing, input handling, and a working UI loop. Add your logic, build, ship.
-- **Complex app** — Need Python analytics in-process? Lua panels that reload at runtime? TypeScript UI that lowers to native widgets? Add nodes to your blueprint, re-generate. Each layer stacks without breaking what came before.
+- **Simple app** — A C++ counter with ImGui? Generate it in one command. The template gives you SDL3 windowing, input handling, and a working UI loop. Add your logic, build, ship. You don't need to understand half the stack to get a working binary.
+- **Complex app** — Need Python analytics in-process? Lua panels that reload at runtime? TypeScript UI that lowers to native widgets? Add nodes to your blueprint, re-generate. Each layer stacks without breaking what came before. When you need the performance, it's there — 3 MB binary, 200 ms boot, zero-copy Python interop.
+
+**This is the core idea: Nexus is simple enough that a single-node C++ app makes sense, and powerful enough that a 7-language polyglot app with runtime flows doesn't feel like a hack.** You don't adopt the whole stack. You start where you're comfortable and expand only when you need to. The generated project is always a normal, editable Zig/C++ tree — no framework lock-in at any stage.
 
 **The result is a real native binary:**
 - **3–20 MB** — no Chromium, no Node.js, no VM tax
@@ -221,6 +229,7 @@ builds/framework/MyApp/
 - **Placeholders use `{{doubleCurly}}`** — consistent across all template files for all languages.
 - **Generation is additive** — if a file already exists in the output directory, it's not overwritten. You can regenerate without losing your work.
 - **Build files are generated** — `build.zig` and `build.zig.zon` come from the template, so the output tree is immediately buildable with zero configuration.
+- **You never outgrow it** — use the blueprint for rapid iteration, then edit the generated project directly when you need freedom. The output is a normal Zig/C++ tree, not a framework runtime you're locked into.
 
 ---
 
@@ -347,11 +356,25 @@ The blueprint is consumed at **generation time** only. Once emitted, the generat
 
 | You are... | Your entry point |
 |------------|-----------------|
+| **Just want a working app fast** | Generate the default template, write your logic in `src/`, `zig build` — you have a binary in five minutes |
 | **Game dev** (ImGui comfortable) | `scripts/panels.lua` — hotkeys, overlay panels, quick-add buttons |
 | **C++ backend engineer** | `src/model/` + `src/controller/` — extend domain logic, generate UI around it |
 | **Web developer** exploring native | `ui/ui.xhtml` + `ui/ui.ts` — declarative markup + TypeScript, no browser |
 | **Python analyst** shipping a tool | `python/functions.py` — write your logic, get an ImGui viewer and plot for free |
 | **Android developer** | Generate `android-app` — touch-friendly SDL3 UI with Zig JNI bridge |
+
+### Quick wins — minimal effort, real app
+
+Nexus's templates ship with everything wired. Here's how little code you need to write for a working application:
+
+| Goal | What you do | Result |
+|------|-------------|--------|
+| C++ + ImGui window | Generate, edit `src/model/AppModel.cppm`, `zig build` | 3 MB native binary with ImGui UI |
+| Add a Lua panel | Add `lua.script` node to blueprint, re-generate, write `scripts/panels.lua` | Hot-reloadable console + panels |
+| Add Python analytics | Add `python.module` node, re-generate, write `python/functions.py` | In-process NumPy with zero-copy C++ access |
+| Add a plot | Already there — `ImPlot` is included in every generated project | `ImPlot::PlotLine()` in your view code |
+
+**You never touch CMake, pybind11 build config, sol2 registration, or JNI boilerplate.** The templates own that complexity. You own your domain logic.
 
 Full guide: [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)  
 Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
@@ -437,7 +460,7 @@ Nexus doesn't replace C++ — you still write your domain logic in C++20. It rep
 
 ## How progressive enhancement works
 
-Nexus is designed so you don't have to adopt everything at once. You can start minimal and add layers as your project grows.
+Nexus is designed so you don't have to adopt everything at once. Start with a single C++ node — the simplest possible app — and add Lua, Python, TypeScript, and flows only when you need them. **Each stage is optional. Each stage is one blueprint node and one re-generate away.**
 
 ### Stage 1: Just C++ on SDL3
 
@@ -485,7 +508,7 @@ Generated apps are lean because the toolchain is lean and there's no browser inv
 | **UI refresh** | Full redraw in < 0.5 ms (immediate mode on GPU) |
 | **Build time**        | 15–60 seconds for a generated project (Zig incremental cache) |
 | **Cross-compile** | `zig build -Dtarget=x86_64-windows` from Linux, no MSVC |
-| **Toolchain size** | ~80 MB (Zig 0.14.0) — no CMake, no NDK-build, no Djinni CLI need |
+| **Toolchain size** | ~80 MB (Zig 0.14.0) — CMake, NDK-build, and Djinni CLI removed |
 
 These aren't aspirational targets — they're measurements from the existing templates.
 
@@ -535,26 +558,29 @@ Your system Zig (any version) runs the bootstrap once, which pins a known-good *
 
 **You should use Nexus if:**
 
-- You're building a **desktop or Android application that processes real data** — sensor streams, financial ticks, scientific measurements, CAD geometry, ML inference
-- Your app needs **native performance and small footprint** — Chromium overhead is a dealbreaker
-- You want **multiple languages in one process** — C++ for speed, Python for analysis, Lua for scripting, TypeScript for UI
-- You're tired of **hand-rolling CMake + pybind11 + sol2** for every new project
-- You need **offline-first** — your app runs in a factory, on a boat, in a field, on a tablet without connectivity
+- You're building a **desktop or Android application** — from a simple data plotter to a multi-engine trading terminal
+- You want **native performance and small footprint** without the Electron tax
+- You value **simplicity** — one command generates a working project, one language (Zig) replaces four build tools
+- You need **multiple languages in one process** — C++ for speed, Python for analysis, Lua for scripting, TypeScript for UI
+- Your app must work **offline** — factory floor, boat, field, tablet without connectivity
+- You're tired of **hand-rolling CMake + pybind11 + sol2** for the tenth time
 
-**Who should wait:**
+**There's no "who should wait" here.** Nexus scales down to single-node C++ apps and up to polyglot pipelines. If you need a native binary, you're the target audience. The only genuine gaps:
 
-| Reason                                        | Come back at                                                    |
-|-----------------------------------------------|-----------------------------------------------------------------|
-| You need iOS from this toolchain               | v0.5+ (not currently on the roadmap)                            |
-| You need pixel-perfect marketing page UIs      | ImGui gets better every year, but it's not a CSS layout engine  |
-| You want a pure-Python toolkit                 | Nexus expects C++ at the core. Consider PySide/PyQt or Briefcase |
-| You're a beginner to C++ and build systems     | Nexus is developer tooling — some CLI and C++ comfort assumed   |
+| Not yet                       | Coming in                              |
+|-------------------------------|----------------------------------------|
+| iOS support                   | v0.5+ (not on current roadmap)         |
+| Pixel-perfect marketing UIs   | ImGui is improving but not CSS          |
+| Pure-Python toolkit           | Nexus expects C++ at the core           |
+| Beginner-friendly docs        | We're working on it — PRs welcome       |
 
 ---
 
 ## What makes it special
 
-**Blueprint-driven codegen.** Most frameworks generate from a single option or a configuration file. Nexus generates from a directed graph — your app's architecture is the input, not its settings.
+**Simple when you want it, powerful when you don't.** Nexus is the only framework where generating a single-node C++ app makes as much sense as a 7-language polyglot pipeline. The blueprint is optional the moment you outgrow it — the generated project is a normal Zig/C++ tree you can edit by hand, add dependencies to, and restructure freely. No lock-in, no framework runtime to ship.
+
+**Blueprint-driven codegen.** Most frameworks generate from a single option or a configuration file. Nexus generates from a directed graph — your app's architecture is the input, not its settings. Change the graph, re-generate, get a different app.
 
 **Graph-native app structure.** The same visual paradigm that made n8n and Langflow intuitive for automation now applies to application architecture. Your app is a graph of modules. Nexus makes that explicit, editable, and generative.
 
@@ -770,12 +796,12 @@ The `:core` module lives at `misc/core/` but is wired into the project by `setti
 
 ## Roadmap
 
-**v0.4.0** — closing remaining MVP gaps:
+**v1.0.x** — post-release stabilization and ecosystem:
 
 - Structured error reporting (machine-readable JSON from `ProjectGenerator`, not log scraping)
-- Android template parity with desktop (touch ImGui controls, sensor access patterns)
 - IDE integration support (language servers for generated Lua and Python layers)
 - First-run experience polish (the Zig bootstrap is fast, but the flow could be friendlier)
+- Additional generated app examples and starter blueprints
 
 Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 
@@ -796,7 +822,7 @@ Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 | [docs/templates/desktop-app.md](docs/templates/desktop-app.md)  | Desktop template — SDL3, ImGui, pybind11, Lua, TS   |
 | [docs/templates/android-app.md](docs/templates/android-app.md)  | Android template — Zig JNI, Chaquopy, GLES          |
 | [AGENTS.md](AGENTS.md)                                         | Build commands for AI coding assistants           |
-| [misc/ROADMAP.md](misc/ROADMAP.md)                             | v0.4.0 roadmap                                   |
+| [misc/ROADMAP.md](misc/ROADMAP.md)                             | v1.0.x roadmap                                   |
 
 ### Ecosystem
 
@@ -857,7 +883,7 @@ The one nuance: if you copy template files directly (not generated, but literall
 
 ## See also
 
-- **[misc/ROADMAP.md](misc/ROADMAP.md)** — v0.4.0 roadmap and remaining MVP items
+- **[misc/ROADMAP.md](misc/ROADMAP.md)** — v1.0.x roadmap and remaining milestones
 - **[docs/README.md](docs/README.md)** — full documentation hub
 - **[AGENTS.md](AGENTS.md)** — condensed build commands for AI coding assistants
 - **[The Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client)** — separate distribution for the Compose Desktop wizard

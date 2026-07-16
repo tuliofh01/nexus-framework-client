@@ -24,7 +24,6 @@
       "minSdk": 26,
       "targetSdk": 35,
       "ndkAbis": ["arm64-v8a", "x86_64"],
-      "minCMake": "3.24"
     }
   },
   "features": {
@@ -37,11 +36,6 @@
       "embedding": "chaquopy",
       "sourceDir": "app/src/main/python",
       "packages": []
-    },
-    "djinni": {
-      "enabled": true,
-      "idl": "djinni/app.djinni",
-      "generatedDir": "djinni-generated"
     },
     "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" },
     "examples": {
@@ -58,7 +52,6 @@
   },
   "build": {
     "outputDir": "../../builds/framework/{{projectName}}",
-    "gradleModule": "app",
-    "presets": "CMakePresets.json"
+    "gradleModule": "app"
   }
 }

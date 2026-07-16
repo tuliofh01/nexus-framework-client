@@ -1,13 +1,11 @@
 # zig-services — Android native build
 
-Replaces CMake + Djinni as the **primary** native build system for generated Android apps. Produces `lib{{projectName}}.so` via Zig cross-compilation.
+Replaces CMake + Djinni as the **primary** native build system for generated Android apps. Produces `lib{{projectName}}.so` via Zig cross-compilation. CMake and Djinni are fully removed — Zig is the only native build path.
 
 ## Requirements
 
 - **Zig 0.14.x** (pinned in `misc/client-setup/env.sh`)
 - **Android NDK** r26+ (API ≥ 29) — install via SDK Manager or `sdkmanager "ndk;26.3.11579264"`
-- System dependencies for the host pack tool (Linux/macOS):
-  - CMake 3.24+ (for `pack_archive` host tool, or use desktop zig-services)
 
 ## Quick build
 
@@ -46,11 +44,3 @@ All C++ sources under `../src/` and `../shared/runtime/` are compiled with `zig 
 | Zig `Java_com_nexus_{{packageName}}_AppCore_installPythonBridge` | JNI entry point, delegates to C++ | Zig |
 | C++ `c_install_python_bridge` | Creates `NativePythonBridge` | C++ |
 | C++ `NativePythonBridge` | JNI callbacks to Kotlin `PythonBridge` | C++ |
-
-## Djinni deprecation
-
-The `../djinni/` directory is **deprecated** as of Phase 4. All new JNI bridges should be authored as Zig `export fn` in `jni/`. The Djinni-generated files remain for backward compatibility and will be removed in Phase 4b.
-
-## CMake coexistence
-
-CMake remains as a documented fallback (`legacy-cmake-*` presets). Set `nxs_config.json` → `"nativeBackend": "cmake"` to use the old build path.

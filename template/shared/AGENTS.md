@@ -23,18 +23,18 @@ After generation, copies land in the project as:
 | `dsl/` | Referenced from `ui/ui.ts` imports; sources stay alongside `ui/` |
 | `themes/*.json` | `assets/themes/` |
 | `assets/` | `assets/` (desktop) or `app/src/main/assets/` (Android) |
-| `runtime/` | Compiled into native binary via parent `CMakeLists.txt` |
+| `runtime/` | Compiled into native binary via parent `build.zig` |
 
 ## Build involvement
 
-**Desktop** — parent `CMakeLists.txt` adds `runtime/` sources and builds `pack_archive` for `pack_lua_dat` / `pack_python_dat` targets.
+**Desktop** — parent `build.zig` adds `runtime/` sources and builds `pack_archive` for `pack_lua_dat` / `pack_python_dat` targets.
 
-**Android** — `app/build.gradle.kts` builds host `pack_archive` for Gradle `packLuaDat`; native code links `runtime/` via root `CMakeLists.txt`.
+**Android** — `app/build.gradle.kts` builds host `pack_archive` for Gradle `packLuaDat`; native code links `runtime/` via `zig-services/build.zig`.
 
 Host-only tool:
 
 ```bash
-cmake -S tools -B /tmp/nxs-pack && cmake --build /tmp/nxs-pack
+zig build-exe tools/pack_archive.cpp --name pack_archive
 # pack_archive <root> <out.dat> --lua|--python [--encrypt]
 ```
 
@@ -79,8 +79,8 @@ increment(): void { this.invoke("nxs.increment"); }
 
 | Concern | Desktop | Android |
 |---------|---------|---------|
-| Lua pack | CMake `pack_lua_dat` → `misc/lua.dat` | Gradle `packLuaDat` → `build/assets/lua.dat` |
-| Python pack | CMake `pack_python_dat` → `misc/python.dat` | N/A — Chaquopy bundles `app/src/main/python/` |
+| Lua pack | Zig `pack_lua_dat` → `misc/lua.dat` | Gradle `packLuaDat` → `build/assets/lua.dat` |
+| Python pack | Zig `pack_python_dat` → `misc/python.dat` | N/A — Chaquopy bundles `app/src/main/python/` |
 | Runtime loader | `ScriptArchive` + `Paths` in `runtime/` | Same C++ runtime; Lua from APK assets |
 | Dev fallback | Plaintext `scripts/`, `python/` dirs | Plaintext `scripts/` only |
 
@@ -89,7 +89,7 @@ Shared `runtime/` code is target-agnostic; embedding differs per template (`pybi
 ## Do not edit
 
 - **`ScriptProtectionConfig.hpp`** generated from `.hpp.in` at configure time — change the template or `nxs_config.json` salt instead.
-- **Vendored SDL / ImGui / sol2 sources** — these live in the parent template `CMakeLists.txt` FetchContent trees, not here.
+- **Vendored SDL / ImGui / sol2 sources** — these live in the parent template `build.zig` dependency trees, not here.
 - **Do not add logos or fonts to `.gitignore`** in consumer projects.
 
 ## Docs

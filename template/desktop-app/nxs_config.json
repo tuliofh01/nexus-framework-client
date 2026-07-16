@@ -19,8 +19,7 @@
   "targets": {
     "desktop": {
       "backend": "sdl3",
-      "renderer": "opengl3",
-      "minCMake": "3.24"
+      "renderer": "opengl3"
     }
   },
   "allocator": {
@@ -39,7 +38,7 @@
     },
     "tsXhtmlDsl": { "enabled": true, "sourceDir": "ui" },
     "examples": {
-      "plotter": { "enabled": false, "path": "examples/plotter", "cmakeFlag": "BUILD_NEXUS_EXAMPLES" }
+      "plotter": { "enabled": false, "path": "examples/plotter",       "examplesFlag": "BUILD_NEXUS_EXAMPLES" }
     }
   },
   "blueprint": {
