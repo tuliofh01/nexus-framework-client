@@ -194,6 +194,36 @@ Use case: rapid UI prototyping in a familiar syntax without touching C++. The DS
 | Infra monitor   | Lightweight native binary, always-on           |
 ---
 
+---
+
+## Coding styles
+
+### C++20 (desktop + Android templates, `template/shared/runtime/`)
+
+RAII for all resources, `std::span`/`std::string_view` for buffer views, `[[nodiscard]]` on bug-prone returns, `constexpr` for compile-time constants. No C-style casts; use `static_cast`/`reinterpret_cast` with a note. Run `clang-format` from template root.
+
+### Zig (`zig-services/`)
+
+`zig fmt` before commits. Explicit allocators — never assume implicit heap. Error unions (`!T`), `callconv(.C)` on C ABI exports.
+
+### Kotlin (`:app`, `:core`, `:cli`)
+
+Null-safety with `?.`/`?:`/`requireNotNull`, data classes for JSON schemas, `require`/`check` for programmer errors. Keep Gradle config-cache compatible.
+
+### Lua (`scripts/`)
+
+2-space indent, snake_case. Side effects in `cpp.controller`, not in panel layout code.
+
+### TypeScript (`ui/`, `shared/dsl/`)
+
+Semicolons, 4-space indent, `state<T>()`/`native<T>()`/`invoke()` for controller wiring. `readonly` on non-mutated fields.
+
+### Python (`python/`, Chaquopy)
+
+PEP 8, type hints on public functions. Desktop returns numpy tuples for pybind11 buffer protocol.
+
+---
+
 ## Related
 
 - [Architecture overview](../architecture/overview.md)

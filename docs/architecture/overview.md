@@ -75,6 +75,58 @@ Pipeline from first-run setup through `:app`/`:cli` into emitted templates; vali
 
 The pipeline validates `blueprint.json` and optional `flows/flows.json` after template emit. Custom graphs from the Compose editors are passed via `ProjectSpec.blueprint` and `ProjectSpec.flows`.
 
+### Pipeline stages
+
+| Stage                | Action                                                                       |
+|---------------------|-----------------------------------------------------------------------------|
+| **Validate**         | Check project name pattern                                                   |
+| **Prepare directory**| Create `outputPath/projectName` or fail if non-empty (`--force` to overwrite) |
+| **Render template**  | Copy `template/desktop-app/` or `template/android-app/` with placeholder sub  |
+| **Copy shared**      | Copy `template/shared/` to `outputPath/shared/`                              |
+| **Validate config**  | Parse rendered `nxs_config.json` (schema v2)                                 |
+| **Validate blueprint**| Parse `blueprint.json` via `BlueprintValidator`                             |
+
+### Template selection
+
+| Type    | Template folder        | CLI `--type` |
+|---------|-----------------------|--------------|
+| Desktop | `template/desktop-app/`| `desktop`     |
+| Android | `template/android-app/`| `android`     |
+
+### Placeholders
+
+| Key                       | Example                                       |
+|--------------------------|-----------------------------------------------|
+| `{{projectName}}`         | `MyApp`                                        |
+| `{{windowTitle}}`         | `MyApp - built with The Nexus Framework`       |
+| `{{cppStandard}}`         | `20`                                           |
+| `{{license}}`             | `Apache-2.0`                                   |
+| `{{appType}}`             | `desktop` / `android`                          |
+| `{{createdAt}}`           | ISO-8601 timestamp                             |
+| `{{scriptProtectionEnabled}}` | `true` / `false`                           |
+| `{{scriptProtectionSalt}}`| UUID salt when protection enabled              |
+
+### Script archives
+
+Desktop templates pack `scripts/` and `python/` into binary archives beside the executable. Android packs Lua into APK assets (Python stays on Chaquopy paths).
+
+| Archive     | Magic | Source               | Desktop output      | Android output           |
+|------------|-------|----------------------|---------------------|-------------------------|
+| `lua.dat`   | `LUAC` | `scripts/**/*.lua`   | `misc/lua.dat`       | `build/assets/lua.dat`   |
+| `python.dat`| `PYAC` | `python/**/*.py`     | `misc/python.dat`    | N/A (Chaquopy)           |
+
+### CLI usage
+
+```bash
+./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"     # dry-run
+./gradlew :cli:run --args="generate --type desktop --name MyApp"               # generate
+./gradlew :cli:run --args="generate --type android --name MyApp --output builds/framework/MyApp"
+./gradlew :cli:run --args="generate --type desktop --name MyApp --force"       # overwrite
+```
+
+Docker: `./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp`
+Jenkins pipeline: `misc/jenkins/Jenkinsfile` (parameterized: `PROJECT_NAME`, `TEMPLATE_TYPE`, `OUTPUT_DIR`).
+
 ## Desktop vs Android runtime
 
 ### Desktop vs Android runtime
@@ -85,6 +137,14 @@ Same `blueprint.json` node graph on both templates; only the Python bridge and O
 ![Desktop vs Android runtime](../assets/diagrams/desktop-vs-android-runtime.svg)
 
 Both templates share the same `blueprint.json` node graph; only the Python bridge and OS host differ at runtime.
+
+### Desktop template
+
+Generated from `template/desktop-app/`. SDL3 + OpenGL 3.3 window, Dear ImGui + ImPlot UI, Lua 5.4 via sol2 scripting, pybind11 Python embed, TS/XHTML authoring. MVC layout: `src/model/`, `src/controller/`, `src/view/`. Build with `cd zig-services && zig build`.
+
+### Android template
+
+Generated from `template/android-app/`. SDL3 GLES + ImGui, Chaquopy Python, hand-authored Zig JNI bridge (3 files in `zig-services/jni/`). Boot: `AppCore.loadLibrary` → `installPythonBridge` → `SDL_main`. Build: `zig build -Dtarget=aarch64-linux-android` then `./gradlew :app:assembleDebug`.
 
 ## Themes and fonts
 
