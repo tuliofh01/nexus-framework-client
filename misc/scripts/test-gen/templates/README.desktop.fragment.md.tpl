@@ -7,14 +7,14 @@ chmod +x tests/run_smoke.sh
 ./tests/run_smoke.sh
 ```
 
-## CTest integration
+## Zig build integration
 
-Paste `tests/nexus_generated/cmake_snippet.txt` into `CMakeLists.txt`, then:
+The generated project uses `zig build` instead of CMake:
 
 ```bash
-cmake --preset debug
-cmake --build --preset debug
-ctest --preset debug -L nexus-generated
+zig build test              # run tests
+zig build                   # build the binary
+./zig-out/bin/{{MARKER}}    # run the app
 ```
 
 Optional: install `gtest` for fuller unit tests (see `misc/scripts/test-gen/README.md`).

@@ -2,11 +2,11 @@
 # Generate smoke-test stubs for a built Nexus app.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEST_GEN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=env.sh
-source "${SCRIPT_DIR}/env.sh"
+source "${TEST_GEN_DIR}/env.sh"
 # shellcheck source=detect-project.sh
-source "${SCRIPT_DIR}/detect-project.sh"
+source "${TEST_GEN_DIR}/detect-project.sh"
 
 DRY_RUN=0
 FORCE=0
@@ -98,14 +98,11 @@ render_template() {
 PLANNED_FILES=()
 
 emit_desktop() {
-  local smoke_cpp run_sh cmake_snippet readme_fragment
+  local smoke_cpp run_sh readme_fragment
   smoke_cpp="$(render_template "${TEMPLATES_DIR}/smoke_test.cpp.tpl" \
     "{{PROJECT_NAME}}" "${PROJECT_NAME}" \
     "{{MARKER}}" "${MARKER}")"
   run_sh="$(render_template "${TEMPLATES_DIR}/run_smoke.sh.tpl" \
-    "{{PROJECT_NAME}}" "${PROJECT_NAME}" \
-    "{{MARKER}}" "${MARKER}")"
-  cmake_snippet="$(render_template "${TEMPLATES_DIR}/cmake_snippet.txt.tpl" \
     "{{PROJECT_NAME}}" "${PROJECT_NAME}" \
     "{{MARKER}}" "${MARKER}")"
   readme_fragment="$(render_template "${TEMPLATES_DIR}/README.desktop.fragment.md.tpl" \
@@ -115,13 +112,11 @@ emit_desktop() {
   PLANNED_FILES=(
     "tests/smoke_test.cpp"
     "tests/run_smoke.sh"
-    "tests/nexus_generated/cmake_snippet.txt"
     "tests/nexus_generated/README.fragment.md"
     "tests/nexus_generated/metadata.json"
   )
   write_file "tests/smoke_test.cpp" "${smoke_cpp}"
   write_file "tests/run_smoke.sh" "${run_sh}"
-  write_file "tests/nexus_generated/cmake_snippet.txt" "${cmake_snippet}"
   write_file "tests/nexus_generated/README.fragment.md" "${readme_fragment}"
 
   if [[ "${DRY_RUN}" -eq 0 ]]; then

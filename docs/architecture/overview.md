@@ -124,7 +124,7 @@ Desktop templates pack `scripts/` and `python/` into binary archives beside the 
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --force"       # overwrite
 ```
 
-Docker: `./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp`
+Docker: `./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp`
 Jenkins pipeline: `misc/jenkins/Jenkinsfile` (parameterized: `PROJECT_NAME`, `TEMPLATE_TYPE`, `OUTPUT_DIR`).
 
 ## Desktop vs Android runtime

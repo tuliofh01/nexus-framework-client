@@ -9,11 +9,11 @@ Supporting modules and tooling for the Framework scaffold client. Gradle modules
 | [build-logic/](build-logic/) | Gradle convention plugins (included build) — JVM toolchain 26 |
 | [core/](core/) | Generation pipeline (`:core`) — `ProjectGenerator`, `TemplateEngine`, `nxs_config` schema |
 | [cli/](cli/) | Headless CLI (`:cli`) — `generate` command |
-| [client-setup/](client-setup/) | First-run JDK 26 + Git installers — see [client-setup/README.md](client-setup/README.md) |
+| [client-setup/](client-setup/) | First-run JDK 26 + Zig bootstrap — see [client-setup/README.md](client-setup/README.md) |
 | [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
-| [jenkins/](jenkins/) | Optional Jenkins CI — [Jenkinsfile](jenkins/Jenkinsfile) · see [jenkins/README.md](jenkins/README.md) |
-| [translations/](translations/) | Localized READMEs — [pt-BR](translations/README.pt-BR.md) |
-| [scripts/](scripts/) | Repo automation — `dev/` (client workflow), `test-gen/` (smoke tests for `builds/framework/`), `generate-diagrams/` (see [scripts/test-gen/README.md](scripts/test-gen/README.md)) |
+| [jenkins/](jenkins/) | Optional Jenkins CI — [Jenkinsfile](jenkins/Jenkinsfile), [README](jenkins/README.md) |
+| [scripts/](scripts/) | Repo automation — dev, test-gen, diagram generation |
+| [translations/](translations/) | Localized READMEs — see [translations/README.md](translations/README.md) |
 
 Pipeline definition: [jenkins/Jenkinsfile](jenkins/Jenkinsfile). Configure the job **Script Path** to `misc/jenkins/Jenkinsfile` — see [jenkins/README.md](jenkins/README.md).
 
@@ -41,8 +41,8 @@ The precompiled plugin `buildsrc.convention.kotlin-jvm` (JVM toolchain 26, JUnit
 ```bash
 ./gradlew :core:compileKotlin
 ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
-./misc/scripts/dev/nexus-dev.sh compile
-./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/nexus-dev.sh compile
+./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
 ./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 ```
 

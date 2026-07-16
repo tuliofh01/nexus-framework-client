@@ -1,36 +1,30 @@
 # misc/scripts/
 
-Repo automation organized by function. Each subdirectory is a script family with its own README where needed.
+Repo automation — all scripts live flat in this directory or under `test-gen/` for platform-specific test runners.
 
 ## Layout
 
-| Directory | Purpose |
-|-----------|---------|
-| [dev/](dev/) | Local development workflow (`nexus-dev.sh`, Docker generation) |
-| [test-gen/](test-gen/) | Generate smoke tests for built apps under `builds/framework/` |
-| [generate-diagrams/](generate-diagrams/) | Docs SVG diagram generator |
+| Path | Purpose |
+|------|---------|
+| [nexus-dev.sh](nexus-dev.sh) | Local dev workflow — compile, test, generate, run client, Docker |
+| [generate-in-docker.sh](generate-in-docker.sh) | Run generation inside a Docker container |
+| [generate-diagrams.py](generate-diagrams.py) | Regenerate docs SVG architecture diagrams |
+| [test-gen/](test-gen/) | Smoke test generation for built apps under `builds/framework/` |
 
-**Client first-run setup** stays at [../client-setup/](../client-setup/) — not duplicated here.
+**Client first-run setup** stays at [../client-setup/](../client-setup/).
 
 ## Quick reference
 
 ```bash
 # Dev workflow
-./misc/scripts/dev/nexus-dev.sh compile
-./misc/scripts/dev/generate-in-docker.sh desktop MyApp builds/framework/MyApp
+./misc/scripts/nexus-dev.sh compile
+./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
 
 # Test generation (dry-run against fixture)
 ./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
 
-# Diagrams
-python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py
+# Regenerate all SVGs
+python3 misc/scripts/generate-diagrams.py
 ```
-
-## Backward compatibility
-
-Thin shims remain at the old flat paths:
-
-- `misc/scripts/generate-in-docker.sh` → `dev/generate-in-docker.sh`
-- `misc/scripts/generate-styled-diagrams.py` → `generate-diagrams/generate-styled-diagrams.py`
 
 See [../README.md](../README.md) and [../../AGENTS.md](../../AGENTS.md) for full repo context.

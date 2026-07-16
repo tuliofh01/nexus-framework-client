@@ -21,14 +21,6 @@
   <a href="misc/translations/README.zh-CN.md">简体中文</a>
 </p>
 
-<p align="center">
-  <a href="README.md"><img src="https://img.shields.io/badge/lang-English-blue?style=for-the-badge" alt="English" /></a>
-  <a href="misc/translations/README.pt-BR.md"><img src="https://img.shields.io/badge/lang-Portugu%C3%AAs%20(BR)-green?style=for-the-badge" alt="Português (BR)" /></a>
-  <a href="misc/translations/README.es.md"><img src="https://img.shields.io/badge/lang-Espa%C3%B1ol-red?style=for-the-badge" alt="Español" /></a>
-  <a href="misc/translations/README.de.md"><img src="https://img.shields.io/badge/lang-Deutsch-yellow?style=for-the-badge" alt="Deutsch" /></a>
-  <a href="misc/translations/README.ru.md"><img src="https://img.shields.io/badge/lang-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-lightgrey?style=for-the-badge" alt="Русский" /></a>
-  <a href="misc/translations/README.zh-CN.md"><img src="https://img.shields.io/badge/lang-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-orange?style=for-the-badge" alt="简体中文" /></a>
-</p>
 
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache License 2.0" /></a>
@@ -328,7 +320,7 @@ Nexus works with standard development tools — no proprietary IDE or plugin req
 | **Langflow**       | External AI flow authoring              | Export JSON → import into Flows Editor         |
 | **n8n**            | External workflow automation            | App calls n8n webhooks from Python/Lua         |
 | **Docker**         | Containerized generation for CI         | `docker compose -f misc/docker/docker-compose.yml` |
-| **Jenkins**        | CI/CD with parameterized builds         | `misc/jenkins/Jenkinsfile`                     |
+| **Jenkins**        | CI/CD with parameterized builds         | `misc/jenkins/Jenkinsfile`                      |
 
 ### Debugging tools
 
@@ -840,9 +832,9 @@ Framework repo tooling — none of this ships inside generated native apps.
 | [misc/build-logic/](misc/build-logic/)   | Gradle build — JVM toolchain 26, convention plugins              |
 | [misc/client-setup/](misc/client-setup/) | First-run bootstrap — **Zig `setup.zig`**                        |
 | [misc/scripts/](misc/scripts/)           | Dev helpers, smoke tests, diagram generators                     |
-| [misc/docker/](misc/docker/)             | Containerized generation for CI                                  |
-| [misc/jenkins/](misc/jenkins/)           | Optional Jenkins CI pipeline                                     |
-| [misc/translations/](misc/translations/) | Localized READMEs                                                |
+| [misc/docker/](misc/docker/)             | Containerized generation for CI                                   |
+| [misc/jenkins/](misc/jenkins/)           | Optional Jenkins CI pipeline                                      |
+
 Hub: [misc/README.md](misc/README.md)
 
 ### Navigating `nexus.opensource.framework.*` — app package guide
@@ -884,8 +876,8 @@ The `:core` module lives at `misc/core/` but is wired into the project by `setti
 **Compile, test, and generate:**
 
 ```bash
-./misc/scripts/dev/nexus-dev.sh compile        # :core + :cli + :app
-./misc/scripts/dev/nexus-dev.sh test           # full check
+./misc/scripts/nexus-dev.sh compile        # :core + :cli + :app
+./misc/scripts/nexus-dev.sh test           # full check
 ./gradlew :cli:run --args="generate --type desktop --name MyApp"
 ./misc/scripts/test-gen/linux/generic.sh --project MyApp
 ```
@@ -908,8 +900,6 @@ The `:core` module lives at `misc/core/` but is wired into the project by `setti
 - First-run experience polish (the Zig bootstrap is fast, but the flow could be friendlier)
 - Additional generated app examples and starter blueprints
 
-Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
-
 ---
 
 ## Docs & resources
@@ -921,7 +911,7 @@ Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes, deps |
 | [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` + `flows.json` reference |
 | [AGENTS.md](AGENTS.md) | Build commands for AI assistants |
-| [misc/ROADMAP.md](misc/ROADMAP.md) | v1.0.x roadmap |
+
 ### Ecosystem
 
 | Technology | Role in Nexus |
@@ -979,7 +969,6 @@ The one nuance: if you copy template files directly (not generated, but literall
 
 ## See also
 
-- **[misc/ROADMAP.md](misc/ROADMAP.md)** — v1.0.x roadmap and remaining milestones
 - **[docs/hub.md](docs/hub.md)** — full documentation hub
 - **[AGENTS.md](AGENTS.md)** — condensed build commands for AI coding assistants
 - **[The Nexus Framework Client](https://github.com/tuliofh01/nexus-framework-client)** — separate distribution for the Compose Desktop wizard

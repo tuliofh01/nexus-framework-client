@@ -1,14 +1,14 @@
-# Translations
+# Translations — Nexus Framework
 
-Localized project documentation for the Nexus Framework scaffold client.
+Community-maintained translations of the [root README](../../README.md). The English version is authoritative.
 
-| Language | File | Status |
-|----------|------|--------|
-| English | [../../README.md](../../README.md) | Canonical source |
-| Português (BR) | [README.pt-BR.md](README.pt-BR.md) | Complete |
-| Español | [README.es.md](README.es.md) | Complete |
-| Deutsch | [README.de.md](README.de.md) | Complete |
-| Русский | [README.ru.md](README.ru.md) | Complete |
-| 简体中文 | [README.zh-CN.md](README.zh-CN.md) | Complete |
+| Language | File |
+|----------|------|
+| Português (Brasil) | [README.pt-BR.md](README.pt-BR.md) — tradução completa do README |
+| Español | [README.es.md](README.es.md) — traducción completa |
+| Deutsch | [README.de.md](README.de.md) — vollständige Übersetzung |
+| Русский | [README.ru.md](README.ru.md) — полный перевод |
+| 简体中文 | [README.zh-CN.md](README.zh-CN.md) — 完整翻译 |
 
-English remains the canonical README at the repository root: [../../README.md](../../README.md).
+For the full documentation (architecture, guides, schemas), see the [English docs hub](../../docs/hub.md).  
+To add or update a translation, open a PR against the corresponding file.

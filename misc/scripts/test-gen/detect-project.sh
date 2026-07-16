@@ -2,9 +2,9 @@
 # Locate and validate a generated Nexus project.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEST_GEN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=env.sh
-source "${SCRIPT_DIR}/env.sh"
+source "${TEST_GEN_DIR}/env.sh"
 
 detect_project() {
   local project_arg="${1:-}"

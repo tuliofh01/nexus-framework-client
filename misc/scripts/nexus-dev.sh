@@ -17,9 +17,9 @@ Commands:
   docker           Run generate-in-docker.sh (pass args after --)
 
 Examples:
-  ./misc/scripts/dev/nexus-dev.sh compile
-  ./misc/scripts/dev/nexus-dev.sh generate -- --type desktop --name MyApp --dry-run
-  ./misc/scripts/dev/nexus-dev.sh docker -- desktop MyApp builds/framework/MyApp
+  ./misc/scripts/nexus-dev.sh compile
+  ./misc/scripts/nexus-dev.sh generate -- --type desktop --name MyApp --dry-run
+  ./misc/scripts/nexus-dev.sh docker -- desktop MyApp builds/framework/MyApp
 EOF
 }
 
@@ -42,7 +42,7 @@ case "${cmd}" in
     ;;
   docker)
     if [[ "${1:-}" == "--" ]]; then shift; fi
-    exec "${ROOT}/misc/scripts/dev/generate-in-docker.sh" "$@"
+    exec "${ROOT}/misc/scripts/generate-in-docker.sh" "$@"
     ;;
   -h|--help|help|"")
     usage

@@ -9,7 +9,7 @@ INTEGRITY RULE (for AI coding assistants):
   files (see .omo/plans/zig-integration-diagrams.md § Phase 6).
 
   To regenerate all SVGs:
-    $ python3 misc/scripts/generate-diagrams/generate-styled-diagrams.py
+    $ python3 misc/scripts/generate-diagrams.py
 
   New diagram functions: add a def new_diagram_name() that returns SVG string,
   then call it from __main__ and write the output to docs/assets/diagrams/.

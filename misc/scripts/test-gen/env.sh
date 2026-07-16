@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Shared environment for test-gen scripts.
 # Source after resolving SCRIPT_DIR:
-#   source "${TEST_GEN_COMMON}/env.sh"
+#   source "${SCRIPT_DIR}/env.sh"
 set -euo pipefail
 
-TEST_GEN_COMMON="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEST_GEN_ROOT="$(cd "${TEST_GEN_COMMON}/../.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEST_GEN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 NEXUS_ROOT="$(cd "${TEST_GEN_ROOT}/../.." && pwd)"
 
-export TEST_GEN_COMMON TEST_GEN_ROOT NEXUS_ROOT
+export SCRIPT_DIR TEST_GEN_ROOT NEXUS_ROOT
 export BUILDS_DIR="${NEXUS_ROOT}/builds/framework"
-export TEMPLATES_DIR="${TEST_GEN_COMMON}/templates"
+export TEMPLATES_DIR="${SCRIPT_DIR}/templates"
 
 # Optional client-setup env (JAVA_HOME for Android Gradle tests)
 CLIENT_SETUP_ENV="${NEXUS_ROOT}/misc/client-setup/env.sh"
