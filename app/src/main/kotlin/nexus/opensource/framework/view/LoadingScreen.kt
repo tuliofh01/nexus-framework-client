@@ -43,6 +43,8 @@ fun LoadingScreen(
     val brandColor = Color(0xFF6C63FF) // Nexus brand purple
     val bgColor = Color(0xFF1A1A2E)    // Dark background
 
+    val flamingoPink = Color(0xFFF38BA8)
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = bgColor,
@@ -52,6 +54,14 @@ fun LoadingScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // Flamingo mascot
+            FlamingoIcon(
+                modifier = Modifier.size(96.dp),
+                tint = flamingoPink,
+            )
+
+            Spacer(Modifier.height(16.dp))
+
             // Title
             Text(
                 text = "The Nexus Framework",

@@ -40,6 +40,6 @@ All C++ sources under `../src/` and `../shared/runtime/` are compiled with `zig 
 | Layer                                                            | What                                   | Language     |
 |-----------------------------------------------------------------|----------------------------------------|-------------|
 | Kotlin `AppCore.installPythonBridge`                             | JNI call → Zig `export fn`             | Kotlin → Zig |
-| Zig `Java_com_nexus_{{packageName}}_AppCore_installPythonBridge` | JNI entry point, delegates to C++      | Zig          |
-| C++ `c_install_python_bridge`                                    | Creates `NativePythonBridge`           | C++          |
-| C++ `NativePythonBridge`                                         | JNI callbacks to Kotlin `PythonBridge` | C++          |
+| Zig `Java_com_nexus_{{packageName}}_AppCore_installPythonBridge` | JNI entry point, stores bridge ref     | Zig          |
+| Zig `zig_python_greeting` / `zig_python_evaluate`                | C ABI exports called by C++            | Zig          |
+| C++ `PythonEngine`                                               | Calls Zig C ABI, no bridge classes     | C++20        |

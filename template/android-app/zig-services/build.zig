@@ -56,20 +56,8 @@ pub fn build(b: *std.Build) void {
         "runtime/zig_allocator.cppm",
     };
 
-    // ---- Shared runtime C++20 module implementation units ----
-    const shared_module_impl_sources = [_][]const u8{
-        "runtime/font_config.cpp",
-        "runtime/nexus_theme.cpp",
-        "runtime/script_archive.cpp",
-        "runtime/script_crypto.cpp",
-    };
-
-    // ---- JNI bridge C++ sources (no modules — hand-authored C++ JNI glue) ----
-    const jni_sources = [_][]const u8{
-        "jni/jni_bridge.cpp",
-        "jni/NativePythonBridge.cpp",
-        "jni/app_core.cpp",
-    };
+    // ---- Shared runtime is fully consolidated into .cppm files ----
+    // (no separate module implementation .cpp files needed)
 
     // ---- imgui bundle (fetched via build.zig.zon) ----
     const imgui_bundle = blk: {
@@ -126,9 +114,8 @@ pub fn build(b: *std.Build) void {
     for (shared_module_iface_sources) |src| {
         module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cppm_flags });
     }
-    for (shared_module_impl_sources) |src| {
-        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cpp_module_flags });
-    }
+    // (shared_module_impl_sources removed — all runtime modules are now
+    //  self-contained .cppm files that don't need separate impl files)
 
     module_lib.addIncludePath(src_root);
     module_lib.addIncludePath(shared_root.path(b, "runtime"));
@@ -156,15 +143,14 @@ pub fn build(b: *std.Build) void {
 
     // main.cpp imports C++20 modules compiled by module_lib
     lib.addCSourceFile(.{ .file = src_root.path(b, "main.cpp"), .flags = cpp_module_flags });
-    // JNI bridge files are regular C++ (no module imports)
-    for (jni_sources) |src| {
-        lib.addCSourceFile(.{ .file = b.path(src), .flags = &.{"-std=c++20"} });
-    }
+
+    // Note: JNI bridge is now pure Zig (jni/python_bridge.zig + jni/lua_bridge.zig).
+    // No C++ JNI files are compiled — the Zig library handles all JNI callbacks.
+    // See zig-services/jni/README.md for the C ABI interface docs.
 
     // Include paths
     lib.addIncludePath(src_root);
     lib.addIncludePath(shared_root.path(b, "runtime"));
-    lib.addIncludePath(b.path("jni"));
     lib.addIncludePath(imgui_bundle.getEmittedIncludeTree());
     lib.addIncludePath(b.pathJoin(&.{ b.pathSlice(imgui_bundle.getEmittedIncludeTree()), "backends" }));
     lib.addIncludePath(b.path("c_abi"));

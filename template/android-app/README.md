@@ -92,10 +92,11 @@ The bridge lives in `zig-services/jni/`:
 
 | File                     | Role                                                  |
 |-------------------------|------------------------------------------------------|
-| `jni_bridge.cpp`         | Zig JNI `export fn` entry points (called from Kotlin) |
-| `NativePythonBridge.cpp` | C++ bridge calling back into Kotlin `PythonBridge`    |
-| `app_core.cpp`           | `AppCore` native methods wrapping the bridge          |
-Edit C++ and Kotlin files in lockstep when adding new JNI methods — no IDL codegen, no regen script.
+| `python_bridge.zig`      | Pure-Zig JNI bridge — stores `JavaVM*`, bridge ref,  |
+|                          | method IDs; exports 5 C ABI functions                |
+| `lua_bridge.zig`         | Lua bridge JNI callbacks (optional, same pattern)    |
+
+The bridge was rewritten from 7 C++ files (`jni_bridge.cpp`, `app_core.cpp/.hpp`, `NativePythonBridge.cpp/.hpp`, `python_bridge.hpp`, `eval_result.hpp`) to a single pure-Zig file. C++ calls Zig C ABI functions directly — no `#include "app_core.hpp"`, no `setBridge()`, no `shared_ptr`. See `zig-services/jni/README.md` for the C ABI interface documentation.
 
 ---
 

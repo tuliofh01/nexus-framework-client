@@ -68,13 +68,8 @@ pub fn build(b: *std.Build) void {
         "runtime/zig_allocator.cppm",
     };
 
-    // ---- Shared runtime C++20 module implementation units ----
-    const shared_module_impl_sources = [_][]const u8{
-        "runtime/font_config.cpp",
-        "runtime/nexus_theme.cpp",
-        "runtime/script_archive.cpp",
-        "runtime/script_crypto.cpp",
-    };
+    // ---- Shared runtime is fully consolidated into .cppm files ----
+    // (no separate module implementation .cpp files needed)
 
     // ---- Standard C++ sources (no module declarations/imports) ----
     // These legacy .cpp files are used by pack_archive and smoke_test.
@@ -160,9 +155,8 @@ pub fn build(b: *std.Build) void {
     for (shared_module_iface_sources) |src| {
         module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cppm_flags });
     }
-    for (shared_module_impl_sources) |src| {
-        module_lib.addCSourceFile(.{ .file = shared_root.path(b, src), .flags = cpp_module_flags });
-    }
+    // (shared_module_impl_sources removed — all runtime modules are now
+    //  self-contained .cppm files that don't need separate impl files)
 
     module_lib.addIncludePath(src_root);
     module_lib.addIncludePath(shared_root.path(b, "runtime"));
@@ -176,6 +170,8 @@ pub fn build(b: *std.Build) void {
     if (pybind11_dep) |p| {
         module_lib.addIncludePath(p.path("include"));
     }
+
+    module_lib.defineCMacro("NXS_ZIG_LINKED", null);
 
     module_lib.linkLibrary(imgui_bundle);
     module_lib.linkLibrary(sdl3);

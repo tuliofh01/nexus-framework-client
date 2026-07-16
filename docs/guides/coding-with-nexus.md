@@ -75,7 +75,7 @@ Add a feature:
 
 ### Android (Chaquopy + Zig JNI)
 
-`PythonBridge.kt` defines the abstract interface. C++ `NativePythonBridge.cpp` calls back into it via JNI. `AppCore.installPythonBridge()` hands it to native code before `SDL_main`.
+`AppCore.installPythonBridge()` hands a `PythonBridge` jobject to Zig via JNI. Zig stores the `JavaVM*`, bridge reference, and method IDs in process-wide globals. C++ calls Zig C ABI functions (`zig_python_greeting`, `zig_python_evaluate`) which handle JNI thread attachment and method dispatch — no C++ bridge classes.
 
 ---
 

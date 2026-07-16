@@ -1,40 +1,56 @@
 //==============================================================================
-// nxs.android.python — Chaquopy/Djinni Python Facade (C++20 Module)
+// nxs.android.python — Chaquopy/Zig Python Facade (C++20 Module)
 //
 // ════════════════════════════════════════════════════════════════════════════
 // WHAT THIS MODULE DOES
 // ════════════════════════════════════════════════════════════════════════════
 //
-// Singleton facade over Chaquopy via the Djinni PythonBridge. C++ never
-// embeds CPython on Android — JVM owns the interpreter. The C++ side only
-// delegates calls through the bridge shared_ptr.
+// Singleton facade over Chaquopy via a pure-Zig JNI bridge. C++ never
+// embeds CPython on Android — JVM owns the interpreter. The C++ side
+// delegates calls through C ABI functions exported by the Zig JNI bridge
+// (zig-services/jni/python_bridge.zig).
 //
 // ════════════════════════════════════════════════════════════════════════════
-// SINGLETON PATTERN (Meyer's Singleton)
+// CALL CHAIN
 // ════════════════════════════════════════════════════════════════════════════
 //
-// PythonEngine::instance() returns a process-wide singleton. The Kotlin
-// MainActivity calls AppCore.installPythonBridge() to wire the Chaquopy
-// bridge before SDL_main() starts.
-//
-// The singleton is a Meyer's singleton:
-//   - Thread-safe in C++11+ (static local initialization is atomic)
-//   - Zero-cost when not used (no global constructor)
-//   - No manual cleanup (destructor runs at process exit)
+//   Kotlin MainActivity
+//     → AppCore.installPythonBridge(bridge)
+//       → JNI export: Java_com_nexus_AppCore_installPythonBridge (Zig)
+//         → stores JavaVM*, bridge ref, method IDs in Zig globals
+//   ... later, C++ frame:
+//     → PythonEngine::greeting("MyApp")
+//       → zig_python_greeting("MyApp")   (C ABI → Zig)
+//         → JNI CallObjectMethodA on bridge.greeting()
+//         → returns const char* (heap-allocated)
+//       → wraps in std::string, frees Zig allocation
 //
 // ════════════════════════════════════════════════════════════════════════════
-// MODERN C++ IDIOMS USED HERE
+// ZIG BRIDGE INTERFACE
 // ════════════════════════════════════════════════════════════════════════════
 //
-// static local          — Meyer's singleton (thread-safe, zero overhead)
-// std::shared_ptr<T>    — shared ownership of the bridge object
-// std::move             — transfers bridge ownership into the member
-// = delete              — Rule of Five: non-copyable, non-movable
-// [[nodiscard]]         — return values must be checked
-// constexpr             — (trivial accessors are implicitly constexpr)
-// trailing return       — auto fn() -> Type syntax
-// {} brace-init         — uniform initialization for member
-// noexcept              — on simple accessors (where safe)
+// The Zig bridge (python_bridge.zig) exports these C ABI functions:
+//
+//   bool zig_python_bridge_is_installed()
+//     → Returns true after Zig has stored the Kotlin bridge reference.
+//
+//   const char* zig_python_greeting(const char* name)
+//     → Calls bridge.greeting(name) via JNI.
+//     → Returns heap-allocated C string (caller must zig_free_string).
+//     → Returns nullptr if bridge not installed or JNI fails.
+//
+//   ZigEvalResult zig_python_evaluate(func, xmin, xmax, samples)
+//     → Calls bridge.evaluate(func, xmin, xmax, samples) via JNI.
+//     → Returns struct with heap-allocated arrays (caller must
+//       zig_free_eval_result).
+//
+//   void zig_free_string(const char* ptr)
+//     → Frees a string returned by zig_python_greeting.
+//
+//   void zig_free_eval_result(ZigEvalResult result)
+//     → Frees arrays inside an evaluation result.
+//
+// See zig-services/jni/README.md for full interface documentation.
 //
 // ════════════════════════════════════════════════════════════════════════════
 // DESKTOP VS ANDROID
@@ -45,51 +61,102 @@
 
 module;  // ── global module fragment (private to this TU) ──
 
-// ── Djinni bridge headers (not exported to importers) ──
+// ── Zig C ABI types (not exported to importers) ──
 //
-// These define nxs::bridge::PythonBridge (the abstract interface) and
-// AppCore (the JNI entry point). They are in the global module fragment
-// so importers never see them.
-#include "app_core.hpp"
-#include "python_bridge.hpp"
+// These mirror the extern struct definitions in python_bridge.zig.
+// The memory layout MUST match between Zig and C++ (both use C-compatible
+// struct layout). Fields are arranged to minimize padding.
+struct ZigEvalResult {
+    bool ok;
+    const char* error;
+    const double* xs;
+    int32_t xs_len;
+    const double* ys;
+    int32_t ys_len;
+};
+
+// ── Zig C ABI function declarations (private to this module) ──
+//
+// These are exported by zig-services/jni/python_bridge.zig. They handle
+// all JNI thread attachment, method lookup, and field extraction. The
+// C++ side only needs to call them and free the results.
+extern "C" {
+    [[nodiscard]] bool zig_python_bridge_is_installed() noexcept;
+    [[nodiscard]] const char* zig_python_greeting(const char* name) noexcept;
+    [[nodiscard]] ZigEvalResult zig_python_evaluate(
+        const char* func, double xmin, double xmax, int32_t samples) noexcept;
+    void zig_free_string(const char* ptr) noexcept;
+    void zig_free_eval_result(ZigEvalResult result) noexcept;
+}
 
 // ── Standard library (private to this module) ──
-#include <memory>   // std::shared_ptr for bridge ownership
-#include <string>   // std::string for greeting and errors
-#include <utility>  // std::move for ownership transfer
+#include <cstdint>   // int32_t
+#include <cstring>   // std::strlen
+#include <string>     // std::string for greeting and errors
+#include <string_view>// std::string_view for API params
+#include <vector>     // std::vector for evaluate result arrays
 
 export module nxs.android.python;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// nxs::runtime — EvalResult (C++21owned wrapper)
+// ═══════════════════════════════════════════════════════════════════════════
+
+export namespace nxs::runtime {
+
+/// Result of evaluating a Python function — owned C++ types.
+/// Constructed from a ZigEvalResult via fromZig(), which takes ownership
+/// of the heap-allocated data and frees the Zig allocation.
+/// Rule of Five: default copy/move/destroy (members are self-owned).
+export struct EvalResult {
+    bool ok{false};
+    std::string error{};
+    std::vector<double> xs{};
+    std::vector<double> ys{};
+
+    /// Adopt heap data from a ZigEvalResult into owned C++ containers.
+    /// Frees the Zig-allocated memory after copying.
+    static auto fromZig(ZigEvalResult z) -> EvalResult {
+        auto r = EvalResult{};
+        r.ok = z.ok;
+        if (z.error) r.error = std::string(z.error);
+        if (z.xs && z.xs_len > 0) {
+            r.xs.assign(z.xs, z.xs + z.xs_len);
+        }
+        if (z.ys && z.ys_len > 0) {
+            r.ys.assign(z.ys, z.ys + z.ys_len);
+        }
+        zig_free_eval_result(z);
+        return r;
+    }
+};
+
+}  // namespace nxs::runtime
 
 // ═══════════════════════════════════════════════════════════════════════════
 // nxs::controller — Python Delegation Facade (Android)
 // ═══════════════════════════════════════════════════════════════════════════
 
-namespace {
-// Type alias: resolves the fully qualified C++ class for PythonBridge.
-// In the global Djinni header it's nxs::bridge::PythonBridge. We alias
-// it here for brevity and to limit the dependency to a single using decl.
-using PythonBridgeImpl = nxs::bridge::PythonBridge;
-}  // anonymous namespace
-
 export namespace nxs::controller {
 
-/// Singleton facade over Chaquopy.
+/// Singleton facade over Chaquopy via the Zig JNI bridge.
 ///
 /// Usage:
-///   PythonEngine::instance().setBridge(myBridge);
-///   auto greeting = PythonEngine::instance().greeting("MyApp");
+///   auto result = PythonEngine::instance().greeting("MyApp");
+///   auto eval = PythonEngine::instance().evaluate("sin", 0.0, 3.14, 100);
 ///
-/// RAII: Meyer's singleton (thread-safe in C++11+). The shared_ptr
-///       to PythonBridge is non-owning from the C++ side — the Kotlin
-///       side holds the primary reference.
+/// The bridge is installed by the Kotlin MainActivity before SDL_main()
+/// starts — no manual setup needed in C++.
+///
+/// RAII: Meyer's singleton (thread-safe in C++11+). The bridge reference
+///       lives in Zig process-wide globals, not C++ shared_ptr.
 ///
 /// Non-copyable, non-movable: singleton by design.
 export class PythonEngine {
 public:
     // ── Singleton access ───────────────────────────────────────────────
     //
-    // Meyer's singleton: `static PythonEngine engine;` inside a function
-    // is guaranteed to be initialized exactly once, even across threads
+    // Meyer's singleton: static local initialization is thread-safe
     // (C++11 §6.7/4). Returns a reference (caller cannot delete).
 
     [[nodiscard]] static auto instance() -> PythonEngine& {
@@ -97,38 +164,54 @@ public:
         return engine;
     }
 
-    // ── Bridge management ──────────────────────────────────────────────
-
-    /// Set the Chaquopy/Djinni bridge.
-    ///
-    /// Called by AppCore::install_python_bridge when the Kotlin
-    /// MainActivity starts — always before SDL_main().
-    ///
-    /// std::shared_ptr: shared ownership. The Kotlin side keeps a
-    /// reference too. When both drop the reference, the bridge is
-    /// destroyed.
-    ///
-    /// std::move: transfers ownership of the shared_ptr into m_bridge.
-    /// After the move, `bridge` is null.
-    void setBridge(std::shared_ptr<PythonBridgeImpl> bridge) noexcept {
-        m_bridge = std::move(bridge);
-    }
-
     // ── Public API ─────────────────────────────────────────────────────
 
-    /// Delegate to the bridge's greeting() method.
+    /// Delegate to the Zig bridge's greeting() method.
     ///
-    /// If the bridge is not installed, sets an error and returns empty.
-    /// std::string param: taken by value (the bridge expects a string).
-    auto greeting(const std::string& name) noexcept -> std::string {
-        if (!m_bridge) {
+    /// If the bridge is not installed, sets lastError() and returns empty.
+    /// std::string_view param: accepts "..."sv, const char*, and std::string
+    /// without allocation. Zig expects a null-terminated C string.
+    auto greeting(std::string_view name) noexcept -> std::string {
+        if (!zig_python_bridge_is_installed()) {
             m_lastError =
-                "PythonBridge not installed (call AppCore.installPythonBridge first)";
+                "PythonBridge not installed (MainActivity must call AppCore.installPythonBridge first)";
             return {};
         }
-        const auto result = m_bridge->greeting(name);
+        // zig_python_greeting expects null-terminated C string; string_view
+        // may not be null-terminated, so we allocate a temporary.
+        // If the caller passes "..."sv (a string literal), it happens to
+        // be null-terminated, but we don't rely on that.
+        const auto cname = std::string{name};
+        const auto* cstr = zig_python_greeting(cname.c_str());
+        if (!cstr) {
+            m_lastError = "Zig bridge returned null from greeting";
+            return {};
+        }
+        std::string result(cstr);
+        zig_free_string(cstr);
         m_lastError.clear();
         return result;
+    }
+
+    /// Evaluate a Python function via the Zig bridge.
+    ///
+    /// Returns a nxs::runtime::EvalResult with ok, error, xs, and ys.
+    /// xs and ys are heap-allocated by Zig and adopted into std::vector
+    /// by fromZig().
+    auto evaluate(
+        std::string_view function_name,
+        double x_min, double x_max,
+        int32_t samples) noexcept -> nxs::runtime::EvalResult
+    {
+        if (!zig_python_bridge_is_installed()) {
+            m_lastError = "PythonBridge not installed";
+            return {false, "PythonBridge not installed", {}, {}};
+        }
+        const auto cname = std::string{function_name};
+        const auto zr = zig_python_evaluate(
+            cname.c_str(), x_min, x_max, samples);
+        m_lastError.clear();
+        return nxs::runtime::EvalResult::fromZig(zr);
     }
 
     /// The last error message, or empty if no error.
@@ -138,8 +221,6 @@ public:
 
 private:
     // ── Private constructor (singleton) ────────────────────────────────
-    //
-    // Construction does nothing — the bridge is set later by setBridge().
 
     PythonEngine() = default;
     ~PythonEngine() = default;
@@ -151,28 +232,7 @@ private:
     PythonEngine(PythonEngine&&) = delete;
     PythonEngine& operator=(PythonEngine&&) = delete;
 
-    std::shared_ptr<PythonBridgeImpl> m_bridge;  ///< Set by setBridge()
-    std::string m_lastError;                      ///< Last error message
+    std::string m_lastError{};  ///< Last error message
 };
 
 }  // namespace nxs::controller
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Djinni AppCore export (wires the Chaquopy bridge)
-// ═══════════════════════════════════════════════════════════════════════════
-//
-// This function is called by the Djinni-generated JNI glue when the Kotlin
-// MainActivity starts. It connects the Chaquopy bridge to our C++ singleton.
-// The bridge is a std::shared_ptr because the Kotlin side may also keep a
-// reference.
-
-export namespace nxs::bridge {
-
-void AppCore::install_python_bridge(
-    const std::shared_ptr<PythonBridge>& bridge) {
-    // Forward to the singleton — the actual bridge is managed by the
-    // Kotlin Chaquopy integration.
-    nxs::controller::PythonEngine::instance().setBridge(bridge);
-}
-
-}  // namespace nxs::bridge

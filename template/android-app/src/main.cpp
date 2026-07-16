@@ -24,6 +24,22 @@ import nexus.shared.theme;
 #include <GLES3/gl3.h>
 
 #include <cstdio>
+#include <memory>
+
+struct SdlWindowDeleter {
+    void operator()(SDL_Window* w) const noexcept {
+        if (w) SDL_DestroyWindow(w);
+    }
+};
+struct SdlGlContextDeleter {
+    void operator()(SDL_GLContext c) const noexcept {
+        if (c) SDL_GL_DestroyContext(c);
+    }
+};
+
+using UniqueWindow   = std::unique_ptr<SDL_Window, SdlWindowDeleter>;
+using UniqueGlContext = std::unique_ptr<std::remove_pointer_t<SDL_GLContext>,
+                                        SdlGlContextDeleter>;
 
 int main(int, char**) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -36,42 +52,49 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                         SDL_GL_CONTEXT_PROFILE_ES);
 
-    SDL_Window* window =
+    auto window = UniqueWindow(
         SDL_CreateWindow("{{windowTitle}}", 1280, 720,
                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE |
-                         SDL_WINDOW_HIGH_PIXEL_DENSITY);
+                         SDL_WINDOW_HIGH_PIXEL_DENSITY));
     if (!window) {
         return 1;
     }
-    SDL_GLContext glContext = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, glContext);
+
+    auto glContext = UniqueGlContext(
+        static_cast<std::remove_pointer_t<SDL_GLContext>>(
+            SDL_GL_CreateContext(window.get())));
+    if (!glContext) {
+        std::fprintf(stderr, "SDL_GL_CreateContext failed\n");
+        return 1;
+    }
+
+    SDL_GL_MakeCurrent(window.get(), glContext.get());
     SDL_GL_SetSwapInterval(1);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     nxs::runtime::NexusTheme::applyFromFile(
         "assets/themes/nexus-field.json");
-    ImGui_ImplSDL3_InitForOpenGL(window, glContext);
+    ImGui_ImplSDL3_InitForOpenGL(window.get(), glContext.get());
     ImGui_ImplOpenGL3_Init("#version 300 es");
     nxs::view::FontConfig::setIconScale(1.25f);
     nxs::view::FontConfig::loadNerdFont(ImGui::GetIO());
 
-    nxs::model::AppModel model;
-    nxs::controller::PythonEngine& python =
-        nxs::controller::PythonEngine::instance();
-    nxs::controller::AppController controller(model, python);
-    nxs::view::AppView view(controller);
-    nxs::view::LuaPanels luaPanels(controller);
+    const auto model    = nxs::model::AppModel{};
+    auto& python        = nxs::controller::PythonEngine::instance();
+    auto controller     = nxs::controller::AppController{model, python};
+    auto view           = nxs::view::AppView{controller};
+    auto luaPanels      = nxs::view::LuaPanels{controller};
     luaPanels.loadScripts();
 
-    nxs::service::FlowRunner flowRunner(controller);
+    auto flowRunner     = nxs::service::FlowRunner{controller};
     flowRunner.load("nxs_config.json", "flows/flows.json");
     flowRunner.onStartup();
 
     controller.refresh();
     flowRunner.onEvent("app.ready");
 
-    bool running = true;
+    auto running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -85,20 +108,20 @@ int main(int, char**) {
         view.draw();
         luaPanels.drawFrame();
         ImGui::Render();
-        int w = 0, h = 0;
-        SDL_GetWindowSizeInPixels(window, &w, &h);
+        auto w = 0, h = 0;
+        SDL_GetWindowSizeInPixels(window.get(), &w, &h);
         glViewport(0, 0, w, h);
         glClearColor(0.08f, 0.09f, 0.11f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        SDL_GL_SwapWindow(window);
+        SDL_GL_SwapWindow(window.get());
     }
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
-    SDL_GL_DestroyContext(glContext);
-    SDL_DestroyWindow(window);
+    glContext.reset();
+    window.reset();
     SDL_Quit();
     return 0;
 }

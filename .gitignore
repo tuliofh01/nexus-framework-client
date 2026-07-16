@@ -79,6 +79,8 @@ builds/framework/*
 !builds/framework/.gitkeep
 !builds/framework/_fixture/
 !builds/framework/_fixture/**
+!builds/framework/PlotterApp/
+!builds/framework/PlotterApp/**
 !builds/README.md
 
 ### Secrets / local env (never commit) ###

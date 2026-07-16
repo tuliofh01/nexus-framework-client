@@ -2,6 +2,23 @@
 
 Guide for AI coding assistants working in **this** Kotlin/Compose Desktop + generation pipeline repo.
 
+## Summary
+
+### Done
+- C++20 modernization of all non-modular `.cpp` files: trailing return types, `[[nodiscard]]`, `std::string_view`, `noexcept`, `constexpr`, `std::ranges::copy`, concept constraints, `std::source_location`, RAII `unique_ptr` deleters for SDL resources.
+- Shared runtime module consolidation: all 7 non-user-editable `.cppm` files (`font_config`, `nexus_theme`, `paths`, `script_archive`, `script_crypto`, `script_protection`, `zig_allocator`) are now fully self-contained — merged implementation from `.cpp` files, deleted separate module impl units, added detailed educational comments.
+- Stale files deleted: `font_config.cpp`, `nexus_theme.cpp`, `script_archive.cpp`, `script_crypto.cpp` (module impls), `FontConfig.cpp`, `NexusTheme.cpp`, `ZigAllocator.cpp` (orphaned legacy, `.hpp` files already removed).
+- Recreated `ScriptArchive.hpp` and `ScriptCrypto.hpp` in `runtime/` for the standalone `pack_archive` tool (legacy non-module build).
+- Both `build.zig` files updated: `shared_module_impl_sources` removed, only `legacy_shared_sources` kept for `pack_archive`.
+- `ScriptProtectionConfig.hpp.in` kept as-is (template for generator output).
+- Flamingo icon (SVG + Compose Canvas composable) added to client LoadingScreen.
+- Main README updated: C++20 modules section mentions self-contained `.cppm` files; added "Self-contained modules with built-in documentation" subsection; Project evolution Phase 5 expanded with template work; "Where we are today" table updated with `C++20 idioms`, `Shared runtime`, and `SDL resource mgmt` rows; version corrected to v1.0.1 throughout.
+- `./gradlew :core:compileKotlin` passes.
+- Android JNI C++ bridge rewritten from 7 files (`jni_bridge.cpp`, `app_core.cpp/.hpp`, `NativePythonBridge.cpp/.hpp`, `python_bridge.hpp`, `eval_result.hpp`) into pure-Zig `python_bridge.zig`: stores `JavaVM*`, bridge `jobject`, method IDs in globals; exports 5 C ABI functions (`zig_python_bridge_is_installed`, `zig_python_greeting`, `zig_python_evaluate`, `zig_free_string`, `zig_free_eval_result`); `ZigEvalResult` `extern struct` with `std.c.malloc` heap memory. `PythonEngine.cppm` updated to call Zig C ABI directly (no `#include "app_core.hpp"`, no `setBridge()`, no `shared_ptr`). All 7 C++ files deleted from `jni/`. `build.zig` cleaned up: removed `jni_sources` array, compilation loop, and include path. Created `jni/README.md` documenting C ABI interface, `ZigEvalResult` layout, memory ownership rules, thread safety, and upgrade migration.
+
+### In Progress / Blocked
+- _(none)_
+
 ## What this repo is
 
 Compose Desktop client + Gradle scaffolder for **The Nexus Framework**. It generates native C++/Lua/Python projects from bundled templates; it does not run the generated apps.

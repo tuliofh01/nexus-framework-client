@@ -1,6 +1,9 @@
 package nexus.opensource
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.Modifier
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +26,7 @@ import nexus.opensource.framework.view.FlowsEditorScreen
 import nexus.opensource.framework.view.GenerateProjectScreen
 import nexus.opensource.framework.view.LoadingScreen
 import nexus.opensource.framework.view.TestRunnerPanel
+import nexus.opensource.framework.view.WhatsNewDialog
 
 sealed interface AppScreen {
     data object Loading : AppScreen
@@ -41,6 +45,7 @@ fun main() = application {
         title = NexusBranding.windowTitle("Nexus Framework Client"),
     ) {
         var screen: AppScreen by remember { mutableStateOf(AppScreen.Loading) }
+        var showWhatsNew by remember { mutableStateOf(true) }
         val loadingController = remember { LoadingController() }
         val generateController = remember { GenerateController() }
         val debuggerService = remember { DebuggerService() }
@@ -51,9 +56,16 @@ fun main() = application {
                     controller = loadingController,
                     onComplete = { screen = AppScreen.Dashboard },
                 )
-                AppScreen.Dashboard -> DashboardScreen(
-                    onNavigate = { screen = it },
-                )
+                AppScreen.Dashboard -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        DashboardScreen(
+                            onNavigate = { screen = it },
+                        )
+                        if (showWhatsNew) {
+                            WhatsNewDialog(onDismiss = { showWhatsNew = false })
+                        }
+                    }
+                }
                 AppScreen.Generate -> GenerateProjectScreen(
                     controller = generateController,
                     onBack = { screen = AppScreen.Dashboard },

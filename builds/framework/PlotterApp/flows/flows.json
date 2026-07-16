@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "flows": [
+    {
+      "id": "startup-log",
+      "name": "Startup log",
+      "enabled": true,
+      "mode": "triggered",
+      "trigger": { "type": "startup" },
+      "steps": [
+        { "type": "invoke", "target": "nxs.log", "args": ["PlotterApp started"] }
+      ]
+    },
+    {
+      "id": "manual-trigger",
+      "name": "Manual increment",
+      "enabled": true,
+      "mode": "triggered",
+      "trigger": { "type": "event", "name": "app.ready" },
+      "steps": [
+        { "type": "invoke", "target": "nxs.log", "args": ["App ready"] }
+      ]
+    }
+  ]
+}

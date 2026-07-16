@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <rect width="100%" height="100%" fill="#1e1e2e"/>
+  <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
+  <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
+  <circle cx="34" cy="18" r="5" fill="#fab387"/>
+  <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
+  <text x="300" y="24" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">Debugger — Pattern-Based Log Scanner</text>
+
+  <!-- Filter bar -->
+  <rect x="20" y="55" width="560" height="40" rx="6" fill="#313244" stroke="#45475a" stroke-width="1"/>
+  <text x="36" y="80" font-family="monospace" font-size="12" fill="#a6adc8">&#x1f50d; Filter: [error] [src/controller/]</text>
+  <rect x="420" y="60" width="60" height="28" rx="4" fill="#89b4fa"/>
+  <text x="450" y="79" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#1e1e2e" font-weight="bold">Scan</text>
+  <rect x="490" y="60" width="70" height="28" rx="4" fill="#45475a"/>
+  <text x="525" y="79" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">Clear</text>
+
+  <!-- Results header -->
+  <rect x="20" y="100" width="560" height="30" rx="4" fill="#313244"/>
+  <text x="36" y="120" font-family="sans-serif" font-size="11" font-weight="bold" fill="#a6adc8">Log Entries (3 matches)</text>
+  <text x="540" y="120" text-anchor="end" font-family="sans-serif" font-size="10" fill="#585b70">Live: ON</text>
+
+  <!-- Result 1 -->
+  <rect x="20" y="135" width="560" height="55" rx="4" fill="#2a2a3e"/>
+  <rect x="20" y="135" width="4" height="55" rx="2" fill="#f38ba8"/>
+  <text x="36" y="154" font-family="monospace" font-size="11" fill="#f38ba8">[ERROR]</text>
+  <text x="100" y="154" font-family="monospace" font-size="11" fill="#cdd6f4">PythonEngine.cpp:42</text>
+  <text x="36" y="176" font-family="monospace" font-size="10" fill="#a6adc8">Python import failed: module 'numpy' not found</text>
+
+  <!-- Result 2 -->
+  <rect x="20" y="195" width="560" height="55" rx="4" fill="#2a2a3e"/>
+  <rect x="20" y="195" width="4" height="55" rx="2" fill="#fab387"/>
+  <text x="36" y="214" font-family="monospace" font-size="11" fill="#fab387">[WARN]</text>
+  <text x="100" y="214" font-family="monospace" font-size="11" fill="#cdd6f4">LuaPanels.cpp:28</text>
+  <text x="36" y="236" font-family="monospace" font-size="10" fill="#a6adc8">Script 'user_panel' not found in lua.dat, checking fallback</text>
+
+  <!-- Result 3 -->
+  <rect x="20" y="255" width="560" height="55" rx="4" fill="#2a2a3e"/>
+  <rect x="20" y="255" width="4" height="55" rx="2" fill="#a6e3a1"/>
+  <text x="36" y="274" font-family="monospace" font-size="11" fill="#a6e3a1">[INFO]</text>
+  <text x="100" y="274" font-family="monospace" font-size="11" fill="#cdd6f4">PlotController.cpp:91</text>
+  <text x="36" y="296" font-family="monospace" font-size="10" fill="#a6adc8">Curve 'sine' sampled: 1000 points in 2.3ms</text>
+
+  <!-- Status bar -->
+  <rect x="20" y="325" width="560" height="35" rx="4" fill="#313244"/>
+  <text x="36" y="348" font-family="sans-serif" font-size="10" fill="#585b70">Pattern: (error|warn|info) [src/*]</text>
+  <text x="540" y="348" text-anchor="end" font-family="sans-serif" font-size="10" fill="#a6e3a1">&#x25cf; 3 results</text>
+</svg>
