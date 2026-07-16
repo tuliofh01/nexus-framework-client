@@ -5,7 +5,7 @@
 # The Nexus Framework — Native App Generator: C++ + Lua + Python from Visual Blueprints
 
 <p align="center">
-  <img src="docs/assets/nexus-logo.png" alt="Nexus Framework — Native C++ Lua Python Project Generator" width="240" />
+  <img src="docs/assets/nexus-logo.png" alt="Nexus Framework" width="240" />
 </p>
 
 <p align="center"><strong>🧩 Sketch an app as a graph. Get a compiled native binary. No browser. No Electron. No cloud.</strong></p>
@@ -21,101 +21,100 @@
   <a href="misc/translations/README.zh-CN.md">简体中文</a>
 </p>
 
-
 <p align="center">
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache License 2.0" /></a>
   <a href="https://kotlinlang.org/"><img src="https://img.shields.io/badge/Kotlin-2.4-purple?style=flat-square&logo=kotlin" alt="Kotlin 2.4" /></a>
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3 Cross Platform" /></a>
-  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.14-orange?style=flat-square&logo=zig" alt="Zig 0.14 Native Builds" /></a>
-  <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui Native UI" /></a>
+  <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.14-orange?style=flat-square&logo=zig" alt="Zig 0.14" /></a>
+  <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui" /></a>
   <a href="#"><img src="https://img.shields.io/badge/version-1.0.1-blueviolet?style=flat-square" alt="Version 1.0.1" /></a>
 </p>
 
 > **🚀 Zero to binary in five minutes**  
 > `zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh && ./gradlew :app:run`  
-> No Chrome download. No Docker. No npm install. No cloud dependency.  
-> Just a native SDL3 binary you control.
+> No Chrome. No Docker. No npm. No cloud. Just a native SDL3 binary you control.
 
 ---
 
-## Table of Contents
+## 📖 Table of Contents
 
-- [What is Nexus?](#what-is-nexus)
-- [Why native matters](#why-native-matters)
-- [What can you build with it?](#what-can-you-build-with-it)
-- [Architecture overview](#architecture-overview)
-- [Interface overview — mockups](#interface-overview--mockups)
-- [The generation pipeline](#the-generation-pipeline)
-- [Blueprint & flows](#blueprint--flows)
-- [Building your app](#building-your-app)
-- [Nexus vs the alternatives](#nexus-vs-the-alternatives)
-- [How progressive enhancement works](#how-progressive-enhancement-works)
-- [Performance & footprint](#performance--footprint)
-- [Quick start](#quick-start)
-- [The full workflow](#the-full-workflow)
-- [Who is this for?](#who-is-this-for)
-- [What makes it special](#what-makes-it-special)
-- [The Zig story](#the-zig-story)
-- [Community & contributions](#community--contributions)
-- [The misc/ folder](#the-misc-folder)
-- [Roadmap](#roadmap)
-- [Docs & resources](#docs--resources)
-- [Copyright & ownership model](#copyright--ownership-model)
-- [See also](#see-also)
+<!-- This avoids the ToC being completely massive; sections below are the main beats. -->
+
+| # | Section | Vibe |
+|:--|:--------|:-----|
+| 1 | [🎯 What is Nexus?](#-what-is-nexus) | The pitch, the promise, the binary |
+| 2 | [⚡ Why native matters](#-why-native-matters) | Web shell tax vs real performance |
+| 3 | [🎨 What you can build](#-what-you-can-build) | Templates in action |
+| 4 | [🧠 Architecture](#-architecture) | Layers, blueprint, flow, polyglot design |
+| 5 | [🛠️ Build & ship](#-build--ship) | Generate, code, compile, deploy |
+| 6 | [🥊 Nexus vs the alternatives](#-nexus-vs-the-alternatives) | Electron, Tauri, Flutter, n8n, bare CMake |
+| 7 | [💎 Under the hood](#-under-the-hood) | C++20, Zig, evolution, where we are |
+| 8 | [📚 Community & docs](#-community--docs) | Contribute, misc, roadmap, license |
 
 ---
 
-## What is Nexus?
+## 🎯 What is Nexus?
 
-**Nexus makes native app development as simple as sketching a diagram.** You draw your app's architecture as a graph — add a UI page, drop in a Python module, wire in some Lua scripting — and Nexus writes out a complete, buildable project. No hand-rolling build systems. No wiring language bridges. No fighting with CMake.
+> **A code generator that turns a visual graph into a native binary.** No browser, no Electron, no cloud — just C++, Lua, Python, and Zig compiled down to a 3 MB executable that boots in 200 ms.
 
-**It works for any app, simple or complex:**
+You sketch your app's architecture as a directed graph: drop in a UI page, wire a Python module for analytics, connect a Lua panel for live scripting, define automations in a flow file. Nexus reads that graph and writes out a complete, buildable project tree. No hand-rolling build systems. No wiring language bridges. No CMake. No ceremony.
 
-- **Simple app** — A C++ counter with ImGui? Generate it in one command. The template gives you SDL3 windowing, input handling, and a working UI loop. Add your logic, build, ship. You don't need to understand half the stack to get a working binary.
-- **Complex app** — Need Python analytics in-process? Lua panels that reload at runtime? TypeScript UI that lowers to native widgets? Add nodes to your blueprint, re-generate. Each layer stacks without breaking what came before. When you need the performance, it's there — 3 MB binary, 200 ms boot, zero-copy Python interop.
+**Simple when you want it.** A counter app with ImGui? One `generate` command. You get SDL3 windowing, input handling, a working UI loop — add your logic, `zig build`, ship. You don't need to understand the whole stack.
 
-**This is the core idea: Nexus is simple enough that a single-node C++ app makes sense, and powerful enough that a 7-language polyglot app with runtime flows doesn't feel like a hack.** You don't adopt the whole stack. You start where you're comfortable and expand only when you need to. The generated project is always a normal, editable Zig/C++ tree — no framework lock-in at any stage.
+**Powerful when you need it.** Python analytics in-process. Lua panels that hot-reload. TypeScript UI that lowers to native ImGui calls. Add a node to the blueprint, re-generate, the layer stacks on top of what you already had. Seven languages, one process, zero serialization overhead.
 
-**The result is a real native binary:**
-- **3–20 MB** — no Chromium, no Node.js, no VM tax
-- **Boots in under 200 ms** straight to an interactive ImGui frame
-- **15–40 MB RAM at idle** — leaves headroom for your data
-- **Works fully offline** — no telemetry, no cloud dependency
-- **Cross-compilable** from Linux to Windows in one Zig command
+**The blueprint is optional the moment you outgrow it.** The generated project is a normal Zig/C++ tree — edit by hand, add dependencies, restructure freely. No lock-in, no framework runtime to ship, no vendor handcuffs.
 
-**Nexus is not a workflow engine** (like n8n or Langflow). Those connect cloud APIs at runtime. Nexus generates a native desktop or Android binary from your blueprint — same visual graph paradigm, completely different output.
+### 👤 Who is this for?
 
-**Nexus is not an Electron alternative.** Electron puts a browser around your content. Nexus generates native code from a blueprint. One is a runtime; the other is a code generator.
+| You are... | Why Nexus fits |
+|:-----------|:---------------|
+| **Building a desktop or Android app** | From data plotter to multi-engine trading terminal |
+| **Tired of the Electron tax** | 3–20 MB binary, < 200 ms boot, 15–40 MB RAM at idle |
+| **Valuing simplicity** | One command generates a project; one language (Zig) replaces four build tools |
+| **Needing multiple languages in one process** | C++ for speed, Python for analysis, Lua for scripting, TS for UI — all in-process |
+| **Working offline** | Factory floor, boat, field, tablet without connectivity |
+| **Done hand-rolling CMake + pybind11 + sol2** | Templates own that complexity, you own your domain logic |
 
----
+### The only genuine gaps
 
-## Why native matters
-
-The software industry spent a decade convincing itself that shipping a browser is an acceptable way to deliver a desktop app. For chat clients and CRUD dashboards, that trade-off works. But a whole category of software needs more — and the web shell tax becomes a dealbreaker:
-
-- **Trading terminals** that tick at 60 Hz and process market data in-process
-- **Scientific instruments** where a 200 MB installer won't fit on the embedded target
-- **Robotics control panels** that need direct serial port and GPU access
-- **Field-deployed Android tablets** running ML inference offline
-- **Data acquisition tools** that must boot and capture before the operator finishes walking to the machine
-
-| What matters          | Web shell tax                  | Nexus native                     |
-|----------------------:|:------------------------------|:---------------------------------|
-| **Install size**       | 120–200 MB (Chromium)         | **3–20 MB** (SDL3 + your code)   |
-| **Cold start**         | 2–8 seconds (renderer)        | **< 200 ms** (no sandbox)        |
-| **RAM at idle**        | 150–500 MB                    | **15–40 MB**                     |
-| **GPU access**         | WebGL (limited)               | **Vulkan / GLES / Metal native** |
-| **File system**        | Sandboxed, async, mediated    | **POSIX / Win32 direct**         |
-| **Offline**            | Cache-manifest dance          | **Always offline by default**    |
-| **Build determinism**  | npm roulette                  | **Pinned toolchain, offline**    |
-**Nexus exists for the apps where native performance is the requirement, not a nice-to-have.** If you're shipping an Electron wrapper around a web app and your users are happy, Nexus is not for you. If you're fighting Chromium's memory allocator on a sensor-processing app, read on.
+| Not ready yet | Status |
+|:-------------|:-------|
+| 🍏 iOS support | v0.5+ (not on current roadmap) |
+| 🎨 Pixel-perfect marketing UIs | ImGui is improving, not CSS |
+| 🐍 Pure-Python toolkit | Nexus expects C++ at the core |
+| 📖 Beginner-friendly docs | Working on it — PRs welcome |
 
 ---
 
-## What can you build with it?
+## ⚡ Why native matters
+
+The software industry spent a decade convincing itself that shipping a browser is an acceptable way to deliver a desktop app. For chat clients and CRUD dashboards that trade-off works. But a whole category of software needs more — and the web shell tax becomes a dealbreaker:
+
+- 📊 **Trading terminals** that tick at 60 Hz and process market data in-process
+- 🔬 **Scientific instruments** where a 200 MB installer won't fit on the embedded target
+- 🤖 **Robotics control panels** that need direct serial port and GPU access
+- 📱 **Field-deployed Android tablets** running ML inference offline
+- 📡 **Data acquisition tools** that must boot and capture before the operator finishes walking to the machine
+
+| What matters | Electron / Tauri / browser shell | Nexus native |
+|:-------------|:----------------------------------|:-------------|
+| **Install size** | 120–200 MB (Electron) / 5–15 MB (Tauri) | **3–20 MB** (SDL3 + your code) |
+| **Cold start** | 2–8 s (Electron) / 1–2 s (Tauri) | **< 200 ms** (no sandbox) |
+| **RAM at idle** | 150–500 MB (Electron) / 50–100 MB (Tauri) | **15–40 MB** |
+| **GPU access** | WebGL (limited) / WebView mediated | **Vulkan / GLES / Metal** |
+| **File system** | Sandboxed, async, mediated | **POSIX / Win32 direct** |
+| **Offline** | Cache-manifest dance | **Always offline by default** |
+| **Build determinism** | npm / cargo roulette | **Pinned toolchain, offline** |
+
+**Nexus exists for the apps where native performance is a requirement, not a nice-to-have.** If you're shipping an Electron or Tauri wrapper around a web app and your users are happy, Nexus is not for you. If you're fighting Chromium's memory allocator on a sensor-processing app — read on.
+
+---
+
+## 🎨 What you can build
 
 | Your goal...                                                   | What you get                                                                    |
-|--------------------------------------------------------------:|:-------------------------------------------------------------------------------|
+|:--------------------------------------------------------------|:-------------------------------------------------------------------------------|
 | **Plot waveforms with live Lua scripting**                     | C++20 data model + ImPlot canvas + Lua console + Python FFT — one binary        |
 | **Field-deploy an Android tablet with ML inference**           | Touch SDL3/GLES + Chaquopy Python + Zig JNI bridge to native sensors            |
 | **Build a configurable dashboard with hot reload**             | Blueprint nodes per panel + `flows.json` automations + Lua at runtime           |
@@ -146,6 +145,8 @@ This is where the magic happens. The `ProjectGenerator` reads a `blueprint.json`
 
 The generation is **deterministic** — same blueprint + same template version = identical output tree, every time. This makes it CI-friendly and auditable.
 
+![Generation pipeline — use cases from design through build](docs/assets/diagrams/generation-builds-flow.svg)
+
 ### Layer 3: Runtime (SDL3 + ImGui + polyglot bridges)
 
 The generated app runs as a native SDL3 process with:
@@ -158,18 +159,24 @@ The generated app runs as a native SDL3 process with:
 
 The full architecture — from client through generation to runtime:
 
-![Nexus Full-Stack Architecture — Compose Desktop Client to SDL3 Runtime](docs/assets/diagrams/full-stack-architecture.svg)
+![Nexus Full-Stack Architecture — system context with actors and components](docs/assets/diagrams/full-stack-architecture.svg)
 
 Desktop vs Android runtime — same blueprint, different Python bridge:
 
 ![Desktop vs Android Runtime — Shared MVC with pybind11 vs Chaquopy + Zig JNI](docs/assets/diagrams/desktop-vs-android-runtime.svg)
+
+### Tech stack — what each layer owns
+
+One toolchain, two targets — the complete software stack from application code down to the metal:
+
+![Nexus Tech Stack — Application, Framework, Build, and Target layers](docs/assets/diagrams/cmake-to-zig-migration.svg)
 
 ### Interface overview — mockups
 
 The Compose Desktop client provides five main screens. Here's what each one looks like:
 
 | Screen               | Mockup                                                   | What it does                                                               |
-|---------------------:|:---------------------------------------------------------|:---------------------------------------------------------------------------|
+|:---------------------|:---------------------------------------------------------|:---------------------------------------------------------------------------|
 | **Dashboard**        | ![Dashboard](docs/assets/examples/mockup-dashboard.svg)  | 5-card launchpad: Generate, Blueprint Editor, Flows, Debugger, Test Runner  |
 | **Generate Project** | ![Generate](docs/assets/examples/mockup-generate-project.svg) | Project name, type selector, output path, Generate button                   |
 | **Blueprint Editor** | ![Blueprint](docs/assets/examples/mockup-blueprint-editor.svg) | Visual DAG canvas — drag nodes, draw edges, inspector sidebar               |
@@ -180,7 +187,7 @@ The Compose Desktop client provides five main screens. Here's what each one look
 Nexus doesn't force one language to do everything. Each language lives in its natural layer:
 
 | Language         | Where                              | What it owns                                                |
-|-----------------:|:------------------------------------|:------------------------------------------------------------|
+|:-----------------|:------------------------------------|:------------------------------------------------------------|
 | **Kotlin**       | `:app` / `:core` / `:cli`           | Compose Desktop UI + generation pipeline + CLI               |
 | **C++20**        | `src/` in generated project         | Runtime MVC — RAII, `std::ranges`, `[[nodiscard]]`           |
 | **Zig 0.14**     | `zig-services/` + `client-setup/`   | Build orchestration, cross-compilation, arena allocator      |
@@ -197,6 +204,18 @@ The **runtime boundary** is crossed by sol2, pybind11, and Chaquopy (in-process 
 All languages communicate in-process through the NexusBridge registry — no IPC, no serialization, no REST:
 
 ![Cross-Language Bridge — C++, Lua, Python, Zig, TypeScript in one process](docs/assets/diagrams/cross-language-bridge.svg)
+
+### Generated project structure — desktop vs android
+
+Both templates share the same C++20 MVC core, but differ in Python embedding and build tooling:
+
+![Template Trees — desktop-app vs android-app vs shared](docs/assets/diagrams/langflow-adoption-workflow.svg)
+
+### Higher-order flow — design, generate, build
+
+The pipeline in three phases — from blueprint to binary:
+
+![Nexus Higher-Order Flow — Design, Generate, Build](docs/assets/diagrams/tsxhtml-lowering-pipeline.svg)
 
 ### Development workflow
 
@@ -244,7 +263,7 @@ Two JSON files, two concerns, one app. Nexus separates **what your app is** (blu
 A build-time graph at the project root. Nodes declare modules; edges declare data flow direction.
 
 | Node type        | Runtime role                              | Source location                |
-|-----------------:|:------------------------------------------|:-------------------------------|
+|:-----------------|:------------------------------------------|:-------------------------------|
 | `python.module`  | In-process Python analytics, filtering    | `python/functions.py`          |
 | `cpp.model`      | C++20 domain state with RAII              | `src/model/`                   |
 | `cpp.controller` | Commands, event wiring, undo/redo         | `src/controller/`              |
@@ -268,7 +287,7 @@ And the generated app's MVC architecture from the blueprint:
 Optional runtime services that execute inside the app process:
 
 | Mode         | Trigger             | Use case                               |
-|-------------:|:--------------------|:---------------------------------------|
+|:-------------|:--------------------|:---------------------------------------|
 | `background` | Every N ms interval | Poll sensor, check queue depth          |
 | `triggered`  | Event + condition   | React to data arrival, connection state |
 | `startup`    | App launch          | Preload datasets, init hardware         |
@@ -311,7 +330,7 @@ The import maps Langflow component types to Nexus flow steps: `ChatInput` → `m
 Nexus works with standard development tools — no proprietary IDE or plugin required:
 
 | Tool               | Works with                              | Notes                                        |
-|-------------------:|:----------------------------------------|:---------------------------------------------|
+|:-------------------|:----------------------------------------|:---------------------------------------------|
 | **VS Code**        | C++, Lua, Python, TS, JSON, Zig         | Open the generated project root                |
 | **CLion / IntelliJ** | Kotlin (`:app`), C++ (`src/`), Gradle | Import `build.gradle.kts` for the client       |
 | **Zig LSP** (zls)  | `zig-services/`, `setup.zig`            | Auto-detects `build.zig` in project root       |
@@ -338,7 +357,7 @@ Nexus works with standard development tools — no proprietary IDE or plugin req
 ### Templates
 
 | Template      | Stack                                  | When to choose                                  |
-|--------------:|:---------------------------------------|:------------------------------------------------|
+|:--------------|:---------------------------------------|:------------------------------------------------|
 | `desktop-app` | SDL3 + ImGui + pybind11 + sol2 + TS    | You need a native desktop binary, multi-language |
 | `android-app` | SDL3/GLES + Chaquopy + Zig JNI bridge  | You need the same app on Android tablets         |
 Output goes to `builds/framework/<project-name>/`. See [builds/LAYOUT.md](builds/LAYOUT.md) for the layout.
@@ -369,7 +388,7 @@ builds/framework/MyApp/
 **Where to write your code:**
 
 | You want to...                   | File to open                          |
-|--------------------------------:|:--------------------------------------|
+|:--------------------------------|:--------------------------------------|
 | Change the app's domain state    | `src/model/AppModel.cppm`             |
 | Add a new UI screen              | `ui/ui.xhtml` + `ui/ui.ts`            |
 | Write a Python analysis pipeline | `python/functions.py`                 |
@@ -389,7 +408,7 @@ The blueprint is consumed at **generation time** only. Once emitted, the generat
 ### Where to start, by persona
 
 | You are...                         | Your entry point                                                     |
-|----------------------------------:|:---------------------------------------------------------------------|
+|:----------------------------------|:---------------------------------------------------------------------|
 | **Just want a working app fast**   | Generate, write `src/`, `zig build` — binary in five minutes          |
 | **Game dev** (ImGui comfortable)   | `scripts/panels.lua` — hotkeys, overlay panels, quick-add buttons     |
 | **C++ backend engineer**           | `src/model/` + `src/controller/` — extend logic, generate UI          |
@@ -401,7 +420,7 @@ The blueprint is consumed at **generation time** only. Once emitted, the generat
 Nexus's templates ship with everything wired. Here's how little code you need to write for a working application:
 
 | Goal                 | What you do                             | What you get                              |
-|--------------------:|:----------------------------------------|:------------------------------------------|
+|:--------------------|:----------------------------------------|:------------------------------------------|
 | C++ + ImGui window   | Generate → edit model → `zig build`     | 3 MB binary with ImGui UI                  |
 | Add a Lua panel      | Add `lua.script` node → re-generate     | Hot-reloadable console + panels            |
 | Add Python analytics | Add `python.module` node → re-generate  | In-process NumPy, zero-copy C++ access     |
@@ -414,7 +433,7 @@ Coding styles: [docs/guides/coding-styles.md](docs/guides/coding-styles.md)
 ### Python: desktop vs Android
 
 | Aspect          | Desktop (pybind11)                  | Android (Chaquopy)                   |
-|----------------:|:-------------------------------------|:------------------------------------|
+|:----------------|:-------------------------------------|:------------------------------------|
 | **Bridge**      | CPython linked into native process   | Jython on JVM + Zig JNI bridge       |
 | **Source tree** | `python/functions.py`                | `app/src/main/python/`               |
 | **Archive**     | `python.dat` packed at build time    | Bundled in APK by Gradle             |
@@ -429,7 +448,7 @@ You get two UI authoring modes, neither uses a browser engine:
 - **Declarative TS/XHTML** (`ui/ui.xhtml` + `ui/ui.ts`) — markup and TypeScript that lower to Lua/ImGui calls at build time.
 
 | TS/XHTML construct                     | Runtime equivalent                              |
-|---------------------------------------:|:-------------------------------------------------|
+|:---------------------------------------|:-------------------------------------------------|
 | `bind="sampleCount"` on `<slider>`      | Two-way ImGui slider → C++ model state            |
 | `items-source="activeCurves"` on `<listbox>` | Read-only projection of C++ data                  |
 | `on-click="addPending"`                 | Same `nxs.*` command Lua calls directly           |
@@ -442,7 +461,7 @@ Start here: [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml)
 ### vs Electron, Tauri, Flutter
 
 |                   | Electron             | Tauri                | Flutter              | **Nexus**                   |
-|------------------:|:---------------------|:---------------------|:---------------------|:-----------------------------|
+|:------------------|:---------------------|:---------------------|:---------------------|:-----------------------------|
 | **Runtime**        | Chromium + Node.js   | OS WebView + Rust    | Dart + Skia          | **C++20 + SDL3 native**      |
 | **Binary size**    | 120–200 MB           | 5–15 MB              | 15–50 MB             | **3–20 MB**                  |
 | **RAM at rest**    | 150–500 MB           | 50–100 MB            | 50–100 MB            | **15–40 MB**                 |
@@ -462,7 +481,7 @@ Start here: [template/desktop-app/ui/ui.xhtml](template/desktop-app/ui/ui.xhtml)
 This is the most common confusion. **Nexus is NOT a workflow engine.** Here's the distinction:
 
 |                    | n8n / Langflow                    | **Nexus**                                         |
-|-------------------:|:----------------------------------|:-------------------------------------------------|
+|:-------------------|:----------------------------------|:-------------------------------------------------|
 | **Output**          | Cloud automations, API workflows  | **Native desktop / Android binary**               |
 | **Runtime**         | Node.js on a server               | **SDL3 + ImGui on your hardware**                 |
 | **User interface**  | Web dashboard                     | **Compiled native UI**                            |
@@ -528,7 +547,7 @@ This staged approach means your project's complexity grows with its requirements
 Generated apps are lean because the toolchain is lean and there's no browser involved:
 
 | Metric             | What to expect                                              |
-|-------------------:|:------------------------------------------------------------|
+|:-------------------|:------------------------------------------------------------|
 | **Binary size**    | 3–20 MB (your code + SDL3 + ImGui + sol2 + pybind11)         |
 | **RAM at idle**    | 15–40 MB                                                     |
 | **RAM under load** | 50–150 MB (with embedded Python + NumPy)                     |
@@ -598,7 +617,7 @@ Your system Zig (any version) runs the bootstrap once, which pins a known-good *
 **There's no "who should wait" here.** Nexus scales down to single-node C++ apps and up to polyglot pipelines. If you need a native binary, you're the target audience. The only genuine gaps:
 
 | Not yet                     | Coming in                             |
-|---------------------------:|:--------------------------------------|
+|:---------------------------|:--------------------------------------|
 | iOS support                 | v0.5+ (not on current roadmap)        |
 | Pixel-perfect marketing UIs | ImGui improving but not CSS           |
 | Pure-Python toolkit         | Nexus expects C++ at the core          |
@@ -650,7 +669,7 @@ Every shared runtime `.cppm` file includes a detailed educational header explain
 The generated code reads like a living style guide:
 
 | C++20 feature                              | Where Nexus uses it                                                    |
-|-------------------------------------------:|:------------------------------------------------------------------------|
+|:-------------------------------------------|:------------------------------------------------------------------------|
 | **Modules** (`.cppm`)                      | All model, controller, view, service, runtime — 22 interface units       |
 | **`[[nodiscard]]`**                        | Every getter, query, factory — compiler catches unused results           |
 | **`constexpr`**                            | All trivial accessors, size queries, compile-time constants              |
@@ -683,7 +702,7 @@ auto window = UniqueWindow(
 The `blueprint.json` graph directly controls what C++ modules are generated:
 
 | Blueprint node   | Generates                             | C++20 features involved                            |
-|-----------------:|:--------------------------------------|:--------------------------------------------------|
+|:-----------------|:--------------------------------------|:--------------------------------------------------|
 | `cpp.model`      | `src/model/AppModel.cppm`             | `class`, `constexpr`, `[[nodiscard]]`, `noexcept`  |
 | `cpp.controller` | `src/controller/AppController.cppm`   | Module imports, `std::function` callbacks          |
 | `ui.page`        | Reference to view classes             | Modules importing model types for display          |
@@ -693,7 +712,7 @@ The `blueprint.json` graph directly controls what C++ modules are generated:
 This question comes up often enough to address directly. Rust's memory safety guarantees are excellent, and Nexus evaluated it during early architecture work. Here's why C++20 won for the **generated app runtime**:
 
 | Concern                            | C++20 in Nexus                                                       | Rust equivalent                                                      | Nexus's take                                                                                                    |
-|-----------------------------------:|:---------------------------------------------------------------------|:---------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------|
+|:-----------------------------------|:---------------------------------------------------------------------|:---------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------|
 | **Blueprint codegen**              | Kotlin writes `class`, `constexpr`, `auto` — simple substitution     | `pub struct`, `impl` blocks, lifetimes, derive macros                | C++ is simpler to generate correctly from non-Rust tooling                                                       |
 | **In-process scripting**           | pybind11 + sol2 are mature — ~15 years of edge-case testing          | pyo3 + mlua exist but smaller ecosystems, more restrictive licensing | ~15 years of pybind11 production vs ~5 for pyo3                                                                  |
 | **SDL3 / ImGui interop**           | C++ is SDL3/ImGui's native language — zero glue code                 | sys crate wrappers, CStr conversions, unsafe blocks everywhere       | C++ calls directly; Rust wraps in unsafe, eroding headline safety advantage                                      |
@@ -739,7 +758,7 @@ Nexus uses **Zig 0.14** as its native build orchestrator, C++ compiler driver, J
 ### Where Zig runs
 
 | Context             | What Zig does                                                       |
-|-------------------:|:--------------------------------------------------------------------|
+|:-------------------|:--------------------------------------------------------------------|
 | **Build time** (host)  | Compiles C++20 modules, links deps, packs archives, runs smoke tests |
 | **Desktop runtime**    | Arena allocator (opt-in frame allocation) via C ABI                  |
 | **Android runtime**    | JNI bridge — stores `JavaVM*`, dispatches `greeting`/`evaluate`     |
@@ -747,7 +766,7 @@ Nexus uses **Zig 0.14** as its native build orchestrator, C++ compiler driver, J
 ### Concrete numbers
 
 | Metric                    | Before (CMake + Djinni)     | After (Zig 0.14)            |
-|--------------------------:|:----------------------------|:----------------------------|
+|:--------------------------|:----------------------------|:----------------------------|
 | SDK size                  | ~10–12 GB                   | ~80 MB                      |
 | Build tools               | 4 (CMake, Ninja, NDK, Djinni) | 1 (`zig build`)           |
 | Android bridge files      | 7 C++, ~240 LOC             | 1 Zig, ~120 LOC             |
@@ -788,7 +807,7 @@ Mockup SVGs added for all client screens (dashboard, generate, blueprint editor,
 ### Where we are today
 
 | Metric                | Before (v0.1)                               | After (v1.0.1)                                           |
-|----------------------:|:---------------------------------------------|:----------------------------------------------------------|
+|:----------------------|:---------------------------------------------|:----------------------------------------------------------|
 | **Build tools**       | CMake + Ninja + NDK + Djinni (4 tools)       | `zig build` (1 tool)                                       |
 | **Android JNI**       | 8 Djinni files + `regen-djinni.sh`           | 1 pure-Zig file — 5 C ABI exports                          |
 | **Bootstrap**         | 3 shell scripts per OS (~450 LOC)            | 1 `setup.zig` (~130 LOC)                                   |
@@ -810,7 +829,7 @@ Nexus is Apache 2.0 licensed and built in the open.
 **Where the active work is:**
 
 | Area             | What it involves                                           | Skill level         |
-|-----------------:|:------------------------------------------------------------|:--------------------|
+|:-----------------|:------------------------------------------------------------|:--------------------|
 | `:core` pipeline | Kotlin — generator, template engine, config v2 schema       | Intermediate Kotlin |
 | `:app` client    | Compose Desktop — blueprint editor, flows editor, wizard    | Compose Desktop UI  |
 | `template/`      | C++20, Zig, Lua, Python, TS — the generated app's runtime   | Your stack choice   |
@@ -826,7 +845,7 @@ Report issues, open PRs, or start a discussion on the [GitHub repository](https:
 Framework repo tooling — none of this ships inside generated native apps.
 
 | Path                                     | Contents                                                      |
-|-----------------------------------------:|:---------------------------------------------------------------|
+|:-----------------------------------------|:---------------------------------------------------------------|
 | [misc/core/](misc/core/)                 | Generator, template engine, config v2 schema                     |
 | [misc/cli/](misc/cli/)                   | Headless `generate` CLI command                                  |
 | [misc/build-logic/](misc/build-logic/)   | Gradle build — JVM toolchain 26, convention plugins              |
@@ -852,7 +871,7 @@ nexus.opensource.framework
 ```
 
 | Package                  | Role (MVC)                          | Key types                                                        | You use it when...                                         |
-|------------------------:|:-------------------------------------|:-----------------------------------------------------------------|:------------------------------------------------------------|
+|:------------------------|:-------------------------------------|:-----------------------------------------------------------------|:------------------------------------------------------------|
 | `framework.controller`   | Screen state + business logic         | `*Controller` classes — hold `mutableStateOf` properties          | Wiring a Compose screen                                       |
 | `framework.model`        | In-memory debugging + testing         | `TestRunner`, `DebuggerService`                                   | Adding test cases, scanning runtime logs                      |
 | `framework.view`         | Compose `@Composable` screens         | `*View` composables — one per controller                          | Building or modifying the UI                                  |
@@ -905,7 +924,7 @@ The `:core` module lives at `misc/core/` but is wired into the project by `setti
 ## Docs & resources
 
 | Doc | Covers |
-|----:|:-------|
+|:----|:-------|
 | [docs/hub.md](docs/hub.md) | Documentation hub |
 | [docs/architecture/overview.md](docs/architecture/overview.md) | Architecture, language stack, pipeline, templates, risk |
 | [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes, deps |
@@ -915,7 +934,7 @@ The `:core` module lives at `misc/core/` but is wired into the project by `setti
 ### Ecosystem
 
 | Technology | Role in Nexus |
-|-----------:|:--------------|
+|:-----------|:--------------|
 | [SDL3](https://www.libsdl.org/) | Windowing, input, GPU — desktop + Android |
 | [Dear ImGui](https://github.com/ocornut/imgui) / [ImPlot](https://github.com/epezent/implot) | Immediate-mode UI + scientific charts |
 | [sol2](https://github.com/ThePhD/sol2) | Lua 5.4 bindings — in-process, hot-reloadable |
@@ -955,7 +974,7 @@ The one nuance: if you copy template files directly (not generated, but literall
 ### What this means for your business
 
 | Concern | Answer |
-|--------:|:--------|
+|:--------|:--------|
 | Can I sell apps built with Nexus? | **Yes.** No royalties, no fees, no revenue sharing. |
 | Do I need to open-source my app? | **No.** Apache 2.0 doesn't require derivative works to be open-source. |
 | Do I need to credit Nexus in my UI? | **No.** No attribution requirement in generated code. |
