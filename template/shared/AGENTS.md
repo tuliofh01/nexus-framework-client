@@ -8,23 +8,21 @@ Cross-target building blocks for Nexus apps: the **TypeScript/XHTML DSL** (web-f
 
 ## Key directories
 
-| Path | Role |
-|------|------|
-| `dsl/` | TS/XHTML DSL — `core.ts`, `components.ts`, `tags.ts`, `index.ts` |
-| `themes/` | ImGui JSON presets (`nexus-dark`, `nexus-light`, `nexus-field`) |
-| `assets/` | Logo (`nexus-logo.png`), Nerd Font glyphs (`fonts/`) |
+| Path       | Role                                                                 |
+|-----------|---------------------------------------------------------------------|
+| `dsl/`     | TS/XHTML DSL — `core.ts`, `components.ts`, `tags.ts`, `index.ts`     |
+| `themes/`  | ImGui JSON presets (`nexus-dark`, `nexus-light`, `nexus-field`)      |
+| `assets/`  | Logo (`nexus-logo.png`), Nerd Font glyphs (`fonts/`)                 |
 | `runtime/` | `NexusTheme`, `FontConfig`, `ScriptArchive`, `ScriptCrypto`, `Paths` |
-| `tools/` | `pack_archive.cpp` — host CLI for LUAC/PYAC archives |
-
+| `tools/`   | `pack_archive.cpp` — host CLI for LUAC/PYAC archives                 |
 After generation, copies land in the project as:
 
-| Shared source | Typical generated path |
-|---------------|------------------------|
-| `dsl/` | Referenced from `ui/ui.ts` imports; sources stay alongside `ui/` |
-| `themes/*.json` | `assets/themes/` |
-| `assets/` | `assets/` (desktop) or `app/src/main/assets/` (Android) |
-| `runtime/` | Compiled into native binary via parent `build.zig` |
-
+| Shared source   | Typical generated path                                           |
+|----------------|-----------------------------------------------------------------|
+| `dsl/`          | Referenced from `ui/ui.ts` imports; sources stay alongside `ui/` |
+| `themes/*.json` | `assets/themes/`                                                 |
+| `assets/`       | `assets/` (desktop) or `app/src/main/assets/` (Android)          |
+| `runtime/`      | Compiled into native binary via parent `build.zig`               |
 ## Build involvement
 
 **Desktop** — parent `build.zig` adds `runtime/` sources and builds `pack_archive` for `pack_lua_dat` / `pack_python_dat` targets.
@@ -46,21 +44,20 @@ zig build-exe tools/pack_archive.cpp --name pack_archive
 - **Themes:** JSON schema `$schema` → `https://nexus.dev/schemas/theme-1.json`. Keys under `imgui.colors` / `imgui.style`. Desktop defaults to `nexus-dark`; Android defaults to `nexus-field`.
 - **Script archives:** `ScriptArchive` writes magic headers **LUAC** (`lua.dat`) or **PYAC** (`python.dat`). v2 optional **nxs-v1** stream obfuscation when `nxs_config.json` → `scriptProtection.enabled` is true (salt from generation).
 - **Paths:** `Paths.hpp` resolves `misc/lua.dat` and `misc/python.dat` relative to the binary (desktop) or asset roots (Android).
-- **Fonts:** Nerd Font optional for icon glyphs in ImGui labels — see `assets/fonts/README.md`.
+- **Fonts:** Nerd Font optional for icon glyphs in ImGui labels — place `NexusNerdFont-Regular.ttf` in `assets/fonts/`.
 
 ## Where to edit
 
-| Change | Location |
-|--------|----------|
-| New ImGui widget in DSL | `dsl/components.ts`, `dsl/tags.ts`, export from `dsl/index.ts` |
-| Shared styles / Component API | `dsl/core.ts` |
-| Dark / light / field theme colors | `themes/nexus-*.json` |
-| Theme loader behavior | `runtime/NexusTheme.*` |
-| Font registration / icon glyphs | `runtime/FontConfig.*`, `assets/fonts/` |
-| Archive format / encryption | `runtime/ScriptArchive.*`, `runtime/ScriptCrypto.*` |
-| Pack CLI flags | `tools/pack_archive.cpp` |
-| Bundled logo | `assets/nexus-logo.png` |
-
+| Change                            | Location                                                       |
+|----------------------------------|---------------------------------------------------------------|
+| New ImGui widget in DSL           | `dsl/components.ts`, `dsl/tags.ts`, export from `dsl/index.ts` |
+| Shared styles / Component API     | `dsl/core.ts`                                                  |
+| Dark / light / field theme colors | `themes/nexus-*.json`                                          |
+| Theme loader behavior             | `runtime/NexusTheme.*`                                         |
+| Font registration / icon glyphs   | `runtime/FontConfig.*`, `assets/fonts/`                        |
+| Archive format / encryption       | `runtime/ScriptArchive.*`, `runtime/ScriptCrypto.*`            |
+| Pack CLI flags                    | `tools/pack_archive.cpp`                                       |
+| Bundled logo                      | `assets/nexus-logo.png`                                        |
 ## DSL ↔ blueprint ↔ runtime
 
 - Blueprint `ui.page` nodes reference `ui/ui.xhtml` and `ui/ui.ts#<PageClass>` in each app template.
@@ -77,13 +74,12 @@ increment(): void { this.invoke("nxs.increment"); }
 
 ## Python / Lua (shared concerns)
 
-| Concern | Desktop | Android |
-|---------|---------|---------|
-| Lua pack | Zig `pack_lua_dat` → `misc/lua.dat` | Gradle `packLuaDat` → `build/assets/lua.dat` |
-| Python pack | Zig `pack_python_dat` → `misc/python.dat` | N/A — Chaquopy bundles `app/src/main/python/` |
-| Runtime loader | `ScriptArchive` + `Paths` in `runtime/` | Same C++ runtime; Lua from APK assets |
-| Dev fallback | Plaintext `scripts/`, `python/` dirs | Plaintext `scripts/` only |
-
+| Concern        | Desktop                                   | Android                                       |
+|---------------|-------------------------------------------|----------------------------------------------|
+| Lua pack       | Zig `pack_lua_dat` → `misc/lua.dat`       | Gradle `packLuaDat` → `build/assets/lua.dat`  |
+| Python pack    | Zig `pack_python_dat` → `misc/python.dat` | N/A — Chaquopy bundles `app/src/main/python/` |
+| Runtime loader | `ScriptArchive` + `Paths` in `runtime/`   | Same C++ runtime; Lua from APK assets         |
+| Dev fallback   | Plaintext `scripts/`, `python/` dirs      | Plaintext `scripts/` only                     |
 Shared `runtime/` code is target-agnostic; embedding differs per template (`pybind11` vs Chaquopy).
 
 ## Do not edit

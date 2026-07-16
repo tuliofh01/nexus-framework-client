@@ -320,8 +320,7 @@ builds/framework/MyApp/
 │   └── ui.ts              #   bindings (state(), on-click, items-source)
 ├── flows/                 # YOUR runtime automations (flows.json) — triggers + steps
 ├── zig-services/          # Zig build sidecar — c_abi/, jni/ (Android only)
-├── shared/                # Runtime helpers — theme, fonts, script archive code
-└── builds/README.md       # Output folder docs
+└── shared/                # Runtime helpers — theme, fonts, script archive code
 ```
 
 **Where to write your code:**
@@ -805,14 +804,14 @@ Full roadmap: **[misc/ROADMAP.md](misc/ROADMAP.md)**
 
 ## Docs & resources
 
-| Doc                                                                  | What it covers                                                                   |
-|---------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| [docs/README.md](docs/README.md)                                     | Documentation hub                                                               |
-| [docs/architecture/overview.md](docs/architecture/overview.md)       | Architecture, language stack, generation pipeline, templates, risk              |
-| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md) | UI, MVC, Python, Lua, themes, coding styles, adding deps                        |
-| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` + `flows.json` full reference                               |
-| [AGENTS.md](AGENTS.md)                                                       | Build commands for AI coding assistants              |
-| [misc/ROADMAP.md](misc/ROADMAP.md)                                           | v1.0.x roadmap                                       |
+| Doc                                                                      | What it covers                                                     |
+|-------------------------------------------------------------------------|-------------------------------------------------------------------|
+| [docs/README.md](docs/README.md)                                         | Documentation hub                                                  |
+| [docs/architecture/overview.md](docs/architecture/overview.md)           | Architecture, language stack, generation pipeline, templates, risk |
+| [docs/guides/coding-with-nexus.md](docs/guides/coding-with-nexus.md)     | UI, MVC, Python, Lua, themes, coding styles, adding deps           |
+| [docs/templates/blueprint-schema.md](docs/templates/blueprint-schema.md) | `blueprint.json` + `flows.json` full reference                     |
+| [AGENTS.md](AGENTS.md)                                                   | Build commands for AI coding assistants                            |
+| [misc/ROADMAP.md](misc/ROADMAP.md)                                       | v1.0.x roadmap                                                     |
 ### Ecosystem
 
 | Technology                                                                                   | Role in Nexus                                                    |

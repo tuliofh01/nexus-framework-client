@@ -135,7 +135,7 @@ ImGui::Text("\xef\x80\x95 Functions");  // UTF-8 home icon when font loaded
 
 In Lua panels, paste UTF-8 literals or define constants. Increase touch targets on Android with `FontConfig::setIconScale(1.25f)`.
 
-See [template/shared/assets/fonts/README.md](../../template/shared/assets/fonts/README.md).
+Insert the font under `assets/fonts/NexusNerdFont-Regular.ttf` in your generated project.
 
 ---
 
