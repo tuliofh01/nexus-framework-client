@@ -123,6 +123,8 @@ The software industry spent a decade convincing itself that shipping a browser i
 | **Cross-compile Linux to Windows from CI**                     | `zig build -Dtarget=x86_64-windows` — no MSVC VM                                |
 *This isn't aspirational — these are the existing templates in action.*
 
+> 📦 **See for yourself:** [`builds/framework/PlotterApp/`](builds/framework/PlotterApp/) is a real generated project living in this repo. It's the output of running the generator with the `desktop-app` template — a complete C++20 MVC project with Lua panels, Python helpers, a blueprint graph, and a plotter example. Open it, read its README, and run `zig build` to see what Nexus produces.
+
 ---
 
 ## 🧱 C++ at the core — everything else is a tool
