@@ -1,84 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 560" width="950" height="560">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 680" width="750" height="680">
   <title>Nexus client source tree</title>
   <rect width="100%" height="100%" fill="#1e1e2e"/>
   <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
-  <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="18" r="5" fill="#fab387"/>
-  <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="475" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Nexus client source tree — Compose Desktop + :core + :cli</text>
+  <circle cx="18" cy="18" r="6" fill="#f38ba8"/>
+  <circle cx="36" cy="18" r="6" fill="#fab387"/>
+  <circle cx="54" cy="18" r="6" fill="#a6e3a1"/>
+  <text x="375" y="24" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#a6adc8" font-weight="bold">Nexus client source tree</text>
 
-  <!-- ====== :app panel ====== -->
-  <rect x="30" y="60" width="430" height="470" rx="12" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <rect x="30" y="60" width="430" height="30" rx="12" fill="#89b4fa"/>
-  <rect x="30" y="75" width="430" height="15" fill="#89b4fa"/>
-  <text x="245" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">app/ — Compose Desktop client</text>
+  <rect x="30" y="60" width="340" height="560" rx="12" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
+  <rect x="30" y="60" width="340" height="36" rx="12" fill="#89b4fa"/>
+  <rect x="30" y="78" width="340" height="18" fill="#89b4fa"/>
+  <text x="200" y="84" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e1e2e">app/ — Compose Desktop</text>
 
-  <!-- App.kt -->
-  <text x="50" y="120" font-family="sans-serif" font-size="11" fill="#a6adc8">app/src/main/kotlin/nexus/opensource/</text>
-  <line x1="55" y1="125" x2="200" y2="125" stroke="#585b70" stroke-width="1"/>
-  <text x="70" y="148" font-family="monospace, sans-serif" font-size="11" fill="#89b4fa">App.kt</text>
-  <text x="200" y="148" font-family="sans-serif" font-size="9" fill="#585b70">main() — entry point</text>
+  <text x="50" y="130" font-family="sans-serif" font-size="12" fill="#a6adc8">nexus/opensource/</text>
+  <line x1="55" y1="136" x2="230" y2="136" stroke="#585b70" stroke-width="1"/>
 
-  <!-- tree branches -->
-  <text x="70" y="175" font-family="sans-serif" font-size="11" fill="#fab387">model/</text>
-  <text x="120" y="195" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">CounterModel.kt</text>
-  <text x="120" y="212" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">NexusBranding.kt</text>
+  <text x="70" y="165" font-family="monospace, sans-serif" font-size="14" fill="#89b4fa">App.kt</text>
+  <text x="160" y="165" font-family="sans-serif" font-size="10" fill="#585b70">main() entry</text>
 
-  <text x="70" y="240" font-family="sans-serif" font-size="11" fill="#a6e3a1">view/</text>
-  <text x="120" y="260" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">CounterView.kt</text>
-  <text x="120" y="277" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">GenerateProjectScreen.kt</text>
-  <text x="120" y="294" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">LoadingScreen.kt</text>
+  <text x="70" y="198" font-family="sans-serif" font-size="13" fill="#fab387">model/</text>
+  <text x="95" y="222" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">CounterModel.kt</text>
+  <text x="95" y="244" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">NexusBranding.kt</text>
 
-  <text x="70" y="322" font-family="sans-serif" font-size="11" fill="#cba6f7">controller/</text>
-  <text x="120" y="342" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">CounterController.kt</text>
-  <text x="120" y="359" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">GenerateController.kt</text>
+  <text x="70" y="278" font-family="sans-serif" font-size="13" fill="#a6e3a1">view/</text>
+  <text x="95" y="302" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">CounterView.kt</text>
+  <text x="95" y="324" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">GenerateScreen.kt</text>
+  <text x="95" y="346" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">LoadingScreen.kt</text>
 
-  <text x="70" y="388" font-family="sans-serif" font-size="11" fill="#f5c2e7">build/ (generated)</text>
-  <text x="120" y="408" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">compose/classes/</text>
+  <text x="70" y="380" font-family="sans-serif" font-size="13" fill="#cba6f7">controller/</text>
+  <text x="95" y="404" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">CounterController.kt</text>
+  <text x="95" y="426" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">GenerateController.kt</text>
 
-  <!-- Connection to :core -->
-  <line x1="245" y1="440" x2="245" y2="460" stroke="#585b70" stroke-width="2"/>
-  <text x="245" y="475" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">depends on</text>
+  <text x="50" y="462" font-family="sans-serif" font-size="11" fill="#585b70">MVC packages under nexus.opensource.*</text>
 
-  <!-- ====== :core panel ====== -->
-  <rect x="490" y="60" width="430" height="190" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="490" y="60" width="430" height="30" rx="12" fill="#fab387"/>
-  <rect x="490" y="75" width="430" height="15" fill="#fab387"/>
-  <text x="705" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">:core — generation pipeline</text>
+  <rect x="410" y="60" width="310" height="170" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <rect x="410" y="60" width="310" height="36" rx="12" fill="#fab387"/>
+  <rect x="410" y="78" width="310" height="18" fill="#fab387"/>
+  <text x="565" y="84" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e1e2e">:core — generation</text>
 
-  <text x="510" y="120" font-family="sans-serif" font-size="11" fill="#a6adc8">misc/core/</text>
-  <line x1="515" y1="125" x2="650" y2="125" stroke="#585b70" stroke-width="1"/>
+  <text x="430" y="130" font-family="sans-serif" font-size="12" fill="#a6adc8">misc/core/</text>
+  <line x1="435" y1="136" x2="570" y2="136" stroke="#585b70" stroke-width="1"/>
 
-  <text x="510" y="148" font-family="sans-serif" font-size="11" fill="#fab387">service/</text>
-  <text x="555" y="165" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">ProjectGenerator.kt</text>
-  <text x="555" y="182" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">TemplateEngine.kt</text>
+  <text x="430" y="165" font-family="monospace, sans-serif" font-size="13" fill="#fab387">service/</text>
+  <text x="495" y="165" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">ProjectGenerator.kt</text>
+  <text x="495" y="185" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">TemplateEngine.kt</text>
 
-  <text x="510" y="205" font-family="sans-serif" font-size="11" fill="#fab387">schema/</text>
-  <text x="555" y="222" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">NexusConfigSchema.kt</text>
+  <text x="430" y="215" font-family="monospace, sans-serif" font-size="13" fill="#fab387">schema/</text>
+  <text x="495" y="215" font-family="monospace, sans-serif" font-size="12" fill="#a6adc8">NexusConfigSchema.kt</text>
 
-  <text x="510" y="240" font-family="sans-serif" font-size="11" fill="#fab387">pack/</text>
-  <text x="555" y="257" font-family="monospace, sans-serif" font-size="10" fill="#a6adc8">TemplatePacker.kt</text>
+  <rect x="410" y="260" width="310" height="120" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <rect x="410" y="260" width="310" height="36" rx="12" fill="#a6e3a1"/>
+  <rect x="410" y="278" width="310" height="18" fill="#a6e3a1"/>
+  <text x="565" y="284" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e1e2e">:cli — headless</text>
 
-  <!-- ====== :cli panel ====== -->
-  <rect x="490" y="280" width="430" height="120" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <rect x="490" y="280" width="430" height="30" rx="12" fill="#a6e3a1"/>
-  <rect x="490" y="295" width="430" height="15" fill="#a6e3a1"/>
-  <text x="705" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">:cli — headless entry</text>
+  <text x="430" y="330" font-family="sans-serif" font-size="12" fill="#a6adc8">misc/cli/</text>
+  <line x1="435" y1="336" x2="570" y2="336" stroke="#585b70" stroke-width="1"/>
+  <text x="430" y="365" font-family="monospace, sans-serif" font-size="14" fill="#a6e3a1">FrameworkCli.kt</text>
 
-  <text x="510" y="340" font-family="sans-serif" font-size="11" fill="#a6adc8">misc/cli/</text>
-  <line x1="515" y1="345" x2="650" y2="345" stroke="#585b70" stroke-width="1"/>
-  <text x="510" y="370" font-family="monospace, sans-serif" font-size="11" fill="#a6e3a1">FrameworkCli.kt</text>
+  <rect x="410" y="420" width="310" height="110" rx="12" fill="#313244" stroke="#89dceb" stroke-width="2"/>
+  <rect x="410" y="420" width="310" height="36" rx="12" fill="#89dceb"/>
+  <rect x="410" y="438" width="310" height="18" fill="#89dceb"/>
+  <text x="565" y="444" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e1e2e">Output — builds/framework/</text>
 
-  <!-- ====== Generated output panel ====== -->
-  <rect x="490" y="430" width="430" height="100" rx="12" fill="#313244" stroke="#89dceb" stroke-width="2"/>
-  <rect x="490" y="430" width="430" height="30" rx="12" fill="#89dceb"/>
-  <rect x="490" y="445" width="430" height="15" fill="#89dceb"/>
-  <text x="705" y="450" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e1e2e">Output — builds/framework/&lt;name&gt;/</text>
+  <text x="430" y="488" font-family="sans-serif" font-size="13" fill="#a6adc8">Generated C++20 project tree</text>
+  <text x="430" y="510" font-family="sans-serif" font-size="11" fill="#585b70">Desktop: zig-out/bin/ binary</text>
+  <text x="430" y="525" font-family="sans-serif" font-size="11" fill="#585b70">Android: APK via assembleDebug</text>
 
-  <text x="510" y="490" font-family="sans-serif" font-size="11" fill="#a6adc8">generated C++20 project tree</text>
-  <text x="510" y="510" font-family="sans-serif" font-size="10" fill="#585b70">Desktop: zig-out/bin/ binary</text>
-  <text x="720" y="510" font-family="sans-serif" font-size="10" fill="#585b70">Android: app/build/outputs/apk/</text>
+  <line x1="370" y1="240" x2="405" y2="240" stroke="#585b70" stroke-width="2"/>
+  <line x1="370" y1="320" x2="405" y2="320" stroke="#585b70" stroke-width="2"/>
+  <line x1="370" y1="380" x2="405" y2="465" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
 
-  <text x="475" y="550" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#585b70">Three modules · one pipeline · two targets</text>
+  <text x="375" y="660" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">Three modules · one pipeline · two targets</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#585b70"/>
+    </marker>
+  </defs>
 </svg>

@@ -1,69 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" width="800" height="480">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 600" width="700" height="600">
   <title>Nexus higher-order flow — abstract</title>
   <rect width="100%" height="100%" fill="#1e1e2e"/>
   <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
-  <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="18" r="5" fill="#fab387"/>
-  <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="400" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Nexus higher-order flow — abstract</text>
+  <circle cx="18" cy="18" r="6" fill="#f38ba8"/>
+  <circle cx="36" cy="18" r="6" fill="#fab387"/>
+  <circle cx="54" cy="18" r="6" fill="#a6e3a1"/>
+  <text x="350" y="24" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#a6adc8" font-weight="bold">Nexus higher-order flow — abstract</text>
 
-  <!-- Phase 1: Author -->
-  <rect x="40" y="70" width="220" height="100" rx="10" fill="#313244" stroke="#f38ba8" stroke-width="2"/>
-  <text x="150" y="100" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#f38ba8">Design</text>
-  <text x="150" y="120" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">blueprint.json</text>
-  <text x="150" y="136" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Choose template</text>
-  <text x="150" y="152" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Wire nodes/ports</text>
+  <rect x="60" y="70" width="580" height="100" rx="12" fill="#313244" stroke="#f38ba8" stroke-width="2"/>
+  <rect x="60" y="70" width="160" height="100" rx="12" fill="#f38ba8" opacity="0.15"/>
+  <text x="140" y="115" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f38ba8">Design</text>
+  <text x="140" y="140" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">blueprint.json</text>
+  <text x="260" y="115" font-family="sans-serif" font-size="13" fill="#a6adc8">Choose template · Wire node graph</text>
+  <text x="260" y="140" font-family="sans-serif" font-size="13" fill="#a6adc8">Configure ports and data flow</text>
 
-  <!-- Phase 2: Generate -->
-  <rect x="290" y="70" width="220" height="100" rx="10" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <text x="400" y="100" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fab387">Generate</text>
-  <text x="400" y="120" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">:core ProjectGenerator</text>
-  <text x="400" y="136" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">TemplateEngine substitution</text>
-  <text x="400" y="152" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Emit builds/framework/</text>
+  <rect x="60" y="190" width="580" height="100" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <rect x="60" y="190" width="160" height="100" rx="12" fill="#fab387" opacity="0.15"/>
+  <text x="140" y="235" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#fab387">Generate</text>
+  <text x="140" y="260" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">:core engine</text>
+  <text x="260" y="235" font-family="sans-serif" font-size="13" fill="#a6adc8">ProjectGenerator reads blueprint</text>
+  <text x="260" y="260" font-family="sans-serif" font-size="13" fill="#a6adc8">TemplateEngine substitutes placeholders</text>
 
-  <!-- Phase 3: Build -->
-  <rect x="540" y="70" width="220" height="100" rx="10" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <text x="650" y="100" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#a6e3a1">Build</text>
-  <text x="650" y="120" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig build</text>
-  <text x="650" y="136" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">C++20 module compile</text>
-  <text x="650" y="152" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Link SDL3 + Lua + Python</text>
+  <rect x="60" y="310" width="580" height="100" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <rect x="60" y="310" width="160" height="100" rx="12" fill="#a6e3a1" opacity="0.15"/>
+  <text x="140" y="355" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#a6e3a1">Build</text>
+  <text x="140" y="380" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">zig build</text>
+  <text x="260" y="355" font-family="sans-serif" font-size="13" fill="#a6adc8">C++20 module compilation</text>
+  <text x="260" y="380" font-family="sans-serif" font-size="13" fill="#a6adc8">Link SDL3 + Lua + Python bridges</text>
 
-  <!-- Arrows between phases -->
-  <line x1="260" y1="120" x2="285" y2="120" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <line x1="510" y1="120" x2="535" y2="120" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="350" y1="170" x2="350" y2="185" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="350" y1="290" x2="350" y2="305" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
 
-  <!-- Phase labels on bottom -->
-  <text x="150" y="198" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">WHAT to build</text>
-  <text x="400" y="198" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">HOW to build it</text>
-  <text x="650" y="198" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#585b70">Produce binary</text>
+  <text x="140" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">WHAT to build</text>
+  <text x="350" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">HOW to build it</text>
+  <text x="560" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">Produce binary</text>
 
-  <!-- Branch: Desktop vs Android -->
-  <path d="M650,170 L650,230 L290,230 L290,260" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="290" y1="230" x2="510" y2="230" stroke="#585b70" stroke-width="2"/>
-  <line x1="510" y1="230" x2="510" y2="260" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M350,410 L350,445 L280,445 L280,473" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="445" x2="420" y2="445" stroke="#585b70" stroke-width="2"/>
+  <line x1="420" y1="445" x2="420" y2="473" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
 
-  <!-- Desktop output -->
-  <rect x="130" y="260" width="280" height="80" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <text x="270" y="290" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89b4fa">Desktop App</text>
-  <text x="270" y="310" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">SDL3 + ImGui + pybind11</text>
-  <text x="270" y="326" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">zig-out/bin/ · 3–20 MB</text>
+  <rect x="80" y="475" width="260" height="70" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
+  <text x="210" y="505" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#89b4fa">Desktop App</text>
+  <text x="210" y="528" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">SDL3 + ImGui · 3-20 MB</text>
 
-  <!-- Android output -->
-  <rect x="420" y="260" width="280" height="80" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
-  <text x="560" y="290" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#cba6f7">Android APK</text>
-  <text x="560" y="310" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Zig JNI + Chaquopy</text>
-  <text x="560" y="326" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">assembleDebug · .apk</text>
+  <rect x="360" y="475" width="260" height="70" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
+  <text x="490" y="505" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#cba6f7">Android APK</text>
+  <text x="490" y="528" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">Zig JNI + Chaquopy</text>
 
-  <!-- Two paths: Compose vs headless -->
-  <rect x="40" y="390" width="720" height="40" rx="20" fill="#313244" stroke="#585b70" stroke-width="1"/>
-  <text x="400" y="415" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6adc8">Two entry points: :app Compose Desktop (visual) · :cli headless (./gradlew :cli:run --args&hellip;)</text>
+  <rect x="100" y="565" width="500" height="28" rx="14" fill="#313244" stroke="#585b70" stroke-width="1"/>
+  <text x="350" y="584" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">:app Compose Desktop (visual) · :cli headless (./gradlew :cli:run)</text>
 
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 Z" fill="#585b70"/>
     </marker>
   </defs>
-
-  <text x="400" y="470" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#585b70">Three phases · one config · two targets</text>
 </svg>

@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 600" width="650" height="600">
   <title>Nexus tech stack — build tool evolution</title>
   <rect width="100%" height="100%" fill="#1e1e2e"/>
   <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
-  <circle cx="18" cy="18" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="18" r="5" fill="#fab387"/>
-  <circle cx="50" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="400" y="24" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a6adc8" font-weight="bold">Nexus tech stack — one toolchain, two targets</text>
+  <circle cx="18" cy="18" r="6" fill="#f38ba8"/>
+  <circle cx="36" cy="18" r="6" fill="#fab387"/>
+  <circle cx="54" cy="18" r="6" fill="#a6e3a1"/>
+  <text x="325" y="24" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#a6adc8" font-weight="bold">Nexus tech stack — one toolchain</text>
 
-  <!-- Layer 1: Application -->
-  <rect x="60" y="60" width="680" height="80" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <rect x="60" y="60" width="140" height="80" rx="10" fill="#89b4fa" opacity="0.3"/>
-  <text x="130" y="105" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89b4fa">Application</text>
-  <text x="250" y="95" font-family="sans-serif" font-size="11" fill="#a6adc8">C++20 (model · controller · view)</text>
-  <text x="250" y="115" font-family="sans-serif" font-size="10" fill="#585b70">Lua 5.4 (scripts) · Python 3.11+ (analytics) · TS/XHTML (DSL)</text>
+  <rect x="50" y="70" width="550" height="90" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
+  <rect x="50" y="70" width="130" height="90" rx="10" fill="#89b4fa" opacity="0.2"/>
+  <text x="115" y="120" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#89b4fa">Application</text>
+  <text x="230" y="105" font-family="sans-serif" font-size="13" fill="#a6adc8">C++20 MVC (model · controller · view)</text>
+  <text x="230" y="130" font-family="sans-serif" font-size="11" fill="#585b70">Lua scripts · Python analytics · TS/XHTML DSL</text>
 
-  <!-- Layer 2: Framework -->
-  <rect x="60" y="160" width="680" height="80" rx="10" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="60" y="160" width="140" height="80" rx="10" fill="#fab387" opacity="0.3"/>
-  <text x="130" y="205" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#fab387">Framework</text>
-  <text x="250" y="195" font-family="sans-serif" font-size="11" fill="#a6adc8">SDL3 · Dear ImGui · ImPlot · sol2 · pybind11</text>
-  <text x="250" y="215" font-family="sans-serif" font-size="10" fill="#585b70">Chaquopy (Android) · n8n-compatible flows</text>
+  <rect x="50" y="180" width="550" height="90" rx="10" fill="#313244" stroke="#fab387" stroke-width="2"/>
+  <rect x="50" y="180" width="130" height="90" rx="10" fill="#fab387" opacity="0.2"/>
+  <text x="115" y="230" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#fab387">Framework</text>
+  <text x="230" y="215" font-family="sans-serif" font-size="13" fill="#a6adc8">SDL3 · Dear ImGui · ImPlot · sol2 · pybind11</text>
+  <text x="230" y="240" font-family="sans-serif" font-size="11" fill="#585b70">Chaquopy (Android) · n8n-compatible flows</text>
 
-  <!-- Layer 3: Build -->
-  <rect x="60" y="260" width="680" height="80" rx="10" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <rect x="60" y="260" width="140" height="80" rx="10" fill="#a6e3a1" opacity="0.3"/>
-  <text x="130" y="305" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#a6e3a1">Build</text>
-  <text x="250" y="295" font-family="sans-serif" font-size="11" fill="#a6adc8">Zig 0.14 — zig c++ + build.zig.zon</text>
-  <text x="250" y="315" font-family="sans-serif" font-size="10" fill="#585b70">CMake removed · single compiler for all triples</text>
+  <rect x="50" y="290" width="550" height="90" rx="10" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <rect x="50" y="290" width="130" height="90" rx="10" fill="#a6e3a1" opacity="0.2"/>
+  <text x="115" y="340" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#a6e3a1">Build</text>
+  <text x="230" y="325" font-family="sans-serif" font-size="13" fill="#a6adc8">Zig 0.14 — zig c++ + build.zig.zon</text>
+  <text x="230" y="350" font-family="sans-serif" font-size="11" fill="#585b70">CMake removed · single compiler for all triples</text>
 
-  <!-- Layer 4: Target -->
-  <rect x="60" y="360" width="320" height="80" rx="10" fill="#313244" stroke="#89dceb" stroke-width="2"/>
-  <text x="220" y="400" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#89dceb">Desktop</text>
-  <text x="220" y="420" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#585b70">zig-out/bin/ · 3–20 MB binary</text>
+  <rect x="50" y="400" width="260" height="90" rx="10" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <text x="180" y="440" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#a6e3a1">Desktop</text>
+  <text x="180" y="465" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">zig-out/bin/ · 3-20 MB</text>
 
-  <rect x="420" y="360" width="320" height="80" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
-  <text x="580" y="400" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#cba6f7">Android</text>
-  <text x="580" y="420" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#585b70">assembleDebug · Zig JNI + Chaquopy</text>
+  <rect x="340" y="400" width="260" height="90" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
+  <text x="470" y="440" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#cba6f7">Android</text>
+  <text x="470" y="465" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">JNI + Chaquopy APK</text>
 
-  <!-- Evolution marker -->
-  <line x1="60" y1="470" x2="740" y2="470" stroke="#585b70" stroke-width="1.5"/>
-  <circle cx="120" cy="470" r="10" fill="#313244" stroke="#585b70" stroke-width="1.5"/>
-  <text x="120" y="474" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">4</text>
-  <text x="145" y="474" font-family="sans-serif" font-size="9" fill="#585b70">tools before</text>
-  <line x1="340" y1="470" x2="340" y2="458" stroke="#585b70" stroke-width="1.5" marker-end="url(#arrow-up)"/>
+  <line x1="50" y1="530" x2="600" y2="530" stroke="#585b70" stroke-width="2"/>
+  <circle cx="120" cy="530" r="14" fill="#313244" stroke="#585b70" stroke-width="2"/>
+  <text x="120" y="535" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">4</text>
+  <text x="150" y="535" font-family="sans-serif" font-size="12" fill="#585b70">tools before</text>
+  <line x1="300" y1="530" x2="300" y2="515" stroke="#585b70" stroke-width="1.5" marker-end="url(#arrow-up)"/>
 
-  <circle cx="400" cy="470" r="10" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
-  <text x="400" y="474" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#a6e3a1">1</text>
-  <text x="425" y="474" font-family="sans-serif" font-size="9" fill="#a6e3a1">tool now</text>
-  <line x1="460" y1="470" x2="460" y2="458" stroke="#a6e3a1" stroke-width="1.5" marker-end="url(#arrow-up)"/>
+  <circle cx="400" cy="530" r="14" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
+  <text x="400" y="535" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6e3a1">1</text>
+  <text x="430" y="535" font-family="sans-serif" font-size="12" fill="#a6e3a1">tool now</text>
+  <line x1="350" y1="530" x2="350" y2="515" stroke="#a6e3a1" stroke-width="1.5" marker-end="url(#arrow-up)"/>
 
-  <text x="480" y="505" font-family="sans-serif" font-size="9" fill="#585b70">CMake + Ninja + NDK + Djinni →</text>
-  <text x="660" y="505" font-family="sans-serif" font-size="9" fill="#a6e3a1">zig build</text>
+  <text x="325" y="575" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">CMake + Ninja + NDK + Djinni</text>
+  <text x="325" y="592" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6e3a1">zig build</text>
 
   <defs>
-    <marker id="arrow-up" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow-up" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M5,10 L5,0 L0,5 M5,0 L10,5" fill="none" stroke="#585b70" stroke-width="1.5"/>
     </marker>
   </defs>
