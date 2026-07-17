@@ -27,6 +27,12 @@ class NormalizeTests(unittest.TestCase):
             functions.normalize_expression("(x+1)(x-1)"), "(x+1)*(x-1)"
         )
         self.assertEqual(functions.normalize_expression("2sin(x)"), "2*sin(x)")
+        self.assertEqual(functions.normalize_expression("x sin x"), "x*sin(x)")
+        self.assertEqual(functions.normalize_expression("pi x"), "pi*x")
+
+    def test_scientific_notation_is_not_split(self):
+        self.assertEqual(functions.normalize_expression("1e-3x"), "1e-3*x")
+        self.assertEqual(functions.normalize_expression("2e"), "2*e")
 
 
 class PemdasTests(unittest.TestCase):

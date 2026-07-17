@@ -104,7 +104,11 @@ def normalize_expression(equation: str) -> str:
         previous = expression
         expression = _BARE_CALL_RE.sub(r"\1(\2)", expression)
 
-    # Collapse whitespace so implicit-mul rules stay simple.
+    # Remaining whitespace between adjacent atoms means multiplication:
+    # ``x sin(x)`` / ``2 x`` / ``pi x``.
+    expression = re.sub(r"(?<=[\w)])\s+(?=[a-z_(\d])", "*", expression)
+
+    # Collapse cosmetic whitespace around explicit operators.
     expression = re.sub(r"\s+", "", expression)
 
     # Implicit multiplication, applied until stable.
@@ -141,7 +145,11 @@ def _insert_number_implicit_mul(expression: str) -> str:
         return f"{number}*"
 
     return re.sub(
-        r"(\d+(?:\.\d+)?(?:e[+-]?\d+)?)(?=[a-z_(])",
+        # The extra negative lookahead prevents regex backtracking from
+        # splitting scientific notation: ``1e-3x`` must become
+        # ``1e-3*x``, never ``1*e-3*x``.
+        r"(?<![\w.])(\d+(?:\.\d+)?(?:e[+-]?\d+)?)"
+        r"(?!(?:e[+-]?\d))(?=[a-z_(])",
         replacer,
         expression,
     )
