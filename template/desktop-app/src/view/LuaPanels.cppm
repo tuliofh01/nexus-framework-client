@@ -48,8 +48,8 @@
 // ════════════════════════════════════════════════════════════════════════════
 //
 // sol2 headers live in the global fragment so importing modules never
-// see them. The `nxs.*` Lua API (add_function, set_range, register_panel,
-// register_hotkey) is wired in bindApi().
+// see them. The `nxs.*` Lua API (add_function, add_expression, set_range,
+// register_panel, register_hotkey) is wired in bindApi().
 //==============================================================================
 
 module;  // ── global module fragment (private to this TU) ──
@@ -253,6 +253,10 @@ private:
 
         nxs.set_function("add_function",
             [this](const std::string& id) { m_controller.addFunction(id); });
+        nxs.set_function("add_expression",
+            [this](const std::string& expression) {
+                return m_controller.addExpression(expression);
+            });
         nxs.set_function("remove_function",
             [this](const std::string& id) { m_controller.removeFunction(id); });
         nxs.set_function("set_range",
