@@ -154,7 +154,41 @@ public:
             ImGuiInputTextFlags_EnterReturnsTrue);
         ImGui::SameLine();
         if ((submitted || ImGui::Button("Plot")) && m_equation[0] != '\0') {
-            m_plot.addExpression(m_equation.data());
+            if (!m_plot.addExpression(m_equation.data())) {
+                // Keep the reason around: lastPythonError() is cleared by
+                // the next successful Python call, but the modal may stay
+                // open across frames.
+                m_invalidExpressionError = m_plot.lastPythonError();
+                ImGui::OpenPopup("Invalid expression");
+            }
+        }
+
+        // ── Invalid-expression modal ───────────────────────────────────
+        //
+        // Opened when Python rejects the equation (syntax error, unknown
+        // function, unsafe construct). Modal blocks the app until the
+        // user acknowledges, mirroring desktop-app convention.
+        if (ImGui::BeginPopupModal("Invalid expression", nullptr,
+                                   ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::TextUnformatted(
+                "That input could not be parsed as an equation in x.");
+            ImGui::Spacing();
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 96, 96, 255));
+            ImGui::PushTextWrapPos(420.0f);
+            ImGui::TextWrapped(
+                "%s", m_invalidExpressionError.empty()
+                          ? "Unknown error"
+                          : m_invalidExpressionError.c_str());
+            ImGui::PopTextWrapPos();
+            ImGui::PopStyleColor();
+            ImGui::Spacing();
+            ImGui::TextUnformatted(
+                "Examples: y=2x+1, sin x, x^2, 2(x+1), log10(x)");
+            if (ImGui::Button("OK", ImVec2{120.0f, 0.0f})) {
+                m_invalidExpressionError.clear();
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
         }
 
         auto& settings = m_plot.settings();
@@ -228,6 +262,7 @@ private:
     std::array<char, 256> m_equation{
         'y', '=', 's', 'i', 'n', '(', 'x', ')', '\0',
     };
+    std::string m_invalidExpressionError;  ///< shown in the modal popup
 };
 
 }  // namespace nxs::view

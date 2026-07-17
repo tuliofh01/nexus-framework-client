@@ -82,6 +82,16 @@ class TemplateEngine(
                     Files.copy(src, dest, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
                     debugLog("  copied $destRelative (binary)")
                 }
+                // Files.writeString creates a new file with default permissions, so
+                // generated shell scripts would otherwise lose the executable bit.
+                // Mirror executable intent from the template on platforms that
+                // expose it; setExecutable is a safe no-op/failure on unsupported
+                // filesystems and regular generated files remain non-executable.
+                if (Files.isExecutable(src)) {
+                    check(dest.toFile().setExecutable(true, false)) {
+                        "Failed to make generated file executable: $dest"
+                    }
+                }
                 onProgress("  $destRelative")
             }
         }

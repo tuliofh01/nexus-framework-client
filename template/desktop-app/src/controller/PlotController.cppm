@@ -47,7 +47,7 @@ module;  // ── global module fragment (private to this TU) ──
 #include <algorithm>    // std::clamp for sample count bounds
 #include <string>       // std::string for error messages
 #include <string_view>
-#include <tuple>  // std::string_view for function spec IDs
+#include <tuple>  // std::ignore for discarded [[nodiscard]] results
 
 export module nxs.desktop.plot;
 
@@ -120,8 +120,18 @@ public:
     }
 
     /// Add a free-form equation such as y=sin(x) to the active chart.
-    void addExpression(const std::string_view expression) {
+    ///
+    /// The expression is validated by Python (normalize + AST parse + probe
+    /// evaluation) BEFORE a curve is added. Returns false when the input is
+    /// not plottable; lastPythonError() then carries the reason so the view
+    /// can show an "invalid expression" popup instead of a dead curve.
+    [[nodiscard]] auto addExpression(const std::string_view expression)
+        -> bool {
+        if (!m_python.validateExpression(expression)) {
+            return false;
+        }
         std::ignore = m_registry.addExpression(std::string{expression});
+        return true;
     }
 
     /// Deactivate and remove a function from the active set.

@@ -163,6 +163,11 @@ public:
                                 std::vector<double>& xs,
                                 std::vector<double>& ys) -> bool;
 
+    /// Validate an equation without sampling it. Returns true when Python's
+    /// functions.validate() accepts the expression; on failure lastError()
+    /// carries the human-readable reason (syntax error, unknown name, ...).
+    [[nodiscard]] auto validateExpression(std::string_view expression) -> bool;
+
     /// Evaluate helpers.greeting(projectName) via the archive or python/ import.
     [[nodiscard]] auto greeting(std::string_view projectName) -> std::string;
 
@@ -309,6 +314,17 @@ auto PythonEngine::greeting(std::string_view projectName) -> std::string {
         // `.what()` returns the Python traceback as a string.
         m_lastError = e.what();
         return {};  // empty string on failure
+    }
+}
+
+auto PythonEngine::validateExpression(std::string_view expression) -> bool {
+    try {
+        m_impl->functions.attr("validate")(expression);
+        m_lastError.clear();
+        return true;
+    } catch (const py::error_already_set& e) {
+        m_lastError = e.what();
+        return false;
     }
 }
 
