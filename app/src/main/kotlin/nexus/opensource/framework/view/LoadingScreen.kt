@@ -7,12 +7,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import nexus.opensource.framework.controller.LoadingController
+import nexus.opensource.framework.core.model.NexusBranding
 
 /**
  * Loading/splash screen shown before the main UI.
@@ -25,14 +25,11 @@ fun LoadingScreen(
     onComplete: () -> Unit = {},
 ) {
     val state by controller.state.collectAsState()
-    val scope = rememberCoroutineScope()
 
-    // Start the loading sequence on first composition
     LaunchedEffect(Unit) {
         controller.runSequence()
     }
 
-    // Transition when loading completes
     LaunchedEffect(state.isComplete) {
         if (state.isComplete) {
             delay(300L)
@@ -40,34 +37,27 @@ fun LoadingScreen(
         }
     }
 
-    val brandColor = Color(0xFF6C63FF) // Nexus brand purple
-    val bgColor = Color(0xFF1A1A2E)    // Dark background
-
-    val flamingoPink = Color(0xFFF38BA8)
-
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = bgColor,
+        color = NexusTheme.DarkBg,
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(48.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Flamingo mascot
-            FlamingoIcon(
-                modifier = Modifier.size(96.dp),
-                tint = flamingoPink,
+            AnimatedFlamingoLogo(
+                modifier = Modifier.size(112.dp),
+                style = FlamingoAnimationStyle.Loading,
             )
 
             Spacer(Modifier.height(16.dp))
 
-            // Title
             Text(
-                text = "The Nexus Framework",
+                text = NexusBranding.FRAMEWORK_NAME,
                 style = MaterialTheme.typography.h3.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = NexusTheme.TextPrimary,
                     fontSize = 32.sp,
                 ),
             )
@@ -75,19 +65,20 @@ fun LoadingScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = "v0.3.0 — Dashboard UI · Framework Package · Modern C++",
+                text = NexusBranding.versionLabel(),
                 style = MaterialTheme.typography.body1.copy(
-                    color = Color(0xFFB0B0B0),
+                    color = NexusTheme.TextSecondary,
                     fontSize = 14.sp,
                 ),
             )
 
             Spacer(Modifier.height(48.dp))
 
-            // Progress bar
-            val progress = if (state.totalSteps > 0)
+            val progress = if (state.totalSteps > 0) {
                 state.currentStep.toFloat() / state.totalSteps.toFloat()
-            else 0f
+            } else {
+                0f
+            }
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -96,17 +87,16 @@ fun LoadingScreen(
                 LinearProgressIndicator(
                     progress = progress,
                     modifier = Modifier.fillMaxWidth().height(6.dp),
-                    color = brandColor,
-                    backgroundColor = Color(0xFF2D2D4A),
+                    color = NexusTheme.BrandPurple,
+                    backgroundColor = NexusTheme.ProgressTrack,
                 )
 
                 Spacer(Modifier.height(16.dp))
 
-                // Current step label
                 Text(
                     text = state.message,
                     style = MaterialTheme.typography.body2.copy(
-                        color = Color(0xFFD0D0D0),
+                        color = NexusTheme.TextPrimary.copy(alpha = 0.82f),
                         fontSize = 14.sp,
                     ),
                 )
@@ -114,7 +104,6 @@ fun LoadingScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            // Step indicators
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -127,9 +116,9 @@ fun LoadingScreen(
                             .size(if (isCurrent) 14.dp else 10.dp)
                             .background(
                                 color = when {
-                                    isActive && state.isComplete -> Color(0xFF00C853)
-                                    isActive -> brandColor
-                                    else -> Color(0xFF3A3A5C)
+                                    isActive && state.isComplete -> NexusTheme.AccentGreen
+                                    isActive -> NexusTheme.BrandPurple
+                                    else -> NexusTheme.Divider
                                 },
                                 shape = RoundedCornerShape(50),
                             ),
@@ -139,11 +128,10 @@ fun LoadingScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Subtitle
             Text(
                 text = "Zig bootstrap · Cross-platform services · Code generation pipeline",
                 style = MaterialTheme.typography.caption.copy(
-                    color = Color(0xFF707070),
+                    color = NexusTheme.TextMuted,
                     fontSize = 11.sp,
                 ),
             )

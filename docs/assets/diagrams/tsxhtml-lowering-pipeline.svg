@@ -1,59 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 600" width="700" height="600">
-  <title>Nexus higher-order flow — abstract</title>
-  <rect width="100%" height="100%" fill="#1e1e2e"/>
-  <rect x="0" y="0" width="100%" height="36" fill="#313244"/>
-  <circle cx="18" cy="18" r="6" fill="#f38ba8"/>
-  <circle cx="36" cy="18" r="6" fill="#fab387"/>
-  <circle cx="54" cy="18" r="6" fill="#a6e3a1"/>
-  <text x="350" y="24" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#a6adc8" font-weight="bold">Nexus higher-order flow — abstract</text>
-
-  <rect x="60" y="70" width="580" height="100" rx="12" fill="#313244" stroke="#f38ba8" stroke-width="2"/>
-  <rect x="60" y="70" width="160" height="100" rx="12" fill="#f38ba8" opacity="0.15"/>
-  <text x="140" y="115" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#f38ba8">Design</text>
-  <text x="140" y="140" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">blueprint.json</text>
-  <text x="260" y="115" font-family="sans-serif" font-size="13" fill="#a6adc8">Choose template · Wire node graph</text>
-  <text x="260" y="140" font-family="sans-serif" font-size="13" fill="#a6adc8">Configure ports and data flow</text>
-
-  <rect x="60" y="190" width="580" height="100" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="60" y="190" width="160" height="100" rx="12" fill="#fab387" opacity="0.15"/>
-  <text x="140" y="235" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#fab387">Generate</text>
-  <text x="140" y="260" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">:core engine</text>
-  <text x="260" y="235" font-family="sans-serif" font-size="13" fill="#a6adc8">ProjectGenerator reads blueprint</text>
-  <text x="260" y="260" font-family="sans-serif" font-size="13" fill="#a6adc8">TemplateEngine substitutes placeholders</text>
-
-  <rect x="60" y="310" width="580" height="100" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <rect x="60" y="310" width="160" height="100" rx="12" fill="#a6e3a1" opacity="0.15"/>
-  <text x="140" y="355" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="#a6e3a1">Build</text>
-  <text x="140" y="380" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#a6adc8">zig build</text>
-  <text x="260" y="355" font-family="sans-serif" font-size="13" fill="#a6adc8">C++20 module compilation</text>
-  <text x="260" y="380" font-family="sans-serif" font-size="13" fill="#a6adc8">Link SDL3 + Lua + Python bridges</text>
-
-  <line x1="350" y1="170" x2="350" y2="185" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <line x1="350" y1="290" x2="350" y2="305" stroke="#585b70" stroke-width="2.5" marker-end="url(#arrow)"/>
-
-  <text x="140" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">WHAT to build</text>
-  <text x="350" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">HOW to build it</text>
-  <text x="560" y="460" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#585b70">Produce binary</text>
-
-  <path d="M350,410 L350,445 L280,445 L280,473" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="280" y1="445" x2="420" y2="445" stroke="#585b70" stroke-width="2"/>
-  <line x1="420" y1="445" x2="420" y2="473" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <rect x="80" y="475" width="260" height="70" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <text x="210" y="505" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#89b4fa">Desktop App</text>
-  <text x="210" y="528" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">SDL3 + ImGui · 3-20 MB</text>
-
-  <rect x="360" y="475" width="260" height="70" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
-  <text x="490" y="505" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="bold" fill="#cba6f7">Android APK</text>
-  <text x="490" y="528" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">Zig JNI + Chaquopy</text>
-
-  <rect x="100" y="565" width="500" height="28" rx="14" fill="#313244" stroke="#585b70" stroke-width="1"/>
-  <text x="350" y="584" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">:app Compose Desktop (visual) · :cli headless (./gradlew :cli:run)</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 582" width="1792" height="582">
+  <title>TS/XHTML lowering pipeline</title>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#585b70"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
     </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
   </defs>
+  <rect width="1792" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <rect x="40" y="120" width="307" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="56" y="149" class="icon">&#xf15b;</text>
+  <text x="78" y="151" class="label">
+    <tspan x="78" dy="0">ui/ui.xhtml</tspan>
+  </text>
+  <text x="56" y="171" class="desc">
+    <tspan x="56" dy="0">Declarative markup — panels, plots,</tspan>
+    <tspan x="56" dy="15">sliders</tspan>
+  </text>
+  <rect x="40" y="261" width="262" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="56" y="290" class="icon">&#xf121;</text>
+  <text x="78" y="292" class="label">
+    <tspan x="78" dy="0">ui/ui.ts</tspan>
+  </text>
+  <text x="56" y="312" class="desc">
+    <tspan x="56" dy="0">state(), native(), invoke()</tspan>
+    <tspan x="56" dy="15">bindings</tspan>
+  </text>
+  <rect x="403" y="197" width="243" height="85" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="419" y="226" class="icon">&#xf5fd;</text>
+  <text x="441" y="228" class="label">
+    <tspan x="441" dy="0">shared/dsl/</tspan>
+  </text>
+  <text x="419" y="248" class="desc">
+    <tspan x="419" dy="0">tags.ts · components.ts ·</tspan>
+    <tspan x="419" dy="15">core.ts</tspan>
+  </text>
+  <rect x="702" y="197" width="224" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="718" y="226" class="icon">&#xf013;</text>
+  <text x="740" y="228" class="label">
+    <tspan x="740" dy="0">Lowering pass</tspan>
+  </text>
+  <text x="718" y="248" class="desc">
+    <tspan x="718" dy="0">Maps ComponentTag → draw calls</tspan>
+  </text>
+  <rect x="982" y="197" width="224" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="998" y="226" class="icon">&#xf120;</text>
+  <text x="1020" y="228" class="label">
+    <tspan x="1020" dy="0">panels.lua equiv.</tspan>
+  </text>
+  <text x="998" y="248" class="desc">
+    <tspan x="998" dy="0">nxs.register_panel definitions</tspan>
+  </text>
+  <rect x="1262" y="197" width="230" height="85" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="1278" y="226" class="icon">&#xf120;</text>
+  <text x="1300" y="228" class="label">
+    <tspan x="1300" dy="0">sol2 runtime</tspan>
+  </text>
+  <text x="1278" y="248" class="desc">
+    <tspan x="1278" dy="0">LuaPanels walks tree each</tspan>
+    <tspan x="1278" dy="15">frame</tspan>
+  </text>
+  <rect x="1548" y="120" width="200" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1564" y="149" class="icon">&#xf108;</text>
+  <text x="1586" y="151" class="label">
+    <tspan x="1586" dy="0">Dear ImGui</tspan>
+  </text>
+  <text x="1564" y="171" class="desc">
+    <tspan x="1564" dy="0">window, button, slider, …</tspan>
+  </text>
+  <rect x="1548" y="248" width="204" height="85" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="1564" y="277" class="icon">&#xf080;</text>
+  <text x="1586" y="279" class="label">
+    <tspan x="1586" dy="0">ImPlot / imnodes</tspan>
+  </text>
+  <text x="1564" y="299" class="desc">
+    <tspan x="1564" dy="0">plot-line, node-editor</tspan>
+    <tspan x="1564" dy="15">tags</tspan>
+  </text>
+  <line x1="347" y1="162" x2="403" y2="239" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="302" y1="303" x2="403" y2="239" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="646" y1="239" x2="702" y2="233" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="926" y1="233" x2="982" y2="233" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1206" y1="233" x2="1262" y2="239" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1492" y1="239" x2="1548" y2="156" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1492,239 Q1550,264 1548,290" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="40" y="402" width="1712" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="896" y="430" text-anchor="middle" class="small">No browser engine — same nxs.* commands as hand-written panels.lua; hot-reload via lua.dat optional</text>
+  <rect x="40" y="462" width="1712" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="56" y="484" class="legend-title">Lowering stages</text>
+  <rect x="56" y="486" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="78" y="498" class="small">Authoring — ui.xhtml + ui.ts</text>
+  <rect x="912" y="486" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="934" y="498" class="small">DSL — shared tag registry</text>
+  <rect x="56" y="508" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="78" y="520" class="small">Lua — register_panel output</text>
+  <rect x="912" y="508" width="16" height="16" class="legend-box" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="934" y="520" class="small">Native — ImGui / ImPlot / imnodes</text>
 </svg>

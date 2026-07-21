@@ -8,20 +8,24 @@ INTEGRITY RULE (for AI coding assistants):
   OF TRUTH for visual documentation — ASCII art is NEVER allowed in committed
   files (see .omo/plans/zig-integration-diagrams.md § Phase 6).
 
-  To regenerate all SVGs:
+  To regenerate all SVGs (architecture + UML activity diagrams):
     $ python3 misc/scripts/generate-diagrams.py
 
   New diagram functions: add a def new_diagram_name() that returns SVG string,
   then call it from __main__ and write the output to docs/assets/diagrams/.
+
+  UML activity diagrams: activity_*() helpers under the "UML activity diagrams"
+  section; indexed by docs/assets/diagrams/activity-diagrams.md.
 
   Palette reference:
     bg="#f8fafc", blue="#2563eb", green="#059669", orange="#d97706",
     purple="#7c3aed", slate="#475569", teal="#0d9488", red="#dc2626"
 """
 
+import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[2]  # misc/scripts/ → repo root
 DIAGRAMS = ROOT / "docs/assets/diagrams"
 EXAMPLES = ROOT / "docs/assets/examples"
 
@@ -1611,133 +1615,1101 @@ def langflow_import_pipeline() -> str:
 
 
 # ──────────────────────────────────────────────
-# Interface mockups (docs/assets/examples/*.svg)
+# UML activity diagrams (docs/assets/diagrams/activity-*.svg)
 # ──────────────────────────────────────────────
 
-MOCKUP_W = 800
-MOCKUP_H = 520
-MOCKUP_BG = "#1e1e2e"
-MOCKUP_SURFACE = "#313244"
-MOCKUP_TEXT = "#cdd6f4"
-MOCKUP_SUBTEXT = "#a6adc8"
-MOCKUP_BLUE = "#89b4fa"
-MOCKUP_GREEN = "#a6e3a1"
-MOCKUP_ORANGE = "#fab387"
-MOCKUP_RED = "#f38ba8"
-MOCKUP_MAUVE = "#cba6f7"
-MOCKUP_SKY = "#89dceb"
+ACT_W = 320
+ACT_H = 64
+ACT_GAP = 36
+ACT_FILL = "#FFFFFF"
+ACT_STROKE = "#1565C0"
+DEC_FILL = "#FFFDE7"
+DEC_STROKE = "#F9A825"
+NOTE_FILL = "#FFFDE7"
+NOTE_STROKE = "#F9A825"
+START_R = 14
+BAR_H = 8
 
-def _mockup_frame(title: str, body: str) -> str:
+
+def _act_start(cx: int, cy: int) -> tuple[str, dict]:
+    box = {"x": cx - START_R, "y": cy - START_R, "w": START_R * 2, "h": START_R * 2}
+    svg = f'  <circle cx="{cx}" cy="{cy}" r="{START_R}" fill="#1e293b"/>'
+    return svg, box
+
+
+def _act_stop(cx: int, cy: int) -> tuple[str, dict]:
+    box = {"x": cx - START_R, "y": cy - START_R, "w": START_R * 2, "h": START_R * 2}
+    svg = (
+        f'  <circle cx="{cx}" cy="{cy}" r="{START_R}" fill="none" stroke="#1e293b" stroke-width="3"/>\n'
+        f'  <circle cx="{cx}" cy="{cy}" r="{START_R - 6}" fill="#1e293b"/>'
+    )
+    return svg, box
+
+
+def _act_action(
+    x: int,
+    y: int,
+    label: str,
+    desc: str = "",
+    fill: str = ACT_FILL,
+    stroke: str = ACT_STROKE,
+    w: int = ACT_W,
+    icon: str = "",
+) -> tuple[str, dict]:
+    has_icon = bool(icon)
+    bw, bh = _measure(label, desc or " ", w, ACT_H, has_icon)
+    svg = module(x, y, w, ACT_H, fill, stroke, icon, label, desc or " ", mono=False)
+    return svg, {"x": x, "y": y, "w": bw, "h": bh}
+
+
+def _act_decision(cx: int, cy: int, label: str, size: int = 88) -> tuple[str, dict]:
+    half = size // 2
+    pts = f"{cx},{cy - half} {cx + half},{cy} {cx},{cy + half} {cx - half},{cy}"
+    box = {"x": cx - half, "y": cy - half, "w": size, "h": size}
+    svg = (
+        f'  <polygon points="{pts}" fill="{DEC_FILL}" stroke="{DEC_STROKE}" '
+        f'stroke-width="2" filter="url(#shadow)"/>\n'
+        f'  <text x="{cx}" y="{cy + 4}" text-anchor="middle" class="small">{_escape_xml(label)}</text>'
+    )
+    return svg, box
+
+
+def _act_sync_bar(x: int, y: int, w: int) -> tuple[str, dict]:
+    box = {"x": x, "y": y, "w": w, "h": BAR_H}
+    svg = f'  <rect x="{x}" y="{y}" width="{w}" height="{BAR_H}" fill="#1e293b" rx="2"/>'
+    return svg, box
+
+
+def _act_title(title: str, w: int) -> str:
+    return f'  <text x="{w // 2}" y="56" text-anchor="middle" class="layer-label">{_escape_xml(title)}</text>'
+
+
+def _act_chain_arrows(boxes: list[dict], labels: list[str] | None = None) -> list[str]:
+    arrows: list[str] = []
+    for i in range(len(boxes) - 1):
+        lab = labels[i] if labels and i < len(labels) else ""
+        arrows.append(arrow_between(boxes[i], boxes[i + 1], "bottom", "top", label=lab))
+    return arrows
+
+
+def _activity_svg(title: str, w: int, h: int, body: str) -> str:
+    logo = "../nexus-logo.png"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MOCKUP_W} {MOCKUP_H}" width="{MOCKUP_W}" height="{MOCKUP_H}">
-  <rect width="100%" height="100%" fill="{MOCKUP_BG}"/>
-  <rect x="0" y="0" width="100%" height="40" fill="{MOCKUP_SURFACE}"/>
-  <circle cx="20" cy="20" r="6" fill="#f38ba8"/>
-  <circle cx="38" cy="20" r="6" fill="#fab387"/>
-  <circle cx="56" cy="20" r="6" fill="#a6e3a1"/>
-  <text x="400" y="26" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">{title}</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <title>{_escape_xml(title)}</title>
+{defs(logo)}
+{header(logo, w)}
+{_act_title(title, w)}
 {body}
 </svg>"""
 
+
+def _vertical_actions(
+    x: int,
+    y: int,
+    steps: list[tuple],
+    gap: int = ACT_GAP,
+) -> tuple[list[str], list[dict], int]:
+    """Place a vertical list of action nodes. Each step is (label, desc[, fill, stroke, icon])."""
+    parts: list[str] = []
+    boxes: list[dict] = []
+    cy = y
+    for step in steps:
+        label, desc = step[0], step[1]
+        fill = step[2] if len(step) > 2 else ACT_FILL
+        stroke = step[3] if len(step) > 3 else ACT_STROKE
+        icon = step[4] if len(step) > 4 else ""
+        svg, box = _act_action(x, cy, label, desc, fill, stroke, icon=icon)
+        parts.append(svg)
+        boxes.append(box)
+        cy = box["y"] + box["h"] + gap
+    return parts, boxes, cy - gap
+
+
+def activity_first_run_bootstrap() -> str:
+    """Framework — first-run bootstrap."""
+    cx = 280
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    act_parts, act_boxes, y = _vertical_actions(x, y, [
+        ("Clone nexus-framework-client", "Obtain the Toolkit repository", "#E8F5E9", "#2E7D32", NF["branch"]),
+        ("Run setup.zig", "zig run misc/client-setup/setup.zig", "#E8F5E9", "#2E7D32", NF["wrench"]),
+        ("Write env.sh / env.bat", "JDK 26 + Zig 0.16.0 toolchain exports", "#E8F5E9", "#2E7D32", NF["file"]),
+        ("source misc/client-setup/env.sh", "Activate PATH / JAVA_HOME / ZIG_HOME", "#E3F2FD", "#1565C0", NF["terminal"]),
+        ("./misc/build_client.sh", "Compile :core :cli :app", "#E3F2FD", "#1565C0", NF["gear"]),
+    ])
+    parts.extend(act_parts)
+
+    dec_cy = y + 50
+    d_svg, d_box = _act_decision(cx, dec_cy, "Compile OK?")
+    parts.append(d_svg)
+
+    yes_x = cx + 130
+    no_x = cx - ACT_W - 40
+    yes_y = d_box["y"] + d_box["h"] + ACT_GAP
+    yes_svg, yes_box = _act_action(
+        yes_x - ACT_W // 2, yes_y,
+        "Ready for :app:run / :cli:generate",
+        "Toolchain verified — proceed to client or CLI",
+        "#E8F5E9", "#2E7D32", icon=NF["rocket"],
+    )
+    no_svg, no_box = _act_action(
+        no_x, yes_y,
+        "Fix JAVA_HOME / deps",
+        "Then rebuild until compile succeeds",
+        "#FCE4EC", "#C2185B", icon=NF["wrench"],
+    )
+    parts.extend([yes_svg, no_svg])
+
+    stop_y = max(yes_box["y"] + yes_box["h"], no_box["y"] + no_box["h"]) + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    flow_boxes = [s_box] + act_boxes + [d_box]
+    arrows = _act_chain_arrows(flow_boxes)
+    arrows.append(arrow_between(d_box, yes_box, "right", "top", label="yes", via_x=yes_box["x"] + yes_box["w"] // 2))
+    arrows.append(arrow_between(d_box, no_box, "left", "top", label="no", via_x=no_box["x"] + no_box["w"] // 2))
+    arrows.append(arrow_between(yes_box, stop_box, "bottom", "top", via_x=cx))
+    arrows.append(arrow_between(no_box, stop_box, "bottom", "top", via_x=cx, dashed=True, lane=-LANE))
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = max(yes_box["x"] + yes_box["w"], act_boxes[0]["x"] + act_boxes[0]["w"]) + 48
+    w = max(w, 720)
+    h = legend_y + 110
+    body = f"""{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 520, 70, [
+    ("#E8F5E9", "#2E7D32", "Setup — Zig bootstrap + env"),
+    ("#E3F2FD", "#1565C0", "Build — client compile"),
+    ("#FFFDE7", "#F9A825", "Decision — compile gate"),
+], "Activity colors")}"""
+    return _activity_svg("UML activity — first-run bootstrap", w, h, body)
+
+
+def activity_client_navigation() -> str:
+    """Framework — Compose Desktop client session."""
+    cx = 400
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    top_parts, top_boxes, y = _vertical_actions(x, y, [
+        ("Launch ./gradlew :app:run", "Compose Desktop process starts", "#E3F2FD", "#1565C0", NF["desktop"]),
+        ("LoadingScreen", "Flamingo animation splash", "#E3F2FD", "#1565C0", NF["rocket"]),
+        ("Navigate to Home", "Primary hub after load", "#E3F2FD", "#1565C0", NF["layer"]),
+    ])
+    parts.extend(top_parts)
+
+    # fork bar → parallel browse / about
+    bar_w = 480
+    bar_x = cx - bar_w // 2
+    fork_svg, fork_box = _act_sync_bar(bar_x, y + 8, bar_w)
+    parts.append(fork_svg)
+    y = fork_box["y"] + fork_box["h"] + ACT_GAP
+
+    left_x = cx - ACT_W - 40
+    right_x = cx + 40
+    b1_svg, b1 = _act_action(left_x, y, "Browse recent creations", "Open previously generated apps", "#FFF3E0", "#EF6C00", icon=NF["file"])
+    b2_svg, b2 = _act_action(right_x, y, "Open What's New / About", "Release notes and branding", "#FFF3E0", "#EF6C00", icon=NF["book"])
+    parts.extend([b1_svg, b2_svg])
+
+    join_y = max(b1["y"] + b1["h"], b2["y"] + b2["h"]) + ACT_GAP
+    join_svg, join_box = _act_sync_bar(bar_x, join_y, bar_w)
+    parts.append(join_svg)
+
+    choose_y = join_box["y"] + join_box["h"] + ACT_GAP
+    ch_svg, ch_box = _act_action(x, choose_y, "Choose primary action", "Create · Analyze · Edit blueprint", "#E8EAF6", "#3949AB", icon=NF["search"])
+    parts.append(ch_svg)
+
+    # switch cases in a row
+    case_y = ch_box["y"] + ch_box["h"] + ACT_GAP + 20
+    cases = [
+        (cx - 520, "Create project", "GenerateProjectView → ProjectGenerator → NOTICE", "#E8F5E9", "#2E7D32", NF["rocket"]),
+        (cx - 170, "Analyze — Debugger", "DebuggerPanel · paste / scan logs", "#FFF3E0", "#EF6C00", NF["search"]),
+        (cx + 180, "Analyze — Flows / Tests", "FlowsEditor or TestRunner", "#E0F7FA", "#00838F", NF["cog"]),
+        (cx + 530, "Edit blueprint", "BlueprintEditorView (skeleton)", "#F3E5F5", "#7B1FA2", NF["branch"]),
+    ]
+    case_boxes: list[dict] = []
+    for cx_i, label, desc, fill, stroke, icon in cases:
+        svg, box = _act_action(cx_i, case_y, label, desc, fill, stroke, w=280, icon=icon)
+        parts.append(svg)
+        case_boxes.append(box)
+
+    overlay_y = case_boxes[0]["y"] + max(b["h"] for b in case_boxes) + ACT_GAP
+    ov_svg, ov_box = _act_action(
+        x, overlay_y, "Optional flamingo transition", "Overlay before next screen",
+        "#FCE4EC", "#C2185B", icon=NF["layer"],
+    )
+    parts.append(ov_svg)
+
+    stop_y = ov_box["y"] + ov_box["h"] + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, top_boxes[0]),
+        *_act_chain_arrows(top_boxes),
+        arrow_between(top_boxes[-1], fork_box),
+        arrow_between(fork_box, b1, "bottom", "top", via_x=b1["x"] + b1["w"] // 2),
+        arrow_between(fork_box, b2, "bottom", "top", via_x=b2["x"] + b2["w"] // 2),
+        arrow_between(b1, join_box, "bottom", "top", via_x=b1["x"] + b1["w"] // 2),
+        arrow_between(b2, join_box, "bottom", "top", via_x=b2["x"] + b2["w"] // 2),
+        arrow_between(join_box, ch_box),
+    ]
+    for cb in case_boxes:
+        arrows.append(arrow_between(ch_box, cb, "bottom", "top", via_x=cb["x"] + cb["w"] // 2))
+        arrows.append(arrow_between(cb, ov_box, "bottom", "top", via_x=cx, dashed=True))
+    arrows.append(arrow_between(ov_box, stop_box))
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = case_boxes[-1]["x"] + case_boxes[-1]["w"] + 48
+    h = legend_y + 110
+    body = f"""{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 640, 70, [
+    ("#E3F2FD", "#1565C0", "Session — load & home"),
+    ("#FFF3E0", "#EF6C00", "Side paths — recent / about"),
+    ("#E8EAF6", "#3949AB", "Switch — primary tool action"),
+], "Client navigation")}"""
+    return _activity_svg("UML activity — Compose client navigation", w, h, body)
+
+
+def activity_generate_pipeline() -> str:
+    """Framework — project generation pipeline (:core)."""
+    cx = 300
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    head_parts, head_boxes, y = _vertical_actions(x, y, [
+        ("Validate ProjectSpec", "name · type · output path", "#E3F2FD", "#1565C0", NF["gear"]),
+        ("Resolve template/ + shared/", "desktop-app or android-app skeleton", "#F3E5F5", "#7B1FA2", NF["package"]),
+    ])
+    parts.extend(head_parts)
+
+    dec_cy = y + 50
+    d_svg, d_box = _act_decision(cx, dec_cy, "dry-run?")
+    parts.append(d_svg)
+
+    dry_x = cx + 160
+    dry_svg, dry_box = _act_action(
+        dry_x, d_box["y"], "List rendered paths", "No files written — preview only",
+        "#ECEFF1", "#455A64", icon=NF["search"],
+    )
+    parts.append(dry_svg)
+    dry_stop_svg, dry_stop = _act_stop(dry_box["x"] + dry_box["w"] // 2, dry_box["y"] + dry_box["h"] + ACT_GAP + START_R)
+    parts.append(dry_stop_svg)
+
+    main_y = d_box["y"] + d_box["h"] + ACT_GAP
+    main_parts, main_boxes, y = _vertical_actions(x, main_y, [
+        ("Ensure output dir", "force overwrite if requested", "#FFF3E0", "#EF6C00", NF["box"]),
+        ("Copy template + render", "Substitute {{placeholders}}", "#FFF3E0", "#EF6C00", NF["code"]),
+        ("Copy shared/ helpers", "DSL, themes, runtime modules", "#FFF3E0", "#EF6C00", NF["layer"]),
+        ("Write ScriptProtectionConfig", "If script protection enabled", "#E0F7FA", "#00838F", NF["file"]),
+        ("Write custom blueprint.json", "If provided by client/CLI", "#E0F7FA", "#00838F", NF["file"]),
+        ("Write custom flows.json", "If provided by client/CLI", "#E0F7FA", "#00838F", NF["cog"]),
+        ("Write NOTICE", "Nexus License attribution", "#E8F5E9", "#2E7D32", NF["book"]),
+        ("Validate nxs_config.json", "Schema v2 check", "#E8EAF6", "#3949AB", NF["gear"]),
+        ("Validate blueprint.json", "Graph nodes and edges", "#E8EAF6", "#3949AB", NF["branch"]),
+        ("Validate flows.json", "Triggers and steps", "#E8EAF6", "#3949AB", NF["cog"]),
+        ("Done → builds/framework/<name>/", "Out-of-source native project tree", "#E8F5E9", "#2E7D32", NF["rocket"]),
+    ])
+    parts.extend(main_parts)
+
+    stop_y = y + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, head_boxes[0]),
+        *_act_chain_arrows(head_boxes),
+        arrow_between(head_boxes[-1], d_box),
+        arrow_between(d_box, dry_box, "right", "left", label="yes"),
+        arrow_between(dry_box, dry_stop),
+        arrow_between(d_box, main_boxes[0], "bottom", "top", label="no"),
+        *_act_chain_arrows(main_boxes),
+        arrow_between(main_boxes[-1], stop_box),
+    ]
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = max(dry_box["x"] + dry_box["w"], main_boxes[0]["x"] + main_boxes[0]["w"]) + 64
+    h = legend_y + 110
+    body = f"""{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 560, 70, [
+    ("#E3F2FD", "#1565C0", "Validate — ProjectSpec"),
+    ("#FFF3E0", "#EF6C00", "Emit — template copy + render"),
+    ("#E8EAF6", "#3949AB", "Validate — config / blueprint / flows"),
+], "Generation pipeline")}"""
+    return _activity_svg("UML activity — project generation pipeline", w, h, body)
+
+
+def activity_build_desktop_app() -> str:
+    """Framework — build a generated desktop app."""
+    cx = 280
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    act_parts, act_boxes, y = _vertical_actions(x, y, [
+        ("cd builds/framework/<App>", "Enter generated project tree", "#ECEFF1", "#455A64", NF["box"]),
+        ("./build_app.sh", "Host orchestrator for native build", "#E3F2FD", "#1565C0", NF["terminal"]),
+        ("Create / refresh Python venv", "Host tooling for pack/archive steps", "#E8F5E9", "#2E7D32", NF["python"]),
+        ("Fetch / check native deps", "SDL3, Lua, ImGui, …", "#E8F5E9", "#2E7D32", NF["package"]),
+        ("g++ -fmodules-ts compile", "Compile .cppm translation units", "#F3E5F5", "#7B1FA2", NF["code"]),
+        ("zig build nexus_zig sidecar", "zig-services compile + link helpers", "#E3F2FD", "#1565C0", NF["gear"]),
+        ("Link desktop binary", "Produce runnable SDL3 executable", "#E3F2FD", "#1565C0", NF["desktop"]),
+    ])
+    parts.extend(act_parts)
+
+    dec_cy = y + 50
+    d_svg, d_box = _act_decision(cx, dec_cy, "Success?")
+    parts.append(d_svg)
+
+    yes_x = cx + 140
+    no_x = cx - ACT_W - 50
+    yes_y = d_box["y"] + d_box["h"] + ACT_GAP
+    yes_svg, yes_box = _act_action(
+        yes_x - ACT_W // 2, yes_y, "Run / package binary", "Launch or ship the desktop app",
+        "#E8F5E9", "#2E7D32", icon=NF["rocket"],
+    )
+    no_svg, no_box = _act_action(
+        no_x, yes_y, "Inspect build log", "Fix modules / Zig / deps and retry",
+        "#FCE4EC", "#C2185B", icon=NF["search"],
+    )
+    parts.extend([yes_svg, no_svg])
+
+    stop_y = max(yes_box["y"] + yes_box["h"], no_box["y"] + no_box["h"]) + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    flow = [s_box] + act_boxes + [d_box]
+    arrows = _act_chain_arrows(flow)
+    arrows.append(arrow_between(d_box, yes_box, "right", "top", label="yes", via_x=yes_box["x"] + yes_box["w"] // 2))
+    arrows.append(arrow_between(d_box, no_box, "left", "top", label="no", via_x=no_box["x"] + no_box["w"] // 2))
+    arrows.append(arrow_between(yes_box, stop_box, "bottom", "top", via_x=cx))
+    arrows.append(arrow_between(no_box, stop_box, "bottom", "top", via_x=cx, dashed=True))
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = max(yes_box["x"] + yes_box["w"], 720)
+    h = legend_y + 100
+    body = f"""{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 520, 70, [
+    ("#E3F2FD", "#1565C0", "Build — script + Zig sidecar"),
+    ("#F3E5F5", "#7B1FA2", "Compile — C++ modules"),
+    ("#FFFDE7", "#F9A825", "Decision — link success"),
+], "Desktop build")}"""
+    return _activity_svg("UML activity — build generated desktop app", w, h, body)
+
+
+def activity_desktop_frame_loop() -> str:
+    """Derived app — typical desktop frame loop."""
+    cx = 300
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    init_parts, init_boxes, y = _vertical_actions(x, y, [
+        ("main() — init SDL3 + GL + ImGui", "Create window and graphics context", "#E3F2FD", "#1565C0", NF["desktop"]),
+        ("Init NexusBridge / Lua / Python", "Optional scripting runtimes", "#E8F5E9", "#2E7D32", NF["plug"]),
+        ("Load blueprint + optional flows", "Graph + FlowRunner registration", "#FFF8E1", "#F57F17", NF["file"]),
+        ("Create AppModel + Controller + View", "MVC wiring for the frame", "#F3E5F5", "#7B1FA2", NF["code"]),
+    ])
+    parts.extend(init_parts)
+
+    # loop region
+    loop_top = y + 8
+    loop_label = f'  <text x="{x - 8}" y="{loop_top + 16}" text-anchor="end" class="badge">repeat</text>'
+
+    loop_parts, loop_boxes, y = _vertical_actions(x, y + 24, [
+        ("Poll SDL events", "Input and window messages", "#ECEFF1", "#455A64", NF["desktop"]),
+        ("AppController.dispatch", "Route commands from UI / scripts", "#E3F2FD", "#1565C0", NF["gear"]),
+        ("Update AppModel", "Mutate domain state", "#FFF3E0", "#EF6C00", NF["database"]),
+    ])
+    parts.extend(loop_parts)
+
+    dec_cy = y + 50
+    d_svg, d_box = _act_decision(cx, dec_cy, "flows?")
+    parts.append(d_svg)
+
+    flow_x = cx + 150
+    flow_svg, flow_box = _act_action(
+        flow_x, d_box["y"] - 10, "FlowRunner tick / triggers", "Background and event steps",
+        "#E8F5E9", "#2E7D32", w=280, icon=NF["cog"],
+    )
+    parts.append(flow_svg)
+
+    cont_y = d_box["y"] + d_box["h"] + ACT_GAP
+    cont_parts, cont_boxes, y = _vertical_actions(x, cont_y, [
+        ("LuaPanels hot-reload check", "Reload panels.lua when changed", "#E0F7FA", "#00838F", NF["terminal"]),
+        ("AppView.render (ImGui)", "Draw UI for this frame", "#E3F2FD", "#1565C0", NF["chart"]),
+        ("Swap buffers", "Present frame to display", "#ECEFF1", "#455A64", NF["desktop"]),
+    ])
+    parts.extend(cont_parts)
+
+    # while window open — back arrow annotation
+    loop_bottom = y
+    while_note = (
+        f'  <text x="{cx + ACT_W // 2 + 24}" y="{(loop_top + loop_bottom) // 2}" '
+        f'class="desc">while window open</text>'
+    )
+
+    shut_y = y + ACT_GAP
+    shut_svg, shut_box = _act_action(
+        x, shut_y, "Shutdown bridges + SDL", "Tear down Python / Lua / GL",
+        "#FCE4EC", "#C2185B", icon=NF["wrench"],
+    )
+    parts.append(shut_svg)
+
+    stop_y = shut_box["y"] + shut_box["h"] + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    # loop panel background
+    panel = (
+        f'  <rect x="{x - 24}" y="{loop_top}" width="{ACT_W + 48}" '
+        f'height="{loop_bottom - loop_top + 8}" class="panel" fill="#E8F4FD" '
+        f'stroke="#1565C0" fill-opacity="0.25"/>'
+    )
+
+    arrows = [
+        arrow_between(s_box, init_boxes[0]),
+        *_act_chain_arrows(init_boxes),
+        arrow_between(init_boxes[-1], loop_boxes[0]),
+        *_act_chain_arrows(loop_boxes),
+        arrow_between(loop_boxes[-1], d_box),
+        arrow_between(d_box, flow_box, "right", "left", label="yes"),
+        arrow_between(flow_box, cont_boxes[0], "bottom", "top", via_x=cx, dashed=True),
+        arrow_between(d_box, cont_boxes[0], "bottom", "top", label="no"),
+        *_act_chain_arrows(cont_boxes),
+        # loop back
+        arrow_ortho(
+            *_anchor(cont_boxes[-1], "right"),
+            *_anchor(loop_boxes[0], "right"),
+            via_x=x + ACT_W + 80,
+            label="loop",
+            dashed=True,
+        ),
+        arrow_between(cont_boxes[-1], shut_box, "bottom", "top", label="close"),
+        arrow_between(shut_box, stop_box),
+    ]
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = max(flow_box["x"] + flow_box["w"], x + ACT_W + 120) + 48
+    h = legend_y + 100
+    body = f"""{panel}
+{loop_label}
+{chr(10).join(parts)}
+{while_note}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 560, 70, [
+    ("#E3F2FD", "#1565C0", "Init / render — SDL3 + ImGui"),
+    ("#E8F4FD", "#1565C0", "Frame loop — poll → update → draw"),
+    ("#E8F5E9", "#2E7D32", "Optional — FlowRunner tick"),
+], "Desktop frame loop")}"""
+    return _activity_svg("UML activity — desktop frame loop", w, h, body)
+
+
+def activity_hello_counter() -> str:
+    """Derived app — sample hello / counter starter."""
+    cx = 400
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    open_svg, open_box = _act_action(
+        cx - ACT_W // 2, y, "User opens generated app", "Default template desktop binary",
+        "#E3F2FD", "#1565C0", icon=NF["desktop"],
+    )
+    parts.append(open_svg)
+    greet_y = open_box["y"] + open_box["h"] + ACT_GAP
+    greet_svg, greet_box = _act_action(
+        cx - ACT_W // 2, greet_y, "See greeting + counter panel", "ImGui starter UI",
+        "#E3F2FD", "#1565C0", icon=NF["chart"],
+    )
+    parts.append(greet_svg)
+
+    bar_w = 700
+    bar_x = cx - bar_w // 2
+    fork_y = greet_box["y"] + greet_box["h"] + ACT_GAP
+    fork_svg, fork_box = _act_sync_bar(bar_x, fork_y, bar_w)
+    parts.append(fork_svg)
+
+    branch_y = fork_box["y"] + fork_box["h"] + ACT_GAP
+    branches = [
+        (cx - 360, [
+            ("Click Increment", "UI command from counter panel", "#FFF3E0", "#EF6C00", NF["layer"]),
+            ("Controller → Model.counter++", "Mutate domain state", "#F3E5F5", "#7B1FA2", NF["gear"]),
+            ("View redraws count", "ImGui reflects new value", "#E3F2FD", "#1565C0", NF["chart"]),
+        ]),
+        (cx - 110, [
+            ("Edit Lua panel script", "Author change in panels.lua", "#E0F7FA", "#00838F", NF["terminal"]),
+            ("Hot-reload panels.lua", "sol2 picks up new panel defs", "#E0F7FA", "#00838F", NF["code"]),
+        ]),
+        (cx + 140, [
+            ("Call Python helper", "FFT / util via pybind11", "#E8F5E9", "#2E7D32", NF["python"]),
+            ("Return into C++ model", "Bridge result stored in model", "#E8F5E9", "#2E7D32", NF["database"]),
+        ]),
+    ]
+    all_branch_boxes: list[list[dict]] = []
+    branch_arrows: list[str] = []
+    for bx, steps in branches:
+        bp, bb, _ = _vertical_actions(bx, branch_y, steps, gap=28)
+        parts.extend(bp)
+        all_branch_boxes.append(bb)
+        branch_arrows.extend(_act_chain_arrows(bb))
+
+    join_y = max(bb[-1]["y"] + bb[-1]["h"] for bb in all_branch_boxes) + ACT_GAP
+    join_svg, join_box = _act_sync_bar(bar_x, join_y, bar_w)
+    parts.append(join_svg)
+
+    close_y = join_box["y"] + join_box["h"] + ACT_GAP
+    close_svg, close_box = _act_action(
+        cx - ACT_W // 2, close_y, "User closes window", "Exit main loop",
+        "#FCE4EC", "#C2185B", icon=NF["desktop"],
+    )
+    parts.append(close_svg)
+    stop_y = close_box["y"] + close_box["h"] + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, open_box),
+        arrow_between(open_box, greet_box),
+        arrow_between(greet_box, fork_box),
+        *branch_arrows,
+    ]
+    for bb in all_branch_boxes:
+        arrows.append(arrow_between(fork_box, bb[0], "bottom", "top", via_x=bb[0]["x"] + bb[0]["w"] // 2))
+        arrows.append(arrow_between(bb[-1], join_box, "bottom", "top", via_x=bb[-1]["x"] + bb[-1]["w"] // 2))
+    arrows.append(arrow_between(join_box, close_box))
+    arrows.append(arrow_between(close_box, stop_box))
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = 880
+    h = legend_y + 110
+    body = f"""{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 640, 70, [
+    ("#FFF3E0", "#EF6C00", "Counter — increment path"),
+    ("#E0F7FA", "#00838F", "Lua — hot-reload panels"),
+    ("#E8F5E9", "#2E7D32", "Python — helper via pybind11"),
+], "Starter interactions (parallel)")}"""
+    return _activity_svg("UML activity — hello / counter starter", w, h, body)
+
+
+def activity_flows_automation() -> str:
+    """Derived app — blueprint + flows automation."""
+    cx = 300
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    head_parts, head_boxes, y = _vertical_actions(x, y, [
+        ("App boot — load flows.json", "Parse automation definitions", "#E8F5E9", "#2E7D32", NF["file"]),
+        ("Register triggers", "timer · event · UI · startup", "#E8F5E9", "#2E7D32", NF["cog"]),
+    ])
+    parts.extend(head_parts)
+
+    loop_top = y + 8
+    loop_parts, loop_boxes, y = _vertical_actions(x, y + 24, [
+        ("Wait for trigger", "Block until matching event", "#ECEFF1", "#455A64", NF["comment"]),
+        ("Select matching flow", "Pick enabled flow by trigger", "#FFF3E0", "#EF6C00", NF["search"]),
+        ("Execute steps in order", "Walk steps[] sequentially", "#E3F2FD", "#1565C0", NF["gear"]),
+    ])
+    parts.extend(loop_parts)
+
+    bar_w = 640
+    bar_x = cx - bar_w // 2
+    fork_y = y + 8
+    fork_svg, fork_box = _act_sync_bar(bar_x, fork_y, bar_w)
+    parts.append(fork_svg)
+
+    step_y = fork_box["y"] + fork_box["h"] + ACT_GAP
+    step_specs = [
+        (cx - 340, "Invoke C++ / Lua action", "nxs.* or lua.* target", "#F3E5F5", "#7B1FA2", NF["code"]),
+        (cx - 110, "Invoke Python step", "python.* via bridge", "#E8F5E9", "#2E7D32", NF["python"]),
+        (cx + 120, "Delay / branch", "Condition or wait step", "#E0F7FA", "#00838F", NF["branch"]),
+    ]
+    step_boxes: list[dict] = []
+    for sx, label, desc, fill, stroke, icon in step_specs:
+        svg, box = _act_action(sx, step_y, label, desc, fill, stroke, w=260, icon=icon)
+        parts.append(svg)
+        step_boxes.append(box)
+
+    join_y = step_boxes[0]["y"] + step_boxes[0]["h"] + ACT_GAP
+    join_svg, join_box = _act_sync_bar(bar_x, join_y, bar_w)
+    parts.append(join_svg)
+
+    log_y = join_box["y"] + join_box["h"] + ACT_GAP
+    log_svg, log_box = _act_action(
+        x, log_y, "Log step result", "Record success / failure for debugger",
+        "#E8EAF6", "#3949AB", icon=NF["file"],
+    )
+    parts.append(log_svg)
+
+    panel = (
+        f'  <rect x="{x - 24}" y="{loop_top}" width="{ACT_W + 48}" '
+        f'height="{log_box["y"] + log_box["h"] - loop_top + 16}" class="panel" '
+        f'fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.2"/>'
+    )
+    loop_label = f'  <text x="{x - 8}" y="{loop_top + 16}" text-anchor="end" class="badge">while app running</text>'
+
+    stop_y = log_box["y"] + log_box["h"] + ACT_GAP + 40 + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, head_boxes[0]),
+        *_act_chain_arrows(head_boxes),
+        arrow_between(head_boxes[-1], loop_boxes[0]),
+        *_act_chain_arrows(loop_boxes),
+        arrow_between(loop_boxes[-1], fork_box),
+    ]
+    for sb in step_boxes:
+        arrows.append(arrow_between(fork_box, sb, "bottom", "top", via_x=sb["x"] + sb["w"] // 2))
+        arrows.append(arrow_between(sb, join_box, "bottom", "top", via_x=sb["x"] + sb["w"] // 2))
+    arrows.append(arrow_between(join_box, log_box))
+    arrows.append(
+        arrow_ortho(
+            *_anchor(log_box, "left"),
+            *_anchor(loop_boxes[0], "left"),
+            via_x=x - 60,
+            label="loop",
+            dashed=True,
+        )
+    )
+    arrows.append(arrow_between(log_box, stop_box, "bottom", "top", label="exit", dashed=True))
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = 820
+    h = legend_y + 100
+    body = f"""{panel}
+{loop_label}
+{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 600, 70, [
+    ("#E8F5E9", "#2E7D32", "Load — flows.json + triggers"),
+    ("#E3F2FD", "#1565C0", "Execute — ordered steps"),
+    ("#F3E5F5", "#7B1FA2", "Step kinds — C++/Lua · Python · branch"),
+], "Flows automation")}"""
+    return _activity_svg("UML activity — flows automation", w, h, body)
+
+
+def activity_langflow_import() -> str:
+    """Derived app — Langflow → Nexus import."""
+    cx = 300
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    act_parts, act_boxes, y = _vertical_actions(x, y, [
+        ("Export Langflow JSON", "API or Export flow from Langflow UI", "#E8F5E9", "#2E7D32", NF["robot"]),
+        ("LangflowTransformationEngine", ":core import — map DAG to Nexus", "#E8EAF6", "#3949AB", NF["gear"]),
+        ("Produce blueprint.json (+ flows)", "Structure + optional automations", "#F3E5F5", "#7B1FA2", NF["file"]),
+        ("ProjectGenerator.generate", "Emit builds/framework/<name>/", "#FFF3E0", "#EF6C00", NF["rocket"]),
+        ("User edits C++ / Lua / Python", "Customize generated sources", "#E3F2FD", "#1565C0", NF["code"]),
+        ("./build_app.sh", "Native compile of derived app", "#E3F2FD", "#1565C0", NF["terminal"]),
+        ("Ship native binary", "Distribute desktop or Android build", "#E8F5E9", "#2E7D32", NF["box"]),
+    ])
+    parts.extend(act_parts)
+
+    note_y = y + 12
+    note = f"""  <rect x="{x}" y="{note_y}" width="{ACT_W}" height="56" class="panel" fill="{NOTE_FILL}" stroke="{NOTE_STROKE}"/>
+  <text x="{cx}" y="{note_y + 24}" text-anchor="middle" class="small">Retain NOTICE attribution</text>
+  <text x="{cx}" y="{note_y + 42}" text-anchor="middle" class="desc">Nexus License (Nexus-1.0)</text>"""
+
+    stop_y = note_y + 56 + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, act_boxes[0]),
+        *_act_chain_arrows(act_boxes),
+        arrow(cx, act_boxes[-1]["y"] + act_boxes[-1]["h"], cx, note_y),
+        arrow(cx, note_y + 56, cx, stop_box["y"]),
+    ]
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = 640
+    h = legend_y + 100
+    body = f"""{chr(10).join(parts)}
+{note}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 520, 70, [
+    ("#E8F5E9", "#2E7D32", "External — Langflow export"),
+    ("#E8EAF6", "#3949AB", "Transform — :core engine"),
+    ("#FFF3E0", "#EF6C00", "Generate — ProjectGenerator"),
+], "Langflow import path")}"""
+    return _activity_svg("UML activity — Langflow → Nexus import", w, h, body)
+
+
+def activity_android_field_tablet() -> str:
+    """Derived app — sample Android field tablet."""
+    cx = 300
+    x = cx - ACT_W // 2
+    y = 100
+    parts: list[str] = []
+
+    s_svg, s_box = _act_start(cx, y)
+    parts.append(s_svg)
+    y = s_box["y"] + s_box["h"] + ACT_GAP
+
+    init_parts, init_boxes, y = _vertical_actions(x, y, [
+        ("Launch APK (NexusApplication)", "Android process start", "#FCE4EC", "#C2185B", NF["android"]),
+        ("Start Chaquopy Python", "Embed CPython in APK", "#FCE4EC", "#C2185B", NF["python"]),
+        ("Init Zig JNI bridge", "Hand-authored C ABI / JNI", "#FCE4EC", "#C2185B", NF["plug"]),
+        ("SDL3 / GLES + ImGui loop", "Full-screen touch UI", "#E3F2FD", "#1565C0", NF["desktop"]),
+    ])
+    parts.extend(init_parts)
+
+    loop_top = y + 8
+    loop_parts, loop_boxes, y = _vertical_actions(x, y + 24, [
+        ("Touch / sensor input", "Pointer and device sensors", "#ECEFF1", "#455A64", NF["phone"]),
+        ("Controller updates model", "MVC command path", "#F3E5F5", "#7B1FA2", NF["gear"]),
+        ("Optional Python ML / analysis", "Chaquopy evaluate on device", "#E8F5E9", "#2E7D32", NF["python"]),
+        ("Render ImGui UI", "GLES present", "#E3F2FD", "#1565C0", NF["chart"]),
+    ])
+    parts.extend(loop_parts)
+
+    panel = (
+        f'  <rect x="{x - 24}" y="{loop_top}" width="{ACT_W + 48}" '
+        f'height="{y - loop_top + 8}" class="panel" fill="#FCE4EC" '
+        f'stroke="#C2185B" fill-opacity="0.2"/>'
+    )
+    loop_label = f'  <text x="{x - 8}" y="{loop_top + 16}" text-anchor="end" class="badge">while activity alive</text>'
+
+    shut_y = y + ACT_GAP
+    shut_svg, shut_box = _act_action(
+        x, shut_y, "Release JNI + Python", "Tear down bridge and Chaquopy",
+        "#FFF3E0", "#EF6C00", icon=NF["wrench"],
+    )
+    parts.append(shut_svg)
+
+    stop_y = shut_box["y"] + shut_box["h"] + ACT_GAP + START_R
+    stop_svg, stop_box = _act_stop(cx, stop_y)
+    parts.append(stop_svg)
+
+    arrows = [
+        arrow_between(s_box, init_boxes[0]),
+        *_act_chain_arrows(init_boxes),
+        arrow_between(init_boxes[-1], loop_boxes[0]),
+        *_act_chain_arrows(loop_boxes),
+        arrow_ortho(
+            *_anchor(loop_boxes[-1], "right"),
+            *_anchor(loop_boxes[0], "right"),
+            via_x=x + ACT_W + 70,
+            label="loop",
+            dashed=True,
+        ),
+        arrow_between(loop_boxes[-1], shut_box, "bottom", "top", label="destroy"),
+        arrow_between(shut_box, stop_box),
+    ]
+
+    legend_y = stop_y + START_R + ACT_GAP
+    w = x + ACT_W + 120
+    h = legend_y + 100
+    body = f"""{panel}
+{loop_label}
+{chr(10).join(parts)}
+{chr(10).join(arrows)}
+{legend_box(48, legend_y, 520, 70, [
+    ("#FCE4EC", "#C2185B", "Android — APK + Zig JNI + Chaquopy"),
+    ("#E3F2FD", "#1565C0", "UI — SDL3 GLES + ImGui"),
+    ("#E8F5E9", "#2E7D32", "Optional — on-device Python ML"),
+], "Android field tablet")}"""
+    return _activity_svg("UML activity — Android field tablet", w, h, body)
+
+
+# ──────────────────────────────────────────────
+# Interface mockups (docs/assets/examples/*.svg)
+# Palette aligned with Compose NexusTheme / NexusBranding.
+# Regenerate mockups only (does not touch activity/architecture SVGs):
+#   python3 misc/scripts/generate-diagrams.py --mockups
+# ──────────────────────────────────────────────
+
+MOCKUP_W = 920
+MOCKUP_H = 600
+MOCKUP_BG = "#1A1A2E"
+MOCKUP_SURFACE = "#16213E"
+MOCKUP_CARD = "#1F2B47"
+MOCKUP_TEXT = "#E8E8E8"
+MOCKUP_SUBTEXT = "#9090A0"
+MOCKUP_MUTED = "#707070"
+MOCKUP_DIVIDER = "#3A3A5C"
+MOCKUP_CYAN = "#00D4FF"
+MOCKUP_GREEN = "#00E676"
+MOCKUP_ORANGE = "#FF9100"
+MOCKUP_RED = "#FF5252"
+MOCKUP_PINK = "#F38BA8"
+MOCKUP_PURPLE = "#6C63FF"
+MOCKUP_FLAMINGO = "#F38BA8"
+MOCKUP_BEAK = "#FAB387"
+
+
+def _mockup_frame(title: str, body: str, w: int = MOCKUP_W, h: int = MOCKUP_H) -> str:
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">
+  <rect width="100%" height="100%" fill="{MOCKUP_BG}"/>
+  <rect x="0" y="0" width="100%" height="40" fill="{MOCKUP_CARD}"/>
+  <circle cx="20" cy="20" r="6" fill="{MOCKUP_FLAMINGO}"/>
+  <circle cx="38" cy="20" r="6" fill="{MOCKUP_BEAK}"/>
+  <circle cx="56" cy="20" r="6" fill="{MOCKUP_GREEN}"/>
+  <text x="{w // 2}" y="26" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">{title}</text>
+{body}
+</svg>"""
+
+
 def _mockup_card(x: int, y: int, w: int, h: int, accent: str, icon: str, label: str, desc: str) -> str:
-    return f"""  <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{MOCKUP_SURFACE}" stroke="{accent}" stroke-width="2"/>
+    return f"""  <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{MOCKUP_CARD}" stroke="{accent}" stroke-width="2"/>
   <text x="{x + 16}" y="{y + 32}" font-family="sans-serif" font-size="20" fill="{accent}">{icon}</text>
   <text x="{x + 16}" y="{y + 60}" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_TEXT}">{label}</text>
   <text x="{x + 16}" y="{y + 78}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{desc}</text>"""
 
-def dashboard_mockup() -> str:
-    cards = [
-        (60, 70, 320, 100, MOCKUP_BLUE, "&#x2699;", "Generate Project", "Configure name, type, output path"),
-        (420, 70, 320, 100, MOCKUP_GREEN, "&#x2b22;", "Blueprint Editor", "Visual DAG canvas + JSON sync"),
-        (60, 200, 320, 100, MOCKUP_ORANGE, "&#x21c6;", "Flows Editor", "Runtime automations and triggers"),
-        (420, 200, 320, 100, MOCKUP_MAUVE, "&#x1f50d;", "Debugger", "Pattern-based log scanner"),
-        (240, 330, 320, 100, MOCKUP_SKY, "&#x2705;", "Test Runner", "In-memory assertion runner"),
-    ]
-    footer = f"""  <text x="400" y="480" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 &middot; ImGui &middot; Lua 5.4 &middot; Python 3.11 &middot; TS/XHTML &middot; Zig 0.14</text>"""
-    return _mockup_frame("Dashboard — The Nexus Framework", "\n".join(_mockup_card(*c) for c in cards) + f"\n{footer}")
+
+def welcome_dashboard_mockup() -> str:
+    """Home hub matching Compose HomeScreen (the main dashboard).
+
+    Not a second tool-grid hub — recent creations + create/analyze/blueprint.
+    Written to mockup-welcome.svg only (no separate mockup-dashboard.svg).
+    """
+    recent = ""
+    for i, (name, meta) in enumerate([
+        ("DemoDesktop", "Desktop · builds/framework/DemoDesktop"),
+        ("MyAndroidApp", "Android · builds/framework/MyAndroidApp"),
+        ("PrototypeUI", "Desktop · builds/framework/PrototypeUI"),
+    ]):
+        y = 200 + i * 70
+        recent += f"""  <rect x="48" y="{y}" width="360" height="58" rx="10" fill="{MOCKUP_CARD}"/>
+  <circle cx="74" cy="{y + 29}" r="12" fill="{MOCKUP_FLAMINGO}" opacity="0.85"/>
+  <text x="98" y="{y + 24}" font-family="sans-serif" font-size="13" font-weight="bold" fill="{MOCKUP_TEXT}">{name}</text>
+  <text x="98" y="{y + 42}" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">{meta}</text>
+"""
+
+    actions = ""
+    for i, (title, desc, accent) in enumerate([
+        ("Create project", "Scaffold from Nexus templates", MOCKUP_CYAN),
+        ("Analyze project", "Debugger · Flows · Tests", MOCKUP_FLAMINGO),
+        ("Blueprint editor", "Design the app structure DAG", MOCKUP_PURPLE),
+    ]):
+        y = 100 + i * 100
+        actions += f"""  <rect x="460" y="{y}" width="400" height="84" rx="14" fill="{MOCKUP_CARD}"/>
+  <rect x="460" y="{y}" width="400" height="5" fill="{accent}"/>
+  <text x="484" y="{y + 38}" font-family="sans-serif" font-size="15" font-weight="bold" fill="{MOCKUP_TEXT}">{title}</text>
+  <text x="484" y="{y + 58}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{desc}</text>
+"""
+
+    body = f"""  <!-- Left: brand + recent -->
+  <circle cx="220" cy="100" r="36" fill="{MOCKUP_FLAMINGO}" opacity="0.9"/>
+  <text x="220" y="160" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="bold" fill="{MOCKUP_TEXT}">The Nexus Framework</text>
+  <text x="220" y="180" text-anchor="middle" font-family="sans-serif" font-size="12" fill="{MOCKUP_SUBTEXT}">v1.0.2 · Home (main dashboard)</text>
+  <text x="48" y="192" font-family="sans-serif" font-size="12" font-weight="bold" fill="{MOCKUP_TEXT}">Recent creations</text>
+{recent}
+  <text x="220" y="440" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_MUTED}">SDL3 · ImGui · Lua · Python · TS/XHTML · Zig</text>
+
+  <!-- Right: actions -->
+{actions}
+  <text x="460" y="430" font-family="sans-serif" font-size="10" fill="{MOCKUP_FLAMINGO}">About · What's new · Docs · GitHub</text>
+  <text x="460" y="560" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: HomeScreen.kt · AppScreen.Welcome/Dashboard alias Home</text>"""
+    return _mockup_frame("Home — The Nexus Framework", body)
+
 
 def generate_project_mockup() -> str:
     body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Generate Project</text>
 
-  <rect x="60" y="110" width="300" height="32" rx="6" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="60" y="110" width="300" height="32" rx="6" fill="{MOCKUP_CARD}" stroke="{MOCKUP_SUBTEXT}"/>
   <text x="70" y="131" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">MyApp</text>
   <text x="60" y="100" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Project name</text>
 
-  <rect x="60" y="170" width="220" height="80" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_BLUE}" stroke-width="2"/>
-  <text x="80" y="200" font-family="sans-serif" font-size="24" fill="{MOCKUP_BLUE}">&#x1f5a5;</text>
+  <rect x="60" y="170" width="220" height="80" rx="10" fill="{MOCKUP_CARD}" stroke="{MOCKUP_CYAN}" stroke-width="2"/>
+  <text x="80" y="200" font-family="sans-serif" font-size="24" fill="{MOCKUP_CYAN}">&#x1f5a5;</text>
   <text x="110" y="200" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_TEXT}">Desktop App</text>
   <text x="110" y="218" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 + ImGui + pybind11</text>
 
-  <rect x="300" y="170" width="220" height="80" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="300" y="170" width="220" height="80" rx="10" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="320" y="200" font-family="sans-serif" font-size="24" fill="{MOCKUP_GREEN}">&#x1f4f1;</text>
   <text x="350" y="200" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_SUBTEXT}">Android App</text>
   <text x="350" y="218" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">SDL3 GLES + Chaquopy</text>
 
   <text x="60" y="168" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">App type</text>
 
-  <rect x="60" y="280" width="460" height="32" rx="6" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="60" y="280" width="460" height="32" rx="6" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="70" y="301" font-family="sans-serif" font-size="12" fill="{MOCKUP_SUBTEXT}">builds/framework/MyApp/</text>
   <text x="60" y="270" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Output path</text>
 
-  <rect x="60" y="340" width="200" height="40" rx="8" fill="{MOCKUP_BLUE}"/>
+  <rect x="60" y="340" width="200" height="40" rx="8" fill="{MOCKUP_CYAN}"/>
   <text x="160" y="365" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_BG}">Generate</text>
 
-  <rect x="280" y="340" width="140" height="40" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="280" y="340" width="140" height="40" rx="8" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="350" y="365" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Blueprint</text>
 
-  <rect x="440" y="340" width="120" height="40" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="440" y="340" width="120" height="40" rx="8" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="500" y="365" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Flows</text>"""
-    return _mockup_frame("Generate Project", body)
+    return _mockup_frame("Generate Project", body, w=800, h=520)
+
 
 def blueprint_editor_mockup() -> str:
-    arrow_sm = f"""  <defs>
-    <marker id="arrow-sm" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="{MOCKUP_SUBTEXT}"/>
+    """Node-graph mockup matching Compose BlueprintEditorView — palette / canvas / inspector."""
+    w, h = 960, 580
+    palette_types = [
+        ("Python module", "python.module", MOCKUP_GREEN),
+        ("C++ model", "cpp.model", MOCKUP_CYAN),
+        ("C++ controller", "cpp.controller", MOCKUP_PURPLE),
+        ("UI page", "ui.page", MOCKUP_ORANGE),
+        ("Lua script", "lua.script", MOCKUP_FLAMINGO),
+    ]
+    palette_rows = ""
+    for i, (label, tid, accent) in enumerate(palette_types):
+        y = 150 + i * 44
+        palette_rows += f"""  <rect x="28" y="{y}" width="132" height="36" rx="6" fill="{MOCKUP_SURFACE}" stroke="{accent}" stroke-opacity="0.4"/>
+  <circle cx="44" cy="{y + 18}" r="4" fill="{accent}"/>
+  <text x="56" y="{y + 15}" font-family="sans-serif" font-size="10" font-weight="bold" fill="{MOCKUP_TEXT}">{label}</text>
+  <text x="56" y="{y + 28}" font-family="sans-serif" font-size="8" fill="{MOCKUP_MUTED}">{tid}</text>
+"""
+
+    nodes = [
+        (220, 180, "py-helpers", "python.module", MOCKUP_GREEN),
+        (420, 140, "cpp-model", "cpp.model", MOCKUP_CYAN),
+        (420, 240, "cpp-ctrl", "cpp.controller", MOCKUP_PURPLE),
+        (620, 180, "ui-main", "ui.page", MOCKUP_ORANGE),
+        (420, 360, "lua-panels", "lua.script", MOCKUP_FLAMINGO),
+    ]
+    node_rects = ""
+    for x, y, nid, ntype, accent in nodes:
+        node_rects += f"""  <rect x="{x}" y="{y}" width="148" height="52" rx="8" fill="{MOCKUP_CARD}" stroke="{accent}" stroke-width="1.5"/>
+  <rect x="{x}" y="{y}" width="4" height="52" fill="{accent}"/>
+  <text x="{x + 14}" y="{y + 22}" font-family="sans-serif" font-size="11" font-weight="bold" fill="{MOCKUP_TEXT}">{nid}</text>
+  <text x="{x + 14}" y="{y + 38}" font-family="sans-serif" font-size="9" fill="{MOCKUP_SUBTEXT}">{ntype}</text>
+"""
+
+    body = f"""  <defs>
+    <marker id="bp-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="{MOCKUP_CYAN}" fill-opacity="0.7"/>
     </marker>
-  </defs>"""
-    body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Blueprint Editor</text>
+  </defs>
 
-  <rect x="60" y="110" width="680" height="320" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_GREEN}" stroke-width="1"/>
+  <!-- Header -->
+  <circle cx="36" cy="64" r="10" fill="{MOCKUP_ORANGE}" opacity="0.85"/>
+  <text x="54" y="60" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Blueprint Editor</text>
+  <text x="54" y="76" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">MyApp flow · drag nodes, connect edges</text>
+  <text x="920" y="68" text-anchor="end" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">← Back</text>
 
-  <rect x="100" y="150" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_BLUE}" stroke-width="2"/>
-  <text x="180" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_BLUE}">ui.page</text>
-  <text x="180" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Dashboard</text>
+  <!-- Toolbar -->
+  <rect x="20" y="90" width="920" height="36" rx="8" fill="{MOCKUP_CARD}"/>
+  <rect x="28" y="96" width="78" height="24" rx="5" fill="{MOCKUP_GREEN}"/>
+  <text x="67" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="#fff">+ Add node</text>
+  <rect x="114" y="96" width="52" height="24" rx="5" fill="none" stroke="{MOCKUP_RED}"/>
+  <text x="140" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_RED}">Delete</text>
+  <rect x="174" y="96" width="58" height="24" rx="5" fill="none" stroke="{MOCKUP_CYAN}"/>
+  <text x="203" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_CYAN}">Connect</text>
+  <line x1="244" y1="100" x2="244" y2="116" stroke="{MOCKUP_DIVIDER}"/>
+  <rect x="256" y="96" width="44" height="24" rx="5" fill="none" stroke="{MOCKUP_DIVIDER}"/>
+  <text x="278" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_TEXT}">Save</text>
+  <rect x="306" y="96" width="44" height="24" rx="5" fill="none" stroke="{MOCKUP_DIVIDER}"/>
+  <text x="328" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_TEXT}">Load</text>
+  <rect x="356" y="96" width="58" height="24" rx="5" fill="none" stroke="{MOCKUP_ORANGE}"/>
+  <text x="385" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_ORANGE}">Validate</text>
+  <rect x="422" y="96" width="44" height="24" rx="5" fill="none" stroke="{MOCKUP_FLAMINGO}"/>
+  <text x="444" y="112" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_FLAMINGO}">JSON</text>
+  <text x="920" y="112" text-anchor="end" font-family="sans-serif" font-size="10" fill="{MOCKUP_MUTED}">5 nodes · 4 edges</text>
 
-  <rect x="340" y="150" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_MAUVE}" stroke-width="2"/>
-  <text x="420" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_MAUVE}">cpp.controller</text>
-  <text x="420" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">AppController</text>
+  <!-- Palette -->
+  <rect x="20" y="136" width="148" height="360" rx="10" fill="{MOCKUP_CARD}"/>
+  <text x="32" y="156" font-family="sans-serif" font-size="11" font-weight="bold" fill="{MOCKUP_TEXT}">Palette</text>
+  <text x="32" y="170" font-family="sans-serif" font-size="8" fill="{MOCKUP_MUTED}">Click to add to canvas</text>
+{palette_rows}
+  <text x="32" y="480" font-family="sans-serif" font-size="8" fill="{MOCKUP_MUTED}">imnodes · v1.1</text>
 
-  <rect x="580" y="150" width="120" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_ORANGE}" stroke-width="2"/>
-  <text x="640" y="180" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_ORANGE}">cpp.model</text>
-  <text x="640" y="196" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">AppModel</text>
+  <!-- Canvas -->
+  <rect x="180" y="136" width="520" height="360" rx="10" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_DIVIDER}"/>
+  <circle cx="240" cy="200" r="1.2" fill="{MOCKUP_DIVIDER}"/><circle cx="280" cy="200" r="1.2" fill="{MOCKUP_DIVIDER}"/>
+  <circle cx="320" cy="200" r="1.2" fill="{MOCKUP_DIVIDER}"/><circle cx="360" cy="200" r="1.2" fill="{MOCKUP_DIVIDER}"/>
+  <circle cx="400" cy="240" r="1.2" fill="{MOCKUP_DIVIDER}"/><circle cx="440" cy="280" r="1.2" fill="{MOCKUP_DIVIDER}"/>
+  <circle cx="480" cy="320" r="1.2" fill="{MOCKUP_DIVIDER}"/><circle cx="520" cy="360" r="1.2" fill="{MOCKUP_DIVIDER}"/>
+  <circle cx="560" cy="200" r="1.2" fill="{MOCKUP_DIVIDER}"/><circle cx="600" cy="280" r="1.2" fill="{MOCKUP_DIVIDER}"/>
 
-  <rect x="180" y="300" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_GREEN}" stroke-width="2"/>
-  <text x="260" y="330" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_GREEN}">python.module</text>
-  <text x="260" y="346" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Analytics</text>
+  <path d="M368,206 C394,206 394,166 420,166" fill="none" stroke="{MOCKUP_CYAN}" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#bp-arrow)"/>
+  <path d="M368,206 C394,206 394,266 420,266" fill="none" stroke="{MOCKUP_CYAN}" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#bp-arrow)"/>
+  <path d="M568,166 C594,166 594,206 620,206" fill="none" stroke="{MOCKUP_CYAN}" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#bp-arrow)"/>
+  <path d="M494,292 C494,320 494,360 494,360" fill="none" stroke="{MOCKUP_CYAN}" stroke-width="1.8" stroke-opacity="0.7" marker-end="url(#bp-arrow)"/>
+{node_rects}
+  <text x="196" y="484" font-family="sans-serif" font-size="8" fill="{MOCKUP_MUTED}">Compose canvas mock · CUSTOMIZE: imnodes</text>
 
-  <rect x="420" y="300" width="160" height="60" rx="8" fill="#1e1e2e" stroke="{MOCKUP_SKY}" stroke-width="2"/>
-  <text x="500" y="330" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SKY}">lua.script</text>
-  <text x="500" y="346" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Panels</text>
+  <!-- Inspector -->
+  <rect x="712" y="136" width="228" height="360" rx="10" fill="{MOCKUP_CARD}"/>
+  <text x="726" y="158" font-family="sans-serif" font-size="12" font-weight="bold" fill="{MOCKUP_TEXT}">Inspector</text>
+  <rect x="726" y="168" width="64" height="18" rx="3" fill="{MOCKUP_CYAN}" fill-opacity="0.15"/>
+  <text x="734" y="181" font-family="sans-serif" font-size="9" fill="{MOCKUP_CYAN}">5 nodes</text>
+  <rect x="798" y="168" width="64" height="18" rx="3" fill="{MOCKUP_ORANGE}" fill-opacity="0.15"/>
+  <text x="806" y="181" font-family="sans-serif" font-size="9" fill="{MOCKUP_ORANGE}">4 edges</text>
+  <rect x="726" y="198" width="200" height="72" rx="6" fill="{MOCKUP_ORANGE}" fill-opacity="0.12"/>
+  <text x="738" y="220" font-family="sans-serif" font-size="12" font-weight="bold" fill="{MOCKUP_TEXT}">ui-main</text>
+  <circle cx="744" cy="236" r="4" fill="{MOCKUP_ORANGE}"/>
+  <text x="754" y="239" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">ui.page</text>
+  <text x="738" y="258" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">data keys: source, widgets…</text>
+  <rect x="726" y="282" width="200" height="28" rx="5" fill="none" stroke="{MOCKUP_CYAN}"/>
+  <text x="738" y="300" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Node id: ui-main</text>
+  <text x="726" y="330" font-family="sans-serif" font-size="11" font-weight="bold" fill="{MOCKUP_TEXT}">Edges</text>
+  <rect x="726" y="340" width="200" height="28" rx="4" fill="{MOCKUP_SURFACE}"/>
+  <text x="736" y="358" font-family="sans-serif" font-size="10" fill="{MOCKUP_TEXT}">py-helpers → cpp-model</text>
+  <rect x="726" y="374" width="200" height="28" rx="4" fill="{MOCKUP_SURFACE}"/>
+  <text x="736" y="392" font-family="sans-serif" font-size="10" fill="{MOCKUP_TEXT}">cpp-ctrl → ui-main</text>
+  <rect x="726" y="408" width="200" height="28" rx="4" fill="{MOCKUP_SURFACE}"/>
+  <text x="736" y="426" font-family="sans-serif" font-size="10" fill="{MOCKUP_TEXT}">ui-main → lua-panels</text>
 
-  <line x1="260" y1="210" x2="340" y2="210" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
-  <line x1="580" y1="180" x2="580" y2="330" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
-  <line x1="420" y1="330" x2="340" y2="330" stroke="{MOCKUP_SUBTEXT}" stroke-width="1.5" marker-end="url(#arrow-sm)"/>
+  <!-- Status -->
+  <rect x="20" y="508" width="920" height="28" rx="6" fill="{MOCKUP_SURFACE}"/>
+  <text x="32" y="526" font-family="sans-serif" font-size="10" fill="{MOCKUP_SUBTEXT}">Ready — select a node or add from the palette</text>
+  <text x="480" y="556" text-anchor="middle" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: BlueprintEditorView.kt · regenerate via generate-diagrams.py --mockups</text>"""
+    return _mockup_frame("Blueprint Editor", body, w=w, h=h)
 
-  <text x="60" y="460" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Drag nodes to rearrange &middot; Click to select &middot; Right-click for inspector</text>{arrow_sm}"""
-    return _mockup_frame("Blueprint Editor", body)
 
 def flows_editor_mockup() -> str:
     flows = [
         (60, 110, MOCKUP_GREEN, "Data Refresh", "background", "interval: 5000ms", "ON"),
         (60, 170, MOCKUP_ORANGE, "Alert Handler", "triggered", "event: sensor.alert", "ON"),
-        (60, 230, MOCKUP_MAUVE, "Init Pipeline", "startup", "runs once at app launch", "OFF"),
-        (60, 290, MOCKUP_SKY, "Manual Export", "manual", "hotkey: Ctrl+E", "ON"),
+        (60, 230, MOCKUP_PURPLE, "Init Pipeline", "startup", "runs once at app launch", "OFF"),
+        (60, 290, MOCKUP_CYAN, "Manual Export", "manual", "hotkey: Ctrl+E", "ON"),
     ]
     cards = ""
-    for i, (x, y, color, name, mode, detail, state) in enumerate(flows):
-        toggle = f"""  <rect x="{x + 400}" y="{y + 10}" width="36" height="20" rx="10" fill="{MOCKUP_GREEN if state == 'ON' else MOCKUP_SURFACE}" stroke="{MOCKUP_GREEN if state == 'ON' else MOCKUP_SUBTEXT}"/>
+    for _i, (x, y, color, name, mode, detail, state) in enumerate(flows):
+        toggle = f"""  <rect x="{x + 400}" y="{y + 10}" width="36" height="20" rx="10" fill="{MOCKUP_GREEN if state == 'ON' else MOCKUP_CARD}" stroke="{MOCKUP_GREEN if state == 'ON' else MOCKUP_SUBTEXT}"/>
   <circle cx="{x + 410 if state == 'ON' else x + 426}" cy="{y + 20}" r="7" fill="#ffffff"/>"""
-        cards += f"""  <rect x="{x}" y="{y}" width="480" height="40" rx="8" fill="{MOCKUP_SURFACE}"/>
+        cards += f"""  <rect x="{x}" y="{y}" width="480" height="40" rx="8" fill="{MOCKUP_CARD}"/>
   <circle cx="{x + 16}" cy="{y + 20}" r="5" fill="{color}"/>
   <text x="{x + 30}" y="{y + 24}" font-family="sans-serif" font-size="13" font-weight="bold" fill="{MOCKUP_TEXT}">{name}</text>
   <text x="{x + 140}" y="{y + 24}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{mode}</text>
@@ -1747,18 +2719,117 @@ def flows_editor_mockup() -> str:
     body = f"""  <text x="60" y="90" font-family="sans-serif" font-size="16" font-weight="bold" fill="{MOCKUP_TEXT}">Flows Editor</text>
   <rect x="60" y="110" width="480" height="220" rx="10" fill="none" stroke="{MOCKUP_ORANGE}" stroke-width="1"/>
 {cards}
-  <rect x="60" y="360" width="140" height="36" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="60" y="360" width="140" height="36" rx="8" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="130" y="383" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Reload template</text>
 
-  <rect x="220" y="360" width="120" height="36" rx="8" fill="{MOCKUP_SURFACE}" stroke="{MOCKUP_SUBTEXT}"/>
+  <rect x="220" y="360" width="120" height="36" rx="8" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
   <text x="280" y="383" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">Preview JSON</text>
 
   <text x="60" y="440" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">All imported flows default to disabled (enabled: false). Toggle each flow to opt in.</text>"""
-    return _mockup_frame("Flows Editor", body)
+    return _mockup_frame("Flows Editor", body, w=800, h=520)
 
 
-def main() -> None:
-    outputs = {
+def loading_mockup() -> str:
+    """Splash matching LoadingScreen — flamingo + progress steps."""
+    steps = ["Resolve JDK toolchain", "Load templates", "Warm Compose runtime", "Ready"]
+    step_rows = ""
+    for i, label in enumerate(steps):
+        y = 320 + i * 36
+        done = i < 2
+        active = i == 2
+        color = MOCKUP_GREEN if done else (MOCKUP_PURPLE if active else MOCKUP_DIVIDER)
+        step_rows += f"""  <circle cx="320" cy="{y}" r="7" fill="{color}"/>
+  <text x="340" y="{y + 4}" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT if active or done else MOCKUP_MUTED}">{label}</text>
+"""
+    body = f"""  <circle cx="400" cy="140" r="48" fill="{MOCKUP_FLAMINGO}" opacity="0.9"/>
+  <text x="400" y="220" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="{MOCKUP_TEXT}">The Nexus Framework</text>
+  <text x="400" y="244" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{MOCKUP_SUBTEXT}">v1.0.2</text>
+  <rect x="220" y="270" width="360" height="10" rx="5" fill="{MOCKUP_DIVIDER}"/>
+  <rect x="220" y="270" width="216" height="10" rx="5" fill="{MOCKUP_PURPLE}"/>
+{step_rows}
+  <text x="400" y="500" text-anchor="middle" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: LoadingScreen.kt</text>"""
+    return _mockup_frame("Loading", body, w=800, h=540)
+
+
+def debugger_mockup() -> str:
+    """Debugger panel — paste scan, filters, match list."""
+    matches = ""
+    for i, (sev, cat, line) in enumerate([
+        ("HIGH", "secret", 'password = "hunter2"'),
+        ("MED", "todo", "TODO: wire persistence"),
+        ("LOW", "debug", 'println("debug trace")'),
+    ]):
+        y = 280 + i * 52
+        sev_c = MOCKUP_RED if sev == "HIGH" else (MOCKUP_ORANGE if sev == "MED" else MOCKUP_CYAN)
+        matches += f"""  <rect x="40" y="{y}" width="720" height="44" rx="8" fill="{MOCKUP_CARD}"/>
+  <rect x="52" y="{y + 12}" width="44" height="20" rx="4" fill="{sev_c}" fill-opacity="0.2"/>
+  <text x="60" y="{y + 26}" font-family="sans-serif" font-size="10" fill="{sev_c}">{sev}</text>
+  <text x="110" y="{y + 26}" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">{cat}</text>
+  <text x="200" y="{y + 26}" font-family="monospace" font-size="11" fill="{MOCKUP_TEXT}">{line}</text>
+"""
+    body = f"""  <text x="40" y="80" font-family="sans-serif" font-size="18" font-weight="bold" fill="{MOCKUP_TEXT}">Debugger</text>
+  <text x="760" y="80" text-anchor="end" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">3 match(es) · Enabled · ← Back</text>
+  <text x="40" y="110" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">Paste log or source to scan</text>
+  <rect x="40" y="120" width="720" height="72" rx="8" fill="{MOCKUP_CARD}" stroke="{MOCKUP_DIVIDER}"/>
+  <text x="56" y="150" font-family="monospace" font-size="11" fill="{MOCKUP_MUTED}">println("debug"); TODO(); password = "secret" …</text>
+  <rect x="40" y="208" width="88" height="28" rx="6" fill="{MOCKUP_CYAN}"/>
+  <text x="84" y="226" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="{MOCKUP_BG}">Scan</text>
+  <rect x="140" y="208" width="72" height="28" rx="6" fill="none" stroke="{MOCKUP_DIVIDER}"/>
+  <text x="176" y="226" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{MOCKUP_TEXT}">Clear</text>
+  <text x="40" y="262" font-family="sans-serif" font-size="12" font-weight="bold" fill="{MOCKUP_TEXT}">Matches</text>
+{matches}
+  <text x="40" y="470" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: DebuggerPanel.kt · asset mockup-debugger-v102.svg (avoids root-owned mockup-debugger.svg)</text>"""
+    return _mockup_frame("Debugger", body, w=800, h=500)
+
+
+def test_runner_mockup() -> str:
+    """In-memory test runner panel."""
+    rows = ""
+    for i, (name, status, color) in enumerate([
+        ("blueprint_sample_valid", "PASS", MOCKUP_GREEN),
+        ("flows_default_disabled", "PASS", MOCKUP_GREEN),
+        ("template_vars_render", "FAIL", MOCKUP_RED),
+        ("nxs_config_schema_v2", "PASS", MOCKUP_GREEN),
+    ]):
+        y = 200 + i * 48
+        rows += f"""  <rect x="40" y="{y}" width="720" height="40" rx="8" fill="{MOCKUP_CARD}"/>
+  <circle cx="64" cy="{y + 20}" r="6" fill="{color}"/>
+  <text x="84" y="{y + 24}" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">{name}</text>
+  <text x="720" y="{y + 24}" text-anchor="end" font-family="sans-serif" font-size="11" font-weight="bold" fill="{color}">{status}</text>
+"""
+    body = f"""  <text x="40" y="80" font-family="sans-serif" font-size="18" font-weight="bold" fill="{MOCKUP_TEXT}">Test Runner</text>
+  <text x="760" y="80" text-anchor="end" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">← Back</text>
+  <rect x="40" y="100" width="720" height="64" rx="12" fill="{MOCKUP_CARD}"/>
+  <text x="60" y="128" font-family="sans-serif" font-size="14" font-weight="bold" fill="{MOCKUP_TEXT}">3 / 4 passed</text>
+  <text x="60" y="148" font-family="sans-serif" font-size="11" fill="{MOCKUP_SUBTEXT}">In-memory unitary checks — not device instrumentation</text>
+  <rect x="520" y="118" width="100" height="32" rx="8" fill="{MOCKUP_CYAN}"/>
+  <text x="570" y="138" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="{MOCKUP_BG}">Run all</text>
+  <rect x="640" y="118" width="100" height="32" rx="8" fill="none" stroke="{MOCKUP_DIVIDER}"/>
+  <text x="690" y="138" text-anchor="middle" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">Clear</text>
+{rows}
+  <text x="40" y="420" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: TestRunnerPanel.kt</text>"""
+    return _mockup_frame("Test Runner", body, w=800, h=460)
+
+
+def whats_new_mockup() -> str:
+    """What's New modal overlay."""
+    body = f"""  <rect width="100%" height="100%" fill="#000000" fill-opacity="0.65"/>
+  <rect x="170" y="80" width="460" height="360" rx="20" fill="{MOCKUP_CARD}"/>
+  <text x="400" y="130" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="bold" fill="{MOCKUP_TEXT}">What's New</text>
+  <text x="400" y="158" text-anchor="middle" font-family="sans-serif" font-size="14" fill="{MOCKUP_PURPLE}">Version 1.0.2</text>
+  <circle cx="400" cy="210" r="28" fill="{MOCKUP_FLAMINGO}" opacity="0.9"/>
+  <rect x="210" y="260" width="380" height="1" fill="{MOCKUP_DIVIDER}"/>
+  <text x="230" y="290" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">• Home hub + flamingo branding</text>
+  <text x="230" y="314" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">• Blueprint &amp; Flows Compose editors</text>
+  <text x="230" y="338" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">• Zig 0.16.0 native sidecars</text>
+  <rect x="300" y="370" width="200" height="36" rx="8" fill="{MOCKUP_PURPLE}" fill-opacity="0.45"/>
+  <text x="400" y="392" text-anchor="middle" font-family="sans-serif" font-size="12" fill="{MOCKUP_TEXT}">Continue (5s)</text>
+  <text x="400" y="460" text-anchor="middle" font-family="sans-serif" font-size="9" fill="{MOCKUP_MUTED}">Compose: WhatsNewDialog.kt</text>"""
+    return _mockup_frame("What's New", body, w=800, h=500)
+
+
+def _diagram_outputs() -> dict:
+    return {
         DIAGRAMS / "full-stack-architecture.svg": full_stack_architecture(),
         DIAGRAMS / "generation-builds-flow.svg": generation_builds_flow(),
         DIAGRAMS / "desktop-vs-android-runtime.svg": desktop_vs_android(),
@@ -1770,18 +2841,127 @@ def main() -> None:
         DIAGRAMS / "zig-orchestration-layer.svg": zig_orchestration_layer(),
         DIAGRAMS / "cmake-to-zig-migration.svg": cmake_to_zig_migration(),
         DIAGRAMS / "langflow-import-pipeline.svg": langflow_import_pipeline(),
+        # UML activity diagrams (see docs/assets/diagrams/activity-diagrams.md)
+        DIAGRAMS / "activity-first-run-bootstrap.svg": activity_first_run_bootstrap(),
+        DIAGRAMS / "activity-client-navigation.svg": activity_client_navigation(),
+        DIAGRAMS / "activity-generate-pipeline.svg": activity_generate_pipeline(),
+        DIAGRAMS / "activity-build-desktop-app.svg": activity_build_desktop_app(),
+        DIAGRAMS / "activity-desktop-frame-loop.svg": activity_desktop_frame_loop(),
+        DIAGRAMS / "activity-hello-counter.svg": activity_hello_counter(),
+        DIAGRAMS / "activity-flows-automation.svg": activity_flows_automation(),
+        DIAGRAMS / "activity-langflow-import.svg": activity_langflow_import(),
+        DIAGRAMS / "activity-android-field-tablet.svg": activity_android_field_tablet(),
         EXAMPLES / "langflow-rag-chatbot.svg": langflow_rag_chatbot(),
         EXAMPLES / "langflow-agent-tools.svg": langflow_agent_tools(),
         EXAMPLES / "nexus-blueprint-app-structure.svg": nexus_blueprint_app_structure(),
-        EXAMPLES / "mockup-dashboard.svg": dashboard_mockup(),
+    }
+
+
+def _mockup_outputs() -> dict:
+    # Home hub is HomeScreen (Welcome/Dashboard alias Home in App.kt).
+    # mockup-debugger-v102.svg avoids root-owned mockup-debugger.svg PermissionError.
+    return {
+        EXAMPLES / "mockup-welcome.svg": welcome_dashboard_mockup(),
+        EXAMPLES / "mockup-loading.svg": loading_mockup(),
         EXAMPLES / "mockup-generate-project.svg": generate_project_mockup(),
         EXAMPLES / "mockup-blueprint-editor.svg": blueprint_editor_mockup(),
         EXAMPLES / "mockup-flows-editor.svg": flows_editor_mockup(),
+        EXAMPLES / "mockup-debugger-v102.svg": debugger_mockup(),
+        EXAMPLES / "mockup-test-runner.svg": test_runner_mockup(),
+        EXAMPLES / "mockup-whats-new.svg": whats_new_mockup(),
     }
-    for path, content in outputs.items():
-        path.write_text(content, encoding="utf-8")
-        size_kb = path.stat().st_size / 1024
-        print(f"Wrote {path.name} ({size_kb:.1f} KB)")
+
+
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Generate Nexus docs SVG diagrams and Compose UI mockups.",
+    )
+    parser.add_argument(
+        "--mockups",
+        action="store_true",
+        help="Write only interface mockups under docs/assets/examples/ "
+             "(skip architecture + activity diagrams).",
+    )
+    parser.add_argument(
+        "--diagrams",
+        action="store_true",
+        help="Write only architecture/activity/example diagrams (skip mockups).",
+    )
+    args = parser.parse_args()
+
+    if args.mockups and not args.diagrams:
+        outputs = _mockup_outputs()
+    elif args.diagrams and not args.mockups:
+        outputs = _diagram_outputs()
+    else:
+        outputs = {**_diagram_outputs(), **_mockup_outputs()}
+
+    for out_path, content in outputs.items():
+        _write_svg(out_path, content)
+
+
+def _is_writable_target(path: Path) -> bool:
+    """True if we can create or overwrite *path* without elevated privileges."""
+    if path.exists():
+        return os.access(path, os.W_OK)
+    parent = path.parent
+    return parent.exists() and os.access(parent, os.W_OK)
+
+
+def _alternate_generated_path(path: Path) -> Path:
+    """User-writable fallback: foo.svg → foo-generated.svg (no sudo)."""
+    return path.with_name(f"{path.stem}-generated{path.suffix}")
+
+
+def _try_write_svg(target: Path, content: str) -> bool:
+    """Write *content* to *target*. Return False on permission denial."""
+    try:
+        target.write_text(content, encoding="utf-8")
+        return True
+    except PermissionError:
+        return False
+    except OSError as err:
+        if getattr(err, "errno", None) in (13, 1):  # EACCES, EPERM
+            return False
+        raise
+
+
+def _write_svg(out_path: Path, content: str) -> None:
+    """Write SVG; if not writable, try *-generated.svg, else skip with warning."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if _is_writable_target(out_path) and _try_write_svg(out_path, content):
+        size_kb = out_path.stat().st_size / 1024
+        print(f"Wrote {out_path.relative_to(ROOT)} ({size_kb:.1f} KB)")
+        return
+
+    alt = _alternate_generated_path(out_path)
+    if out_path.exists() and not _is_writable_target(out_path):
+        print(
+            f"Warning: {out_path.relative_to(ROOT)} is not writable "
+            f"(often root-owned); trying {alt.relative_to(ROOT)}"
+        )
+    elif not _try_write_svg(out_path, content):
+        print(
+            f"Warning: could not write {out_path.relative_to(ROOT)}; "
+            f"trying {alt.relative_to(ROOT)}"
+        )
+
+    if _try_write_svg(alt, content):
+        size_kb = alt.stat().st_size / 1024
+        print(
+            f"Wrote {alt.relative_to(ROOT)} ({size_kb:.1f} KB) "
+            f"(fallback; primary {out_path.name} not writable)"
+        )
+        return
+
+    print(
+        f"Warning: skipped {out_path.relative_to(ROOT)} — not writable. "
+        "Fix ownership (e.g. chown) or remove the root-owned file; "
+        "this script does not require sudo."
+    )
 
 
 if __name__ == "__main__":

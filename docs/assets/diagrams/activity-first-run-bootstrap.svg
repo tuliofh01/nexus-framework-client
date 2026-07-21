@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1066" width="720" height="1066">
+  <title>UML activity — first-run bootstrap</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="720" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="360" y="56" text-anchor="middle" class="layer-label">UML activity — first-run bootstrap</text>
+  <circle cx="280" cy="100" r="14" fill="#1e293b"/>
+  <rect x="120" y="150" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="136" y="179" class="icon">&#xf126;</text>
+  <text x="158" y="181" class="label">
+    <tspan x="158" dy="0">Clone nexus-framework-client</tspan>
+  </text>
+  <text x="136" y="201" class="desc">
+    <tspan x="136" dy="0">Obtain the Toolkit repository</tspan>
+  </text>
+  <rect x="120" y="258" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="136" y="287" class="icon">&#xf0ad;</text>
+  <text x="158" y="289" class="label">
+    <tspan x="158" dy="0">Run setup.zig</tspan>
+  </text>
+  <text x="136" y="309" class="desc">
+    <tspan x="136" dy="0">zig run misc/client-setup/setup.zig</tspan>
+  </text>
+  <rect x="120" y="366" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="136" y="395" class="icon">&#xf15b;</text>
+  <text x="158" y="397" class="label">
+    <tspan x="158" dy="0">Write env.sh / env.bat</tspan>
+  </text>
+  <text x="136" y="417" class="desc">
+    <tspan x="136" dy="0">JDK 26 + Zig 0.16.0 toolchain exports</tspan>
+  </text>
+  <rect x="120" y="474" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="136" y="503" class="icon">&#xf120;</text>
+  <text x="158" y="505" class="label">
+    <tspan x="158" dy="0">source misc/client-setup/env.sh</tspan>
+  </text>
+  <text x="136" y="525" class="desc">
+    <tspan x="136" dy="0">Activate PATH / JAVA_HOME / ZIG_HOME</tspan>
+  </text>
+  <rect x="120" y="582" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="136" y="611" class="icon">&#xf013;</text>
+  <text x="158" y="613" class="label">
+    <tspan x="158" dy="0">./misc/build_client.sh</tspan>
+  </text>
+  <text x="136" y="633" class="desc">
+    <tspan x="136" dy="0">Compile :core :cli :app</tspan>
+  </text>
+  <polygon points="280,660 324,704 280,748 236,704" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" filter="url(#shadow)"/>
+  <text x="280" y="708" text-anchor="middle" class="small">Compile OK?</text>
+  <rect x="250" y="784" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="266" y="813" class="icon">&#xf135;</text>
+  <text x="288" y="815" class="label">
+    <tspan x="288" dy="0">Ready for :app:run / :cli:generate</tspan>
+  </text>
+  <text x="266" y="835" class="desc">
+    <tspan x="266" dy="0">Toolchain verified — proceed to client or CLI</tspan>
+  </text>
+  <rect x="-80" y="784" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="-64" y="813" class="icon">&#xf0ad;</text>
+  <text x="-42" y="815" class="label">
+    <tspan x="-42" dy="0">Fix JAVA_HOME / deps</tspan>
+  </text>
+  <text x="-64" y="835" class="desc">
+    <tspan x="-64" dy="0">Then rebuild until compile succeeds</tspan>
+  </text>
+  <circle cx="280" cy="906" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="280" cy="906" r="8" fill="#1e293b"/>
+  <line x1="280" y1="114" x2="280" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="222" x2="280" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="330" x2="280" y2="366" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="438" x2="280" y2="474" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="546" x2="280" y2="582" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="280" y1="654" x2="280" y2="660" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M324,704 L410,704 L410,784 L410,784" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="402" y="744" text-anchor="middle" class="small">yes</text>
+  <path d="M236,704 L80,704 L80,784 L80,784" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="72" y="744" text-anchor="middle" class="small">no</text>
+  <path d="M410,856 L280,856 L280,892 L280,892" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M80,856 L280,844 L280,880 L280,892" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <rect x="48" y="956" width="520" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="978" class="legend-title">Activity colors</text>
+  <rect x="64" y="980" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="86" y="992" class="small">Setup — Zig bootstrap + env</text>
+  <rect x="324" y="980" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="346" y="992" class="small">Build — client compile</text>
+  <rect x="64" y="1002" width="16" height="16" class="legend-box" fill="#FFFDE7" stroke="#F9A825"/>
+  <text x="86" y="1014" class="small">Decision — compile gate</text>
+</svg>

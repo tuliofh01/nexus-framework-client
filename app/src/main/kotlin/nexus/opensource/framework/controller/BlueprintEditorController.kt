@@ -18,6 +18,30 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 /**
+ * Validates whether an edge between two blueprint nodes is allowed.
+ * CUSTOMIZE: Implement port/type compatibility checks for v1.1 imnodes integration.
+ */
+fun interface BlueprintConnectionValidator {
+    fun validate(source: BlueprintNode, target: BlueprintNode): String?
+}
+
+/** No-op validator — all connections allowed until customized. */
+object AllowAllBlueprintConnections : BlueprintConnectionValidator {
+    override fun validate(source: BlueprintNode, target: BlueprintNode): String? = null
+}
+
+/**
+ * Extension slot for imnodes v1.1 native canvas.
+ * CUSTOMIZE: Implement via JNI/FFI and assign to [BlueprintEditorController.canvasExtension].
+ */
+interface BlueprintCanvasExtension {
+    /** Return true when the native imnodes canvas owns rendering for this screen. */
+    val useNativeCanvas: Boolean get() = false
+}
+
+object DefaultBlueprintCanvasExtension : BlueprintCanvasExtension
+
+/**
  * Holds blueprint graph state for the v1 Compose JSON/canvas editor.
  * v1.1 will embed imnodes via native interop; this controller keeps the same schema.
  *
@@ -26,6 +50,8 @@ import java.nio.file.Path
  */
 class BlueprintEditorController(
     private val validator: BlueprintValidator = BlueprintValidator(),
+    var connectionValidator: BlueprintConnectionValidator = AllowAllBlueprintConnections,
+    var canvasExtension: BlueprintCanvasExtension = DefaultBlueprintCanvasExtension,
 ) {
     var blueprint: BlueprintFile by mutableStateOf(BlueprintJson.sampleApp("MyApp", AppType.DESKTOP))
         private set
@@ -37,11 +63,25 @@ class BlueprintEditorController(
     var pendingEdgeSourceId: String? by mutableStateOf(null)
     var statusMessage: String by mutableStateOf("")
     var validationErrors: List<String> by mutableStateOf(emptyList())
+    /** Show JSON preview pane beside the inspector. */
+    var showJsonPreview: Boolean by mutableStateOf(false)
+    /** Last toolbar action label for status strip. */
+    var lastToolbarAction: String by mutableStateOf("")
 
     private var loadedFromPath: Path? = null
 
+    /** Path last loaded or saved, if any (for Save without re-picking). */
+    val sourcePath: Path? get() = loadedFromPath
+
     fun syncContext(projectName: String, appType: AppType) {
-        if (this.projectName == projectName && this.appType == appType && loadedFromPath == null) {
+        if (loadedFromPath != null) {
+            this.projectName = projectName
+            this.appType = appType
+            blueprint = blueprint.copy(name = "$projectName flow")
+            validate()
+            return
+        }
+        if (this.projectName == projectName && this.appType == appType) {
             blueprint = blueprint.copy(name = "$projectName flow")
             validate()
             return
@@ -82,6 +122,16 @@ class BlueprintEditorController(
         statusMessage = "Loaded ${path.fileName}"
     }
 
+    /** Replace the canvas with an already-built [BlueprintFile] (e.g. Langflow visual map). */
+    fun loadBlueprint(file: BlueprintFile, sourceLabel: String = "graph") {
+        blueprint = file
+        loadedFromPath = null
+        selectedNodeId = null
+        pendingEdgeSourceId = null
+        validate()
+        statusMessage = "Loaded $sourceLabel (${file.nodes.size} nodes, ${file.edges.size} edges)"
+    }
+
     fun saveToFile(path: Path) {
         validate()
         if (validationErrors.isNotEmpty()) {
@@ -108,8 +158,24 @@ class BlueprintEditorController(
 
     fun completeEdgeTo(targetId: String) {
         val sourceId = pendingEdgeSourceId ?: return
+        if (!validateConnection(sourceId, targetId)) {
+            statusMessage = "Connection rejected: $sourceId → $targetId"
+            pendingEdgeSourceId = null
+            return
+        }
         if (sourceId == targetId) {
             statusMessage = "Edge source and target must differ"
+            return
+        }
+        val sourceNode = blueprint.nodes.find { it.id == sourceId }
+        val targetNode = blueprint.nodes.find { it.id == targetId }
+        if (sourceNode == null || targetNode == null) {
+            statusMessage = "Invalid edge endpoints"
+            return
+        }
+        connectionValidator.validate(sourceNode, targetNode)?.let { error ->
+            statusMessage = error
+            pendingEdgeSourceId = null
             return
         }
         val edgeId = nextEdgeId()
@@ -175,6 +241,71 @@ class BlueprintEditorController(
     }
 
     fun toJsonPreview(): String = BlueprintJson.write(blueprint)
+
+    fun toggleJsonPreview() {
+        showJsonPreview = !showJsonPreview
+        lastToolbarAction = if (showJsonPreview) "JSON preview shown" else "JSON preview hidden"
+        statusMessage = lastToolbarAction
+    }
+
+    /** Re-run schema validation and surface a mockup-friendly status. */
+    fun runValidate() {
+        validate()
+        lastToolbarAction = "Validate"
+        statusMessage = if (validationErrors.isEmpty()) {
+            "Blueprint valid — ${blueprint.nodes.size} nodes, ${blueprint.edges.size} edges"
+        } else {
+            "Validation failed — ${validationErrors.size} issue(s)"
+        }
+    }
+
+    /**
+     * Persist to [path], or to [sourcePath] when [path] is null.
+     * @return false if no path is available (caller should open a save dialog).
+     */
+    fun save(path: Path? = loadedFromPath): Boolean {
+        lastToolbarAction = "Save"
+        val target = path ?: loadedFromPath
+        if (target == null) {
+            validate()
+            statusMessage = if (validationErrors.isEmpty()) {
+                "Choose a file to save blueprint.json"
+            } else {
+                "Cannot save — fix validation errors first"
+            }
+            return false
+        }
+        return runCatching {
+            saveToFile(target)
+            true
+        }.getOrElse {
+            statusMessage = "Save failed: ${it.message}"
+            false
+        }
+    }
+
+    /** Load blueprint.json from disk (caller supplies path from a file dialog). */
+    fun load(path: Path) {
+        lastToolbarAction = "Load"
+        runCatching { loadFromFile(path) }
+            .onFailure { statusMessage = "Load failed: ${it.message}" }
+    }
+
+    /**
+     * Connection pre-filter before [connectionValidator].
+     * Rejects self-loops and duplicate edges.
+     */
+    fun validateConnection(sourceId: String, targetId: String): Boolean {
+        if (sourceId == targetId) return false
+        if (blueprint.edges.any { it.source == sourceId && it.target == targetId }) return false
+        val source = blueprint.nodes.find { it.id == sourceId } ?: return false
+        val target = blueprint.nodes.find { it.id == targetId } ?: return false
+        // TODO: enforce paradigm/type rules, DAG acyclicity
+        return source.type.isNotBlank() && target.type.isNotBlank()
+    }
+
+    /** CUSTOMIZE: palette entries for drag-drop node creation in v1.1 imnodes. */
+    fun paletteNodeTypes(): List<BlueprintNodeType> = BlueprintNodeType.ALL
 
     private fun validate() {
         val result = validator.validate(blueprint)

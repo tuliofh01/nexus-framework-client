@@ -13,4 +13,12 @@ class NexusBrandingTest {
             NexusBranding.windowTitle("MyApp"),
         )
     }
+
+    @Test
+    fun `version label includes framework version`() {
+        assertEquals(
+            "v${NexusBranding.FRAMEWORK_VERSION} — ${NexusBranding.SUBTITLE}",
+            NexusBranding.versionLabel(),
+        )
+    }
 }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 1274" width="580" height="1274">
+  <title>UML activity — Android field tablet</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="580" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="290" y="56" text-anchor="middle" class="layer-label">UML activity — Android field tablet</text>
+  <rect x="116" y="554" width="368" height="420" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.2"/>
+  <text x="132" y="570" text-anchor="end" class="badge">while activity alive</text>
+  <circle cx="300" cy="100" r="14" fill="#1e293b"/>
+  <rect x="140" y="150" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="156" y="179" class="icon">&#xf17b;</text>
+  <text x="178" y="181" class="label">
+    <tspan x="178" dy="0">Launch APK (NexusApplication)</tspan>
+  </text>
+  <text x="156" y="201" class="desc">
+    <tspan x="156" dy="0">Android process start</tspan>
+  </text>
+  <rect x="140" y="258" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="156" y="287" class="icon">&#xe73c;</text>
+  <text x="178" y="289" class="label">
+    <tspan x="178" dy="0">Start Chaquopy Python</tspan>
+  </text>
+  <text x="156" y="309" class="desc">
+    <tspan x="156" dy="0">Embed CPython in APK</tspan>
+  </text>
+  <rect x="140" y="366" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="156" y="395" class="icon">&#xf1e6;</text>
+  <text x="178" y="397" class="label">
+    <tspan x="178" dy="0">Init Zig JNI bridge</tspan>
+  </text>
+  <text x="156" y="417" class="desc">
+    <tspan x="156" dy="0">Hand-authored C ABI / JNI</tspan>
+  </text>
+  <rect x="140" y="474" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="503" class="icon">&#xf108;</text>
+  <text x="178" y="505" class="label">
+    <tspan x="178" dy="0">SDL3 / GLES + ImGui loop</tspan>
+  </text>
+  <text x="156" y="525" class="desc">
+    <tspan x="156" dy="0">Full-screen touch UI</tspan>
+  </text>
+  <rect x="140" y="570" width="320" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="156" y="599" class="icon">&#xf3cd;</text>
+  <text x="178" y="601" class="label">
+    <tspan x="178" dy="0">Touch / sensor input</tspan>
+  </text>
+  <text x="156" y="621" class="desc">
+    <tspan x="156" dy="0">Pointer and device sensors</tspan>
+  </text>
+  <rect x="140" y="678" width="320" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="156" y="707" class="icon">&#xf013;</text>
+  <text x="178" y="709" class="label">
+    <tspan x="178" dy="0">Controller updates model</tspan>
+  </text>
+  <text x="156" y="729" class="desc">
+    <tspan x="156" dy="0">MVC command path</tspan>
+  </text>
+  <rect x="140" y="786" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="815" class="icon">&#xe73c;</text>
+  <text x="178" y="817" class="label">
+    <tspan x="178" dy="0">Optional Python ML / analysis</tspan>
+  </text>
+  <text x="156" y="837" class="desc">
+    <tspan x="156" dy="0">Chaquopy evaluate on device</tspan>
+  </text>
+  <rect x="140" y="894" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="923" class="icon">&#xf080;</text>
+  <text x="178" y="925" class="label">
+    <tspan x="178" dy="0">Render ImGui UI</tspan>
+  </text>
+  <text x="156" y="945" class="desc">
+    <tspan x="156" dy="0">GLES present</tspan>
+  </text>
+  <rect x="140" y="1002" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="1031" class="icon">&#xf0ad;</text>
+  <text x="178" y="1033" class="label">
+    <tspan x="178" dy="0">Release JNI + Python</tspan>
+  </text>
+  <text x="156" y="1053" class="desc">
+    <tspan x="156" dy="0">Tear down bridge and Chaquopy</tspan>
+  </text>
+  <circle cx="300" cy="1124" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="300" cy="1124" r="8" fill="#1e293b"/>
+  <line x1="300" y1="114" x2="300" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="222" x2="300" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="330" x2="300" y2="366" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="438" x2="300" y2="474" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="546" x2="300" y2="570" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="642" x2="300" y2="678" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="750" x2="300" y2="786" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="858" x2="300" y2="894" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M460,930 L530,930 L530,606 L460,606" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="522" y="768" text-anchor="middle" class="small">loop</text>
+  <line x1="300" y1="966" x2="300" y2="1002" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="978" text-anchor="middle" class="small">destroy</text>
+  <line x1="300" y1="1074" x2="300" y2="1110" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="48" y="1174" width="520" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="1196" class="legend-title">Android field tablet</text>
+  <rect x="64" y="1198" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="86" y="1210" class="small">Android — APK + Zig JNI + Chaquopy</text>
+  <rect x="324" y="1198" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="346" y="1210" class="small">UI — SDL3 GLES + ImGui</text>
+  <rect x="64" y="1220" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="86" y="1232" class="small">Optional — on-device Python ML</text>
+</svg>

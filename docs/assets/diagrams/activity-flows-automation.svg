@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 1158" width="820" height="1158">
+  <title>UML activity — flows automation</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="820" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="410" y="56" text-anchor="middle" class="layer-label">UML activity — flows automation</text>
+  <rect x="116" y="338" width="368" height="596" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.2"/>
+  <text x="132" y="354" text-anchor="end" class="badge">while app running</text>
+  <circle cx="300" cy="100" r="14" fill="#1e293b"/>
+  <rect x="140" y="150" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="179" class="icon">&#xf15b;</text>
+  <text x="178" y="181" class="label">
+    <tspan x="178" dy="0">App boot — load flows.json</tspan>
+  </text>
+  <text x="156" y="201" class="desc">
+    <tspan x="156" dy="0">Parse automation definitions</tspan>
+  </text>
+  <rect x="140" y="258" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="287" class="icon">&#xf013;</text>
+  <text x="178" y="289" class="label">
+    <tspan x="178" dy="0">Register triggers</tspan>
+  </text>
+  <text x="156" y="309" class="desc">
+    <tspan x="156" dy="0">timer · event · UI · startup</tspan>
+  </text>
+  <rect x="140" y="354" width="320" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="156" y="383" class="icon">&#xf075;</text>
+  <text x="178" y="385" class="label">
+    <tspan x="178" dy="0">Wait for trigger</tspan>
+  </text>
+  <text x="156" y="405" class="desc">
+    <tspan x="156" dy="0">Block until matching event</tspan>
+  </text>
+  <rect x="140" y="462" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="491" class="icon">&#xf002;</text>
+  <text x="178" y="493" class="label">
+    <tspan x="178" dy="0">Select matching flow</tspan>
+  </text>
+  <text x="156" y="513" class="desc">
+    <tspan x="156" dy="0">Pick enabled flow by trigger</tspan>
+  </text>
+  <rect x="140" y="570" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="599" class="icon">&#xf013;</text>
+  <text x="178" y="601" class="label">
+    <tspan x="178" dy="0">Execute steps in order</tspan>
+  </text>
+  <text x="156" y="621" class="desc">
+    <tspan x="156" dy="0">Walk steps[] sequentially</tspan>
+  </text>
+  <rect x="-20" y="650" width="640" height="8" fill="#1e293b" rx="2"/>
+  <rect x="-40" y="694" width="260" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="-24" y="723" class="icon">&#xf121;</text>
+  <text x="-2" y="725" class="label">
+    <tspan x="-2" dy="0">Invoke C++ / Lua action</tspan>
+  </text>
+  <text x="-24" y="745" class="desc">
+    <tspan x="-24" dy="0">nxs.* or lua.* target</tspan>
+  </text>
+  <rect x="190" y="694" width="260" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="206" y="723" class="icon">&#xe73c;</text>
+  <text x="228" y="725" class="label">
+    <tspan x="228" dy="0">Invoke Python step</tspan>
+  </text>
+  <text x="206" y="745" class="desc">
+    <tspan x="206" dy="0">python.* via bridge</tspan>
+  </text>
+  <rect x="420" y="694" width="260" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="436" y="723" class="icon">&#xf126;</text>
+  <text x="458" y="725" class="label">
+    <tspan x="458" dy="0">Delay / branch</tspan>
+  </text>
+  <text x="436" y="745" class="desc">
+    <tspan x="436" dy="0">Condition or wait step</tspan>
+  </text>
+  <rect x="-20" y="802" width="640" height="8" fill="#1e293b" rx="2"/>
+  <rect x="140" y="846" width="320" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="156" y="875" class="icon">&#xf15b;</text>
+  <text x="178" y="877" class="label">
+    <tspan x="178" dy="0">Log step result</tspan>
+  </text>
+  <text x="156" y="897" class="desc">
+    <tspan x="156" dy="0">Record success / failure for debugger</tspan>
+  </text>
+  <circle cx="300" cy="1008" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="300" cy="1008" r="8" fill="#1e293b"/>
+  <line x1="300" y1="114" x2="300" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="222" x2="300" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="330" x2="300" y2="354" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="426" x2="300" y2="462" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="534" x2="300" y2="570" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="642" x2="300" y2="650" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M300,658 L90,658 L90,694 L90,694" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M90,766 L90,766 L90,802 L300,802" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M300,658 L320,658 L320,694 L320,694" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M320,766 L320,766 L320,802 L300,802" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M300,658 L550,658 L550,694 L550,694" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M550,766 L550,766 L550,802 L300,802" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="810" x2="300" y2="846" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M140,882 L80,882 L80,390 L140,390" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="72" y="636" text-anchor="middle" class="small">loop</text>
+  <line x1="300" y1="918" x2="300" y2="994" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="300" y="950" text-anchor="middle" class="small">exit</text>
+  <rect x="48" y="1058" width="600" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="1080" class="legend-title">Flows automation</text>
+  <rect x="64" y="1082" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="86" y="1094" class="small">Load — flows.json + triggers</text>
+  <rect x="364" y="1082" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="386" y="1094" class="small">Execute — ordered steps</text>
+  <rect x="64" y="1104" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="86" y="1116" class="small">Step kinds — C++/Lua · Python · branch</text>
+</svg>

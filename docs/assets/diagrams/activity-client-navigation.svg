@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1258 1173" width="1258" height="1173">
+  <title>UML activity — Compose client navigation</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="1258" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="629" y="56" text-anchor="middle" class="layer-label">UML activity — Compose client navigation</text>
+  <circle cx="400" cy="100" r="14" fill="#1e293b"/>
+  <rect x="240" y="150" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="256" y="179" class="icon">&#xf108;</text>
+  <text x="278" y="181" class="label">
+    <tspan x="278" dy="0">Launch ./gradlew :app:run</tspan>
+  </text>
+  <text x="256" y="201" class="desc">
+    <tspan x="256" dy="0">Compose Desktop process starts</tspan>
+  </text>
+  <rect x="240" y="258" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="256" y="287" class="icon">&#xf135;</text>
+  <text x="278" y="289" class="label">
+    <tspan x="278" dy="0">LoadingScreen</tspan>
+  </text>
+  <text x="256" y="309" class="desc">
+    <tspan x="256" dy="0">Flamingo animation splash</tspan>
+  </text>
+  <rect x="240" y="366" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="256" y="395" class="icon">&#xf5fd;</text>
+  <text x="278" y="397" class="label">
+    <tspan x="278" dy="0">Navigate to Home</tspan>
+  </text>
+  <text x="256" y="417" class="desc">
+    <tspan x="256" dy="0">Primary hub after load</tspan>
+  </text>
+  <rect x="160" y="446" width="480" height="8" fill="#1e293b" rx="2"/>
+  <rect x="40" y="490" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="56" y="519" class="icon">&#xf15b;</text>
+  <text x="78" y="521" class="label">
+    <tspan x="78" dy="0">Browse recent creations</tspan>
+  </text>
+  <text x="56" y="541" class="desc">
+    <tspan x="56" dy="0">Open previously generated apps</tspan>
+  </text>
+  <rect x="440" y="490" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="456" y="519" class="icon">&#xf02d;</text>
+  <text x="478" y="521" class="label">
+    <tspan x="478" dy="0">Open What's New / About</tspan>
+  </text>
+  <text x="456" y="541" class="desc">
+    <tspan x="456" dy="0">Release notes and branding</tspan>
+  </text>
+  <rect x="160" y="598" width="480" height="8" fill="#1e293b" rx="2"/>
+  <rect x="240" y="642" width="320" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="256" y="671" class="icon">&#xf002;</text>
+  <text x="278" y="673" class="label">
+    <tspan x="278" dy="0">Choose primary action</tspan>
+  </text>
+  <text x="256" y="693" class="desc">
+    <tspan x="256" dy="0">Create · Analyze · Edit blueprint</tspan>
+  </text>
+  <rect x="-120" y="770" width="332" height="85" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="-104" y="799" class="icon">&#xf135;</text>
+  <text x="-82" y="801" class="label">
+    <tspan x="-82" dy="0">Create project</tspan>
+  </text>
+  <text x="-104" y="821" class="desc">
+    <tspan x="-104" dy="0">GenerateProjectView → ProjectGenerator →</tspan>
+    <tspan x="-104" dy="15">NOTICE</tspan>
+  </text>
+  <rect x="230" y="770" width="280" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="246" y="799" class="icon">&#xf002;</text>
+  <text x="268" y="801" class="label">
+    <tspan x="268" dy="0">Analyze — Debugger</tspan>
+  </text>
+  <text x="246" y="821" class="desc">
+    <tspan x="246" dy="0">DebuggerPanel · paste / scan logs</tspan>
+  </text>
+  <rect x="580" y="770" width="280" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="596" y="799" class="icon">&#xf013;</text>
+  <text x="618" y="801" class="label">
+    <tspan x="618" dy="0">Analyze — Flows / Tests</tspan>
+  </text>
+  <text x="596" y="821" class="desc">
+    <tspan x="596" dy="0">FlowsEditor or TestRunner</tspan>
+  </text>
+  <rect x="930" y="770" width="280" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="946" y="799" class="icon">&#xf126;</text>
+  <text x="968" y="801" class="label">
+    <tspan x="968" dy="0">Edit blueprint</tspan>
+  </text>
+  <text x="946" y="821" class="desc">
+    <tspan x="946" dy="0">BlueprintEditorView (skeleton)</tspan>
+  </text>
+  <rect x="240" y="891" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="256" y="920" class="icon">&#xf5fd;</text>
+  <text x="278" y="922" class="label">
+    <tspan x="278" dy="0">Optional flamingo transition</tspan>
+  </text>
+  <text x="256" y="942" class="desc">
+    <tspan x="256" dy="0">Overlay before next screen</tspan>
+  </text>
+  <circle cx="400" cy="1013" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="400" cy="1013" r="8" fill="#1e293b"/>
+  <line x1="400" y1="114" x2="400" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="222" x2="400" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="330" x2="400" y2="366" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="438" x2="400" y2="446" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M400,454 L200,454 L200,490 L200,490" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M400,454 L600,454 L600,490 L600,490" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M200,562 L200,562 L200,598 L400,598" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M600,562 L600,562 L600,598 L400,598" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="606" x2="400" y2="642" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M400,714 L46,714 L46,770 L46,770" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M46,855 L400,855 L400,891 L400,891" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <path d="M400,714 L370,714 L370,770 L370,770" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M370,842 L400,842 L400,891 L400,891" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <path d="M400,714 L720,714 L720,770 L720,770" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M720,842 L400,842 L400,891 L400,891" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <path d="M400,714 L1070,714 L1070,770 L1070,770" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1070,842 L400,842 L400,891 L400,891" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <line x1="400" y1="963" x2="400" y2="999" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="48" y="1063" width="640" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="1085" class="legend-title">Client navigation</text>
+  <rect x="64" y="1087" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="86" y="1099" class="small">Session — load & home</text>
+  <rect x="384" y="1087" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="406" y="1099" class="small">Side paths — recent / about</text>
+  <rect x="64" y="1109" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="86" y="1121" class="small">Switch — primary tool action</text>
+</svg>

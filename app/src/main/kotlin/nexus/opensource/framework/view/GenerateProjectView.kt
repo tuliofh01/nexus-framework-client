@@ -64,7 +64,7 @@ fun GenerateProjectScreen(
                     )
                 }
                 TextButton(onClick = onBack) {
-                    Text("\u2190 Dashboard", color = TextSecondary)
+                    Text("← Home", color = TextSecondary)
                 }
             }
 

@@ -33,7 +33,7 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 | **Scaffold client** | Kotlin Compose MVC (`:app`)                 | **Generate Project** + **Edit blueprint** + **Edit flows** (v1 Compose editors)         |
 | **Blueprint graph** | `blueprint.json` (imnodes schema)           | Langflow-style nodes + edges — generation consumes the graph                            |
 | **Runtime flows**   | `flows/flows.json` (optional)               | Background/triggered services — `FlowRunner` no-op when disabled                        |
-| **Generation**      | `:core`, `:cli` in `misc/`                  | `ProjectGenerator`, `BlueprintValidator`, `FlowsValidator` → `builds/framework/<name>/` |
+| **Generation**      | `:core`, `:cli` at repo root                | `ProjectGenerator`, `BlueprintValidator`, `FlowsValidator` → `builds/framework/<name>/` |
 | **Authoring**       | TS/XHTML, Lua, Python files                 | UI components and runtime panels referenced by blueprint nodes                          |
 | **Scripting**       | Lua 5.4 + **sol2**                          | Runtime panels, hotkeys (`lua.script` nodes)                                            |
 | **Domain**          | C++20 MVC                                   | `cpp.model`, `cpp.controller`, ImGui/ImPlot view (`ui.page`)                            |
@@ -100,7 +100,7 @@ The pipeline validates `blueprint.json` and optional `flows/flows.json` after te
 | `{{projectName}}`         | `MyApp`                                        |
 | `{{windowTitle}}`         | `MyApp - built with The Nexus Framework`       |
 | `{{cppStandard}}`         | `20`                                           |
-| `{{license}}`             | `Apache-2.0`                                   |
+| `{{license}}`             | `Nexus-1.0` (see repo [LICENSE](../../LICENSE)) |
 | `{{appType}}`             | `desktop` / `android`                          |
 | `{{createdAt}}`           | ISO-8601 timestamp                             |
 | `{{scriptProtectionEnabled}}` | `true` / `false`                           |
@@ -191,6 +191,7 @@ Full retrospective in [misc/README.md](../../misc/README.md).
 | Langflow adoption            | [langflow-adoption-workflow.svg](../assets/diagrams/langflow-adoption-workflow.svg)         |
 | Langflow vs n8n vs blueprint | [langflow-vs-n8n-blueprint.svg](../assets/diagrams/langflow-vs-n8n-blueprint.svg)           |
 | Nexus blueprint structure    | [nexus-blueprint-app-structure.svg](../assets/diagrams/nexus-blueprint-app-structure.svg)   |
+| UML activity diagrams        | [activity-diagrams.md](../assets/diagrams/activity-diagrams.md) — SVG index (client, generator, derived-app samples) |
 | RAG chatbot flow             | [langflow-rag-chatbot.svg](../assets/diagrams/langflow-rag-chatbot.svg)                     |
 | Agent with tools             | [langflow-agent-tools.svg](../assets/diagrams/langflow-agent-tools.svg)                     |
 ## Related

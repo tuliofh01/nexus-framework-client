@@ -16,8 +16,8 @@ WORKDIR /workspace
 COPY gradlew gradlew.bat settings.gradle.kts gradle.properties build.gradle.kts ./
 COPY gradle/ gradle/
 COPY misc/build-logic/ misc/build-logic/
-COPY misc/core/ misc/core/
-COPY misc/cli/ misc/cli/
+COPY core/ core/
+COPY cli/ cli/
 COPY template/ template/
 
 RUN chmod +x gradlew
