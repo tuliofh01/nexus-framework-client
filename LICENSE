@@ -1,202 +1,201 @@
+Nexus License (Nexus-1.0)
+Copyright (c) 2026 Túlio Horta (GitHub: @tuliofh01)
+Repository: https://github.com/tuliofh01/nexus-framework-client
 
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+Authorization clock starts: 2026-07-21
+Authorization window ends:   2041-07-21 (15 years)
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+================================================================================
+SUMMARY (non-binding; the numbered terms below control)
+================================================================================
 
-   1. Definitions.
+  • Non-commercial use of the Toolkit and of Generated / Derived Works is
+    allowed, with required attribution to this repository.
+  • Prior written authorization from the repository owner (@tuliofh01) is
+    required for:
+      (A) Commercial use of the Toolkit itself as a product; OR
+      (B) Generating, distributing, or deploying a Derived Work that
+          produces revenue; OR
+      (C) Using a Derived Work in a commercial institution (company,
+          for-profit organization, commercial workplace deployment, etc.).
+  • These authorization requirements apply through 2041-07-21 inclusive.
+    After that date they expire (see Section 8) unless renewed in a later
+    license revision. Attribution continues.
+  • NO WARRANTY. The author is not liable for misuse or illegal acts by
+    anyone using this software or apps derived from it.
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+================================================================================
+1. DEFINITIONS
+================================================================================
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+  "Toolkit" means this repository as a product: the Compose Desktop client,
+  Kotlin generator (:core / :cli), templates distributed as part of the
+  framework, documentation, scripts, and related tooling — i.e. Nexus itself
+  when used, sold, or redistributed as a generation / scaffolding product.
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+  "Derived Work" (or "Generated Work") means any project, application,
+  binary, or other material produced by running the Toolkit's generation
+  pipeline, or by adapting the bundled templates into an application you
+  build and ship.
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+  "Commercial Use of the Toolkit" means selling, licensing for a fee,
+  offering as paid SaaS, or otherwise commercially exploiting the Toolkit
+  itself (or a substantial portion of it) as a product or service.
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+  "Revenue-Producing Use" means any use of a Derived Work that produces
+  revenue, including but not limited to: selling the app, charging for
+  access or features, paid SaaS, advertising monetization tied to the app,
+  or otherwise commercializing the Derived Work for profit.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+  "Commercial Institution Use" means deploying or using a Derived Work
+  inside or for a company, for-profit organization, commercial workplace,
+  or other commercial institutional context (even if that particular
+  deployment does not itself charge end users).
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+  "Authorization Period" means the period from 2026-07-21 through
+  2041-07-21 inclusive (fifteen years from the clock start date).
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+  "You" means any person or entity exercising rights under this License.
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+================================================================================
+2. GRANT — NON-COMMERCIAL USE
+================================================================================
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+  Subject to this License (including Attribution in Section 6), You may use,
+  copy, modify, generate with, and redistribute the Toolkit and Derived
+  Works for non-commercial purposes — including personal, hobby, educational,
+  and non-commercial institutional use — without requesting authorization,
+  provided You retain this LICENSE file and copyright notices where
+  applicable, and do not misrepresent the Toolkit as your original work.
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+================================================================================
+3. COMMERCIAL USE OF THE TOOLKIT — AUTHORIZATION REQUIRED
+================================================================================
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+  During the Authorization Period, Commercial Use of the Toolkit is NOT
+  permitted without prior explicit written authorization from the copyright
+  holder and repository owner:
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+      Túlio Horta — GitHub: https://github.com/tuliofh01
+      Project:     https://github.com/tuliofh01/nexus-framework-client
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
+  Contact the owner via GitHub (issues or profile) to request commercial
+  terms for the Toolkit.
 
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
+================================================================================
+4. DERIVED WORKS — REVENUE OR COMMERCIAL INSTITUTION USE
+================================================================================
 
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
+  During the Authorization Period, You may NOT, without prior explicit
+  written authorization from the repository owner (@tuliofh01):
 
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
+    (a) engage in Revenue-Producing Use of a Derived Work; or
+    (b) engage in Commercial Institution Use of a Derived Work.
 
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
+  Non-revenue personal, hobby, and non-commercial institutional use of
+  Derived Works remains allowed under Section 2, subject to Attribution
+  (Section 6).
 
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
+  This License does not claim ownership of Your domain logic or assets that
+  You add to a Generated Work. You choose how to license Your own code in a
+  Derived Work, subject to this License's authorization and attribution
+  rules and to third-party licenses of bundled dependencies.
 
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
+================================================================================
+5. HOW TO REQUEST AUTHORIZATION
+================================================================================
 
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
+  Request written authorization from:
 
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
+      Túlio Horta (@tuliofh01)
+      https://github.com/tuliofh01
+      Project: https://github.com/tuliofh01/nexus-framework-client
 
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
+  Until authorization is granted in writing, the uses described in
+  Sections 3 and 4 remain prohibited during the Authorization Period.
 
-   END OF TERMS AND CONDITIONS
+================================================================================
+6. ATTRIBUTION (REQUIRED FOR DERIVED WORKS)
+================================================================================
 
-   APPENDIX: How to apply the Apache License to your work.
+  Whenever You generate an application with the Toolkit, or redistribute a
+  Derived Work, You MUST clearly mention this repository and the owner:
 
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
+      Built with / generated by The Nexus Framework
+      https://github.com/tuliofh01/nexus-framework-client
+      Copyright (c) Túlio Horta (@tuliofh01)
 
-   Copyright 2026 Nexus Framework contributors
+  Acceptable places include: the Derived Work's README or NOTICE file,
+  About / credits UI, or equivalent documentation. Removing or obscuring
+  this attribution is a breach of this License.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+  Generated projects include a NOTICE file for this purpose; keep it (or an
+  equivalent notice) with the Derived Work.
 
-       http://www.apache.org/licenses/LICENSE-2.0
+  Attribution remains required after the Authorization Period ends
+  (see Section 8).
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+================================================================================
+7. NO WARRANTY; NO LIABILITY FOR MISUSE
+================================================================================
+
+  THE TOOLKIT AND ANY DERIVED WORKS ARE PROVIDED "AS IS", WITHOUT WARRANTY
+  OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+  THE COPYRIGHT HOLDER AND CONTRIBUTORS DISCLAIM ALL LIABILITY FOR ANY CLAIM,
+  DAMAGES, OR OTHER LIABILITY ARISING FROM USE OF THE TOOLKIT OR DERIVED
+  WORKS, WHETHER IN CONTRACT, TORT, OR OTHERWISE.
+
+  The copyright holder is NOT responsible for any criminal, unlawful, or
+  harmful activities committed by You or by third parties using the Toolkit
+  or any Derived Work. You alone are responsible for complying with
+  applicable laws and for the conduct of apps You create or distribute.
+
+================================================================================
+8. AUTHORIZATION PERIOD — SUNSET (2041-07-21)
+================================================================================
+
+  The authorization requirements in Sections 3 and 4 apply only during the
+  Authorization Period: from 2026-07-21 through 2041-07-21 inclusive.
+
+  After 2041-07-21:
+
+    • Those authorization requirements expire automatically.
+    • Commercial Use of the Toolkit, Revenue-Producing Use of Derived Works,
+      and Commercial Institution Use of Derived Works no longer require
+      owner authorization under this Nexus-1.0 text, unless the copyright
+      holder publishes a later license revision that renews or replaces
+      these terms.
+    • Attribution (Section 6) continues to apply.
+    • No-warranty and no-liability terms (Section 7) continue to apply.
+
+================================================================================
+9. TERMINATION
+================================================================================
+
+  This License terminates automatically if You breach it (including
+  unauthorized commercial / commercial-institution use during the
+  Authorization Period, or failure to provide required attribution on
+  Derived Works). Upon termination You must cease prohibited use under
+  this License.
+
+================================================================================
+10. THIRD-PARTY COMPONENTS
+================================================================================
+
+  The Toolkit may depend on third-party libraries (Gradle wrapper, SDL3,
+  ImGui, Zig, Kotlin libraries, etc.). Those components remain under their
+  respective licenses. This License governs Nexus Framework materials
+  authored for this repository; it does not relicense third-party code.
+
+================================================================================
+11. GOVERNING INTENT
+================================================================================
+
+  This is the "Nexus License" (identifier: Nexus-1.0). It is not Apache-2.0,
+  MIT, or GPL. If any provision is held unenforceable, the remainder
+  continues in effect.
+
+  For authorization during the Authorization Period, contact:
+  https://github.com/tuliofh01

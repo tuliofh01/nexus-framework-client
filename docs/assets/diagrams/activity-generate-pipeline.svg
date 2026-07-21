@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 844 1822" width="844" height="1822">
+  <title>UML activity — project generation pipeline</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="844" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="422" y="56" text-anchor="middle" class="layer-label">UML activity — project generation pipeline</text>
+  <circle cx="300" cy="100" r="14" fill="#1e293b"/>
+  <rect x="140" y="150" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="179" class="icon">&#xf013;</text>
+  <text x="178" y="181" class="label">
+    <tspan x="178" dy="0">Validate ProjectSpec</tspan>
+  </text>
+  <text x="156" y="201" class="desc">
+    <tspan x="156" dy="0">name · type · output path</tspan>
+  </text>
+  <rect x="140" y="258" width="320" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="156" y="287" class="icon">&#xf487;</text>
+  <text x="178" y="289" class="label">
+    <tspan x="178" dy="0">Resolve template/ + shared/</tspan>
+  </text>
+  <text x="156" y="309" class="desc">
+    <tspan x="156" dy="0">desktop-app or android-app skeleton</tspan>
+  </text>
+  <polygon points="300,336 344,380 300,424 256,380" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" filter="url(#shadow)"/>
+  <text x="300" y="384" text-anchor="middle" class="small">dry-run?</text>
+  <rect x="460" y="336" width="320" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="476" y="365" class="icon">&#xf002;</text>
+  <text x="498" y="367" class="label">
+    <tspan x="498" dy="0">List rendered paths</tspan>
+  </text>
+  <text x="476" y="387" class="desc">
+    <tspan x="476" dy="0">No files written — preview only</tspan>
+  </text>
+  <circle cx="620" cy="458" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="620" cy="458" r="8" fill="#1e293b"/>
+  <rect x="140" y="460" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="489" class="icon">&#xf466;</text>
+  <text x="178" y="491" class="label">
+    <tspan x="178" dy="0">Ensure output dir</tspan>
+  </text>
+  <text x="156" y="511" class="desc">
+    <tspan x="156" dy="0">force overwrite if requested</tspan>
+  </text>
+  <rect x="140" y="568" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="597" class="icon">&#xf121;</text>
+  <text x="178" y="599" class="label">
+    <tspan x="178" dy="0">Copy template + render</tspan>
+  </text>
+  <text x="156" y="619" class="desc">
+    <tspan x="156" dy="0">Substitute {{placeholders}}</tspan>
+  </text>
+  <rect x="140" y="676" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="705" class="icon">&#xf5fd;</text>
+  <text x="178" y="707" class="label">
+    <tspan x="178" dy="0">Copy shared/ helpers</tspan>
+  </text>
+  <text x="156" y="727" class="desc">
+    <tspan x="156" dy="0">DSL, themes, runtime modules</tspan>
+  </text>
+  <rect x="140" y="784" width="320" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="156" y="813" class="icon">&#xf15b;</text>
+  <text x="178" y="815" class="label">
+    <tspan x="178" dy="0">Write ScriptProtectionConfig</tspan>
+  </text>
+  <text x="156" y="835" class="desc">
+    <tspan x="156" dy="0">If script protection enabled</tspan>
+  </text>
+  <rect x="140" y="892" width="320" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="156" y="921" class="icon">&#xf15b;</text>
+  <text x="178" y="923" class="label">
+    <tspan x="178" dy="0">Write custom blueprint.json</tspan>
+  </text>
+  <text x="156" y="943" class="desc">
+    <tspan x="156" dy="0">If provided by client/CLI</tspan>
+  </text>
+  <rect x="140" y="1000" width="320" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="156" y="1029" class="icon">&#xf013;</text>
+  <text x="178" y="1031" class="label">
+    <tspan x="178" dy="0">Write custom flows.json</tspan>
+  </text>
+  <text x="156" y="1051" class="desc">
+    <tspan x="156" dy="0">If provided by client/CLI</tspan>
+  </text>
+  <rect x="140" y="1108" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="1137" class="icon">&#xf02d;</text>
+  <text x="178" y="1139" class="label">
+    <tspan x="178" dy="0">Write NOTICE</tspan>
+  </text>
+  <text x="156" y="1159" class="desc">
+    <tspan x="156" dy="0">Nexus License attribution</tspan>
+  </text>
+  <rect x="140" y="1216" width="320" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="156" y="1245" class="icon">&#xf013;</text>
+  <text x="178" y="1247" class="label">
+    <tspan x="178" dy="0">Validate nxs_config.json</tspan>
+  </text>
+  <text x="156" y="1267" class="desc">
+    <tspan x="156" dy="0">Schema v2 check</tspan>
+  </text>
+  <rect x="140" y="1324" width="320" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="156" y="1353" class="icon">&#xf126;</text>
+  <text x="178" y="1355" class="label">
+    <tspan x="178" dy="0">Validate blueprint.json</tspan>
+  </text>
+  <text x="156" y="1375" class="desc">
+    <tspan x="156" dy="0">Graph nodes and edges</tspan>
+  </text>
+  <rect x="140" y="1432" width="320" height="72" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="156" y="1461" class="icon">&#xf013;</text>
+  <text x="178" y="1463" class="label">
+    <tspan x="178" dy="0">Validate flows.json</tspan>
+  </text>
+  <text x="156" y="1483" class="desc">
+    <tspan x="156" dy="0">Triggers and steps</tspan>
+  </text>
+  <rect x="140" y="1540" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="1569" class="icon">&#xf135;</text>
+  <text x="178" y="1571" class="label">
+    <tspan x="178" dy="0">Done → builds/framework/&lt;name&gt;/</tspan>
+  </text>
+  <text x="156" y="1591" class="desc">
+    <tspan x="156" dy="0">Out-of-source native project tree</tspan>
+  </text>
+  <circle cx="300" cy="1662" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="300" cy="1662" r="8" fill="#1e293b"/>
+  <line x1="300" y1="114" x2="300" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="222" x2="300" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="330" x2="300" y2="336" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="344" y1="380" x2="460" y2="372" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="402" y="370" text-anchor="middle" class="small">yes</text>
+  <line x1="620" y1="408" x2="620" y2="444" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="424" x2="300" y2="460" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="436" text-anchor="middle" class="small">no</text>
+  <line x1="300" y1="532" x2="300" y2="568" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="640" x2="300" y2="676" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="748" x2="300" y2="784" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="856" x2="300" y2="892" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="964" x2="300" y2="1000" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1072" x2="300" y2="1108" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1180" x2="300" y2="1216" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1288" x2="300" y2="1324" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1396" x2="300" y2="1432" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1504" x2="300" y2="1540" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1612" x2="300" y2="1648" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="48" y="1712" width="560" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="1734" class="legend-title">Generation pipeline</text>
+  <rect x="64" y="1736" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="86" y="1748" class="small">Validate — ProjectSpec</text>
+  <rect x="344" y="1736" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="366" y="1748" class="small">Emit — template copy + render</text>
+  <rect x="64" y="1758" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
+  <text x="86" y="1770" class="small">Validate — config / blueprint / flows</text>
+</svg>

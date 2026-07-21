@@ -12,6 +12,9 @@ build/
 ### Local Gradle cache (non-default location) ###
 .gradle-local/
 
+### Local Gradle fork-verify cache ###
+.gradle-fork-verify/
+
 ### Generated scaffold output (canonical templates live under template/) ###
 /templates/
 *.iws
@@ -69,20 +72,6 @@ __pycache__/
 ### Cursor local plans (optional agent artifacts) ###
 .cursor/plans/
 
-### Generated scaffold output ###
-builds/client/
-
-### Central build outputs (keep structure + docs) ###
-builds/client/*
-!builds/client/.gitkeep
-builds/framework/*
-!builds/framework/.gitkeep
-!builds/framework/_fixture/
-!builds/framework/_fixture/**
-!builds/framework/EquationPlotter/
-!builds/framework/EquationPlotter/**
-!builds/README.md
-
 ### Secrets / local env (never commit) ###
 .env
 *.env
@@ -103,7 +92,33 @@ misc/client-setup/env.bat
 .zig-cache/
 zig-out/
 
+### Local Nexus License acceptance stamp (build_client.sh) ###
+misc/.license-accepted
+.license-accepted
+
 ### Local build outputs under template builds/ (keep README + .gitkeep) ###
 template/*/builds/*
 !template/*/builds/README.md
 !template/*/builds/.gitkeep
+
+### Local / workspace agent guide (templates keep their own AGENTS.md) ###
+/AGENTS.md
+
+### builds/ — track structure + docs; ignore generated apps and deploy binaries ###
+# Ignore all contents under builds/, then re-include placeholders and docs.
+builds/**
+!builds/README.txt
+!builds/LAYOUT.md
+!builds/client/
+!builds/client/.gitkeep
+!builds/client/README.txt
+!builds/framework/
+!builds/framework/.gitkeep
+!builds/framework/README.txt
+!builds/framework/_fixture/
+!builds/framework/_fixture/**
+# Heavy Compose Desktop deploy outputs (never commit)
+builds/client/app/
+builds/client/packages/
+# Generated scaffolded native apps under framework/ (anything except keep/docs/_fixture)
+# Already covered by builds/**; explicit note for clarity — do not un-ignore project trees.

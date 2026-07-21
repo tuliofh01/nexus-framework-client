@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 778 1584" width="778" height="1584">
+  <title>UML activity — desktop frame loop</title>
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="778" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+  <text x="389" y="56" text-anchor="middle" class="layer-label">UML activity — desktop frame loop</text>
+  <rect x="116" y="554" width="368" height="730" class="panel" fill="#E8F4FD" stroke="#1565C0" fill-opacity="0.25"/>
+  <text x="132" y="570" text-anchor="end" class="badge">repeat</text>
+  <circle cx="300" cy="100" r="14" fill="#1e293b"/>
+  <rect x="140" y="150" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="179" class="icon">&#xf108;</text>
+  <text x="178" y="181" class="label">
+    <tspan x="178" dy="0">main() — init SDL3 + GL + ImGui</tspan>
+  </text>
+  <text x="156" y="201" class="desc">
+    <tspan x="156" dy="0">Create window and graphics context</tspan>
+  </text>
+  <rect x="140" y="258" width="320" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="156" y="287" class="icon">&#xf1e6;</text>
+  <text x="178" y="289" class="label">
+    <tspan x="178" dy="0">Init NexusBridge / Lua / Python</tspan>
+  </text>
+  <text x="156" y="309" class="desc">
+    <tspan x="156" dy="0">Optional scripting runtimes</tspan>
+  </text>
+  <rect x="140" y="366" width="320" height="72" class="node" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="156" y="395" class="icon">&#xf15b;</text>
+  <text x="178" y="397" class="label">
+    <tspan x="178" dy="0">Load blueprint + optional flows</tspan>
+  </text>
+  <text x="156" y="417" class="desc">
+    <tspan x="156" dy="0">Graph + FlowRunner registration</tspan>
+  </text>
+  <rect x="140" y="474" width="320" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
+  <text x="156" y="503" class="icon">&#xf121;</text>
+  <text x="178" y="505" class="label">
+    <tspan x="178" dy="0">Create AppModel + Controller + View</tspan>
+  </text>
+  <text x="156" y="525" class="desc">
+    <tspan x="156" dy="0">MVC wiring for the frame</tspan>
+  </text>
+  <rect x="140" y="570" width="320" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="156" y="599" class="icon">&#xf108;</text>
+  <text x="178" y="601" class="label">
+    <tspan x="178" dy="0">Poll SDL events</tspan>
+  </text>
+  <text x="156" y="621" class="desc">
+    <tspan x="156" dy="0">Input and window messages</tspan>
+  </text>
+  <rect x="140" y="678" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="707" class="icon">&#xf013;</text>
+  <text x="178" y="709" class="label">
+    <tspan x="178" dy="0">AppController.dispatch</tspan>
+  </text>
+  <text x="156" y="729" class="desc">
+    <tspan x="156" dy="0">Route commands from UI / scripts</tspan>
+  </text>
+  <rect x="140" y="786" width="320" height="72" class="node" fill="#FFF3E0" stroke="#EF6C00"/>
+  <text x="156" y="815" class="icon">&#xf1c0;</text>
+  <text x="178" y="817" class="label">
+    <tspan x="178" dy="0">Update AppModel</tspan>
+  </text>
+  <text x="156" y="837" class="desc">
+    <tspan x="156" dy="0">Mutate domain state</tspan>
+  </text>
+  <polygon points="300,864 344,908 300,952 256,908" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" filter="url(#shadow)"/>
+  <text x="300" y="912" text-anchor="middle" class="small">flows?</text>
+  <rect x="450" y="854" width="280" height="72" class="node" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="466" y="883" class="icon">&#xf013;</text>
+  <text x="488" y="885" class="label">
+    <tspan x="488" dy="0">FlowRunner tick / triggers</tspan>
+  </text>
+  <text x="466" y="905" class="desc">
+    <tspan x="466" dy="0">Background and event steps</tspan>
+  </text>
+  <rect x="140" y="988" width="320" height="72" class="node" fill="#E0F7FA" stroke="#00838F"/>
+  <text x="156" y="1017" class="icon">&#xf120;</text>
+  <text x="178" y="1019" class="label">
+    <tspan x="178" dy="0">LuaPanels hot-reload check</tspan>
+  </text>
+  <text x="156" y="1039" class="desc">
+    <tspan x="156" dy="0">Reload panels.lua when changed</tspan>
+  </text>
+  <rect x="140" y="1096" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="156" y="1125" class="icon">&#xf080;</text>
+  <text x="178" y="1127" class="label">
+    <tspan x="178" dy="0">AppView.render (ImGui)</tspan>
+  </text>
+  <text x="156" y="1147" class="desc">
+    <tspan x="156" dy="0">Draw UI for this frame</tspan>
+  </text>
+  <rect x="140" y="1204" width="320" height="72" class="node" fill="#ECEFF1" stroke="#455A64"/>
+  <text x="156" y="1233" class="icon">&#xf108;</text>
+  <text x="178" y="1235" class="label">
+    <tspan x="178" dy="0">Swap buffers</tspan>
+  </text>
+  <text x="156" y="1255" class="desc">
+    <tspan x="156" dy="0">Present frame to display</tspan>
+  </text>
+  <rect x="140" y="1312" width="320" height="72" class="node" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="156" y="1341" class="icon">&#xf0ad;</text>
+  <text x="178" y="1343" class="label">
+    <tspan x="178" dy="0">Shutdown bridges + SDL</tspan>
+  </text>
+  <text x="156" y="1363" class="desc">
+    <tspan x="156" dy="0">Tear down Python / Lua / GL</tspan>
+  </text>
+  <circle cx="300" cy="1434" r="14" fill="none" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="300" cy="1434" r="8" fill="#1e293b"/>
+  <text x="484" y="915" class="desc">while window open</text>
+  <line x1="300" y1="114" x2="300" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="222" x2="300" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="330" x2="300" y2="366" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="438" x2="300" y2="474" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="546" x2="300" y2="570" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="642" x2="300" y2="678" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="750" x2="300" y2="786" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="858" x2="300" y2="864" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="344" y1="908" x2="450" y2="890" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="397" y="893" text-anchor="middle" class="small">yes</text>
+  <path d="M590,926 L300,926 L300,988 L300,988" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <line x1="300" y1="952" x2="300" y2="988" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="964" text-anchor="middle" class="small">no</text>
+  <line x1="300" y1="1060" x2="300" y2="1096" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="1168" x2="300" y2="1204" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M460,1240 L540,1240 L540,606 L460,606" fill="none" stroke="#64748b"  stroke-width="2" marker-end="url(#arrow-dashed)" stroke-dasharray="6,4"/>
+  <text x="532" y="923" text-anchor="middle" class="small">loop</text>
+  <line x1="300" y1="1276" x2="300" y2="1312" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="1288" text-anchor="middle" class="small">close</text>
+  <line x1="300" y1="1384" x2="300" y2="1420" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="48" y="1484" width="560" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="1506" class="legend-title">Desktop frame loop</text>
+  <rect x="64" y="1508" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="86" y="1520" class="small">Init / render — SDL3 + ImGui</text>
+  <rect x="344" y="1508" width="16" height="16" class="legend-box" fill="#E8F4FD" stroke="#1565C0"/>
+  <text x="366" y="1520" class="small">Frame loop — poll → update → draw</text>
+  <rect x="64" y="1530" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="86" y="1542" class="small">Optional — FlowRunner tick</text>
+</svg>

@@ -4,6 +4,7 @@
 // https://docs.gradle.org/current/userguide/settings_file_basics.html
 
 pluginManagement {
+    includeBuild("misc/build-logic")
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -29,10 +30,7 @@ plugins {
 }
 
 // Multi-module Framework repo: generation pipeline + Compose client.
-includeBuild("misc/build-logic")
-
+// :core and :cli live at repo root (no projectDir remapping).
 include(":core", ":cli", ":app")
-project(":core").projectDir = file("misc/core")
-project(":cli").projectDir = file("misc/cli")
 
 rootProject.name = "Framework"

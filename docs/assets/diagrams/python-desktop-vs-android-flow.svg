@@ -1,123 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 820" width="860" height="820">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1467 844" width="1467" height="844">
   <title>Python desktop vs Android embedding flow</title>
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#585b70"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
     </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
   </defs>
-  <rect width="860" height="100%" fill="#1e1e2e"/>
+  <rect width="1467" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
-  <!-- Title bar -->
-  <rect x="0" y="0" width="860" height="36" fill="#181825"/>
-  <circle cx="16" cy="18" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="18" r="5" fill="#fab387"/>
-  <circle cx="52" cy="18" r="5" fill="#a6e3a1"/>
-  <text x="430" y="24" font-family="sans-serif" font-weight="bold" font-size="14" fill="#cdd6f4" text-anchor="middle">Python embedding — desktop vs Android</text>
+  <rect x="248" y="72" width="420" height="72" class="node" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="264" y="101" class="icon">&#xf15b;</text>
+  <text x="286" y="103" class="mono">
+    <tspan x="286" dy="0">blueprint.json</tspan>
+  </text>
+  <text x="264" y="123" class="desc">
+    <tspan x="264" dy="0">python.module port evaluate</tspan>
+  </text>
 
-  <!-- Blueprint node -->
-  <rect x="255" y="58" width="350" height="66" rx="8" fill="#313244" stroke="#f9e2af" stroke-width="2"/>
-  <text x="271" y="84" font-family="sans-serif" font-size="14">📄</text>
-  <text x="291" y="85" font-family="sans-serif" font-weight="bold" font-size="14" fill="#cdd6f4">blueprint.json</text>
-  <text x="271" y="107" font-family="sans-serif" font-style="italic" font-size="12" fill="#a6adc8">python.module port evaluate</text>
+  <rect x="48" y="200" width="639" height="280" class="panel" fill="#E3F2FD" stroke="#1565C0" fill-opacity="0.35"/>
+  <text x="62" y="224" class="layer-label">&#xf108; Desktop path</text>
+  <rect x="80" y="248" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="96" y="277" class="icon">&#xe73c;</text>
+  <text x="118" y="279" class="label">
+    <tspan x="118" dy="0">python/functions.py</tspan>
+  </text>
+  <text x="96" y="299" class="desc">
+    <tspan x="96" dy="0">NumPy curve sampling source</tspan>
+  </text>
+  <rect x="404" y="248" width="251" height="88" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="420" y="277" class="icon">&#xf013;</text>
+  <text x="442" y="279" class="label">
+    <tspan x="442" dy="0">zig build: pack python</tspan>
+    <tspan x="442" dy="18">dat</tspan>
+  </text>
+  <text x="420" y="317" class="desc">
+    <tspan x="420" dy="0">PYAC archive defined in build.zig</tspan>
+  </text>
+  <rect x="80" y="376" width="260" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="96" y="405" class="icon">&#xf466;</text>
+  <text x="118" y="407" class="label">
+    <tspan x="118" dy="0">misc/python.dat (PYAC)</tspan>
+  </text>
+  <text x="96" y="427" class="desc">
+    <tspan x="96" dy="0">Encrypted script pack in build step</tspan>
+  </text>
+  <rect x="404" y="376" width="240" height="72" class="node" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="420" y="405" class="icon">&#xe73c;</text>
+  <text x="442" y="407" class="label">
+    <tspan x="442" dy="0">PythonEngine</tspan>
+  </text>
+  <text x="420" y="427" class="desc">
+    <tspan x="420" dy="0">pybind11 embed in controller/</tspan>
+  </text>
 
-  <!-- Blueprint to panels arrows -->
-  <path d="M 430,124 L 222,124 L 222,167" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M 430,124 L 637,124 L 637,167" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="222" y="142" font-family="sans-serif" font-size="12" fill="#a6adc8" text-anchor="middle">🖥️ Desktop</text>
-  <text x="637" y="142" font-family="sans-serif" font-size="12" fill="#a6adc8" text-anchor="middle">📱 Android</text>
+  <rect x="767" y="200" width="652" height="280" class="panel" fill="#FCE4EC" stroke="#C2185B" fill-opacity="0.35"/>
+  <text x="781" y="224" class="layer-label">&#xf3cd; Android path</text>
+  <rect x="799" y="248" width="300" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="815" y="277" class="icon">&#xe73c;</text>
+  <text x="837" y="279" class="label">
+    <tspan x="837" dy="0">app/src/main/python/</tspan>
+  </text>
+  <text x="815" y="299" class="desc">
+    <tspan x="815" dy="0">functions.py in APK tree</tspan>
+  </text>
+  <rect x="1163" y="248" width="224" height="72" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="1179" y="277" class="icon">&#xf17b;</text>
+  <text x="1201" y="279" class="label">
+    <tspan x="1201" dy="0">Gradle + Chaquopy</tspan>
+  </text>
+  <text x="1179" y="299" class="desc">
+    <tspan x="1179" dy="0">No python.dat — sources in APK</tspan>
+  </text>
+  <rect x="799" y="376" width="520" height="80" class="node" fill="#FFFFFF" stroke="#C2185B"/>
+  <text x="815" y="405" class="icon">&#xf1e6;</text>
+  <text x="837" y="407" class="label">
+    <tspan x="837" dy="0">ChaquopyPythonBridge (hand-authored C++)</tspan>
+  </text>
+  <text x="815" y="427" class="desc">
+    <tspan x="815" dy="0">JNI methods call PythonBridge.kt via zig c++</tspan>
+  </text>
 
-  <!-- ===== Desktop panel ===== -->
-  <rect x="30" y="175" width="385" height="290" rx="10" fill="#313244" stroke="#89b4fa" stroke-width="2"/>
-  <text x="50" y="200" font-family="sans-serif" font-weight="bold" font-size="15" fill="#89b4fa">🖥️ Desktop path</text>
+  <rect x="48" y="536" width="1371" height="152" class="panel" fill="#F3E5F5" stroke="#6A1B9A" fill-opacity="0.35"/>
+  <text x="62" y="560" class="layer-label">&#xf080; Shared MVC output (both templates)</text>
+  <rect x="80" y="584" width="240" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="96" y="613" class="icon">&#xf013;</text>
+  <text x="118" y="615" class="label">
+    <tspan x="118" dy="0">PlotController</tspan>
+  </text>
+  <text x="96" y="635" class="desc">
+    <tspan x="96" dy="0">Routes evaluate to model cache</tspan>
+  </text>
+  <rect x="384" y="584" width="240" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="400" y="613" class="icon">&#xf1c0;</text>
+  <text x="422" y="615" class="label">
+    <tspan x="422" dy="0">FunctionRegistry</tspan>
+  </text>
+  <text x="400" y="635" class="desc">
+    <tspan x="400" dy="0">Active curves and samples</tspan>
+  </text>
+  <rect x="688" y="584" width="260" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="704" y="613" class="icon">&#xf080;</text>
+  <text x="726" y="615" class="label">
+    <tspan x="726" dy="0">ImPlot draw</tspan>
+  </text>
+  <text x="704" y="635" class="desc">
+    <tspan x="704" dy="0">Renders curves each frame</tspan>
+  </text>
 
-  <rect x="50" y="220" width="170" height="70" rx="6" fill="#45475a" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="66" y="247" font-family="sans-serif" font-size="14">📄</text>
-  <text x="86" y="247" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">python/functions.py</text>
-  <text x="66" y="270" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">NumPy curve sampling source</text>
+  <path d="M458,144 L210,144 L210,248 L210,248" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="202" y="196" text-anchor="middle" class="small">Desktop</text>
+  <path d="M458,144 L949,144 L949,248 L949,248" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="941" y="196" text-anchor="middle" class="small">Android</text>
+  <line x1="210" y1="320" x2="210" y2="376" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="529" y1="336" x2="524" y2="376" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M210,448 L200,448 L200,584 L200,584" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M524,448 L200,460 L200,596 L200,584" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="949" y1="320" x2="1059" y2="376" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1059,456 L818,456 L818,584 L818,584" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="320" y1="620" x2="384" y2="620" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="624" y1="620" x2="688" y2="620" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
 
-  <rect x="235" y="220" width="170" height="80" rx="6" fill="#45475a" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="251" y="247" font-family="sans-serif" font-size="14">🔧</text>
-  <text x="271" y="248" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">zig build: pack python</text>
-  <text x="271" y="265" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">dat</text>
-  <text x="251" y="288" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">PYAC archive defined in build.zig</text>
-
-  <rect x="50" y="325" width="170" height="70" rx="6" fill="#45475a" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="66" y="352" font-family="sans-serif" font-size="14">📄</text>
-  <text x="86" y="352" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">misc/python.dat (PYAC)</text>
-  <text x="66" y="375" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">Encrypted script pack in build step</text>
-
-  <rect x="235" y="325" width="170" height="70" rx="6" fill="#45475a" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="251" y="352" font-family="sans-serif" font-size="14">⚡</text>
-  <text x="271" y="352" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">PythonEngine</text>
-  <text x="251" y="375" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">pybind11 embed in controller/</text>
-
-  <!-- Desktop internal arrows -->
-  <line x1="135" y1="290" x2="135" y2="317" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="320" y1="300" x2="320" y2="317" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <!-- ===== Android panel ===== -->
-  <rect x="445" y="175" width="385" height="290" rx="10" fill="#313244" stroke="#f5c2e7" stroke-width="2"/>
-  <text x="465" y="200" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f5c2e7">📱 Android path</text>
-
-  <rect x="460" y="220" width="180" height="70" rx="6" fill="#45475a" stroke="#f5c2e7" stroke-width="1.5"/>
-  <text x="476" y="247" font-family="sans-serif" font-size="14">📄</text>
-  <text x="496" y="247" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">app/src/main/python/</text>
-  <text x="476" y="270" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">functions.py in APK tree</text>
-
-  <rect x="650" y="220" width="165" height="70" rx="6" fill="#45475a" stroke="#f5c2e7" stroke-width="1.5"/>
-  <text x="666" y="247" font-family="sans-serif" font-size="14">🔧</text>
-  <text x="686" y="247" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">Gradle + Chaquopy</text>
-  <text x="666" y="270" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">No python.dat — sources in APK</text>
-
-  <rect x="460" y="325" width="355" height="70" rx="6" fill="#45475a" stroke="#f5c2e7" stroke-width="1.5"/>
-  <text x="476" y="352" font-family="sans-serif" font-size="14">📱</text>
-  <text x="496" y="352" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">ChaquopyPythonBridge (hand-authored C++)</text>
-  <text x="476" y="375" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">JNI methods call PythonBridge.kt via zig c++</text>
-
-  <!-- Android internal arrows -->
-  <line x1="550" y1="290" x2="550" y2="317" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <!-- ===== Shared panel ===== -->
-  <rect x="30" y="515" width="800" height="145" rx="10" fill="#313244" stroke="#cba6f7" stroke-width="2"/>
-  <text x="50" y="540" font-family="sans-serif" font-weight="bold" font-size="15" fill="#cba6f7">📊 Shared MVC output (both templates)</text>
-
-  <rect x="50" y="560" width="240" height="70" rx="6" fill="#45475a" stroke="#cba6f7" stroke-width="1.5"/>
-  <text x="66" y="587" font-family="sans-serif" font-size="14">⚙️</text>
-  <text x="86" y="587" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">PlotController</text>
-  <text x="66" y="610" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">Routes evaluate to model cache</text>
-
-  <rect x="310" y="560" width="240" height="70" rx="6" fill="#45475a" stroke="#cba6f7" stroke-width="1.5"/>
-  <text x="326" y="587" font-family="sans-serif" font-size="14">🗃️</text>
-  <text x="346" y="587" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">FunctionRegistry</text>
-  <text x="326" y="610" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">Active curves and samples</text>
-
-  <rect x="570" y="560" width="240" height="70" rx="6" fill="#45475a" stroke="#cba6f7" stroke-width="1.5"/>
-  <text x="586" y="587" font-family="sans-serif" font-size="14">📊</text>
-  <text x="606" y="587" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">ImPlot draw</text>
-  <text x="586" y="610" font-family="sans-serif" font-style="italic" font-size="11" fill="#a6adc8">Renders curves each frame</text>
-
-  <!-- Shared internal arrows -->
-  <line x1="290" y1="595" x2="302" y2="595" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="550" y1="595" x2="562" y2="595" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <!-- Desktop to Shared arrows -->
-  <path d="M 135,395 L 135,480 L 170,480 L 170,552" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M 320,395 L 320,480 L 170,480" fill="none" stroke="#585b70" stroke-width="2"/>
-
-  <!-- Android to Shared arrows -->
-  <path d="M 637,395 L 637,480 L 690,480 L 690,552" fill="none" stroke="#585b70" stroke-width="2" marker-end="url(#arrow)"/>
-
-  <!-- Legend -->
-  <rect x="30" y="705" width="800" height="70" rx="8" fill="#313244" stroke="#585b70" stroke-width="1.5"/>
-  <text x="50" y="726" font-family="sans-serif" font-weight="bold" font-size="13" fill="#cdd6f4">Python embed layers</text>
-
-  <rect x="50" y="734" width="12" height="12" rx="2" fill="#89b4fa"/>
-  <text x="68" y="744" font-family="sans-serif" font-size="11" fill="#bac2de">Desktop — pybind11 + python.dat</text>
-
-  <rect x="310" y="734" width="12" height="12" rx="2" fill="#f5c2e7"/>
-  <text x="328" y="744" font-family="sans-serif" font-size="11" fill="#bac2de">Android — Chaquopy + hand-authored JNI</text>
-
-  <rect x="50" y="754" width="12" height="12" rx="2" fill="#cba6f7"/>
-  <text x="68" y="764" font-family="sans-serif" font-size="11" fill="#bac2de">Shared — controller → ImPlot</text>
+  <rect x="48" y="744" width="520" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="766" class="legend-title">Python embed layers</text>
+  <rect x="64" y="768" width="16" height="16" class="legend-box" fill="#E3F2FD" stroke="#1565C0"/>
+  <text x="86" y="780" class="small">Desktop — pybind11 + python.dat</text>
+  <rect x="324" y="768" width="16" height="16" class="legend-box" fill="#FCE4EC" stroke="#C2185B"/>
+  <text x="346" y="780" class="small">Android — Chaquopy + hand-authored JNI</text>
+  <rect x="64" y="790" width="16" height="16" class="legend-box" fill="#F3E5F5" stroke="#6A1B9A"/>
+  <text x="86" y="802" class="small">Shared — controller → ImPlot</text>
 </svg>

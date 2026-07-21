@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <rect width="100%" height="100%" fill="#1A1A2E"/>
+  <rect x="0" y="0" width="100%" height="40" fill="#1F2B47"/>
+  <circle cx="20" cy="20" r="6" fill="#F38BA8"/>
+  <circle cx="38" cy="20" r="6" fill="#FAB387"/>
+  <circle cx="56" cy="20" r="6" fill="#00E676"/>
+  <text x="400" y="26" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#9090A0">Debugger</text>
+  <text x="40" y="80" font-family="sans-serif" font-size="18" font-weight="bold" fill="#E8E8E8">Debugger</text>
+  <text x="760" y="80" text-anchor="end" font-family="sans-serif" font-size="11" fill="#9090A0">3 match(es) · Enabled · ← Back</text>
+  <text x="40" y="110" font-family="sans-serif" font-size="11" fill="#9090A0">Paste log or source to scan</text>
+  <rect x="40" y="120" width="720" height="72" rx="8" fill="#1F2B47" stroke="#3A3A5C"/>
+  <text x="56" y="150" font-family="monospace" font-size="11" fill="#707070">println("debug"); TODO(); password = "secret" …</text>
+  <rect x="40" y="208" width="88" height="28" rx="6" fill="#00D4FF"/>
+  <text x="84" y="226" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#1A1A2E">Scan</text>
+  <rect x="140" y="208" width="72" height="28" rx="6" fill="none" stroke="#3A3A5C"/>
+  <text x="176" y="226" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#E8E8E8">Clear</text>
+  <text x="40" y="262" font-family="sans-serif" font-size="12" font-weight="bold" fill="#E8E8E8">Matches</text>
+  <rect x="40" y="280" width="720" height="44" rx="8" fill="#1F2B47"/>
+  <rect x="52" y="292" width="44" height="20" rx="4" fill="#FF5252" fill-opacity="0.2"/>
+  <text x="60" y="306" font-family="sans-serif" font-size="10" fill="#FF5252">HIGH</text>
+  <text x="110" y="306" font-family="sans-serif" font-size="11" fill="#9090A0">secret</text>
+  <text x="200" y="306" font-family="monospace" font-size="11" fill="#E8E8E8">password = "hunter2"</text>
+  <rect x="40" y="332" width="720" height="44" rx="8" fill="#1F2B47"/>
+  <rect x="52" y="344" width="44" height="20" rx="4" fill="#FF9100" fill-opacity="0.2"/>
+  <text x="60" y="358" font-family="sans-serif" font-size="10" fill="#FF9100">MED</text>
+  <text x="110" y="358" font-family="sans-serif" font-size="11" fill="#9090A0">todo</text>
+  <text x="200" y="358" font-family="monospace" font-size="11" fill="#E8E8E8">TODO: wire persistence</text>
+  <rect x="40" y="384" width="720" height="44" rx="8" fill="#1F2B47"/>
+  <rect x="52" y="396" width="44" height="20" rx="4" fill="#00D4FF" fill-opacity="0.2"/>
+  <text x="60" y="410" font-family="sans-serif" font-size="10" fill="#00D4FF">LOW</text>
+  <text x="110" y="410" font-family="sans-serif" font-size="11" fill="#9090A0">debug</text>
+  <text x="200" y="410" font-family="monospace" font-size="11" fill="#E8E8E8">println("debug trace")</text>
+
+  <text x="40" y="470" font-family="sans-serif" font-size="9" fill="#707070">Compose: DebuggerPanel.kt · asset mockup-debugger-v102.svg (avoids root-owned mockup-debugger.svg)</text>
+</svg>

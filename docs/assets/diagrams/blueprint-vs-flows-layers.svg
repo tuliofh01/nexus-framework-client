@@ -1,68 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 650" width="700" height="650">
-  <title>Blueprint vs flows — two-layer model</title>
-  <rect width="100%" height="100%" fill="#1e1e2e"/>
-  <rect x="0" y="0" width="700" height="38" fill="#313244"/>
-  <circle cx="18" cy="19" r="5" fill="#f38ba8"/>
-  <circle cx="34" cy="19" r="5" fill="#fab387"/>
-  <circle cx="50" cy="19" r="5" fill="#a6e3a1"/>
-  <text x="350" y="25" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#a6adc8" font-weight="bold">Two-layer model — design-time vs runtime</text>
-
-  <!-- Layer 1: blueprint.json -->
-  <rect x="40" y="55" width="620" height="210" rx="12" fill="#313244" stroke="#fab387" stroke-width="2"/>
-  <rect x="40" y="55" width="620" height="32" rx="12" fill="#fab387"/>
-  <rect x="40" y="72" width="620" height="15" fill="#fab387"/>
-  <text x="350" y="76" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1e1e2e">Layer 1 — blueprint.json (design-time codegen)</text>
-
-  <!-- Node type boxes -->
-  <rect x="56" y="107" width="135" height="65" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="123" y="136" text-anchor="middle" font-family="monospace, sans-serif" font-size="10" fill="#89b4fa">cpp.model</text>
-  <text x="123" y="152" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">domain state</text>
-
-  <rect x="207" y="107" width="135" height="65" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="274" y="136" text-anchor="middle" font-family="monospace, sans-serif" font-size="10" fill="#89b4fa">cpp.controller</text>
-  <text x="274" y="152" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">command routing</text>
-
-  <rect x="358" y="107" width="135" height="65" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="425" y="136" text-anchor="middle" font-family="monospace, sans-serif" font-size="10" fill="#89b4fa">ui.page</text>
-  <text x="425" y="152" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">ImGui screens</text>
-
-  <rect x="509" y="107" width="135" height="65" rx="8" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
-  <text x="576" y="136" text-anchor="middle" font-family="monospace, sans-serif" font-size="10" fill="#89b4fa">python.module</text>
-  <text x="576" y="152" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">analytics glue</text>
-
-  <rect x="40" y="205" width="220" height="24" rx="6" fill="none" stroke="#cba6f7" stroke-width="1" stroke-dasharray="3,2"/>
-  <text x="150" y="221" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#cba6f7">consumed by ProjectGenerator</text>
-
-  <!-- Arrow between layers -->
-  <line x1="350" y1="270" x2="350" y2="294" stroke="#cba6f7" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="350" y="287" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#cba6f7">same canvas, separate files</text>
-
-  <!-- Layer 2: flows.json -->
-  <rect x="40" y="305" width="620" height="180" rx="12" fill="#313244" stroke="#a6e3a1" stroke-width="2"/>
-  <rect x="40" y="305" width="620" height="32" rx="12" fill="#a6e3a1"/>
-  <rect x="40" y="322" width="620" height="15" fill="#a6e3a1"/>
-  <text x="350" y="326" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1e1e2e">Layer 2 — flows.json (runtime automation)</text>
-
-  <rect x="51" y="357" width="192" height="58" rx="8" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
-  <text x="147" y="381" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6e3a1">background flows</text>
-  <text x="147" y="398" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">interval loops</text>
-
-  <rect x="254" y="357" width="192" height="58" rx="8" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
-  <text x="350" y="381" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6e3a1">triggered flows</text>
-  <text x="350" y="398" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">event + condition</text>
-
-  <rect x="457" y="357" width="192" height="58" rx="8" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
-  <text x="553" y="381" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#a6e3a1">step targets</text>
-  <text x="553" y="398" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#585b70">nxs.* · python.* · lua.* invoke</text>
-
-  <!-- Bottom note -->
-  <rect x="40" y="530" width="620" height="36" rx="8" fill="#313244" stroke="#585b70" stroke-width="1"/>
-  <text x="350" y="553" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a6adc8">blueprint.json declares structure · flows.json defines behaviour · FlowRunner triggers at startup</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 755" width="1350" height="755">
+  <title>blueprint.json vs flows.json layers</title>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#cba6f7"/>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#94a3b8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"/>
     </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; font-weight: 700; }
+      .desc { font: italic 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #64748b; }
+      .small { font: 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #475569; }
+      .mono { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; font-weight: 700; }
+      .legend-title { font: bold 13px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #334155; }
+      .layer-label { font: bold 15px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #1e293b; }
+      .badge { font: bold 12px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Verdana, sans-serif; fill: #2563eb; }
+      .icon { font: 14px "JetBrainsMono Nerd Font", "Symbols Nerd Font", Consolas, monospace; fill: #1e293b; }
+      .node { rx: 10; stroke-width: 2; filter: url(#shadow); }
+      .panel { rx: 12; stroke-width: 2; }
+      .legend-box { rx: 6; stroke-width: 2; }
+    </style>
   </defs>
+  <rect width="1350" height="100%" fill="#f8fafc"/>
+  <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
+
+  <rect x="48" y="88" width="560" height="432" class="panel" fill="#FFF8E1" stroke="#F57F17" fill-opacity="0.35"/>
+  <text x="62" y="112" class="layer-label">&#xf15b; Design-time — blueprint.json</text>
+  <text x="328" y="130" text-anchor="middle" class="desc">Langflow-style MVC wiring · consumed at generation</text>
+  <rect x="80" y="160" width="220" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="96" y="189" class="icon">&#xe73c;</text>
+  <text x="118" y="191" class="label">
+    <tspan x="118" dy="0">python.module</tspan>
+  </text>
+  <text x="96" y="211" class="desc">
+    <tspan x="96" dy="0">Analytics and glue modules</tspan>
+  </text>
+  <rect x="356" y="160" width="220" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="372" y="189" class="icon">&#xf1c0;</text>
+  <text x="394" y="191" class="label">
+    <tspan x="394" dy="0">cpp.model</tspan>
+  </text>
+  <text x="372" y="211" class="desc">
+    <tspan x="372" dy="0">Domain state and caches</tspan>
+  </text>
+  <rect x="80" y="288" width="220" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="96" y="317" class="icon">&#xf013;</text>
+  <text x="118" y="319" class="label">
+    <tspan x="118" dy="0">cpp.controller</tspan>
+  </text>
+  <text x="96" y="339" class="desc">
+    <tspan x="96" dy="0">Command routing layer</tspan>
+  </text>
+  <rect x="356" y="288" width="220" height="72" class="node" fill="#FFFFFF" stroke="#F57F17"/>
+  <text x="372" y="317" class="icon">&#xf5fd;</text>
+  <text x="394" y="319" class="label">
+    <tspan x="394" dy="0">ui.page</tspan>
+  </text>
+  <text x="372" y="339" class="desc">
+    <tspan x="372" dy="0">ImGui screens and DSL layout</tspan>
+  </text>
+  <rect x="50" y="416" width="280" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
+  <text x="66" y="445" class="icon">&#xf135;</text>
+  <text x="88" y="447" class="label">
+    <tspan x="88" dy="0">:core ProjectGenerator</tspan>
+  </text>
+  <text x="66" y="467" class="desc">
+    <tspan x="66" dy="0">Validates graph · emits src/ tree</tspan>
+  </text>
+
+  <rect x="696" y="88" width="606" height="445" class="panel" fill="#E8F5E9" stroke="#2E7D32" fill-opacity="0.35"/>
+  <text x="710" y="112" class="layer-label">&#xf126; Runtime — flows/flows.json</text>
+  <text x="999" y="130" text-anchor="middle" class="desc">Optional in-app services · loaded at app startup</text>
+  <rect x="728" y="160" width="243" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="744" y="189" class="icon">&#xf013;</text>
+  <text x="766" y="191" class="label">
+    <tspan x="766" dy="0">background flows</tspan>
+  </text>
+  <text x="744" y="211" class="desc">
+    <tspan x="744" dy="0">interval loops while app is</tspan>
+    <tspan x="744" dy="15">alive</tspan>
+  </text>
+  <rect x="1027" y="160" width="243" height="85" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="1043" y="189" class="icon">&#xf075;</text>
+  <text x="1065" y="191" class="label">
+    <tspan x="1065" dy="0">triggered flows</tspan>
+  </text>
+  <text x="1043" y="211" class="desc">
+    <tspan x="1043" dy="0">event · startup · manual ·</tspan>
+    <tspan x="1043" dy="15">hotkey</tspan>
+  </text>
+  <rect x="728" y="301" width="480" height="72" class="node" fill="#FFFFFF" stroke="#2E7D32"/>
+  <text x="744" y="330" class="icon">&#xf120;</text>
+  <text x="766" y="332" class="label">
+    <tspan x="766" dy="0">steps[] invoke</tspan>
+  </text>
+  <text x="744" y="352" class="desc">
+    <tspan x="744" dy="0">nxs.* · python.* · lua.* targets</tspan>
+  </text>
+  <rect x="828" y="429" width="280" height="72" class="node" fill="#FFFFFF" stroke="#00838F"/>
+  <text x="844" y="458" class="icon">&#xf013;</text>
+  <text x="866" y="460" class="label">
+    <tspan x="866" dy="0">FlowRunner</tspan>
+  </text>
+  <text x="844" y="480" class="desc">
+    <tspan x="844" dy="0">Registers triggers from flows.json</tspan>
+  </text>
+
+  <line x1="300" y1="196" x2="356" y2="196" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M190,232 L190,220 L190,276 L190,288" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M466,232 L466,244 L466,300 L466,288" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="190" y1="360" x2="190" y2="416" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="971" y1="202" x2="1027" y2="202" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M849,245 L968,233 L968,289 L968,301" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M1148,245 L968,257 L968,313 L968,301" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="968" y1="373" x2="968" y2="429" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="48" y="589" width="1254" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="675" y="617" text-anchor="middle" class="small">Same Langflow canvas may split: structure → blueprint.json · automation → flows.json</text>
+
+  <rect x="48" y="645" width="1254" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
+  <text x="64" y="667" class="legend-title">Two-layer model</text>
+  <rect x="64" y="669" width="16" height="16" class="legend-box" fill="#FFF8E1" stroke="#F57F17"/>
+  <text x="86" y="681" class="small">blueprint.json — design-time codegen</text>
+  <rect x="691" y="669" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
+  <text x="713" y="681" class="small">flows.json — runtime automation</text>
+  <rect x="64" y="691" width="16" height="16" class="legend-box" fill="#6A1B9A" stroke="#6A1B9A"/>
+  <text x="86" y="703" class="small">ProjectGenerator — one-time emit</text>
+  <rect x="691" y="691" width="16" height="16" class="legend-box" fill="#00838F" stroke="#00838F"/>
+  <text x="713" y="703" class="small">FlowRunner — in-process triggers</text>
 </svg>
