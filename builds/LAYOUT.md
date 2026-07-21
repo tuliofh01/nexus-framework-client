@@ -1,14 +1,26 @@
 # builds/
 
-Central output directory. Generated artifacts are git-ignored; only this README and `.gitkeep` placeholders are tracked.
+Central output directory. **Generated apps and client deploy binaries are
+git-ignored.** Tracked: `README.txt`, this file, `.gitkeep` placeholders,
+and optional `framework/_fixture/`.
+
+Plain-text overview: [README.txt](README.txt).
 
 ## Layout
 
 ```
 builds/
-├── client/      Kotlin Compose Desktop client deploy artifacts
-└── framework/   Native apps scaffolded from templates — one folder per project
-                 e.g. builds/framework/MyApp/debug/
+├── README.txt / LAYOUT.md
+├── client/      Compose Desktop client deploy artifacts
+│   ├── README.txt
+│   ├── .gitkeep
+│   ├── app/         (ignored) runnable distribution
+│   └── packages/    (ignored) OS installers
+└── framework/   Native apps scaffolded from templates
+    ├── README.txt
+    ├── .gitkeep
+    ├── _fixture/    (tracked) light generator/test helpers
+    └── <Project>/   (ignored) e.g. MyApp, Plotter2DApp
 ```
 
 ## Client (`builds/client/`)
@@ -22,15 +34,8 @@ Gradle still writes intermediates under `app/build/`; deploy tasks copy finished
 
 ## Framework (`builds/framework/`)
 
-Generated projects configure CMake presets to build into `builds/framework/<projectName>/`:
-
-```bash
-cd path/to/MyApp
-cmake --preset debug
-cmake --build --preset debug
-./../../builds/framework/MyApp/debug/MyApp
-```
-
-See `nxs_config.json` → `build.outputDir` in generated projects for the resolved path.
+Generated projects land under `builds/framework/<projectName>/` (see
+`nxs_config.json` → `build.outputDir`). Build with the project’s Zig or
+CMake instructions; do not commit those trees.
 
 Related: [../README.md](../README.md) · [../template/README.md](../template/README.md)
