@@ -55,6 +55,23 @@
 
 ---
 
+## Version 1.0.3 Release
+
+This release is mostly **debugging and patches**: the Gradle graph and package layout were repaired, and a few Compose Desktop client UX bugs that blocked naming / generating projects were fixed.
+
+**What we patched**
+
+- **Build / modules** — recreated per-module Gradle (`:core`, `:cli`, `:app`) so the client and CLI compile against root modules again (no more missing `:core` directory).
+- **Packages** — first-party Kotlin now lives under `com.nexus.framework.*` with sources at `app/`, `core/`, and `cli/` (not nested under crazy `app/.../framework/core/src/...` paths).
+- **Generate Project UI** — project name starts empty with a clearing placeholder; generate validates blank names and shows a real `Generated: …` status; stack preview follows Desktop vs Android; template folders map to `template/desktop-app` and `template/android-app`.
+- **Editors** — Blueprint / Flows no longer seed a stuck `"MyApp"` value; dark-theme text fields get readable colors; Whats New shows the live `NexusBranding` version.
+- **IntelliJ** — shareable `intellij/` kit (style, lint-on-save guidance, snippets, wisdom/`AGENTS.md`) via `./intellij/apply-to-idea.sh`.
+- **Tidy** — legacy `nexus.opensource` paths scrubbed from docs/diagrams; nested junk under `app/.../framework/framework/` is gitignored (purge with `sudo rm -rf` if still on disk).
+
+Apply the IntelliJ kit after pull: `./intellij/apply-to-idea.sh`.
+
+---
+
 ##  Table of Contents
 
 | Section                  | TL;DR                                              | Read Time   |
