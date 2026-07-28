@@ -1,0 +1,209 @@
+package com.nexus.framework
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.nexus.framework.controller.GenerateController
+import com.nexus.framework.controller.LoadingController
+import com.nexus.framework.core.model.NexusBranding
+import com.nexus.framework.model.DebuggerService
+import com.nexus.framework.model.RecentProjectsStore
+import com.nexus.framework.model.TestRunner
+import com.nexus.framework.view.BlueprintEditorScreen
+import com.nexus.framework.view.DebuggerPanel
+import com.nexus.framework.view.FlamingoTransitionOverlay
+import com.nexus.framework.view.FlowsEditorScreen
+import com.nexus.framework.view.GenerateProjectScreen
+import com.nexus.framework.view.HomeScreen
+import com.nexus.framework.view.LoadingScreen
+import com.nexus.framework.view.TestRunnerPanel
+import com.nexus.framework.view.WhatsNewDialog
+import com.nexus.framework.view.rememberFlamingoWindowIcon
+import kotlinx.coroutines.delay
+
+sealed interface AppScreen {
+    data object Loading : AppScreen
+
+    /** Main dashboard — generated apps, create / open / Langflow, branding. */
+    data object Home : AppScreen
+
+    /**
+     * Deprecated alias of [Home]. Prefer [Home].
+     * [normalizeScreen] maps Welcome and Dashboard → Home.
+     */
+    data object Welcome : AppScreen
+
+    /**
+     * Deprecated alias of [Home] for older navigation call sites.
+     */
+    data object Dashboard : AppScreen
+
+    data object Generate : AppScreen
+
+    data object BlueprintEditor : AppScreen
+
+    data object FlowsEditor : AppScreen
+
+    data object Debugger : AppScreen
+
+    data object TestRunner : AppScreen
+}
+
+private val homeScreen = AppScreen.Home
+
+/** Collapse Welcome/Dashboard aliases into Home so there is a single hub. */
+private fun normalizeScreen(screen: AppScreen): AppScreen =
+    when (screen) {
+        AppScreen.Welcome, AppScreen.Dashboard -> AppScreen.Home
+        else -> screen
+    }
+
+@Suppress("ktlint:standard:function-naming")
+@Composable
+private fun AppContent(
+    screen: AppScreen,
+    onNavigate: (AppScreen) -> Unit,
+    showWhatsNew: Boolean,
+    onDismissWhatsNew: () -> Unit,
+    onShowWhatsNew: () -> Unit,
+    loadingController: LoadingController,
+    generateController: GenerateController,
+    debuggerService: DebuggerService,
+    testRunner: TestRunner,
+    recentProjectsStore: RecentProjectsStore,
+) {
+    var transitionOverlay by remember { mutableStateOf(false) }
+    val resolved = normalizeScreen(screen)
+
+    LaunchedEffect(resolved) {
+        if (resolved != AppScreen.Loading) {
+            transitionOverlay = true
+            delay(280L)
+            transitionOverlay = false
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedContent(
+            targetState = resolved,
+            transitionSpec = {
+                fadeIn(tween(260)) togetherWith fadeOut(tween(220))
+            },
+            label = "screenTransition",
+        ) { target ->
+            when (target) {
+                AppScreen.Loading -> {
+                    LoadingScreen(
+                        controller = loadingController,
+                        onComplete = { onNavigate(AppScreen.Home) },
+                    )
+                }
+
+                AppScreen.Home, AppScreen.Welcome, AppScreen.Dashboard -> {
+                    HomeScreen(
+                        recentProjectsStore = recentProjectsStore,
+                        generateController = generateController,
+                        onNavigate = onNavigate,
+                        onShowWhatsNew = onShowWhatsNew,
+                        onProjectOpened = { onNavigate(AppScreen.BlueprintEditor) },
+                        onLangflowImported = { onNavigate(AppScreen.BlueprintEditor) },
+                    )
+                    if (showWhatsNew) {
+                        WhatsNewDialog(onDismiss = onDismissWhatsNew)
+                    }
+                }
+
+                AppScreen.Generate -> {
+                    GenerateProjectScreen(
+                        controller = generateController,
+                        onBack = { onNavigate(homeScreen) },
+                        onEditBlueprint = { onNavigate(AppScreen.BlueprintEditor) },
+                        onEditFlows = { onNavigate(AppScreen.FlowsEditor) },
+                    )
+                }
+
+                AppScreen.BlueprintEditor -> {
+                    BlueprintEditorScreen(
+                        controller = generateController.blueprintEditor,
+                        onBack = { onNavigate(homeScreen) },
+                    )
+                }
+
+                AppScreen.FlowsEditor -> {
+                    FlowsEditorScreen(
+                        controller = generateController.flowsEditor,
+                        onBack = { onNavigate(homeScreen) },
+                    )
+                }
+
+                AppScreen.Debugger -> {
+                    DebuggerPanel(
+                        debugger = debuggerService,
+                        onBack = { onNavigate(homeScreen) },
+                    )
+                }
+
+                AppScreen.TestRunner -> {
+                    TestRunnerPanel(
+                        runner = testRunner,
+                        onBack = { onNavigate(homeScreen) },
+                    )
+                }
+            }
+        }
+
+        FlamingoTransitionOverlay(
+            visible = transitionOverlay && resolved != AppScreen.Loading,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+fun main() =
+    application {
+        val windowIcon = rememberFlamingoWindowIcon()
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = NexusBranding.windowTitle("Nexus Framework Client"),
+            icon = windowIcon?.let { BitmapPainter(it) },
+        ) {
+            var screen by remember { mutableStateOf<AppScreen>(AppScreen.Loading) }
+            var showWhatsNew by remember { mutableStateOf(true) }
+            val loadingController = remember { LoadingController() }
+            val generateController = remember { GenerateController() }
+            val debuggerService = remember { DebuggerService() }
+            val testRunner = remember { TestRunner() }
+            val recentProjectsStore = remember { RecentProjectsStore() }
+
+            MaterialTheme {
+                AppContent(
+                    screen = screen,
+                    onNavigate = { screen = normalizeScreen(it) },
+                    showWhatsNew = showWhatsNew && normalizeScreen(screen) == AppScreen.Home,
+                    onDismissWhatsNew = { showWhatsNew = false },
+                    onShowWhatsNew = { showWhatsNew = true },
+                    loadingController = loadingController,
+                    generateController = generateController,
+                    debuggerService = debuggerService,
+                    testRunner = testRunner,
+                    recentProjectsStore = recentProjectsStore,
+                )
+            }
+        }
+    }
