@@ -105,9 +105,38 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                     Divider(color = NexusTheme.Divider, thickness = 1.dp)
                     Spacer(Modifier.height(20.dp))
 
+                    Text(
+                        text = "1.0.3 patches",
+                        style = MaterialTheme.typography.subtitle2.copy(
+                            color = NexusTheme.AccentCyan,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    )
+                    Spacer(modifier.height(8.dp))
+                    listOf(
+                        "Packages moved to com.nexus.framework.*",
+                        "Per-module Gradle (:core / :cli / :app)",
+                        "Generate Project name field clears properly",
+                        "Templates resolve to desktop-app / android-app",
+                    ).forEach { line ->
+                        Text(
+                            text = "• $line",
+                            style = MaterialTheme.typography.body2.copy(
+                                color = NexusTheme.TextSecondary,
+                                fontSize = 12.sp,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 2.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+
+                    Spacer(modifier.height(16.dp))
+
                     RepoPleaSection()
 
-                    Spacer(Modifier.height(28.dp))
+                    Spacer(modifier.height(28.dp))
 
                     Button(
                         onClick = onDismiss,
