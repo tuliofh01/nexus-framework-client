@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IntelliJ stores Actions on Save mostly in the IDE-level options.
+  After applying this kit, also enable in Settings → Tools → Actions on Save:
+    [x] Reformat code
+    [x] Optimize imports
+    [x] Rearrange code
+    [x] Run code cleanup
+    [x] Build project (optional)
+-->
+<project version="4">
+  <component name="FormatOnSaveOptions">
+    <option name="myAllFileTypesSelected" value="true" />
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myAllFileTypesSelected" value="true" />
+  </component>
+  <component name="CodeCleanupOnSaveOptions">
+    <option name="myAllFileTypesSelected" value="true" />
+  </component>
+</project>

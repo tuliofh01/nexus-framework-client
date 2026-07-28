@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templateSet group="Nexus">
+  <template name="nxcomp" value="@Composable&#10;fun $NAME$($END$) {&#10;    $BODY$&#10;}" description="Nexus Compose function" toReformat="true" toShortenFQNames="true">
+    <variable name="NAME" expression="&quot;Screen&quot;" defaultValue="" alwaysStopAt="true" />
+    <variable name="BODY" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="nxfield" value="OutlinedTextField(&#10;    value = $VALUE$,&#10;    onValueChange = { $VALUE$ = it },&#10;    label = { Text(&quot;$LABEL$&quot;) },&#10;    placeholder = { Text(&quot;$HINT$&quot;) },&#10;    singleLine = true,&#10;    textStyle = MaterialTheme.typography.body1.copy(color = NexusTheme.TextPrimary),&#10;    colors = TextFieldDefaults.outlinedTextFieldColors(&#10;        textColor = NexusTheme.TextPrimary,&#10;        focusedBorderColor = NexusTheme.AccentCyan,&#10;        unfocusedBorderColor = NexusTheme.Divider,&#10;        cursorColor = NexusTheme.AccentCyan,&#10;        focusedLabelColor = NexusTheme.AccentCyan,&#10;        unfocusedLabelColor = NexusTheme.TextSecondary,&#10;        placeholderColor = NexusTheme.TextSecondary.copy(alpha = 0.55f),&#10;        backgroundColor = Color.Transparent,&#10;    ),&#10;)" description="Dark-theme OutlinedTextField with clearing placeholder" toReformat="true" toShortenFQNames="true">
+    <variable name="VALUE" expression="" defaultValue="&quot;text&quot;" alwaysStopAt="true" />
+    <variable name="LABEL" expression="" defaultValue="&quot;Label&quot;" alwaysStopAt="true" />
+    <variable name="HINT" expression="" defaultValue="&quot;hint&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="nximp" value="import com.nexus.framework.$PKG$" description="Import under com.nexus.framework" toReformat="false" toShortenFQNames="false">
+    <variable name="PKG" expression="" defaultValue="&quot;core.model.&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="KOTLIN_TOPLEVEL" value="true" />
+    </context>
+  </template>
+</templateSet>
