@@ -1,8 +1,3 @@
-// The settings file is the entry point of every Gradle build.
-// Its primary purpose is to define the subprojects.
-// It is also used for some aspects of project-wide configuration, like managing plugins, dependencies, etc.
-// https://docs.gradle.org/current/userguide/settings_file_basics.html
-
 pluginManagement {
     includeBuild("misc/build-logic")
     repositories {
@@ -14,8 +9,6 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // Default repositories for all subprojects. Google + the Compose dev repo are
-    // required by Jetpack Compose (Compose Multiplatform for Desktop) artifacts.
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
@@ -25,12 +18,11 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    // Use the Foojay Toolchains plugin to automatically download JDKs required by subprojects.
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-// Multi-module Framework repo: generation pipeline + Compose client.
-// :core and :cli live at repo root (no projectDir remapping).
-include(":core", ":cli", ":app")
-
 rootProject.name = "Framework"
+
+include(":core")
+include(":cli")
+include(":app")
