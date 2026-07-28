@@ -112,7 +112,7 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                             fontWeight = FontWeight.SemiBold,
                         ),
                     )
-                    Spacer(modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
                     listOf(
                         "Packages moved to com.nexus.framework.*",
                         "Per-module Gradle (:core / :cli / :app)",
@@ -132,11 +132,11 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                         )
                     }
 
-                    Spacer(modifier.height(16.dp))
+                    Spacer(Modifier.height(16.dp))
 
                     RepoPleaSection()
 
-                    Spacer(modifier.height(28.dp))
+                    Spacer(Modifier.height(28.dp))
 
                     Button(
                         onClick = onDismiss,
