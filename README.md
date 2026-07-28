@@ -5,15 +5,15 @@
   @test ./gradlew check
   @templates desktop-app (SDL3/ImGui/C++/Lua/Python), android-app (Zig JNI/Chaquopy)
   @key-files
-    core/src/main/kotlin/nexus/opensource/framework/core/service/ProjectGenerator.kt
-    cli/src/main/kotlin/nexus/opensource/framework/cli/FrameworkCli.kt
-    app/src/main/kotlin/nexus/opensource/App.kt
+    core/src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt
+    cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt
+    app/src/main/kotlin/com/nexus/framework/App.kt
     template/desktop-app/build_app.sh
     template/android-app/zig-services/jni/python_bridge.zig
     misc/build_client.sh
   @license Nexus-1.0
   @docs docs/hub.md
-  @description The Nexus Framework 1.0.2 is a native app generator — blueprint graphs become C++20 / Lua / Python desktop and Android projects via a Compose Desktop client and Kotlin CLI. Optional Langflow export → flows.json import (not blueprint). SDL3, Zig sidecars, Nexus License (Nexus-1.0).
+  @description The Nexus Framework 1.0.3 is a native app generator — blueprint graphs become C++20 / Lua / Python desktop and Android projects via a Compose Desktop client and Kotlin CLI. Optional Langflow export → flows.json import (not blueprint). SDL3, Zig sidecars, Nexus License (Nexus-1.0).
   @keywords native app generator, blueprint-driven development, C++20 modules, Compose Desktop, SDL3, Zig, Lua, Python, Dear ImGui, Android JNI, Kotlin Gradle, Langflow import, Nexus Framework, Nexus License
 -->
 
@@ -44,7 +44,7 @@
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3" /></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.16.0-orange?style=flat-square&logo=zig" alt="Zig 0.16.0" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/version-1.0.2-blueviolet?style=flat-square" alt="Version 1.0.2" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/version-1.0.3-blueviolet?style=flat-square" alt="Version 1.0.3" /></a>
 </p>
 
 > ** Zero to binary**
@@ -69,7 +69,7 @@
 | [License](#-license-yes-its-as-boring-as-it-sounds-heres-the-truth)                  | Nexus-1.0 terms, attribution, authorization window | 2 min       |
 | [Performance Guarantees](#-mathematical-performance-guarantees-real-numbers-no-hype)   | Real benchmarks: desktop + Android numbers         | 2 min       |
 | [Casual Comparisons](#-casual-comparisons-why-this-isnt-your-grandmas-app-builder)       | 5-way comparison: Nexus vs Electron vs Flutter vs others | 2 min       |
-| [Technical Deep-Dive](#-for-the-curious-technical-deep-dive-for-people-who-love-tech)      | Diagrams, dependencies, package map, what's in 1.0.2 | 3 min       |
+| [Technical Deep-Dive](#-for-the-curious-technical-deep-dive-for-people-who-love-tech)      | Diagrams, dependencies, package map, what's in 1.0.3 | 3 min       |
 | [Project Structure](#-project-structure-why-its-organized-like-a-military-operation)        | Repository layout, where to edit what              | 2 min       |
 | [Knowledge Checkpoints](#-knowledge-checkpoints-how-to-not-get-lost-in-the-codebase)    | Checklist before diving in, pro tips, location guide | 1 min       |
 | [Glossary](#-glossary-of-terms-what-the-hell-is-a-cppm)                 | Tech jargon decoder for 8 key terms                | 1 min       |
@@ -114,7 +114,7 @@ Nexus eliminates this entirely. When you build a Nexus app:
 - **Just native code** = Your app feels like it was written in machine language by a caffeinated engineer
 - **Binary sizes of 3-20MB** = Your users won't rage-quit because "it's taking too long to download"
 
-It's like the difference between hiring a team of 50 people to build a house versus hiring 5 really good carpenters. Both get you a house. One costs 10x more and takes 6 months longer. 
+It's like the difference between hiring a team of 50 people to build a house versus hiring 5 really good carpenters. Both get you a house. One costs 10x more and takes 6 months longer.
 
 ###  Who It's For (The Honest Use Case Matrix)
 
@@ -132,7 +132,7 @@ It's like the difference between hiring a team of 50 people to build a house ver
 | Pure-Python apps             | **Not ideal**      | Unless you enjoy watching your script compile for 45 minutes |
 | TikTok filter apps           | **No**             | Wrong tool for the job (we don't judge, though)    |
 
-**The takeaway:** If you're building something that needs to be **fast, small, and offline-capable** — especially for desktop or Android — Nexus is your jam. If you need iOS or a marketing site with parallax scrolling, look elsewhere. We're honest about what we're not good at. 
+**The takeaway:** If you're building something that needs to be **fast, small, and offline-capable** — especially for desktop or Android — Nexus is your jam. If you need iOS or a marketing site with parallax scrolling, look elsewhere. We're honest about what we're not good at.
 
 ###  The Mental Model (How to Think About Nexus)
 
@@ -160,9 +160,9 @@ This mental model is all you need to get started. The rest of this README explai
 
 **Nexus isn't for everyone — and that's okay.** We're not trying to be the next Flutter or React Native. We're not trying to replace Electron for web developers who love JavaScript. We're building something different: a **native app generator** for people who care about **performance, size, and efficiency**.
 
-If that's you — if you've ever looked at your Electron app and thought *"this feels like it's running on a toaster"* — then welcome home. You've found your tribe. 
+If that's you — if you've ever looked at your Electron app and thought *"this feels like it's running on a toaster"* — then welcome home. You've found your tribe.
 
-If that's not you, that's totally fine too. We'll still be here when you realize your calculator app doesn't need 500MB of RAM. No judgment. 
+If that's not you, that's totally fine too. We'll still be here when you realize your calculator app doesn't need 500MB of RAM. No judgment.
 
 ---
 
@@ -196,22 +196,22 @@ Think of it like ordering pizza: you pick the toppings (blueprint), the kitchen 
 
 Here's what happens when you click "Generate" in the Nexus client:
 
-**Step 1: You Design the Blueprint**  
-You drag and drop nodes in the Compose Desktop client. Each node represents a piece of your app (a window, a function, a data source). You connect them with arrows that say "this talks to that." It's like drawing a flowchart — except this flowchart actually compiles. 
+**Step 1: You Design the Blueprint**
+You drag and drop nodes in the Compose Desktop client. Each node represents a piece of your app (a window, a function, a data source). You connect them with arrows that say "this talks to that." It's like drawing a flowchart — except this flowchart actually compiles.
 
 <p align="center">
   <img src="docs/assets/examples/mockup-blueprint-editor.svg" alt="Nexus blueprint editor mockup" width="600" />
   <br/><sub>Drag nodes, connect edges — each node becomes a C++ module, each edge becomes a function call.</sub>
 </p>
 
-**Step 2: Nexus Analyzes Your Blueprint**  
-The ProjectGenerator (that's the engine under the hood) reads your blueprint and decides what templates, modules, and dependencies you need. It's like having a senior engineer look at your napkin sketch and say, "Yeah, I can build that — and here's exactly how." 
+**Step 2: Nexus Analyzes Your Blueprint**
+The ProjectGenerator (that's the engine under the hood) reads your blueprint and decides what templates, modules, and dependencies you need. It's like having a senior engineer look at your napkin sketch and say, "Yeah, I can build that — and here's exactly how."
 
-**Step 3: Templates Get Assembled**  
-Nexus pulls from battle-tested templates for desktop (SDL3 + ImGui) or Android (Zig JNI + Chaquopy). It fills in your project name, your window title, your custom nodes. The result? A complete, compilable project in `builds/framework/YourApp/`. 
+**Step 3: Templates Get Assembled**
+Nexus pulls from battle-tested templates for desktop (SDL3 + ImGui) or Android (Zig JNI + Chaquopy). It fills in your project name, your window title, your custom nodes. The result? A complete, compilable project in `builds/framework/YourApp/`.
 
-**Step 4: You Compile and Ship**  
-Run one command. Get a binary. Ship it. Your app starts in 170ms, uses 42MB of RAM, and fits in a 15MB file. Meanwhile, the Electron app next door is still loading its 200th `node_module`. 
+**Step 4: You Compile and Ship**
+Run one command. Get a binary. Ship it. Your app starts in 170ms, uses 42MB of RAM, and fits in a 15MB file. Meanwhile, the Electron app next door is still loading its 200th `node_module`.
 
 ###  The Client Screens (Your Control Center)
 
@@ -222,35 +222,35 @@ The Nexus client isn't just a blueprint editor — it's your entire development 
   <br/><sub>The Flamingo Loading Screen — because even build tools deserve personality.</sub>
 </p>
 
-**The Loading Screen** — Yes, that's a flamingo. Don't ask why. Just enjoy the whimsy while your project loads. 
+**The Loading Screen** — Yes, that's a flamingo. Don't ask why. Just enjoy the whimsy while your project loads.
 
 <p align="center">
   <img src="docs/assets/examples/mockup-generate-project.svg" alt="Nexus generate project screen" width="600" />
   <br/><sub>Choose Desktop or Android, type a project name, and hit Generate. Configuration in seconds.</sub>
 </p>
 
-**The Generate Screen** — Pick your template (desktop or Android), name your project, and click Generate. That's it. No configuration files. No JSON schemas. No "wait, which version of Node am I supposed to use?" 
+**The Generate Screen** — Pick your template (desktop or Android), name your project, and click Generate. That's it. No configuration files. No JSON schemas. No "wait, which version of Node am I supposed to use?"
 
 <p align="center">
   <img src="docs/assets/examples/mockup-flows-editor.svg" alt="Nexus flows editor mockup" width="600" />
   <br/><sub>Visual flow designer: wire event-driven automations without writing a single config file.</sub>
 </p>
 
-**The Flows Editor** — Design automations visually. Connect nodes that react to events. It's like n8n, but it runs inside your native app — no server, no cloud, no monthly fee. 
+**The Flows Editor** — Design automations visually. Connect nodes that react to events. It's like n8n, but it runs inside your native app — no server, no cloud, no monthly fee.
 
 <p align="center">
   <img src="docs/assets/examples/mockup-debugger-v102.svg" alt="Nexus debugger mockup" width="600" />
   <br/><sub>Step-through debugging with variable inspection — no external IDE required.</sub>
 </p>
 
-**The Debugger** — Step through your app's execution, inspect variables, watch data flow. It's like having X-ray vision for your code. Except it actually works. 
+**The Debugger** — Step through your app's execution, inspect variables, watch data flow. It's like having X-ray vision for your code. Except it actually works.
 
 <p align="center">
   <img src="docs/assets/examples/mockup-test-runner.svg" alt="Nexus test runner mockup" width="600" />
   <br/><sub>Automated test execution with real-time pass/fail reporting.</sub>
 </p>
 
-**The Test Runner** — Run automated tests, see results in real-time, catch bugs before your users do. Because "it works on my machine" isn't a deployment strategy. 
+**The Test Runner** — Run automated tests, see results in real-time, catch bugs before your users do. Because "it works on my machine" isn't a deployment strategy.
 
 ###  Blueprint vs. n8n vs. Langflow (The Family Tree)
 
@@ -265,7 +265,7 @@ People often ask: "Is Nexus like Langflow? Or n8n?" Short answer: **No.** Longer
 - **n8n** automates web services (great for DevOps folks connecting APIs)
 - **Nexus Blueprint** designs *actual native apps* (this is what you need if you're building software people will use)
 
-**Key insight:** Your Nexus blueprint is **not** a workflow. It's the *skeleton* of your app. The edges connecting nodes? That's you saying: *"Function A should talk to Function B."* Nexus translates that into C++ function calls that run at 1.2 GHz. 
+**Key insight:** Your Nexus blueprint is **not** a workflow. It's the *skeleton* of your app. The edges connecting nodes? That's you saying: *"Function A should talk to Function B."* Nexus translates that into C++ function calls that run at 1.2 GHz.
 
 ###  But Here's the Thing — You Don't Need to Understand All This
 
@@ -277,11 +277,11 @@ You just need to:
 3. Click "Generate"
 4. Compile
 
-That's it. That's the whole workflow. The architecture diagram above? It's there for the curious — the people who want to know *how* the sausage gets made. But you? You just need to enjoy the sausage. 
+That's it. That's the whole workflow. The architecture diagram above? It's there for the curious — the people who want to know *how* the sausage gets made. But you? You just need to enjoy the sausage.
 
-**The one-liner:** Nexus turns visual blueprints into native binaries. You design the *what*. Nexus handles the *how*. 
+**The one-liner:** Nexus turns visual blueprints into native binaries. You design the *what*. Nexus handles the *how*.
 
-Ready to try it yourself? The next section walks you through five commands that take you from zero to a running native app. No PhD required. 
+Ready to try it yourself? The next section walks you through five commands that take you from zero to a running native app. No PhD required.
 
 ---
 
@@ -345,9 +345,9 @@ call misc\client-setup\env.bat
 ```
 
 **Why you need this:**
-Gradle won't compile without this step. It's like trying to bake a cake without preheating the oven. The `build_client.sh` script handles all the setup — Kotlin compilation, template packaging, configuration validation. You just sit back and watch the terminal scroll. 
+Gradle won't compile without this step. It's like trying to bake a cake without preheating the oven. The `build_client.sh` script handles all the setup — Kotlin compilation, template packaging, configuration validation. You just sit back and watch the terminal scroll.
 
-**Pro tip:** If you're on a slow machine, grab a coffee. If you're on a fast machine, grab a coffee anyway. You've earned it. 
+**Pro tip:** If you're on a slow machine, grab a coffee. If you're on a fast machine, grab a coffee anyway. You've earned it.
 
 ###  Step 3: Launch the GUI (Optional, But Fun)
 
@@ -389,7 +389,7 @@ This is your command center. From here, you can:
 - Sets up the build system (Zig for cross-platform, CMake as fallback)
 - Creates a compilable, runnable project
 
-**The result?** A folder with everything you need. No "npm install" that takes 45 minutes. No "wait, which version of Node?" confusion. Just a clean, compilable project. 
+**The result?** A folder with everything you need. No "npm install" that takes 45 minutes. No "wait, which version of Node?" confusion. Just a clean, compilable project.
 
 ###  Step 5: Build the Binary (Where the Magic Happens)
 
@@ -416,9 +416,9 @@ cd builds/framework/MyApp && ./build_app.sh
 ./MyApp
 ```
 
-That's the whole workflow. If you can type five commands, you can build a native app. Welcome to the future. 
+That's the whole workflow. If you can type five commands, you can build a native app. Welcome to the future.
 
-But which template should you pick? Desktop or Android? The next section breaks down exactly what each template gives you — and when to use which. 
+But which template should you pick? Desktop or Android? The next section breaks down exactly what each template gives you — and when to use which.
 
 ---
 
@@ -509,10 +509,10 @@ Here's what happens when you run `./build_app.sh`:
 
 Python works differently on desktop vs. Android — and that's okay:
 
-- **Desktop:** pybind11 bridges C++ and Python directly. You get full Python 3 with all its libraries. Want NumPy? Go for it. Want TensorFlow? Be our guest. 
-- **Android:** Chaquopy provides a managed Python runtime. It's more constrained (Android's security model), but still powerful enough for AI/ML inference, data processing, and scripting. 
+- **Desktop:** pybind11 bridges C++ and Python directly. You get full Python 3 with all its libraries. Want NumPy? Go for it. Want TensorFlow? Be our guest.
+- **Android:** Chaquopy provides a managed Python runtime. It's more constrained (Android's security model), but still powerful enough for AI/ML inference, data processing, and scripting.
 
-**The key difference:** Desktop Python is "full power, no restrictions." Android Python is "full power, but within Android's sandbox." Both are useful — they just serve different purposes. 
+**The key difference:** Desktop Python is "full power, no restrictions." Android Python is "full power, but within Android's sandbox." Both are useful — they just serve different purposes.
 
 ###  Critical Comparison (The Numbers That Matter)
 
@@ -574,9 +574,9 @@ Short answer: **Existing ecosystem.** Longer answer: Both are excellent. Nexus c
 | **Memory safety**        | Manual       | Borrow checker        | Trade-off: ecosystem access > safety guarantees   |
 | **Learning curve**       | Moderate     | Steep                 | Existing C++ knowledge across the team            |
 
-**The bottom line:** Both are great. Nexus chose C++ because the entire ecosystem it integrates with was already C++. It's not *better* — it's just *what worked*. If you're starting a new project from scratch, Rust is a fantastic choice. If you're integrating with 5 existing C++ libraries, C++ makes more sense. 
+**The bottom line:** Both are great. Nexus chose C++ because the entire ecosystem it integrates with was already C++. It's not *better* — it's just *what worked*. If you're starting a new project from scratch, Rust is a fantastic choice. If you're integrating with 5 existing C++ libraries, C++ makes more sense.
 
-**No shade to Rust.** Seriously. Rust is amazing. We just happened to build this specific thing with C++. 
+**No shade to Rust.** Seriously. Rust is amazing. We just happened to build this specific thing with C++.
 
 ###  Performance Numbers (No Hype, Just Facts)
 
@@ -587,7 +587,7 @@ Short answer: **Existing ecosystem.** Longer answer: Both are excellent. Nexus c
 | **Idle RAM**          | Hundreds of MB              | **Tens of MB**                       | 10-20x less memory   |
 | **Offline Support**   | Cache gymnastics required   | **Default — works out of the box**   | Zero dependencies    |
 
-**The kicker:** You don't configure any of this. The templates ship **optimized by default** — C++20 modules, Zig allocators, SDL3. You just write your app and get native performance for free. It's like buying a sports car and finding out it comes with free racing lessons. 
+**The kicker:** You don't configure any of this. The templates ship **optimized by default** — C++20 modules, Zig allocators, SDL3. You just write your app and get native performance for free. It's like buying a sports car and finding out it comes with free racing lessons.
 
 ### The Summary (If You Skipped Everything Above)
 
@@ -667,7 +667,7 @@ Nexus has a built-in automation system called **Flows**. Think of it as:
 3. Import into your Nexus project (one CLI command)
 4. Run automatically in the background — **no server, no cloud, no monthly fee**
 
-**The one-liner:** Design flows in Langflow → export JSON → run one CLI command → your native app runs them automatically. **No server. No cloud. No n8n license.** 
+**The one-liner:** Design flows in Langflow → export JSON → run one CLI command → your native app runs them automatically. **No server. No cloud. No n8n license.**
 
 <p align="center">
   <img src="docs/assets/diagrams/langflow-adoption-workflow.svg" alt="Langflow adoption workflow diagram" width="720" />
@@ -681,14 +681,14 @@ Nexus has a built-in automation system called **Flows**. Think of it as:
   <br/><sub>RAG chatbot: document loader → text splitter → vector store → retrieval chain → LLM response — all running locally.</sub>
 </p>
 
-**RAG Chatbot Flow:** Connect your app to a language model. Ask questions about your data. Get answers in real-time. It's like having a personal AI assistant baked into your application. 
+**RAG Chatbot Flow:** Connect your app to a language model. Ask questions about your data. Get answers in real-time. It's like having a personal AI assistant baked into your application.
 
 <p align="center">
   <img src="docs/assets/examples/langflow-agent-tools.svg" alt="Langflow agent tools example" width="600" />
   <br/><sub>Agent toolchain: tool definitions → planner node → executor loop → result aggregation — event-driven and stateless.</sub>
 </p>
 
-**Agent Tools Flow:** Automate data processing. Connect APIs. Build pipelines that react to events. It's like having a team of robots working 24/7 — except they don't need coffee breaks. 
+**Agent Tools Flow:** Automate data processing. Connect APIs. Build pipelines that react to events. It's like having a team of robots working 24/7 — except they don't need coffee breaks.
 
 ###  UI: Dear ImGui (The Library That Powers Unity Editor)
 
@@ -721,17 +721,17 @@ Want to add a custom panel to your app? Write it in Lua:
 local function temperature_panel()
     ui.text("Temperature Sensor")
     ui.separator()
-    
+
     local temp = sensor.read("temperature")
     ui.text(string.format("Current: %.1f°C", temp))
-    
+
     if temp > 30 then
         ui.text_colored("Warning: High temperature!", {1, 0, 0, 1})
     end
 end
 ```
 
-That's it. 10 lines of Lua. You get a fully functional UI panel with real-time data, conditional styling, and zero C++ boilerplate. It's like having a cheat code for UI development. 
+That's it. 10 lines of Lua. You get a fully functional UI panel with real-time data, conditional styling, and zero C++ boilerplate. It's like having a cheat code for UI development.
 
 ### Python + Lua Power (The Dynamic Duo)
 
@@ -755,15 +755,15 @@ lua.push("predictions", predictions)
 -- Lua: Display the predictions in real-time
 local function predictions_panel()
     local preds = lua.get("predictions")
-    
+
     for i, pred in ipairs(preds) do
-        ui.text(string.format("Sensor %d: %s (%.2f%%)", 
+        ui.text(string.format("Sensor %d: %s (%.2f%%)",
             i, pred.label, pred.confidence * 100))
     end
 end
 ```
 
-**The result?** Python handles the heavy ML lifting. Lua handles the real-time UI updates. C++ handles the performance-critical paths. It's like having a team of specialists, each doing what they do best. 
+**The result?** Python handles the heavy ML lifting. Lua handles the real-time UI updates. C++ handles the performance-critical paths. It's like having a team of specialists, each doing what they do best.
 
 ###  The TL;DR for Flows & UI
 
@@ -890,7 +890,7 @@ misc/jenkins/Jenkinsfile
 
 ###  The Bottom Line
 
-**Use Nexus for free. Build cool apps. Credit us.** If you're making money from the *framework itself* or *revenue-producing generated apps*, get permission from Túlio Horta ([@tuliofh01](https://github.com/tuliofh01)). That's it. No hidden fees. No "gotcha" clauses. Just honest, straightforward licensing. 
+**Use Nexus for free. Build cool apps. Credit us.** If you're making money from the *framework itself* or *revenue-producing generated apps*, get permission from Túlio Horta ([@tuliofh01](https://github.com/tuliofh01)). That's it. No hidden fees. No "gotcha" clauses. Just honest, straightforward licensing.
 
 Now let's talk numbers. Because "it's faster" isn't a benchmark — it's a vibe. Here are the real measurements.
 
@@ -942,11 +942,11 @@ Imagine you're building a field tablet app for industrial inspections. Your engi
 - Use it offline (no WiFi in remote locations)
 - Store hundreds of inspection reports (memory efficiency)
 
-A Nexus app delivers all of this. An Electron app would die in 2 hours and eat half the device's storage. 
+A Nexus app delivers all of this. An Electron app would die in 2 hours and eat half the device's storage.
 
 ###  The Punchline
 
-We're not just "faster" — we're **orders of magnitude more efficient**. If your current app feels sluggish, Nexus might be the solution you've been waiting for. 
+We're not just "faster" — we're **orders of magnitude more efficient**. If your current app feels sluggish, Nexus might be the solution you've been waiting for.
 
 But how does Nexus stack up against the competition? Let's compare apples to apples — and some things that aren't apples at all.
 
@@ -997,7 +997,7 @@ We're not for everyone. Here's when you should look elsewhere:
 | **Team knows only JavaScript**   | Electron or React Native   | Learning curve is real (but worth it)              |
 | **Rapid prototype in 1 day**     | AppGyver or Bubble         | Nexus requires some C++/Lua knowledge              |
 
-**The takeaway:** Nexus excels at **performance-critical, offline-first native apps**. If that's not your use case, we'll be here when you realize your Electron calculator is using 500MB of [RAM](https://en.wikipedia.org/wiki/Random-access_memory). No judgment. 
+**The takeaway:** Nexus excels at **performance-critical, offline-first native apps**. If that's not your use case, we'll be here when you realize your Electron calculator is using 500MB of [RAM](https://en.wikipedia.org/wiki/Random-access_memory). No judgment.
 
 Still curious? Want to see all the diagrams in one place? The next section is a deep dive for people who want to understand every detail.
 
@@ -1057,17 +1057,21 @@ All architecture diagrams, gathered in one place because hunting through folders
 
 ```
 # :app (Compose Desktop client — where the UI lives)
-nexus.opensource
+com.nexus.framework
 ├── App.kt                          # Entry point + screen navigation
-└── framework/
-    ├── controller/                 # Business logic (what happens when buttons get clicked)
-    ├── model/                      # Data structures (what your app remembers)
-    └── view/                       # Compose UI screens (what your users see)
+├── controller/                     # Business logic (what happens when buttons get clicked)
+├── model/                          # Data structures (what your app remembers)
+├── view/                           # Compose UI screens (what your users see)
+└── util/                           # Desktop helpers (native file dialogs, etc.)
 
 # :core (the brain — lives separately because it's smarter than :app)
-nexus.opensource.framework.core
+com.nexus.framework.core
 ├── model/                          # Blueprint schemas, branding, config contracts
 └── service/                        # The generation engine that turns graphs into code
+
+# :cli
+com.nexus.framework.cli
+└── FrameworkCli.kt                 # Headless generate / Langflow import
 ```
 
 For the full directory tree (every folder, every file), see [Project Structure](#-project-structure-why-its-organized-like-a-military-operation).
@@ -1081,6 +1085,17 @@ For the full directory tree (every folder, every file), see [Project Structure](
 - **Langflow → flows** — CLI maps Langflow export JSON to `flows.json` stubs (not blueprint generation)
 - **UML activity diagrams** — full documentation of flows under `docs/assets/diagrams/`
 - **Nexus License (Nexus-1.0)** — clarified terms, no legalese
+
+###  What's in 1.0.3 (Build hygiene + client UX)
+
+Patches in this release focus on restoring a sane build and fixing the Generate Project naming UX:
+
+- **Package rename** — all first-party Kotlin now lives under `com.nexus.framework.*` (app / core / cli)
+- **Per-module Gradle** — root `build.gradle.kts` only declares plugins; `:core`, `:cli`, and `:app` each have their own build script; entry points are `com.nexus.framework.AppKt` and `com.nexus.framework.cli.FrameworkCliKt`
+- **Source layout restored** — `:core` and `:cli` sources sit at the repo root again (no nesting under `app/src`)
+- **Generate Project UI** — empty name field with a floating label + clearing placeholder; generate validates blank names and surfaces `Generated: …` status correctly; dark-theme text-field colors hardened on Generate / Blueprint / Debugger
+- **IntelliJ kit** — shareable `intellij/` folder (code style, inspections, Actions on Save notes, live templates, run configs, `AGENTS.md` + wisdom docs) via `./intellij/apply-to-idea.sh`
+- **Repo tidy** — dropped legacy `nexus.opensource` paths from docs/diagrams, ignored leftover nested junk under `app/.../framework/framework/` (remove with `sudo rm -rf` if still present)
 
 Now that you've seen the internals, let's zoom out. Where does everything live in the repository? This section maps the codebase so you always know where to look.
 
@@ -1102,11 +1117,14 @@ Nexus-Framework/
 │   └── src/main/kotlin/.../cli/
 │       └── FrameworkCli.kt        # CLI commands
 ├── app/                           # Compose Desktop client (Kotlin)
-│   └── src/main/kotlin/nexus/opensource/
+│   ├── build.gradle.kts
+│   └── src/main/kotlin/com/nexus/framework/
 │       ├── App.kt                 # Entry point
+│       ├── controller/            # Business logic
 │       ├── model/                 # Data models
-│       ├── view/                  # UI screens
-│       └── controller/            # Business logic
+│       ├── util/                  # Desktop helpers
+│       └── view/                  # UI screens
+├── intellij/                      # Shareable IntelliJ IDEA project kit + wisdom
 ├── template/                      # Generated app templates
 │   ├── desktop-app/               # SDL3 + ImGui + C++ + Lua + Python
 │   ├── android-app/               # Zig JNI + Chaquopy
@@ -1135,22 +1153,22 @@ Nexus-Framework/
 
 | Module   | Package                           | Depends On   | What It Does                                    |
 | :------- | :-------------------------------- | :----------- | :---------------------------------------------- |
-| `:core`    | `nexus.opensource.framework.core`   | Nothing      | Generation engine, config schemas, validators   |
-| `:cli`     | `nexus.opensource.framework.cli`    | `:core`        | Headless `generate` command, Langflow import      |
-| `:app`     | `nexus.opensource`                  | `:core`        | Compose Desktop client with [MVC](https://en.wikipedia.org/wiki/Model–view–controller) architecture    |
+| `:core`    | `com.nexus.framework.core`   | Nothing      | Generation engine, config schemas, validators   |
+| `:cli`     | `com.nexus.framework.cli`    | `:core`        | Headless `generate` command, Langflow import      |
+| `:app`     | `com.nexus.framework`                  | `:core`        | Compose Desktop client with [MVC](https://en.wikipedia.org/wiki/Model–view–controller) architecture    |
 
-**Key insight:** `:core` and `:cli` live at the repo root (not nested under `app/`). This was a deliberate restructuring in 1.0.2 to simplify the build graph. If you see old docs referencing `misc/` paths, they're outdated.
+**Key insight:** `:core` and `:cli` live at the repo root (not nested under `app/`). The 1.0.3 package rename keeps that layout and puts all Kotlin under `com.nexus.framework.*`. If you see old docs referencing `nexus.opensource` or modules nested under `app/src`, they're outdated.
 
 ###  Where to Edit (The Cheat Sheet)
 
 | Change                | Location                                           |
 | :-------------------- | :------------------------------------------------- |
-| Generation pipeline   | `core/.../service/ProjectGenerator.kt`               |
-| CLI commands          | `cli/.../FrameworkCli.kt`                            |
+| Generation pipeline   | `core/src/main/kotlin/com/nexus/framework/core/.../service/ProjectGenerator.kt`               |
+| CLI commands          | `cli/src/main/kotlin/com/nexus/framework/cli/.../FrameworkCli.kt`                            |
 | Compose UI            | `app/.../view/`, `app/.../controller/`                 |
 | Desktop template      | `template/desktop-app/`                              |
 | Android template      | `template/android-app/`                              |
-| Config schema         | `core/model/NexusConfigSchema.kt`                    |
+| Config schema         | `core/src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
 | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) generation    | `misc/docker/`, `misc/scripts/generate-in-docker.sh`   |
 | Test generation       | `misc/scripts/test-gen/`                             |
 | [Jenkins](https://www.jenkins.io/doc/) [CI/CD](https://stackoverflow.com/questions/tagged/cicd)        | `misc/jenkins/Jenkinsfile`                           |
@@ -1179,16 +1197,16 @@ If you're confused about where something lives:
 
 | You're Looking For                                 | Go Here                                            |
 | :------------------------------------------------- | :------------------------------------------------- |
-| The code that generates your app                   | `core/service/ProjectGenerator.kt`                   |
-| CLI commands for headless generation               | `cli/FrameworkCli.kt`                                |
-| The Compose Desktop UI                             | `app/view/` and `app/controller/`                      |
+| The code that generates your app                   | `core/src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt`                   |
+| CLI commands for headless generation               | `cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt`                                |
+| The Compose Desktop UI                             | `app/src/main/kotlin/com/nexus/framework/view/` and `.../controller/` |
 | Template files for desktop or Android              | `template/desktop-app/` and `template/android-app/`    |
 | The one-shot build script                          | `misc/build_client.sh`                               |
 | Architecture diagrams (23 of them)                 | `docs/assets/diagrams/`                              |
 | UI mockups for the client                          | `docs/assets/examples/`                              |
-| The config schema (what `nxs_config.json` accepts)   | `core/model/NexusConfigSchema.kt`                    |
+| The config schema (what `nxs_config.json` accepts)   | `core/src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
 | The Zig JNI bridge (what replaced 7 C++ files)     | `template/android-app/zig-services/jni/python_bridge.zig` |
-| Langflow import logic                              | `cli/FrameworkCli.kt` (search for `langflow`)          |
+| Langflow import logic                              | `cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt` (search for `langflow`)          |
 
 For a complete "Change → File" mapping, see [Project Structure](#-project-structure-why-its-organized-like-a-military-operation).
 
@@ -1246,11 +1264,11 @@ Still confused about some terms? The glossary below decodes the jargon so you ca
 | `.zig`          | [Zig](https://ziglang.org/documentation/master/) source file      | `template/*/zig-services/`      |
 | `.lua`          | Lua script            | `template/*/scripts/`           |
 | `.json`         | Config or blueprint   | `nxs_config.json`, `flows.json`   |
-| `.gradle.kts`   | Kotlin build script   | Root, `app/`, `core/`, `cli/`       |
+| `.gradle.kts`   | Kotlin build script   | Root, `app/`, `core/src/main/kotlin/com/nexus/framework/core/`, `cli/src/main/kotlin/com/nexus/framework/cli/`       |
 
 ###  Pro Tip
 
-If you see something ending in `cppm`, it's a C++20 module. If you see `zig` in a filename, it's probably the secret sauce. If you see `flows.json`, it's automation time. If you see `.gradle.kts`, that's [Kotlin](https://kotlinlang.org/docs/) telling [Gradle](https://stackoverflow.com/questions/tagged/gradle) what to do. 
+If you see something ending in `cppm`, it's a C++20 module. If you see `zig` in a filename, it's probably the secret sauce. If you see `flows.json`, it's automation time. If you see `.gradle.kts`, that's [Kotlin](https://kotlinlang.org/docs/) telling [Gradle](https://stackoverflow.com/questions/tagged/gradle) what to do.
 
 You've read the docs. You've seen the numbers. You know the terms. Now it's time to decide: is Nexus right for you?
 
@@ -1292,7 +1310,7 @@ It's for **the engineers who measure startup time in milliseconds**.
 It's for **the developers who open source projects just to see how they organize code**.
 It's for **the builders who want their apps to feel like they were written for the hardware, not wrapped in a browser**.
 
-**Bottom line:** If you're building **industrial tools, scientific viz, [IoT](https://en.wikipedia.org/wiki/Internet_of_things) interfaces, or anything where performance matters**, Nexus is a serious contender. It's not a toy — it's a **production-grade native app generator** that ships real apps used by real people. 
+**Bottom line:** If you're building **industrial tools, scientific viz, [IoT](https://en.wikipedia.org/wiki/Internet_of_things) interfaces, or anything where performance matters**, Nexus is a serious contender. It's not a toy — it's a **production-grade native app generator** that ships real apps used by real people.
 
 ###  Your Challenge
 
@@ -1321,7 +1339,7 @@ cd builds/framework/TestApp && ./build_app.sh
 ./TestApp
 ```
 
-That's it. That's the magic. 
+That's it. That's the magic.
 
 ###  The Final Words
 
@@ -1337,13 +1355,13 @@ No more waiting for your app to open while you check email twice.
 
 **It's just fast. It's just small. It's just... native.**
 
-And yes, it's as cool as it sounds. 
+And yes, it's as cool as it sounds.
 
-*Now go build something amazing.*  
+*Now go build something amazing.*
 
----  
-*The Nexus Framework Team*  
-*Built with [The Nexus Framework](https://github.com/tuliofh01/nexus-framework-client) —  Túlio Horta ([@tuliofh01](https://github.com/tuliofh01))*  
+---
+*The Nexus Framework Team*
+*Built with [The Nexus Framework](https://github.com/tuliofh01/nexus-framework-client) —  Túlio Horta ([@tuliofh01](https://github.com/tuliofh01))*
 
 ---
 
