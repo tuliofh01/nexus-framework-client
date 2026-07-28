@@ -34,7 +34,7 @@ class FlowsEditorController(
         private set
     var appType: AppType by mutableStateOf(AppType.DESKTOP)
         private set
-    var projectName: String by mutableStateOf("MyApp")
+    var projectName: String by mutableStateOf("")
         private set
     var flowsEnabled: Boolean by mutableStateOf(true)
     var statusMessage: String by mutableStateOf("")
@@ -65,10 +65,11 @@ class FlowsEditorController(
     fun reloadFromTemplate() {
         val repoRoot = RepoRoot.resolve()
         val generator = ProjectGenerator(repoRoot)
+        val displayName = projectName.ifBlank { "Untitled" }
         val vars = generator.templateVars(
             ProjectSpec(
-                projectName = projectName,
-                outputPath = ProjectGenerator.defaultOutputPath(projectName),
+                projectName = displayName,
+                outputPath = ProjectGenerator.defaultOutputPath(displayName),
                 appType = appType,
             ),
         )

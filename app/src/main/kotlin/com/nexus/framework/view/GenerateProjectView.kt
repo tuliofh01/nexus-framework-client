@@ -157,7 +157,12 @@ fun GenerateProjectScreen(
                         ),
                     )
                     Text(
-                        text = "Stack: SDL3 + ImGui + Lua + Python + TypeScript/XHTML",
+                        text = when (controller.appType) {
+                            AppType.DESKTOP ->
+                                "Stack: SDL3 + ImGui + Lua + Python + TypeScript/XHTML"
+                            AppType.ANDROID ->
+                                "Stack: Zig JNI + Chaquopy Python + Compose-ready Android shell"
+                        },
                         style = MaterialTheme.typography.caption.copy(color = TextSecondary),
                     )
                 }

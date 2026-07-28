@@ -26,6 +26,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -320,7 +321,16 @@ private fun FlowStepRow(
                     label = { Text("target", fontSize = 10.sp) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.caption,
+                    textStyle = MaterialTheme.typography.caption.copy(color = NexusTheme.TextPrimary),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = NexusTheme.TextPrimary,
+                        cursorColor = NexusTheme.AccentCyan,
+                        focusedBorderColor = NexusTheme.AccentCyan,
+                        unfocusedBorderColor = NexusTheme.Divider,
+                        focusedLabelColor = NexusTheme.AccentCyan,
+                        unfocusedLabelColor = NexusTheme.TextSecondary,
+                        backgroundColor = Color.Transparent,
+                    ),
                 )
                 FlowStepType.CONDITION.id -> OutlinedTextField(
                     value = whenField,
@@ -331,7 +341,16 @@ private fun FlowStepRow(
                     label = { Text("whenExpr", fontSize = 10.sp) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.caption,
+                    textStyle = MaterialTheme.typography.caption.copy(color = NexusTheme.TextPrimary),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = NexusTheme.TextPrimary,
+                        cursorColor = NexusTheme.AccentCyan,
+                        focusedBorderColor = NexusTheme.AccentCyan,
+                        unfocusedBorderColor = NexusTheme.Divider,
+                        focusedLabelColor = NexusTheme.AccentCyan,
+                        unfocusedLabelColor = NexusTheme.TextSecondary,
+                        backgroundColor = Color.Transparent,
+                    ),
                 )
                 FlowStepType.DELAY.id -> OutlinedTextField(
                     value = delayField,
@@ -342,7 +361,16 @@ private fun FlowStepRow(
                     label = { Text("ms", fontSize = 10.sp) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.caption,
+                    textStyle = MaterialTheme.typography.caption.copy(color = NexusTheme.TextPrimary),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = NexusTheme.TextPrimary,
+                        cursorColor = NexusTheme.AccentCyan,
+                        focusedBorderColor = NexusTheme.AccentCyan,
+                        unfocusedBorderColor = NexusTheme.Divider,
+                        focusedLabelColor = NexusTheme.AccentCyan,
+                        unfocusedLabelColor = NexusTheme.TextSecondary,
+                        backgroundColor = Color.Transparent,
+                    ),
                 )
                 else -> Text("—", fontSize = 10.sp, color = Color.Gray)
             }

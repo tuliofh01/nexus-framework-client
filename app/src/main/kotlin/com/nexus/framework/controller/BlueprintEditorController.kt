@@ -53,11 +53,12 @@ class BlueprintEditorController(
     var connectionValidator: BlueprintConnectionValidator = AllowAllBlueprintConnections,
     var canvasExtension: BlueprintCanvasExtension = DefaultBlueprintCanvasExtension,
 ) {
-    var blueprint: BlueprintFile by mutableStateOf(BlueprintJson.sampleApp("MyApp", AppType.DESKTOP))
+    var blueprint: BlueprintFile by mutableStateOf(BlueprintJson.sampleApp("Untitled", AppType.DESKTOP))
         private set
     var appType: AppType by mutableStateOf(AppType.DESKTOP)
         private set
-    var projectName: String by mutableStateOf("MyApp")
+    /** Empty until Generate / open / sync provides a real name (avoids stuck "MyApp"). */
+    var projectName: String by mutableStateOf("")
         private set
     var selectedNodeId: String? by mutableStateOf(null)
     var pendingEdgeSourceId: String? by mutableStateOf(null)
@@ -74,15 +75,16 @@ class BlueprintEditorController(
     val sourcePath: Path? get() = loadedFromPath
 
     fun syncContext(projectName: String, appType: AppType) {
+        val displayName = projectName.ifBlank { "Untitled" }
         if (loadedFromPath != null) {
             this.projectName = projectName
             this.appType = appType
-            blueprint = blueprint.copy(name = "$projectName flow")
+            blueprint = blueprint.copy(name = "$displayName flow")
             validate()
             return
         }
         if (this.projectName == projectName && this.appType == appType) {
-            blueprint = blueprint.copy(name = "$projectName flow")
+            blueprint = blueprint.copy(name = "$displayName flow")
             validate()
             return
         }
@@ -94,10 +96,11 @@ class BlueprintEditorController(
     fun reloadFromTemplate() {
         val repoRoot = RepoRoot.resolve()
         val generator = ProjectGenerator(repoRoot)
+        val displayName = projectName.ifBlank { "Untitled" }
         val vars = generator.templateVars(
             ProjectSpec(
-                projectName = projectName,
-                outputPath = ProjectGenerator.defaultOutputPath(projectName),
+                projectName = displayName,
+                outputPath = ProjectGenerator.defaultOutputPath(displayName),
                 appType = appType,
             ),
         )
@@ -105,7 +108,7 @@ class BlueprintEditorController(
             .resolve(appType.templateFolder)
             .resolve(BlueprintJson.FILE_NAME)
         val rawText = Files.readString(templatePath)
-        blueprint = BlueprintJson.readRendered(rawText, vars).copy(name = "$projectName flow")
+        blueprint = BlueprintJson.readRendered(rawText, vars).copy(name = "$displayName flow")
         loadedFromPath = null
         selectedNodeId = null
         pendingEdgeSourceId = null
