@@ -53,7 +53,7 @@ Field order and sizes must be identical in Zig and C++ (both use C-compatible la
 ```
 Kotlin MainActivity
   → AppCore.installPythonBridge(bridge)        // Kotlin fun
-    → JNI: Java_com_nexus_{{pkg}}_AppCore_installPythonBridge  // Zig export
+    → JNI: Java_com_nexus_{{packageName}}_AppCore_installPythonBridge  // Zig export
       → stores JavaVM*, bridge jobject, method IDs in Zig globals
 
 C++ later:
