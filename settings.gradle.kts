@@ -22,7 +22,3 @@ plugins {
 }
 
 rootProject.name = "Framework"
-
-include(":core")
-include(":cli")
-include(":app")

@@ -124,7 +124,7 @@ builds/client/packages/
 # Already covered by builds/**; explicit note for clarity — do not un-ignore project trees.
 
 ### Stale nested junk (root-owned artifacts; sudo rm -rf to purge) ###
-app/src/main/kotlin/com/nexus/framework/framework/
+src/main/kotlin/com/nexus/framework/framework/
 
 ### IntelliJ shareable project kit (source of truth) is tracked under intellij/ ###
 # Keep local .idea/ ignored; apply via intellij/apply-to-idea.sh
