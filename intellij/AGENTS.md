@@ -63,7 +63,7 @@ JDK toolchain: **26**. Wrapper: Gradle **9.6.x**. Catalog: `gradle/libs.versions
 - Generation / validation / Langflow mapping belongs in `core/` services.
 - Templates for generated apps: `template/desktop-app`, `template/android-app`, `template/shared`.
 - Output of generation: `builds/framework/<name>/` (gitignored contents).
-- Client distributable: `builds/client/` via `deployToBuildsClient`.
+- Client distributable: `builds/clients/NexusFrameworkClient-<ver>/` via `./build_client.sh` / `deployToBuildsClient`.
 
 ## Coding preferences
 

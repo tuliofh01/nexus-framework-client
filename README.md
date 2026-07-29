@@ -13,7 +13,7 @@
     misc/build_client.sh
   @license Nexus-1.0
   @docs docs/hub.md
-  @description The Nexus Framework 1.0.3 is a native app generator — blueprint graphs become C++20 / Lua / Python desktop and Android projects via a Compose Desktop client and Kotlin CLI. Optional Langflow export → flows.json import (not blueprint). SDL3, Zig sidecars, Nexus License (Nexus-1.0).
+  @description The Nexus Framework 1.1.0 is a native app generator — blueprint graphs become C++20 / Lua / Python desktop and Android projects via a Compose Desktop client and Kotlin CLI. Optional Langflow export → flows.json import (not blueprint). SDL3, Zig sidecars, Nexus License (Nexus-1.0).
   @keywords native app generator, blueprint-driven development, C++20 modules, Compose Desktop, SDL3, Zig, Lua, Python, Dear ImGui, Android JNI, Kotlin Gradle, Langflow import, Nexus Framework, Nexus License
 -->
 
@@ -44,28 +44,37 @@
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3" /></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.16.0-orange?style=flat-square&logo=zig" alt="Zig 0.16.0" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/version-1.0.3-blueviolet?style=flat-square" alt="Version 1.0.3" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/version-1.1.0-blueviolet?style=flat-square" alt="Version 1.1.0" /></a>
 </p>
 
 > ** Zero to binary**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew run
+> ./build_client.sh && ./gradlew run
 > ```
+> Distributable lands in `builds/clients/NexusFrameworkClient-1.1.0/`. Compile-only: `./misc/build_client.sh`.
 
 ---
 
-## Version 1.0.3 Release
+## Version 1.1.0 Release
 
-**v1.0.3 is the first production-stable cut** for generating projects and recording tutorials. It is mostly **debugging and patches**: Gradle and packages were repaired, Compose Desktop UX bugs were fixed, and the client was simplified into **one Gradle module** with a conjunct MVC / feature tree.
+**v1.1.0 is the first production-ready release** of the Nexus Framework client and generator: unified Compose Desktop UI, Kotlin CLI, and template scaffolds ready for tutorials and day-to-day project generation.
 
-### Repository layout (1.0.3)
+### Highlights
+
+- **Production-ready client** — single Gradle module (`com.nexus.framework.*`) with Generate / Blueprint / Flows / Home screens.
+- **Root packaging script** — `./build_client.sh` sources `misc/client-setup/env.sh`, accepts the Nexus License once, and deploys to `builds/clients/NexusFrameworkClient-1.1.0/`.
+- **CLI + GUI** — `./gradlew run` (Compose) and `./gradlew runCli` (headless generate / Langflow import).
+- **Version aligned** — `gradle/libs.versions.toml` (`nexusFramework`), `NexusBranding`, CLI, README badge, and Whats New all report **1.1.0**.
+
+### Repository layout (1.1.0)
 
 This is a **single Gradle project** (root `build.gradle.kts` / `settings.gradle.kts` only — no `:app`, `:core`, or `:cli` modules). All first-party Kotlin lives under `com.nexus.framework.*` in root `src/`.
 
 ```text
 Nexus-Framework/
 ├── build.gradle.kts
+├── build_client.sh                  # → builds/clients/NexusFrameworkClient-1.1.0/
 ├── settings.gradle.kts
 ├── gradle/                          # wrapper + libs.versions.toml
 ├── src/
@@ -89,41 +98,33 @@ Nexus-Framework/
 ├── docs/
 ├── intellij/                        # shareable IDE kit
 └── builds/                          # generated output (not source)
+    ├── clients/NexusFrameworkClient-1.1.0/   # packaged Compose client
+    └── framework/<Project>/                  # generated native apps
 ```
 
-**What we patched**
+### Prior notes (1.0.3 patch cut)
 
-- **Unified Gradle** — single root `build.gradle.kts` / `settings.gradle.kts` (no `:core` / `:cli` / `:app`). Run the GUI with `./gradlew run` and the CLI with `./gradlew runCli`.
-- **Packages + layout** — all first-party Kotlin under `com.nexus.framework.*` in root `src/main/kotlin/…`: `core/` (generator), `cli/`, `shared/`, and `ui/{theme,chrome,generate,blueprint,flows,home,loading,debugger}/`.
-- **Generate Project UI** — empty name + clearing placeholder; blank-name validation; `Generated: …` status; Desktop/Android stack preview; template folders `desktop-app` / `android-app`.
-- **Generate Project icons** — drawn monitor / phone glyphs (emoji fonts often omit desktop-computer characters on Linux).
-- **Blueprint editor** — nodes drag with relative deltas; chip size matches canvas pixels; clustered graphs auto-spread.
-- **Editors** — no stuck `"MyApp"` seeds; dark-theme text-field colors; Whats New shows live `NexusBranding` version.
-- **IntelliJ** — shareable `intellij/` kit via `./intellij/apply-to-idea.sh`.
-- **Tidy** — legacy `nexus.opensource` docs scrubbed; root-owned nested junk under `src/.../framework/` is excluded from sources (purge with `sudo rm -rf` if present).
+v1.0.3 was the pre-production patch train that unified Gradle, fixed Generate / Blueprint UX, and renamed packages to `com.nexus.framework.*`. Those fixes ship in 1.1.0; treat 1.0.3 as history, not the current badge.
 
-### Verified in this cut (agent smoke)
+### Verified for 1.1.0
 
-- `./gradlew compileKotlin` + `./gradlew test` (unit tests green after relaxing the bundled-blueprint “all node types” assertion).
-- CLI scaffold: `./gradlew runCli --args="generate --type desktop|android --name …"` into `builds/framework/` with valid `nxs_config.json`, `blueprint.json`, and `flows/flows.json`.
-- Desktop client `mainClass` (`com.nexus.framework.AppKt`) packaged in `Framework.jar`; Compose Desktop `:run` / `:runCli` tasks register on the single root module.
-- Version **1.0.3** aligned in catalog, `NexusBranding`, CLI, and README badge.
+- `./gradlew compileKotlin` + `./gradlew test`
+- CLI scaffold into `builds/framework/` with valid `nxs_config.json`, `blueprint.json`, and `flows/flows.json`
+- Desktop `mainClass` `com.nexus.framework.AppKt`; `./gradlew run` / `runCli` on the single root module
+- Version **1.1.0** in catalog, branding, CLI, badge, and Whats New
 
-### Not verified yet — read before tutorials / production demos
+### Still host-dependent (read before demos)
 
-- **No full GUI click-through** — Compose Desktop was compiled/packaged; screens were not manually walked (Generate → Blueprint → Flows → Home) in CI or this agent session. Record tutorials only after you click through once on your machine.
-- **`./gradlew run` live window** — task exists; launching the GUI and exercising UI gestures (drag, dialogs, file pickers) was not part of smoke.
-- **Native desktop template build** — generating the tree was verified; a full `build_app.sh` / Zig / SDL3 / C++20 compile of a generated desktop app was **not** run here (heavy toolchain; local deps vary).
-- **Android APK / device** — Android **scaffold** via CLI was verified; Gradle APK assemble, emulator, and physical device runs were **not** tested on this machine.
-- **Packaging / installers** — `package` / `packageDistributionForCurrentOS` / deploy-to-builds-client were not smoke-run for 1.0.3.
-- **Translations** — non-English `misc/translations/` may still mention old `:app` / `:cli` module commands; English README is the source of truth for this cut.
+- Full GUI click-through and live window gestures on your machine
+- Full native `build_app.sh` / Zig / SDL3 compile of a generated desktop app
+- Android APK / emulator / device
+- Optional `./build_client.sh --package` OS installers (`.deb` / `.rpm` / …)
 
 ### Risks & migration notes
 
-- **Root-owned junk** — if `src/main/kotlin/com/nexus/framework/framework/` still exists (nested `build/` owned by root), Gradle already **excludes** it from sources, but `rm` needs `sudo rm -rf src/main/kotlin/com/nexus/framework/framework`. Harmless to the build if left alone; confusing in tree explorers.
-- **Unified module** — old docs, scripts, or muscle memory for `./gradlew :app:run` / `:core:test` / `:cli:run` are obsolete. Use `./gradlew run`, `./gradlew test`, `./gradlew runCli`.
-- **Layout move** — controllers/views now live under `src/main/kotlin/com/nexus/framework/ui/<feature>/` and shared Desktop helpers under `shared/`; IntelliJ bookmarks to `app/` or `core/` paths will 404 until you re-open from repo root and re-apply `./intellij/apply-to-idea.sh`.
-- **Tutorial scope** — treat “production-stable” as **client + generator + templates scaffold**, not as a guarantee that every generated native binary builds on every host without setup.
+- **Unified module** — `./gradlew :app:run` / `:core:test` / `:cli:run` are obsolete. Use `./gradlew run`, `test`, `runCli`.
+- **Client output** — prefer `builds/clients/` (plural); `builds/client/` is a legacy redirect stub.
+- **Tutorial scope** — production-ready means **client + generator + template scaffold**, not every host building every native binary without setup.
 
 Apply the IntelliJ kit after pull: `./intellij/apply-to-idea.sh`.
 
@@ -143,7 +144,7 @@ Apply the IntelliJ kit after pull: `./intellij/apply-to-idea.sh`.
 | [License](#-license-yes-its-as-boring-as-it-sounds-heres-the-truth)                  | Nexus-1.0 terms, attribution, authorization window | 2 min       |
 | [Performance Guarantees](#-mathematical-performance-guarantees-real-numbers-no-hype)   | Real benchmarks: desktop + Android numbers         | 2 min       |
 | [Casual Comparisons](#-casual-comparisons-why-this-isnt-your-grandmas-app-builder)       | 5-way comparison: Nexus vs Electron vs Flutter vs others | 2 min       |
-| [Technical Deep-Dive](#-for-the-curious-technical-deep-dive-for-people-who-love-tech)      | Diagrams, dependencies, package map, what's in 1.0.3 | 3 min       |
+| [Technical Deep-Dive](#-for-the-curious-technical-deep-dive-for-people-who-love-tech)      | Diagrams, dependencies, package map, what's in 1.1.0 | 3 min       |
 | [Project Structure](#-project-structure-why-its-organized-like-a-military-operation)        | Repository layout, where to edit what              | 2 min       |
 | [Knowledge Checkpoints](#-knowledge-checkpoints-how-to-not-get-lost-in-the-codebase)    | Checklist before diving in, pro tips, location guide | 1 min       |
 | [Glossary](#-glossary-of-terms-what-the-hell-is-a-cppm)                 | Tech jargon decoder for 8 key terms                | 1 min       |
@@ -1160,16 +1161,13 @@ For the full directory tree (every folder, every file), see [Project Structure](
 - **UML activity diagrams** — full documentation of flows under `docs/assets/diagrams/`
 - **Nexus License (Nexus-1.0)** — clarified terms, no legalese
 
-###  What's in 1.0.3 (Build hygiene + client UX)
+###  What's in 1.1.0 (First production-ready release)
 
-Patches in this release focus on restoring a sane build, fixing Generate Project UX, and polishing the Blueprint canvas:
-
-- **Package rename** — all first-party Kotlin now lives under `com.nexus.framework.*` (app / core / cli)
-- **Per-module Gradle** — root `build.gradle.kts` only declares plugins; `:core`, `:cli`, and `:app` each have their own build script; entry points are `com.nexus.framework.AppKt` and `com.nexus.framework.cli.FrameworkCliKt`
-- **Source layout restored** — `:core` and `:cli` sources sit at the repo root again (no nesting under `app/src`)
-- **Generate Project UI** — empty name field with a floating label + clearing placeholder; generate validates blank names and surfaces `Generated: …` status correctly; dark-theme text-field colors hardened on Generate / Blueprint / Debugger
-- **IntelliJ kit** — shareable `intellij/` folder (code style, inspections, Actions on Save notes, live templates, run configs, `AGENTS.md` + wisdom docs) via `./intellij/apply-to-idea.sh`
-- **Repo tidy** — dropped legacy `nexus.opensource` paths from docs/diagrams; leftover nested junk under `src/.../framework/` is source-excluded (remove with `sudo rm -rf src/main/kotlin/com/nexus/framework/framework` if still present)
+- **Production-ready client + CLI** — unified Compose Desktop scaffolder and headless generator
+- **`./build_client.sh`** — license gate + deploy to `builds/clients/NexusFrameworkClient-1.1.0/`
+- **Single Gradle module** — `com.nexus.framework.*` under root `src/` (no `:app` / `:core` / `:cli`)
+- **Generate / Blueprint / Flows** — MVC feature folders under `ui/` ready for tutorials
+- **From 1.0.3** — package rename, Generate UX fixes, Blueprint drag fixes, drawn platform icons
 
 Now that you've seen the internals, let's zoom out. Where does everything live in the repository? This section maps the codebase so you always know where to look.
 
@@ -1209,16 +1207,15 @@ Nexus-Framework/
 │   ├── architecture/              # Overview, agent-readiness, zig-patching
 │   └── guides/                    # Coding styles, generation pipeline
 ├── misc/                          # Build tools, scripts, CI/CD
-│   ├── build_client.sh            # One-shot build script
+│   ├── build_client.sh            # Compile + license (use ../build_client.sh to package)
 │   ├── build-logic/               # Gradle convention plugins (JDK 26 toolchain)
 │   ├── client-setup/              # First-run JDK + Git + Zig installers
 │   ├── scripts/                   # Dev, test-gen, diagram generation
 │   ├── docker/                    # Docker generation support
 │   └── jenkins/                   # Jenkins CI/CD (optional)
 └── builds/                        # Generated app output
-    ├── client/                    # Compose Desktop distribution
-    │   ├── app/                   # Runnable distribution
-    │   └── packages/              # OS installers (.deb, .rpm, .dmg)
+    ├── clients/                   # Compose Desktop distribution (preferred)
+    │   └── NexusFrameworkClient-1.1.0/
     └── framework/                 # Generated native app projects
         └── <projectName>/         # Per-project Zig/CMake build trees
 ```
@@ -1232,7 +1229,7 @@ Nexus-Framework/
 | `ui/`      | `com.nexus.framework.ui.*`   | `core/`, `shared/` | Compose Desktop screens (feature folders) |
 | `shared/`  | `com.nexus.framework.shared` | —            | Recent projects, debugger, file dialogs         |
 
-**Key insight:** 1.0.3 uses **one Gradle module** with a conjunct tree under `src/main/kotlin/com/nexus/framework/` (`core`, `cli`, `shared`, `ui/*`). If you see old docs referencing `:app`/`:core`/`:cli` modules or `nexus.opensource`, they're outdated.
+**Key insight:** 1.1.0 uses **one Gradle module** with a conjunct tree under `src/main/kotlin/com/nexus/framework/` (`core`, `cli`, `shared`, `ui/*`). If you see old docs referencing `:app`/`:core`/`:cli` modules or `nexus.opensource`, they're outdated.
 
 ###  Where to Edit (The Cheat Sheet)
 

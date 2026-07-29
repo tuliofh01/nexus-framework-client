@@ -7,6 +7,7 @@ Supporting tooling for the Framework scaffold client. The Framework client is a 
 | Path | Role |
 |------|------|
 | [build_client.sh](build_client.sh) | Compile the unified client (`compileKotlin`) — **prompts for Nexus License** before Gradle |
+| [../build_client.sh](../build_client.sh) | **Preferred:** source env + license + deploy → `builds/clients/NexusFrameworkClient-<ver>/` |
 | [build-logic/](build-logic/) | Gradle convention plugins (included build) — JVM toolchain 26 |
 | [client-setup/](client-setup/) | First-run JDK 26 + Zig bootstrap — see [client-setup/README.md](client-setup/README.md) |
 | [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
@@ -41,9 +42,11 @@ The precompiled plugin `buildsrc.convention.kotlin-jvm` (JVM toolchain 26, JUnit
 ## Common commands
 
 ```bash
-./misc/build_client.sh                 # license dialog (once) then compile
+./build_client.sh                      # license + deploy → builds/clients/NexusFrameworkClient-1.1.0/
+./misc/build_client.sh                 # license dialog (once) then compile only
 ./misc/build_client.sh --accept-license  # CI / non-interactive accept
 ./misc/build_client.sh --show-license  # re-show Nexus License
+./misc/build_client.sh --deploy        # same as root ./build_client.sh (no env source)
 ./gradlew compileKotlin
 ./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
 ./misc/scripts/nexus-dev.sh compile

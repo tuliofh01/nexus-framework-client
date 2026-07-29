@@ -1,4 +1,4 @@
-# Architecture (1.0.3)
+# Architecture (1.1.0)
 
 Single Gradle module. Sources live under `src/main/kotlin/com/nexus/framework/`.
 
@@ -17,4 +17,4 @@ Never nest a second Gradle module under `app/src`. Never pull Android SDK types 
 ## Outputs
 
 - Generated apps: `builds/framework/<name>/`
-- Client distributable: `builds/client/` via `deployToBuildsClient`
+- Client distributable: `builds/clients/NexusFrameworkClient-<ver>/` via `./build_client.sh` / `deployToBuildsClient`.

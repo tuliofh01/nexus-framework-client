@@ -56,7 +56,7 @@ Reference for `blueprint.json` and `flows.json` — nodes, edges, validation, ru
 Index of `desktop-app` and `android-app` scaffolds the generator copies.
 
 ### [../builds/LAYOUT.md](../builds/LAYOUT.md)
-Where generated apps (`builds/framework/`) and packaged client binaries (`builds/client/`) land.
+Where generated apps (`builds/framework/`) and packaged client binaries (`builds/clients/NexusFrameworkClient-<ver>/`) land.
 
 ---
 
@@ -65,8 +65,8 @@ Where generated apps (`builds/framework/`) and packaged client binaries (`builds
 ### [../misc/client-setup/README.md](../misc/client-setup/README.md)
 First-run bootstrap: JDK **26** + Zig **0.16.0** via `setup.zig` / `env.sh`. Required before the first `./gradlew run`.
 
-### [../misc/build_client.sh](../misc/build_client.sh)
-One-shot script to compile the unified Framework project. Shows a **Nexus License** accept dialog (zenity/kdialog/yad or TTY) before Gradle; stamp in `misc/.license-accepted`. Use `--accept-license` for CI and `--show-license` to re-display.
+### [../build_client.sh](../build_client.sh)
+Preferred one-shot: source env + Nexus License + deploy Compose distributable to `builds/clients/NexusFrameworkClient-<ver>/`. Compile-only: [../misc/build_client.sh](../misc/build_client.sh).
 
 ### Translations — [../misc/translations/README.md](../misc/translations/README.md)
 Localized landing pages (pt-BR, es, de, ru, zh-CN). Keep license and layout wording aligned with English.
@@ -77,7 +77,7 @@ Localized landing pages (pt-BR, es, de, ru, zh-CN). Keep license and layout word
 
 ```bash
 source misc/client-setup/env.sh
-./misc/build_client.sh
+./build_client.sh
 ./gradlew run
 ./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
 ./gradlew runCli --args="import-langflow --file export.json --output builds/framework/MyApp/flows/flows.json"
