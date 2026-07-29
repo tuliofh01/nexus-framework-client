@@ -148,7 +148,7 @@
   <path d="M1270,363 Q1300,391 1290,419" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M1537,222 Q1541,256 1506,291" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="1180" y="531" class="small">• Langflow-style typed DAG (not n8n triggers)</text>
-  <text x="1180" y="551" class="small">• Consumed at generate time (:core)</text>
+  <text x="1180" y="551" class="small">• Consumed at generate time (core)</text>
   <text x="1180" y="571" class="desc">Output: C++/Lua/Python/UI project tree</text>
 
   <rect x="24" y="520" width="1627" height="44" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>

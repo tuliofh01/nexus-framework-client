@@ -46,7 +46,7 @@
     <tspan x="178" dy="0">LangflowTransformationEngine</tspan>
   </text>
   <text x="156" y="309" class="desc">
-    <tspan x="156" dy="0">:core import — map DAG to Nexus</tspan>
+    <tspan x="156" dy="0">core import — map DAG to Nexus</tspan>
   </text>
   <rect x="140" y="366" width="320" height="72" class="node" fill="#F3E5F5" stroke="#7B1FA2"/>
   <text x="156" y="395" class="icon">&#xf15b;</text>
@@ -107,7 +107,7 @@
   <rect x="64" y="1062" width="16" height="16" class="legend-box" fill="#E8F5E9" stroke="#2E7D32"/>
   <text x="86" y="1074" class="small">External — Langflow export</text>
   <rect x="324" y="1062" width="16" height="16" class="legend-box" fill="#E8EAF6" stroke="#3949AB"/>
-  <text x="346" y="1074" class="small">Transform — :core engine</text>
+  <text x="346" y="1074" class="small">Transform — core engine</text>
   <rect x="64" y="1084" width="16" height="16" class="legend-box" fill="#FFF3E0" stroke="#EF6C00"/>
   <text x="86" y="1096" class="small">Generate — ProjectGenerator</text>
 </svg>

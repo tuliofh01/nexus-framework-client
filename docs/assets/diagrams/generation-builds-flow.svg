@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2736 1069" width="2736" height="1069">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2742 1069" width="2742" height="1069">
   <title>Generation &amp; builds flow</title>
   <defs>
     <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
@@ -28,15 +28,15 @@
       .legend-box { rx: 6; stroke-width: 2; }
     </style>
   </defs>
-  <rect width="2736" height="100%" fill="#f8fafc"/>
+  <rect width="2742" height="100%" fill="#f8fafc"/>
   <image href="../nexus-logo.png" x="24" y="16" width="36" height="36" preserveAspectRatio="xMidYMid meet"/>
 
   <text x="206" y="110" text-anchor="middle" class="layer-label">First run</text>
   <text x="572" y="110" text-anchor="middle" class="layer-label">Scaffold client</text>
-  <text x="912" y="110" text-anchor="middle" class="layer-label">:core / :cli</text>
+  <text x="912" y="110" text-anchor="middle" class="layer-label">core / CLI</text>
   <text x="1239" y="110" text-anchor="middle" class="layer-label">Output</text>
   <text x="1713" y="110" text-anchor="middle" class="layer-label">Native build</text>
-  <text x="2525" y="110" text-anchor="middle" class="layer-label">Optional</text>
+  <text x="2528" y="110" text-anchor="middle" class="layer-label">Optional</text>
   <line x1="320" y1="120" x2="320" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="600" y1="120" x2="600" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
   <line x1="920" y1="120" x2="920" y2="819" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6,4"/>
@@ -204,14 +204,14 @@
   <text x="2073" y="460" class="desc">
     <tspan x="2073" dy="0">Deploy to device or emulator</tspan>
   </text>
-  <rect x="2394" y="140" width="262" height="85" class="node" fill="#E8EAF6" stroke="#3949AB"/>
+  <rect x="2394" y="140" width="268" height="85" class="node" fill="#E8EAF6" stroke="#3949AB"/>
   <text x="2410" y="169" class="icon">&#xf0c2;</text>
   <text x="2432" y="171" class="label">
     <tspan x="2432" dy="0">deployToBuildsClient</tspan>
   </text>
   <text x="2410" y="191" class="desc">
     <tspan x="2410" dy="0">Copy client distro to</tspan>
-    <tspan x="2410" dy="15">builds/client/</tspan>
+    <tspan x="2410" dy="15">builds/clients/</tspan>
   </text>
   <line x1="206" y1="225" x2="177" y2="281" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="315" y1="323" x2="428" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>

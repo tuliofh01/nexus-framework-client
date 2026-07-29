@@ -69,7 +69,7 @@
   <rect x="50" y="416" width="280" height="72" class="node" fill="#FFFFFF" stroke="#6A1B9A"/>
   <text x="66" y="445" class="icon">&#xf135;</text>
   <text x="88" y="447" class="label">
-    <tspan x="88" dy="0">:core ProjectGenerator</tspan>
+    <tspan x="88" dy="0">core ProjectGenerator</tspan>
   </text>
   <text x="66" y="467" class="desc">
     <tspan x="66" dy="0">Validates graph · emits src/ tree</tspan>

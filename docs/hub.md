@@ -7,7 +7,7 @@ Start here when you need to know **what to read** and **when**. English docs are
 ## Core reading
 
 ### [Project README](../README.md)
-High-level pitch, **v1.0.2 repository layout** (`:core` / `:cli` / `:app` at root, single `build.gradle.kts`), Compose client screens, quick start, and the **Nexus License** summary. Read first if you are new to the repo.
+High-level pitch, **v1.1.0** first production-ready release (unified single Gradle module under `com.nexus.framework.*`), Compose client screens, quick start (`./build_client.sh` → `builds/clients/`), and the **Nexus License** summary. Read first if you are new to the repo.
 
 ### [Nexus License](../LICENSE)
 Full legal text (**Nexus License** / `Nexus-1.0`). Non-commercial use OK with attribution. Through **2041-07-21**, owner authorization is required for Toolkit commercial use, **revenue-producing** derived apps, and derived apps used in a **commercial institution**. After that date those authorization restrictions expire unless renewed; attribution continues. No warranty; no liability for misuse.

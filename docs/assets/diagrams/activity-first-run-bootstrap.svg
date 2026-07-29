@@ -67,10 +67,10 @@
   <rect x="120" y="582" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
   <text x="136" y="611" class="icon">&#xf013;</text>
   <text x="158" y="613" class="label">
-    <tspan x="158" dy="0">./misc/build_client.sh</tspan>
+    <tspan x="158" dy="0">./build_client.sh</tspan>
   </text>
   <text x="136" y="633" class="desc">
-    <tspan x="136" dy="0">Compile :core :cli :app</tspan>
+    <tspan x="136" dy="0">Compile + deploy client</tspan>
   </text>
   <polygon points="280,660 324,704 280,748 236,704" fill="#FFFDE7" stroke="#F9A825" stroke-width="2" filter="url(#shadow)"/>
   <text x="280" y="708" text-anchor="middle" class="small">Compile OK?</text>
