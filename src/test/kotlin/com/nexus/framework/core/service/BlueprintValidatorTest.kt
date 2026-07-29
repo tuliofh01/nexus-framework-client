@@ -95,4 +95,35 @@ class BlueprintValidatorTest {
         assertFalse(result.isValid)
         assertEquals(1, result.errors.count { it.contains("Unknown node type") })
     }
+
+    @Test
+    fun rejectsBlankBlueprintName() {
+        val blueprint = BlueprintFile(
+            name = "  ",
+            nodes = listOf(BlueprintNode("a", BlueprintNodeType.CPP_MODEL.id, BlueprintPosition())),
+            edges = emptyList(),
+        )
+        val result = validator.validate(blueprint)
+        assertFalse(result.isValid)
+        assertTrue(result.errors.any { it.contains("Blueprint name must not be blank") })
+    }
+
+    @Test
+    fun warnsOnEmptyNodesAndBlankPort() {
+        val empty = validator.validate(BlueprintFile(name = "empty", nodes = emptyList(), edges = emptyList()))
+        assertTrue(empty.isValid)
+        assertTrue(empty.warnings.any { it.contains("no nodes") })
+
+        val blankPort = BlueprintFile(
+            name = "ports",
+            nodes = listOf(
+                BlueprintNode("a", BlueprintNodeType.CPP_MODEL.id, BlueprintPosition()),
+                BlueprintNode("b", BlueprintNodeType.CPP_CONTROLLER.id, BlueprintPosition()),
+            ),
+            edges = listOf(BlueprintEdge("e1", "a", "b", "")),
+        )
+        val result = validator.validate(blankPort)
+        assertTrue(result.isValid)
+        assertTrue(result.warnings.any { it.contains("no port label") })
+    }
 }

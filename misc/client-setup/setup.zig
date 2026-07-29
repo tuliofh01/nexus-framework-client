@@ -9,7 +9,7 @@
 //! Installs Zig 0.16.0 and writes environment files.
 
 const std = @import("std");
-const bootstrap = @import("zig/bootstrap.zig");
+const bootstrap = @import("bootstrap.zig");
 
 pub fn main(init: std.process.Init) !void {
     const gpa = init.gpa;
@@ -32,5 +32,6 @@ pub fn main(init: std.process.Init) !void {
 
     std.debug.print("\nDone.\n", .{});
     std.debug.print("Next: source misc/client-setup/env.sh\n", .{});
+    std.debug.print("      ./build_client.sh --accept-license\n", .{});
     std.debug.print("      ./gradlew run\n", .{});
 }

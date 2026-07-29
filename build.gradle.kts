@@ -55,7 +55,7 @@ tasks.register<Sync>("deployToBuildsClient") {
     group = "distribution"
     description =
         "Copy the Compose Desktop distributable into builds/clients/$clientDistFolderName/"
-    dependsOn("createDistributable")
+    dependsOn("test", "createDistributable")
     from(composeBinariesDir.map { it.dir("app") })
     into(clientDistDir)
 }
@@ -64,7 +64,7 @@ tasks.register<Sync>("deployPackageToBuildsClient") {
     group = "distribution"
     description =
         "Copy OS packages from packageDistributionForCurrentOS into builds/clients/$clientDistFolderName/packages/"
-    dependsOn("packageDistributionForCurrentOS")
+    dependsOn("test", "packageDistributionForCurrentOS")
     from(composeBinariesDir) {
         include("**/*.deb", "**/*.rpm", "**/*.dmg", "**/*.msi", "**/*.exe", "**/*.pkg")
     }

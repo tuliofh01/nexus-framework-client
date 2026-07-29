@@ -51,14 +51,15 @@ Usage:
 
 Options:
   --clean            Run Gradle clean before compile / deploy
-  --test             Also run test (ignored with --deploy / --package)
-  --deploy           Build + copy distributable to builds/clients/NexusFrameworkClient-<ver>/
-  --package          Build OS packages into builds/clients/NexusFrameworkClient-<ver>/packages/
+  --test             Also run test (compile-only mode; deploy/package always run test)
+  --deploy           Build + test + copy distributable to builds/clients/NexusFrameworkClient-<ver>/
+  --package          Build + test + OS packages into builds/clients/.../packages/
+  --skip-tests       Skip unit tests (not recommended; deploy normally depends on test)
   --accept-license   Accept the Nexus License without a dialog (writes stamp)
   --show-license     Clear stamp and show the license dialog again
   -h, --help         Show this help
 
-Repo-root shortcut (sources misc/client-setup/env.sh, then --deploy):
+Repo-root shortcut (sources misc/client-setup/env.sh, then --deploy which runs tests):
   ./build_client.sh
 
 License (Nexus License / Nexus-1.0):
@@ -81,6 +82,7 @@ CLEAN=0
 RUN_TEST=0
 DEPLOY=0
 PACKAGE=0
+SKIP_TESTS=0
 ACCEPT_LICENSE=0
 SHOW_LICENSE=0
 for arg in "$@"; do
@@ -89,6 +91,7 @@ for arg in "$@"; do
     --test) RUN_TEST=1 ;;
     --deploy) DEPLOY=1 ;;
     --package) PACKAGE=1 ;;
+    --skip-tests) SKIP_TESTS=1 ;;
     --accept-license) ACCEPT_LICENSE=1 ;;
     --show-license) SHOW_LICENSE=1 ;;
     -h|--help)
@@ -265,10 +268,26 @@ main() {
   local tasks=()
   if [[ "$PACKAGE" -eq 1 ]]; then
     log "Packaging Compose Desktop client → builds/clients/NexusFrameworkClient-<ver>/packages/"
-    tasks+=(deployPackageToBuildsClient)
+    if [[ "$SKIP_TESTS" -eq 1 ]]; then
+      warn "Skipping tests (--skip-tests); Gradle deployPackage still dependsOn test unless you use -x"
+      tasks+=(deployPackageToBuildsClient)
+      "$GRADLEW" --no-daemon -x test "${tasks[@]}"
+    else
+      log "Running unit tests before package (fail → no distributable)"
+      tasks+=(deployPackageToBuildsClient)
+      "$GRADLEW" --no-daemon "${tasks[@]}"
+    fi
   elif [[ "$DEPLOY" -eq 1 ]]; then
     log "Deploying Compose Desktop distributable → builds/clients/NexusFrameworkClient-<ver>/"
-    tasks+=(deployToBuildsClient)
+    if [[ "$SKIP_TESTS" -eq 1 ]]; then
+      warn "Skipping tests (--skip-tests)"
+      tasks+=(deployToBuildsClient)
+      "$GRADLEW" --no-daemon -x test "${tasks[@]}"
+    else
+      log "Running unit tests before deploy (fail → no distributable)"
+      tasks+=(deployToBuildsClient)
+      "$GRADLEW" --no-daemon "${tasks[@]}"
+    fi
   else
     log "Compiling Kotlin Framework client (unified module)"
     tasks+=(compileKotlin)
@@ -276,9 +295,8 @@ main() {
       log "Including test"
       tasks+=(test)
     fi
+    "$GRADLEW" --no-daemon "${tasks[@]}"
   fi
-
-  "$GRADLEW" --no-daemon "${tasks[@]}"
 
   local client_out=""
   if [[ "$DEPLOY" -eq 1 || "$PACKAGE" -eq 1 ]]; then
@@ -294,7 +312,7 @@ main() {
     ./gradlew run
     ./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
     ./misc/scripts/nexus-dev.sh generate -- --type desktop --name MyApp --dry-run
-    ./build_client.sh                 # distributable → builds/clients/
+    ./build_client.sh                 # test + distributable → builds/clients/
     ./misc/build_client.sh --deploy   # same without sourcing env first
 
 EOF

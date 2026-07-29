@@ -81,4 +81,35 @@ class FlowsValidatorTest {
         assertTrue(result.isValid)
         assertTrue(result.warnings.any { it.contains("no flows") })
     }
+
+    @Test
+    fun rejectsUnknownTriggerAndStepTypes() {
+        val badTrigger = FlowsFile(
+            flows = listOf(
+                FlowDefinition(
+                    id = "t1",
+                    mode = FlowMode.BACKGROUND.id,
+                    trigger = FlowTrigger(type = "not.a.trigger"),
+                    steps = listOf(FlowStep(type = FlowStepType.INVOKE.id, target = "nxs.log")),
+                ),
+            ),
+        )
+        val triggerResult = validator.validate(badTrigger)
+        assertFalse(triggerResult.isValid)
+        assertTrue(triggerResult.errors.any { it.contains("Unknown trigger type") })
+
+        val badStep = FlowsFile(
+            flows = listOf(
+                FlowDefinition(
+                    id = "s1",
+                    mode = FlowMode.BACKGROUND.id,
+                    trigger = FlowTrigger(type = FlowTriggerType.INTERVAL.id, ms = 500),
+                    steps = listOf(FlowStep(type = "not.a.step", target = "x")),
+                ),
+            ),
+        )
+        val stepResult = validator.validate(badStep)
+        assertFalse(stepResult.isValid)
+        assertTrue(stepResult.errors.any { it.contains("unknown step type") })
+    }
 }
