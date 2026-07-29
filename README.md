@@ -59,6 +59,38 @@
 
 **v1.0.3 is the first production-stable cut** for generating projects and recording tutorials. It is mostly **debugging and patches**: Gradle and packages were repaired, Compose Desktop UX bugs were fixed, and the client was simplified into **one Gradle module** with a conjunct MVC / feature tree.
 
+### Repository layout (1.0.3)
+
+This is a **single Gradle project** (root `build.gradle.kts` / `settings.gradle.kts` only — no `:app`, `:core`, or `:cli` modules). All first-party Kotlin lives under `com.nexus.framework.*` in root `src/`.
+
+```text
+Nexus-Framework/
+├── build.gradle.kts
+├── settings.gradle.kts
+├── gradle/                          # wrapper + libs.versions.toml
+├── src/
+│   ├── main/kotlin/com/nexus/framework/
+│   │   ├── App.kt                   # Compose Desktop entry
+│   │   ├── cli/                     # FrameworkCli
+│   │   ├── core/                    # model/, service/ (generator)
+│   │   ├── shared/                  # Desktop helpers (dialogs, stores, …)
+│   │   └── ui/
+│   │       ├── theme/
+│   │       ├── chrome/
+│   │       ├── generate/
+│   │       ├── blueprint/
+│   │       ├── flows/
+│   │       ├── home/
+│   │       ├── loading/
+│   │       └── debugger/
+│   └── test/…                       # unit tests
+├── template/                        # android-app, desktop-app, shared
+├── misc/                            # build-logic, client-setup, scripts, …
+├── docs/
+├── intellij/                        # shareable IDE kit
+└── builds/                          # generated output (not source)
+```
+
 **What we patched**
 
 - **Unified Gradle** — single root `build.gradle.kts` / `settings.gradle.kts` (no `:core` / `:cli` / `:app`). Run the GUI with `./gradlew run` and the CLI with `./gradlew runCli`.
