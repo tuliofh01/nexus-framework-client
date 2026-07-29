@@ -18,15 +18,15 @@ All first-party Kotlin code lives under **`com.nexus.framework.*`**:
 
 | Module | Package root | Path |
 |--------|--------------|------|
-| `:app` | `com.nexus.framework` | `app/src/main/kotlin/com/nexus/framework/` |
-| `:app` UI | `com.nexus.framework.view` | `.../view/` |
-| `:app` logic | `com.nexus.framework.controller` | `.../controller/` |
-| `:app` state | `com.nexus.framework.model` | `.../model/` |
-| `:app` helpers | `com.nexus.framework.util` | `.../util/` |
-| `:core` | `com.nexus.framework.core` | `core/src/main/kotlin/com/nexus/framework/core/` |
-| `:core` schemas | `com.nexus.framework.core.model` | `.../core/model/` |
-| `:core` engine | `com.nexus.framework.core.service` | `.../core/service/` |
-| `:cli` | `com.nexus.framework.cli` | `cli/src/main/kotlin/com/nexus/framework/cli/` |
+| root | `com.nexus.framework` | `src/main/kotlin/com/nexus/framework/` |
+| UI screens | `com.nexus.framework.ui.*` | `.../ui/{generate,blueprint,...}/` |
+| UI controllers | co-located in `ui/<feature>/` | feature folders |
+| shared | `com.nexus.framework.shared` | `.../shared/` |
+| shared helpers | `com.nexus.framework.shared` | `.../shared/` |
+| core | `com.nexus.framework.core` | `.../core/` |
+| core schemas | `com.nexus.framework.core.model` | `.../core/model/` |
+| core engine | `com.nexus.framework.core.service` | `.../core/service/` |
+| cli | `com.nexus.framework.cli` | `.../cli/` |
 
 ### Import rules (keep these easy and clear)
 
@@ -49,11 +49,11 @@ Entry points:
 ## Gradle modules
 
 ```
-settings.gradle.kts → include(":core", ":cli", ":app")
-core/build.gradle.kts   — kotlin.jvm + serialization
-cli/build.gradle.kts    — kotlin.jvm + application (depends on :core)
-app/build.gradle.kts    — kotlin.jvm + compose desktop (depends on :core)
-```
+settings.gradle.kts → single root project (no :core/:cli/:app)
+build.gradle.kts      — kotlin.jvm + serialization + Compose Desktop + runCli
+src/main/kotlin/com/nexus/framework/
+  App.kt, cli/, core/, shared/, ui/{theme,chrome,generate,blueprint,flows,home,loading,debugger}/
+
 
 JDK toolchain: **26**. Wrapper: Gradle **9.6.x**. Catalog: `gradle/libs.versions.toml`.
 
@@ -75,10 +75,10 @@ JDK toolchain: **26**. Wrapper: Gradle **9.6.x**. Catalog: `gradle/libs.versions
 
 ## Known junk (do not “fix” by nesting modules again)
 
-If you see `app/src/main/kotlin/com/nexus/framework/framework/` with root-owned `build/` artifacts, that is **stale nested-module debris**. Exclude it from sources (already done in `app/build.gradle.kts`) and remove with:
+If you see `src/main/kotlin/com/nexus/framework/framework/` with root-owned `build/` artifacts, that is **stale nested-module debris**. Exclude it from sources (already done in root `build.gradle.kts`) and remove with:
 
 ```bash
-sudo rm -rf app/src/main/kotlin/com/nexus/framework/framework
+sudo rm -rf src/main/kotlin/com/nexus/framework/framework
 ```
 
 Do **not** move `:core` or `:cli` back under `app/`.

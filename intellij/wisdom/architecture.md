@@ -1,25 +1,20 @@
-# Architecture wisdom (IntelliJ / Junie)
+# Architecture (1.0.3)
 
-## Modules
+Single Gradle module. Sources live under `src/main/kotlin/com/nexus/framework/`.
 
-- `:core` — pure generation brain (`com.nexus.framework.core`). No Compose.
-- `:cli` — headless entry (`com.nexus.framework.cli.FrameworkCliKt`). Depends on `:core`.
-- `:app` — Compose Desktop UI (`com.nexus.framework.AppKt`). Depends on `:core` only.
+## Packages
 
-Never nest `:core` / `:cli` under `app/src`. That produced the broken `.../framework/core/src/main/kotlin/...` paths.
+- `core/` — generation brain (`RepoRoot`, schemas, `ProjectGenerator`). No Compose.
+- `cli/` — headless entry (`FrameworkCliKt`) via `./gradlew runCli`.
+- `shared/` — `RecentProjectsStore`, `DebuggerService`, `TestRunner`, `NativeFileDialogs`.
+- `ui/theme` — `NexusTheme`.
+- `ui/chrome` — Flamingo mascot, Whats New, window icon.
+- `ui/<feature>/` — co-located controller + screen (`generate`, `blueprint`, `flows`, `home`, `loading`, `debugger`).
+- `App.kt` — Compose Desktop entry (`./gradlew run`).
 
-## MVC in `:app`
+Never nest a second Gradle module under `app/src`. Never pull Android SDK types into this Desktop client.
 
-| Layer | Package | Responsibility |
-|-------|---------|----------------|
-| View | `com.nexus.framework.view` | Compose screens only |
-| Controller | `com.nexus.framework.controller` | Mutable UI state + orchestration |
-| Model | `com.nexus.framework.model` | Client-side stores (recents, debugger, tests) |
+## Outputs
 
-Shared schemas/services stay in `:core`.
-
-## Templates vs client
-
-- Editable templates: `template/desktop-app`, `template/android-app`, `template/shared`
-- Generated output: `builds/framework/<name>/`
-- Client binary deploy: `builds/client/` via `:app:deployToBuildsClient`
+- Generated apps: `builds/framework/<name>/`
+- Client distributable: `builds/client/` via `deployToBuildsClient`

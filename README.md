@@ -1,13 +1,13 @@
 <!--
   @project Nexus Framework
   @language Kotlin (Compose Desktop), C++20, Lua 5.4, Python 3, TypeScript/XHTML, Zig 0.16.0
-  @build ./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin
+  @build ./gradlew compileKotlin
   @test ./gradlew check
   @templates desktop-app (SDL3/ImGui/C++/Lua/Python), android-app (Zig JNI/Chaquopy)
   @key-files
-    core/src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt
-    cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt
-    app/src/main/kotlin/com/nexus/framework/App.kt
+    src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt
+    src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt
+    src/main/kotlin/com/nexus/framework/App.kt
     template/desktop-app/build_app.sh
     template/android-app/zig-services/jni/python_bridge.zig
     misc/build_client.sh
@@ -50,25 +50,25 @@
 > ** Zero to binary**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew :app:run
+> ./misc/build_client.sh && ./gradlew run
 > ```
 
 ---
 
 ## Version 1.0.3 Release
 
-This release is mostly **debugging and patches**: the Gradle graph and package layout were repaired, and a few Compose Desktop client UX bugs that blocked naming / generating projects were fixed.
+**v1.0.3 is the first production-stable cut** for generating projects and recording tutorials. It is mostly **debugging and patches**: Gradle and packages were repaired, Compose Desktop UX bugs were fixed, and the client was simplified into **one Gradle module** with a conjunct MVC / feature tree.
 
 **What we patched**
 
-- **Build / modules** — recreated per-module Gradle (`:core`, `:cli`, `:app`) so the client and CLI compile against root modules again (no more missing `:core` directory).
-- **Packages** — first-party Kotlin now lives under `com.nexus.framework.*` with sources at `app/`, `core/`, and `cli/` (not nested under crazy `app/.../framework/core/src/...` paths).
-- **Generate Project UI** — project name starts empty with a clearing placeholder; generate validates blank names and shows a real `Generated: …` status; stack preview follows Desktop vs Android; template folders map to `template/desktop-app` and `template/android-app`.
-- **Generate Project icons** — Desktop / Android template cards use drawn monitor and phone glyphs (emoji fonts often omit the desktop-computer character on Linux).
-- **Blueprint editor** — nodes are draggable again (relative drag deltas); chip size matches canvas pixel space so boxes no longer stack; clustered/zero-origin graphs auto-spread for readability.
-- **Editors** — Blueprint / Flows no longer seed a stuck `"MyApp"` value; dark-theme text fields get readable colors; Whats New shows the live `NexusBranding` version.
-- **IntelliJ** — shareable `intellij/` kit (style, lint-on-save guidance, snippets, wisdom/`AGENTS.md`) via `./intellij/apply-to-idea.sh`.
-- **Tidy** — legacy `nexus.opensource` paths scrubbed from docs/diagrams; nested junk under `app/.../framework/framework/` is gitignored (purge with `sudo rm -rf` if still on disk).
+- **Unified Gradle** — single root `build.gradle.kts` / `settings.gradle.kts` (no `:core` / `:cli` / `:app`). Run the GUI with `./gradlew run` and the CLI with `./gradlew runCli`.
+- **Packages + layout** — all first-party Kotlin under `com.nexus.framework.*` in root `src/main/kotlin/…`: `core/` (generator), `cli/`, `shared/`, and `ui/{theme,chrome,generate,blueprint,flows,home,loading,debugger}/`.
+- **Generate Project UI** — empty name + clearing placeholder; blank-name validation; `Generated: …` status; Desktop/Android stack preview; template folders `desktop-app` / `android-app`.
+- **Generate Project icons** — drawn monitor / phone glyphs (emoji fonts often omit desktop-computer characters on Linux).
+- **Blueprint editor** — nodes drag with relative deltas; chip size matches canvas pixels; clustered graphs auto-spread.
+- **Editors** — no stuck `"MyApp"` seeds; dark-theme text-field colors; Whats New shows live `NexusBranding` version.
+- **IntelliJ** — shareable `intellij/` kit via `./intellij/apply-to-idea.sh`.
+- **Tidy** — legacy `nexus.opensource` docs scrubbed; root-owned nested junk under `src/.../framework/` is excluded from sources (purge with `sudo rm -rf` if present).
 
 Apply the IntelliJ kit after pull: `./intellij/apply-to-idea.sh`.
 
@@ -371,7 +371,7 @@ Gradle won't compile without this step. It's like trying to bake a cake without 
 ###  Step 3: Launch the GUI (Optional, But Fun)
 
 ```bash
-./gradlew :app:run
+./gradlew run
 ```
 
 **What you'll see:**
@@ -395,10 +395,10 @@ This is your command center. From here, you can:
 
 ```bash
 # Desktop app (SDL3, C++, Lua, Python):
-./gradlew :cli:run --args="generate --type desktop --name MyApp"
+./gradlew runCli --args="generate --type desktop --name MyApp"
 
 # Android app (Zig JNI, Chaquopy):
-./gradlew :cli:run --args="generate --type android --name MyApp"
+./gradlew runCli --args="generate --type android --name MyApp"
 ```
 
 **What happens next (behind the scenes):**
@@ -430,7 +430,7 @@ Five commands. One native app. No configuration files. No JSON schemas. No "wait
 ```
 zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 ./misc/build_client.sh
-./gradlew :cli:run --args="generate --type desktop --name MyApp"
+./gradlew runCli --args="generate --type desktop --name MyApp"
 cd builds/framework/MyApp && ./build_app.sh
 ./MyApp
 ```
@@ -1114,7 +1114,7 @@ Patches in this release focus on restoring a sane build, fixing Generate Project
 - **Source layout restored** — `:core` and `:cli` sources sit at the repo root again (no nesting under `app/src`)
 - **Generate Project UI** — empty name field with a floating label + clearing placeholder; generate validates blank names and surfaces `Generated: …` status correctly; dark-theme text-field colors hardened on Generate / Blueprint / Debugger
 - **IntelliJ kit** — shareable `intellij/` folder (code style, inspections, Actions on Save notes, live templates, run configs, `AGENTS.md` + wisdom docs) via `./intellij/apply-to-idea.sh`
-- **Repo tidy** — dropped legacy `nexus.opensource` paths from docs/diagrams, ignored leftover nested junk under `app/.../framework/framework/` (remove with `sudo rm -rf` if still present)
+- **Repo tidy** — dropped legacy `nexus.opensource` paths from docs/diagrams; leftover nested junk under `src/.../framework/` is source-excluded (remove with `sudo rm -rf src/main/kotlin/com/nexus/framework/framework` if still present)
 
 Now that you've seen the internals, let's zoom out. Where does everything live in the repository? This section maps the codebase so you always know where to look.
 
@@ -1172,22 +1172,23 @@ Nexus-Framework/
 
 | Module   | Package                           | Depends On   | What It Does                                    |
 | :------- | :-------------------------------- | :----------- | :---------------------------------------------- |
-| `:core`    | `com.nexus.framework.core`   | Nothing      | Generation engine, config schemas, validators   |
-| `:cli`     | `com.nexus.framework.cli`    | `:core`        | Headless `generate` command, Langflow import      |
-| `:app`     | `com.nexus.framework`                  | `:core`        | Compose Desktop client with [MVC](https://en.wikipedia.org/wiki/Model–view–controller) architecture    |
+| `core/`    | `com.nexus.framework.core`   | —            | Generation engine, config schemas, validators   |
+| `cli/`     | `com.nexus.framework.cli`    | `core/`      | Headless `generate` / Langflow import (`runCli`)  |
+| `ui/`      | `com.nexus.framework.ui.*`   | `core/`, `shared/` | Compose Desktop screens (feature folders) |
+| `shared/`  | `com.nexus.framework.shared` | —            | Recent projects, debugger, file dialogs         |
 
-**Key insight:** `:core` and `:cli` live at the repo root (not nested under `app/`). The 1.0.3 package rename keeps that layout and puts all Kotlin under `com.nexus.framework.*`. If you see old docs referencing `nexus.opensource` or modules nested under `app/src`, they're outdated.
+**Key insight:** 1.0.3 uses **one Gradle module** with a conjunct tree under `src/main/kotlin/com/nexus/framework/` (`core`, `cli`, `shared`, `ui/*`). If you see old docs referencing `:app`/`:core`/`:cli` modules or `nexus.opensource`, they're outdated.
 
 ###  Where to Edit (The Cheat Sheet)
 
 | Change                | Location                                           |
 | :-------------------- | :------------------------------------------------- |
-| Generation pipeline   | `core/src/main/kotlin/com/nexus/framework/core/.../service/ProjectGenerator.kt`               |
-| CLI commands          | `cli/src/main/kotlin/com/nexus/framework/cli/.../FrameworkCli.kt`                            |
+| Generation pipeline   | `src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt`               |
+| CLI commands          | `src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt`                            |
 | Compose UI            | `app/.../view/`, `app/.../controller/`                 |
 | Desktop template      | `template/desktop-app/`                              |
 | Android template      | `template/android-app/`                              |
-| Config schema         | `core/src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
+| Config schema         | `src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
 | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) generation    | `misc/docker/`, `misc/scripts/generate-in-docker.sh`   |
 | Test generation       | `misc/scripts/test-gen/`                             |
 | [Jenkins](https://www.jenkins.io/doc/) [CI/CD](https://stackoverflow.com/questions/tagged/cicd)        | `misc/jenkins/Jenkinsfile`                           |
@@ -1216,16 +1217,16 @@ If you're confused about where something lives:
 
 | You're Looking For                                 | Go Here                                            |
 | :------------------------------------------------- | :------------------------------------------------- |
-| The code that generates your app                   | `core/src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt`                   |
-| CLI commands for headless generation               | `cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt`                                |
-| The Compose Desktop UI                             | `app/src/main/kotlin/com/nexus/framework/view/` and `.../controller/` |
+| The code that generates your app                   | `src/main/kotlin/com/nexus/framework/core/service/ProjectGenerator.kt`                   |
+| CLI commands for headless generation               | `src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt`                                |
+| The Compose Desktop UI                             | `src/main/kotlin/com/nexus/framework/ui/` (feature folders) |
 | Template files for desktop or Android              | `template/desktop-app/` and `template/android-app/`    |
 | The one-shot build script                          | `misc/build_client.sh`                               |
 | Architecture diagrams (23 of them)                 | `docs/assets/diagrams/`                              |
 | UI mockups for the client                          | `docs/assets/examples/`                              |
-| The config schema (what `nxs_config.json` accepts)   | `core/src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
+| The config schema (what `nxs_config.json` accepts)   | `src/main/kotlin/com/nexus/framework/core/model/NexusConfigSchema.kt`                    |
 | The Zig JNI bridge (what replaced 7 C++ files)     | `template/android-app/zig-services/jni/python_bridge.zig` |
-| Langflow import logic                              | `cli/src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt` (search for `langflow`)          |
+| Langflow import logic                              | `src/main/kotlin/com/nexus/framework/cli/FrameworkCli.kt` (search for `langflow`)          |
 
 For a complete "Change → File" mapping, see [Project Structure](#-project-structure-why-its-organized-like-a-military-operation).
 
@@ -1241,7 +1242,7 @@ For a complete "Change → File" mapping, see [Project Structure](#-project-stru
 
 ###  If You.re Still Stuck
 
-1. Run `./gradlew :app:run` to launch the GUI
+1. Run `./gradlew run` to launch the GUI
 2. Use the **"Edit Blueprint"** screen to visualize your app structure
 3. Look at the **diagrams** in `docs/assets/diagrams/`
 4. Read the **architecture overview** in `docs/architecture/overview.md`
@@ -1344,10 +1345,10 @@ You've read the entire documentation. You know:
 
 ```bash
 # 1. Generate a project
-./gradlew :cli:run --args="generate --type desktop --name TestApp"
+./gradlew runCli --args="generate --type desktop --name TestApp"
 
 # 2. Open it in the GUI
-./gradlew :app:run
+./gradlew run
 
 # 3. Edit the blueprint (try adding a new node)
 

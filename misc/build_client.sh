@@ -2,12 +2,12 @@
 # build_client.sh — compile the Nexus Kotlin client / generator via Gradle.
 #
 # Analogous to template/*/build_app.sh for native apps: this builds the
-# scaffold generator (:core + :cli) and the Compose client (:app).
+# unified Framework client (Compose Desktop + generation engine + CLI).
 #
 # Usage (from anywhere in the repo):
 #   ./misc/build_client.sh                 # accept license (once) then compile
 #   ./misc/build_client.sh --clean         # clean then compile
-#   ./misc/build_client.sh --test          # compile + :app:test
+#   ./misc/build_client.sh --test          # compile + test
 #   ./misc/build_client.sh --accept-license  # non-interactive accept + stamp
 #   ./misc/build_client.sh --show-license  # re-show dialog (clears stamp first)
 #
@@ -39,14 +39,14 @@ need_cmd() {
 
 usage() {
   cat <<'EOF' >&2
-build_client.sh — compile Nexus :core :cli :app via Gradle
+build_client.sh — compile Nexus Framework client via Gradle
 
 Usage:
   ./misc/build_client.sh [options]
 
 Options:
   --clean            Run Gradle clean before compile
-  --test             Also run :app:test
+  --test             Also run test
   --accept-license   Accept the Nexus License without a dialog (writes stamp)
   --show-license     Clear stamp and show the license dialog again
   -h, --help         Show this help
@@ -237,11 +237,11 @@ main() {
     "$GRADLEW" --no-daemon clean
   fi
 
-  log "Compiling Kotlin client/generator (:core :cli :app)"
-  local tasks=(:core:compileKotlin :cli:compileKotlin :app:compileKotlin)
+  log "Compiling Kotlin Framework client (unified module)"
+  local tasks=(compileKotlin)
   if [[ "$RUN_TEST" -eq 1 ]]; then
-    log "Including :app:test"
-    tasks+=(:app:test)
+    log "Including test"
+    tasks+=(test)
   fi
 
   "$GRADLEW" --no-daemon "${tasks[@]}"
@@ -252,8 +252,8 @@ main() {
   Build OK
 
   Next:
-    ./gradlew :app:run
-    ./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
+    ./gradlew run
+    ./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
     ./misc/scripts/nexus-dev.sh generate -- --type desktop --name MyApp --dry-run
 
   Or re-run this script:
