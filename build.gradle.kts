@@ -30,31 +30,45 @@ tasks.test {
 // ---------------------------------------------------------------------------
 // Compose Desktop client — ./gradlew run
 // ---------------------------------------------------------------------------
+val nexusFrameworkVersion = libs.versions.nexusFramework.get()
+val clientDistFolderName = "NexusFrameworkClient-$nexusFrameworkVersion"
+
 compose.desktop {
     application {
         mainClass = "com.nexus.framework.AppKt"
+        nativeDistributions {
+            packageName = "NexusFrameworkClient"
+            packageVersion = nexusFrameworkVersion
+            description = "The Nexus Framework Compose Desktop client"
+            vendor = "Túlio Horta"
+        }
     }
 }
 
-val buildsClientDir = layout.projectDirectory.dir("builds/client")
+// Preferred output: builds/clients/NexusFrameworkClient-<version>/
+// (legacy builds/client/ is a redirect stub only)
+val buildsClientsDir = layout.projectDirectory.dir("builds/clients")
+val clientDistDir = buildsClientsDir.dir(clientDistFolderName)
 val composeBinariesDir = layout.buildDirectory.dir("compose/binaries/main")
 
 tasks.register<Sync>("deployToBuildsClient") {
     group = "distribution"
-    description = "Copy the Compose Desktop distributable into builds/client/app/"
+    description =
+        "Copy the Compose Desktop distributable into builds/clients/$clientDistFolderName/"
     dependsOn("createDistributable")
     from(composeBinariesDir.map { it.dir("app") })
-    into(buildsClientDir.dir("app"))
+    into(clientDistDir)
 }
 
 tasks.register<Sync>("deployPackageToBuildsClient") {
     group = "distribution"
-    description = "Copy OS packages from packageDistributionForCurrentOS into builds/client/packages/"
+    description =
+        "Copy OS packages from packageDistributionForCurrentOS into builds/clients/$clientDistFolderName/packages/"
     dependsOn("packageDistributionForCurrentOS")
     from(composeBinariesDir) {
         include("**/*.deb", "**/*.rpm", "**/*.dmg", "**/*.msi", "**/*.exe", "**/*.pkg")
     }
-    into(buildsClientDir.dir("packages"))
+    into(clientDistDir.dir("packages"))
 }
 
 // ---------------------------------------------------------------------------

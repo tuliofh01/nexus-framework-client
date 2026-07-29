@@ -8,8 +8,13 @@
 #   ./misc/build_client.sh                 # accept license (once) then compile
 #   ./misc/build_client.sh --clean         # clean then compile
 #   ./misc/build_client.sh --test          # compile + test
+#   ./misc/build_client.sh --deploy        # license + createDistributable → builds/clients/
+#   ./misc/build_client.sh --package       # license + OS packages → builds/clients/.../packages/
 #   ./misc/build_client.sh --accept-license  # non-interactive accept + stamp
 #   ./misc/build_client.sh --show-license  # re-show dialog (clears stamp first)
+#
+# Prefer the repo-root wrapper for a full distributable build:
+#   ./build_client.sh
 #
 # License: Nexus License (Nexus-1.0) — see LICENSE at the repo root.
 #   • Non-commercial Toolkit + derived apps OK (with attribution)
@@ -45,11 +50,16 @@ Usage:
   ./misc/build_client.sh [options]
 
 Options:
-  --clean            Run Gradle clean before compile
-  --test             Also run test
+  --clean            Run Gradle clean before compile / deploy
+  --test             Also run test (ignored with --deploy / --package)
+  --deploy           Build + copy distributable to builds/clients/NexusFrameworkClient-<ver>/
+  --package          Build OS packages into builds/clients/NexusFrameworkClient-<ver>/packages/
   --accept-license   Accept the Nexus License without a dialog (writes stamp)
   --show-license     Clear stamp and show the license dialog again
   -h, --help         Show this help
+
+Repo-root shortcut (sources misc/client-setup/env.sh, then --deploy):
+  ./build_client.sh
 
 License (Nexus License / Nexus-1.0):
   Full text: LICENSE at the repository root
@@ -69,12 +79,16 @@ EOF
 
 CLEAN=0
 RUN_TEST=0
+DEPLOY=0
+PACKAGE=0
 ACCEPT_LICENSE=0
 SHOW_LICENSE=0
 for arg in "$@"; do
   case "$arg" in
     --clean) CLEAN=1 ;;
     --test) RUN_TEST=1 ;;
+    --deploy) DEPLOY=1 ;;
+    --package) PACKAGE=1 ;;
     --accept-license) ACCEPT_LICENSE=1 ;;
     --show-license) SHOW_LICENSE=1 ;;
     -h|--help)
@@ -86,6 +100,10 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+if [[ "$DEPLOY" -eq 1 && "$PACKAGE" -eq 1 ]]; then
+  die "use either --deploy or --package (not both)"
+fi
 
 write_accept_stamp() {
   mkdir -p "$(dirname "$ACCEPT_STAMP")"
@@ -232,19 +250,40 @@ main() {
     chmod +x "$GRADLEW"
   fi
 
+  # Optional env from first-run bootstrap (Zig path, etc.)
+  if [[ -f "$ROOT/misc/client-setup/env.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "$ROOT/misc/client-setup/env.sh"
+    log "Sourced misc/client-setup/env.sh"
+  fi
+
   if [[ "$CLEAN" -eq 1 ]]; then
     log "Cleaning Gradle build outputs"
     "$GRADLEW" --no-daemon clean
   fi
 
-  log "Compiling Kotlin Framework client (unified module)"
-  local tasks=(compileKotlin)
-  if [[ "$RUN_TEST" -eq 1 ]]; then
-    log "Including test"
-    tasks+=(test)
+  local tasks=()
+  if [[ "$PACKAGE" -eq 1 ]]; then
+    log "Packaging Compose Desktop client → builds/clients/NexusFrameworkClient-<ver>/packages/"
+    tasks+=(deployPackageToBuildsClient)
+  elif [[ "$DEPLOY" -eq 1 ]]; then
+    log "Deploying Compose Desktop distributable → builds/clients/NexusFrameworkClient-<ver>/"
+    tasks+=(deployToBuildsClient)
+  else
+    log "Compiling Kotlin Framework client (unified module)"
+    tasks+=(compileKotlin)
+    if [[ "$RUN_TEST" -eq 1 ]]; then
+      log "Including test"
+      tasks+=(test)
+    fi
   fi
 
   "$GRADLEW" --no-daemon "${tasks[@]}"
+
+  local client_out=""
+  if [[ "$DEPLOY" -eq 1 || "$PACKAGE" -eq 1 ]]; then
+    client_out="$(find "$ROOT/builds/clients" -maxdepth 1 -type d -name 'NexusFrameworkClient-*' 2>/dev/null | sort | tail -1 || true)"
+  fi
 
   cat <<EOF
 
@@ -255,11 +294,23 @@ main() {
     ./gradlew run
     ./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
     ./misc/scripts/nexus-dev.sh generate -- --type desktop --name MyApp --dry-run
+    ./build_client.sh                 # distributable → builds/clients/
+    ./misc/build_client.sh --deploy   # same without sourcing env first
+
+EOF
+  if [[ -n "$client_out" ]]; then
+    cat <<EOF
+  Distributable:
+    $client_out
+EOF
+  fi
+  cat <<EOF
 
   Or re-run this script:
     ./misc/build_client.sh
     ./misc/build_client.sh --clean
     ./misc/build_client.sh --test
+    ./misc/build_client.sh --deploy
     ./misc/build_client.sh --show-license   # review Nexus License again
 ────────────────────────────────────────
 EOF

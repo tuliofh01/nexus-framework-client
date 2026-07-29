@@ -109,6 +109,9 @@ template/*/builds/*
 builds/**
 !builds/README.txt
 !builds/LAYOUT.md
+!builds/clients/
+!builds/clients/.gitkeep
+!builds/clients/README.txt
 !builds/client/
 !builds/client/.gitkeep
 !builds/client/README.txt
@@ -118,6 +121,7 @@ builds/**
 !builds/framework/_fixture/
 !builds/framework/_fixture/**
 # Heavy Compose Desktop deploy outputs (never commit)
+builds/clients/NexusFrameworkClient-*/
 builds/client/app/
 builds/client/packages/
 # Generated scaffolded native apps under framework/ (anything except keep/docs/_fixture)

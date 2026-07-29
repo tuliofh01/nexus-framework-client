@@ -1,4 +1,4 @@
-// Convention plugin shared by :core, :cli, and :app via the misc/build-logic included build.
+// Convention plugin for the unified Framework module via the misc/build-logic included build.
 // Plugin id: buildsrc.convention.kotlin-jvm (package name preserved for compatibility).
 package buildsrc.convention
 
