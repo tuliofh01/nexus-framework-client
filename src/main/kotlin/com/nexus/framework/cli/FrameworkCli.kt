@@ -13,7 +13,7 @@ import com.nexus.framework.core.service.TemplateEngine
 import java.nio.file.Files
 import java.nio.file.Path
 
-private const val CLIENT_VERSION = "1.0.3"
+private const val CLIENT_VERSION = NexusBranding.FRAMEWORK_VERSION
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {

@@ -7,7 +7,7 @@ package com.nexus.framework.core.model
  */
 object NexusBranding {
     const val FRAMEWORK_NAME: String = "The Nexus Framework"
-    const val FRAMEWORK_VERSION: String = "1.0.3"
+    const val FRAMEWORK_VERSION: String = "1.1.0"
 
     const val TAGLINE: String = "Cross-platform native app generation"
     const val SUBTITLE: String = "Dashboard UI · Framework Package · Modern C++"

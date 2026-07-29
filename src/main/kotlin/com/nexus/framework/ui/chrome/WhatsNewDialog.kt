@@ -107,7 +107,7 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                     Spacer(Modifier.height(20.dp))
 
                     Text(
-                        text = "1.0.3 patches",
+                        text = "1.1.0 — first production-ready release",
                         style = MaterialTheme.typography.subtitle2.copy(
                             color = NexusTheme.AccentCyan,
                             fontWeight = FontWeight.SemiBold,
@@ -115,13 +115,37 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                     )
                     Spacer(Modifier.height(8.dp))
                     listOf(
-                        "Packages under com.nexus.framework.*",
-                        "Single Gradle module (unified src/ MVC tree)",
-                        "UI feature folders: ui/generate, ui/blueprint, ui/flows, …",
-                        "Generate Project name field clears properly",
-                        "Templates resolve to desktop-app / android-app",
-                        "Desktop / Android cards use drawn monitor & phone icons",
-                        "Blueprint nodes drag freely and no longer stack",
+                        "Production-ready Compose Desktop client + CLI generator",
+                        "./build_client.sh → builds/clients/NexusFrameworkClient-1.1.0/",
+                        "Unified single Gradle module (com.nexus.framework.*)",
+                        "Generate / Blueprint / Flows editors ready for tutorials",
+                    ).forEach { line ->
+                        Text(
+                            text = "• $line",
+                            style = MaterialTheme.typography.body2.copy(
+                                color = NexusTheme.TextSecondary,
+                                fontSize = 12.sp,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 2.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "From 1.0.3",
+                        style = MaterialTheme.typography.subtitle2.copy(
+                            color = NexusTheme.TextSecondary,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    listOf(
+                        "Single-module MVC tree + package rename patches",
+                        "Generate Project UX and Blueprint drag fixes",
+                        "Drawn Desktop / Android icons (no missing emoji glyphs)",
                     ).forEach { line ->
                         Text(
                             text = "• $line",

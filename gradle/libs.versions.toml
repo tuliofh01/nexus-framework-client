@@ -3,7 +3,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-nexusFramework = "1.0.3"
+nexusFramework = "1.1.0"
 kotlin = "2.4.0"
 kotlinxDatetime = "0.8.0"
 kotlinxSerializationJSON = "1.11.0"
