@@ -70,6 +70,29 @@
 - **IntelliJ** — shareable `intellij/` kit via `./intellij/apply-to-idea.sh`.
 - **Tidy** — legacy `nexus.opensource` docs scrubbed; root-owned nested junk under `src/.../framework/` is excluded from sources (purge with `sudo rm -rf` if present).
 
+### Verified in this cut (agent smoke)
+
+- `./gradlew compileKotlin` + `./gradlew test` (unit tests green after relaxing the bundled-blueprint “all node types” assertion).
+- CLI scaffold: `./gradlew runCli --args="generate --type desktop|android --name …"` into `builds/framework/` with valid `nxs_config.json`, `blueprint.json`, and `flows/flows.json`.
+- Desktop client `mainClass` (`com.nexus.framework.AppKt`) packaged in `Framework.jar`; Compose Desktop `:run` / `:runCli` tasks register on the single root module.
+- Version **1.0.3** aligned in catalog, `NexusBranding`, CLI, and README badge.
+
+### Not verified yet — read before tutorials / production demos
+
+- **No full GUI click-through** — Compose Desktop was compiled/packaged; screens were not manually walked (Generate → Blueprint → Flows → Home) in CI or this agent session. Record tutorials only after you click through once on your machine.
+- **`./gradlew run` live window** — task exists; launching the GUI and exercising UI gestures (drag, dialogs, file pickers) was not part of smoke.
+- **Native desktop template build** — generating the tree was verified; a full `build_app.sh` / Zig / SDL3 / C++20 compile of a generated desktop app was **not** run here (heavy toolchain; local deps vary).
+- **Android APK / device** — Android **scaffold** via CLI was verified; Gradle APK assemble, emulator, and physical device runs were **not** tested on this machine.
+- **Packaging / installers** — `package` / `packageDistributionForCurrentOS` / deploy-to-builds-client were not smoke-run for 1.0.3.
+- **Translations** — non-English `misc/translations/` may still mention old `:app` / `:cli` module commands; English README is the source of truth for this cut.
+
+### Risks & migration notes
+
+- **Root-owned junk** — if `src/main/kotlin/com/nexus/framework/framework/` still exists (nested `build/` owned by root), Gradle already **excludes** it from sources, but `rm` needs `sudo rm -rf src/main/kotlin/com/nexus/framework/framework`. Harmless to the build if left alone; confusing in tree explorers.
+- **Unified module** — old docs, scripts, or muscle memory for `./gradlew :app:run` / `:core:test` / `:cli:run` are obsolete. Use `./gradlew run`, `./gradlew test`, `./gradlew runCli`.
+- **Layout move** — controllers/views now live under `src/main/kotlin/com/nexus/framework/ui/<feature>/` and shared Desktop helpers under `shared/`; IntelliJ bookmarks to `app/` or `core/` paths will 404 until you re-open from repo root and re-apply `./intellij/apply-to-idea.sh`.
+- **Tutorial scope** — treat “production-stable” as **client + generator + templates scaffold**, not as a guarantee that every generated native binary builds on every host without setup.
+
 Apply the IntelliJ kit after pull: `./intellij/apply-to-idea.sh`.
 
 ---
