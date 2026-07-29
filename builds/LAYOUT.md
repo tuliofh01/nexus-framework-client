@@ -27,10 +27,10 @@ builds/
 
 | Task | Output |
 |------|--------|
-| `./gradlew :app:deployToBuildsClient` | Runnable distribution → `builds/client/app/` |
-| `./gradlew :app:deployPackageToBuildsClient` | OS packages (`.deb`, `.rpm`, …) → `builds/client/packages/` |
+| `./gradlew deployToBuildsClient` | Runnable distribution → `builds/client/app/` |
+| `./gradlew deployPackageToBuildsClient` | OS packages (`.deb`, `.rpm`, …) → `builds/client/packages/` |
 
-Gradle still writes intermediates under `app/build/`; deploy tasks copy finished artifacts here.
+Gradle still writes intermediates under `build/; deploy tasks copy finished artifacts here.
 
 ## Framework (`builds/framework/`)
 

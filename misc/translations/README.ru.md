@@ -22,7 +22,7 @@
 > **От нуля до бинарника**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew :app:run
+> ./misc/build_client.sh && ./gradlew run
 > ```
 
 Полный английский README — авторитетный источник: [../../README.md](../../README.md).
@@ -76,7 +76,7 @@ zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 ./misc/build_client.sh
 
 # 3. Генерация десктоп приложения:
-./gradlew :cli:run --args="generate --type desktop --name MyApp"
+./gradlew runCli --args="generate --type desktop --name MyApp"
 
 # 4. Компиляция бинарника:
 cd builds/framework/MyApp && ./build_app.sh

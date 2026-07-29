@@ -29,4 +29,4 @@ Each app template ships a generic **`blueprint.json`** with all five Langflow-st
 | TS/XHTML DSL | [shared/dsl/](shared/dsl/)         |
 | C++ runtime  | [shared/runtime/](shared/runtime/) |
 
-Docs: [docs/hub.md](../docs/hub.md) · Generate: `./gradlew :cli:run --args="generate --type desktop --name MyApp"`
+Docs: [docs/hub.md](../docs/hub.md) · Generate: `./gradlew runCli --args="generate --type desktop --name MyApp"`

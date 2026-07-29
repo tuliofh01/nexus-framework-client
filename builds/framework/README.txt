@@ -11,7 +11,7 @@ optional _fixture/ helper config are tracked.
 
 Generate an app (examples):
 
-  ./gradlew :cli:run --args="generate --type desktop --name MyApp"
+  ./gradlew runCli --args="generate --type desktop --name MyApp"
   # or use the Compose client Generate Project flow
 
 Build/run inside the generated project (Zig or CMake per its README).

@@ -65,7 +65,7 @@
   <rect x="428" y="140" width="288" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
   <text x="444" y="169" class="icon">&#xf108;</text>
   <text x="466" y="171" class="label">
-    <tspan x="466" dy="0">./gradlew :app:run</tspan>
+    <tspan x="466" dy="0">./gradlew run</tspan>
   </text>
   <text x="444" y="191" class="desc">
     <tspan x="444" dy="0">Launches Compose Desktop scaffold client</tspan>
@@ -233,7 +233,7 @@
   <line x1="2197" y1="353" x2="2187" y2="409" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M2317,445 L2317,182 L2394,182 L2394,182" fill="none" stroke="#475569"  stroke-width="2" marker-end="url(#arrow)"/>
   <rect x="680" y="819" width="380" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
-  <text x="700" y="847" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
+  <text x="700" y="847" class="small">Headless: ./gradlew runCli --args="generate …"</text>
   <text x="700" y="867" class="desc">Optional Docker path via misc/docker/</text>
   <rect x="24" y="909" width="520" height="88" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="2" rx="10"/>
   <text x="40" y="931" class="legend-title">Pipeline stages</text>

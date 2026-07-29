@@ -35,7 +35,7 @@
   <rect x="240" y="150" width="320" height="72" class="node" fill="#E3F2FD" stroke="#1565C0"/>
   <text x="256" y="179" class="icon">&#xf108;</text>
   <text x="278" y="181" class="label">
-    <tspan x="278" dy="0">Launch ./gradlew :app:run</tspan>
+    <tspan x="278" dy="0">Launch ./gradlew run</tspan>
   </text>
   <text x="256" y="201" class="desc">
     <tspan x="256" dy="0">Compose Desktop process starts</tspan>

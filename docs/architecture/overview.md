@@ -26,7 +26,7 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 
 - **Langflow:** visual DAG of typed nodes for ML/LLM — Nexus reuses this UX for **native app structure** (`python.module` → `cpp.controller` → `ui.page`, etc.).
 - **n8n:** workflow automation with triggers and integrations at **runtime** — Nexus blueprint is **build-time only**; optional n8n-style hooks are roadmap.
-- **Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint** → custom graph passed via `ProjectSpec.blueprint` to `ProjectGenerator`.
+- **Client path:** `./gradlew run` → **Generate Project** → **Edit blueprint** → custom graph passed via `ProjectSpec.blueprint` to `ProjectGenerator`.
 
 | Layer               | Technology                                  | Role                                                                                    |
 |--------------------|---------------------------------------------|----------------------------------------------------------------------------------------|
@@ -51,7 +51,7 @@ This diagram replaces earlier per-use-case flowcharts. Trading desks, CAD viewer
 | `lua.script`     | `scripts/panels.lua`                    |
 Edges wire data flow (e.g. `evaluate` → `sampleCache` → `activeCurves` → `commands`). See [blueprint-schema.md](../templates/blueprint-schema.md) and template samples under `template/*/blueprint.json`.
 
-**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1.1 adds a native imnodes panel using the same JSON.
+**Client path:** `./gradlew run` → **Generate Project** → **Edit blueprint**. v1.1 adds a native imnodes panel using the same JSON.
 
 ### Langflow-style nodes vs n8n
 
@@ -118,10 +118,10 @@ Desktop templates pack `scripts/` and `python/` into binary archives beside the 
 ### CLI usage
 
 ```bash
-./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"     # dry-run
-./gradlew :cli:run --args="generate --type desktop --name MyApp"               # generate
-./gradlew :cli:run --args="generate --type android --name MyApp --output builds/framework/MyApp"
-./gradlew :cli:run --args="generate --type desktop --name MyApp --force"       # overwrite
+./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"     # dry-run
+./gradlew runCli --args="generate --type desktop --name MyApp"               # generate
+./gradlew runCli --args="generate --type android --name MyApp --output builds/framework/MyApp"
+./gradlew runCli --args="generate --type desktop --name MyApp --force"       # overwrite
 ```
 
 Docker: `./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp`

@@ -22,7 +22,7 @@
 > **Vom Null zur Binärdatei**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew :app:run
+> ./misc/build_client.sh && ./gradlew run
 > ```
 
 Das vollständige englische README ist die maßgebliche Quelle: [../../README.md](../../README.md).
@@ -76,7 +76,7 @@ zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 ./misc/build_client.sh
 
 # 3. Desktop-App generieren:
-./gradlew :cli:run --args="generate --type desktop --name MeineApp"
+./gradlew runCli --args="generate --type desktop --name MeineApp"
 
 # 4. Binärdatei kompilieren:
 cd builds/framework/MeineApp && ./build_app.sh

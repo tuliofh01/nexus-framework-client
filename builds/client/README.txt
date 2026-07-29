@@ -10,8 +10,8 @@ Deploy target for the Compose Desktop Nexus client (:app).
 
 Populate locally with:
 
-  ./gradlew :app:deployToBuildsClient
-  ./gradlew :app:deployPackageToBuildsClient
+  ./gradlew deployToBuildsClient
+  ./gradlew deployPackageToBuildsClient
 
 Gradle intermediates remain under app/build/; deploy tasks copy finished
 artifacts here. See ../LAYOUT.md for the table of tasks and paths.

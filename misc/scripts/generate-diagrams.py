@@ -622,7 +622,7 @@ def generation_builds_flow() -> str:
             ("source env.sh", "Activates toolchain for Gradle and Zig", "#E8F5E9", "#2E7D32", NF["terminal"]),
         ],
         [
-            ("./gradlew :app:run", "Launches Compose Desktop scaffold client", "#E3F2FD", "#1565C0", NF["desktop"]),
+            ("./gradlew run", "Launches Compose Desktop scaffold client", "#E3F2FD", "#1565C0", NF["desktop"]),
             ("Generate Project screen", "Collects name, type, and output path", "#E3F2FD", "#1565C0", NF["layer"]),
             ("Blueprint Editor?", "Optional visual edit of blueprint.json", "#FFF3E0", "#EF6C00", NF["branch"]),
             ("BlueprintValidator", "Schema check before codegen proceeds", "#FFF3E0", "#EF6C00", NF["gear"]),
@@ -712,7 +712,7 @@ def generation_builds_flow() -> str:
 {chr(10).join(col_svgs)}
 {chr(10).join(flows)}
   <rect x="680" y="{note_y}" width="380" height="70" class="panel" fill="#FFFDE7" stroke="#F9A825"/>
-  <text x="700" y="{note_y + 28}" class="small">Headless: ./gradlew :cli:run --args="generate …"</text>
+  <text x="700" y="{note_y + 28}" class="small">Headless: ./gradlew runCli --args="generate …"</text>
   <text x="700" y="{note_y + 48}" class="desc">Optional Docker path via misc/docker/</text>
 {legend_box(24, legend_y, 520, 120, [
     ("#E8F5E9", "#2E7D32", "Setup — JDK 26 + Git bootstrap"),
@@ -1755,7 +1755,7 @@ def activity_first_run_bootstrap() -> str:
     yes_y = d_box["y"] + d_box["h"] + ACT_GAP
     yes_svg, yes_box = _act_action(
         yes_x - ACT_W // 2, yes_y,
-        "Ready for :app:run / :cli:generate",
+        "Ready for ./gradlew run / runCli",
         "Toolchain verified — proceed to client or CLI",
         "#E8F5E9", "#2E7D32", icon=NF["rocket"],
     )
@@ -1804,7 +1804,7 @@ def activity_client_navigation() -> str:
     y = s_box["y"] + s_box["h"] + ACT_GAP
 
     top_parts, top_boxes, y = _vertical_actions(x, y, [
-        ("Launch ./gradlew :app:run", "Compose Desktop process starts", "#E3F2FD", "#1565C0", NF["desktop"]),
+        ("Launch ./gradlew run", "Compose Desktop process starts", "#E3F2FD", "#1565C0", NF["desktop"]),
         ("LoadingScreen", "Flamingo animation splash", "#E3F2FD", "#1565C0", NF["rocket"]),
         ("Navigate to Home", "Primary hub after load", "#E3F2FD", "#1565C0", NF["layer"]),
     ])

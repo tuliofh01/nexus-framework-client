@@ -22,7 +22,7 @@
 > **从零到二进制**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew :app:run
+> ./misc/build_client.sh && ./gradlew run
 > ```
 
 完整英文 README 为权威来源：[../../README.md](../../README.md)。
@@ -76,7 +76,7 @@ zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 ./misc/build_client.sh
 
 # 3. 生成桌面应用：
-./gradlew :cli:run --args="generate --type desktop --name MyApp"
+./gradlew runCli --args="generate --type desktop --name MyApp"
 
 # 4. 编译二进制：
 cd builds/framework/MyApp && ./build_app.sh

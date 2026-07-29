@@ -12,9 +12,9 @@ Tracked in git
 Not tracked (generated / large)
 -------------------------------
 - client/app/       Runnable Compose Desktop distribution
-                    (from: ./gradlew :app:deployToBuildsClient)
+                    (from: ./gradlew deployToBuildsClient)
 - client/packages/  OS installers (.deb, .rpm, .dmg, …)
-                    (from: ./gradlew :app:deployPackageToBuildsClient)
+                    (from: ./gradlew deployPackageToBuildsClient)
 - framework/<Name>/ Scaffolded native apps from the generator/CLI
                     (e.g. Plotter2DApp, MyApp) — one folder per project
 

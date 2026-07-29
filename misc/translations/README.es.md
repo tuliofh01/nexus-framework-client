@@ -22,7 +22,7 @@
 > **De cero a binario**
 > ```bash
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
-> ./misc/build_client.sh && ./gradlew :app:run
+> ./misc/build_client.sh && ./gradlew run
 > ```
 
 El README completo en inglés es la fuente autoritativa: [../../README.md](../../README.md).
@@ -76,7 +76,7 @@ zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 ./misc/build_client.sh
 
 # 3. Genera una app de escritorio:
-./gradlew :cli:run --args="generate --type desktop --name MiApp"
+./gradlew runCli --args="generate --type desktop --name MiApp"
 
 # 4. Compila el binario:
 cd builds/framework/MiApp && ./build_app.sh

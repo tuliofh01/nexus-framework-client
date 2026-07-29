@@ -21,7 +21,7 @@ Nexus users often ask how `blueprint.json` relates to **Langflow** and **n8n**. 
 
 **Structure vs automation:** Langflow exports that wire screens, controllers, and Python modules map here. Runtime automation (timers, event hooks, background loops) maps to `flows.json` instead (see the [Runtime flows section](#runtime-flows-flowsjson) below).
 
-**Client path:** `./gradlew :app:run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema. All v1 node types use `editor.paradigm: "langflow"`; future **n8n-style** automation nodes may use `"n8n"` — not shipped in v1.
+**Client path:** `./gradlew run` → **Generate Project** → **Edit blueprint**. v1 ships a Compose canvas + JSON inspector; v1.1 adds imnodes with the same schema. All v1 node types use `editor.paradigm: "langflow"`; future **n8n-style** automation nodes may use `"n8n"` — not shipped in v1.
 
 
 ## Top-level fields
@@ -117,4 +117,4 @@ Flows live under `runtimes/flows/` in the generated app tree. Enable via `nxs_co
 |-------------------|-------------------------------------------|--------------------------------------------------------------|
 | **v1 (shipped)**   | Compose Canvas + JSON inspector in `:app` | Add/remove nodes, drag positions, connect edges, preview JSON |
 | **v1.1 (planned)** | imnodes native panel                      | Same file; grid snap from `editor.grid_snap`                  |
-Run `./gradlew :app:run` → **Generate Project** → **Edit blueprint**.
+Run `./gradlew run` → **Generate Project** → **Edit blueprint**.

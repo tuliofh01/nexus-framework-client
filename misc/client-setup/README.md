@@ -1,6 +1,6 @@
 # Client setup — first run
 
-Run **one** bootstrap **before** your first `./gradlew :app:run`. Installs **Zig 0.16.0** and pins a known-good JDK 26 for Gradle.
+Run **one** bootstrap **before** your first `./gradlew run`. Installs **Zig 0.16.0** and pins a known-good JDK 26 for Gradle.
 
 ## Quick start
 
@@ -9,7 +9,7 @@ Run **one** bootstrap **before** your first `./gradlew :app:run`. Installs **Zig
 ```bash
 zig run misc/client-setup/setup.zig
 source misc/client-setup/env.sh
-./gradlew :app:run
+./gradlew run
 ```
 
 **Linux / macOS:**
