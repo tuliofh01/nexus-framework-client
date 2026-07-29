@@ -118,6 +118,8 @@ fun WhatsNewDialog(onDismiss: () -> Unit) {
                         "Per-module Gradle (:core / :cli / :app)",
                         "Generate Project name field clears properly",
                         "Templates resolve to desktop-app / android-app",
+                        "Desktop / Android cards use drawn monitor & phone icons",
+                        "Blueprint nodes drag freely and no longer stack",
                     ).forEach { line ->
                         Text(
                             text = "• $line",

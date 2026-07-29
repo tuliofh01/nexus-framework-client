@@ -112,6 +112,7 @@ class BlueprintEditorController(
         loadedFromPath = null
         selectedNodeId = null
         pendingEdgeSourceId = null
+        ensureReadableLayout()
         validate()
         statusMessage = "Loaded template blueprint (${appType.label})"
     }
@@ -121,6 +122,7 @@ class BlueprintEditorController(
         loadedFromPath = path
         selectedNodeId = null
         pendingEdgeSourceId = null
+        ensureReadableLayout()
         validate()
         statusMessage = "Loaded ${path.fileName}"
     }
@@ -131,6 +133,7 @@ class BlueprintEditorController(
         loadedFromPath = null
         selectedNodeId = null
         pendingEdgeSourceId = null
+        ensureReadableLayout()
         validate()
         statusMessage = "Loaded $sourceLabel (${file.nodes.size} nodes, ${file.edges.size} edges)"
     }
@@ -209,9 +212,11 @@ class BlueprintEditorController(
 
     fun addNode(type: BlueprintNodeType) {
         val id = nextNodeId(type)
+        val strideX = 168f + 36f
+        val strideY = 64f + 28f
         val position = BlueprintPosition(
-            x = 80f + (blueprint.nodes.size % 4) * 180f,
-            y = 80f + (blueprint.nodes.size / 4) * 120f,
+            x = 40f + (blueprint.nodes.size % 3) * strideX,
+            y = 40f + (blueprint.nodes.size / 3) * strideY,
         )
         val node = BlueprintJson.createNode(type, id, position, appType)
         blueprint = blueprint.copy(nodes = blueprint.nodes + node)
@@ -223,7 +228,59 @@ class BlueprintEditorController(
     fun moveNode(nodeId: String, x: Float, y: Float) {
         blueprint = blueprint.copy(
             nodes = blueprint.nodes.map { node ->
-                if (node.id == nodeId) node.copy(position = BlueprintPosition(x, y)) else node
+                if (node.id == nodeId) {
+                    node.copy(
+                        position = BlueprintPosition(
+                            x = x.coerceAtLeast(0f),
+                            y = y.coerceAtLeast(0f),
+                        ),
+                    )
+                } else {
+                    node
+                }
+            },
+        )
+    }
+
+    /**
+     * Apply a drag delta against the node's **current** position.
+     * Absolute [moveNode] from a stale Compose capture snaps nodes back every frame.
+     */
+    fun moveNodeBy(nodeId: String, dx: Float, dy: Float) {
+        val current = blueprint.nodes.find { it.id == nodeId } ?: return
+        moveNode(nodeId, current.position.x + dx, current.position.y + dy)
+    }
+
+    /**
+     * Spread nodes that share the same (or nearly same) origin so boxes aren't stacked.
+     * Keeps existing spacing when the graph already has distinct positions.
+     */
+    fun ensureReadableLayout(
+        nodeWidth: Float = 168f,
+        nodeHeight: Float = 64f,
+        gapX: Float = 36f,
+        gapY: Float = 28f,
+        columns: Int = 3,
+    ) {
+        val nodes = blueprint.nodes
+        if (nodes.size <= 1) return
+        val clustered = nodes.groupBy {
+            "${(it.position.x / 8f).toInt()}:${(it.position.y / 8f).toInt()}"
+        }
+        val needsLayout = clustered.values.any { it.size > 1 } ||
+            nodes.all { it.position.x == 0f && it.position.y == 0f }
+        if (!needsLayout) return
+
+        val strideX = nodeWidth + gapX
+        val strideY = nodeHeight + gapY
+        blueprint = blueprint.copy(
+            nodes = nodes.mapIndexed { index, node ->
+                node.copy(
+                    position = BlueprintPosition(
+                        x = 40f + (index % columns) * strideX,
+                        y = 40f + (index / columns) * strideY,
+                    ),
+                )
             },
         )
     }

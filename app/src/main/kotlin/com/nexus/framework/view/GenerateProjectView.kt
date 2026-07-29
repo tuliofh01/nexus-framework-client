@@ -1,5 +1,6 @@
 package com.nexus.framework.view
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,8 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -276,18 +281,19 @@ private fun AppTypeCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val (icon, desc) = when (type) {
-        AppType.DESKTOP -> "\uD83D\uDDBB" to "Windows \u00B7 macOS \u00B7 Linux"
-        AppType.ANDROID -> "\uD83D\uDCF1" to "Android APK (Chaquopy)"
+    val desc = when (type) {
+        AppType.DESKTOP -> "Windows \u00B7 macOS \u00B7 Linux"
+        AppType.ANDROID -> "Android APK (Chaquopy)"
     }
 
     val borderColor = if (selected) AccentCyan else Color(0xFF3A3A5C)
     val bgColor = if (selected) Color(0xFF0D2B3D) else CardBg
+    val iconTint = if (selected) AccentCyan else TextPrimary
 
     Box(
         modifier = Modifier
             .width(180.dp)
-            .height(100.dp)
+            .height(110.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(bgColor)
             .border(2.dp, borderColor, RoundedCornerShape(12.dp))
@@ -298,7 +304,16 @@ private fun AppTypeCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(text = icon, fontSize = 28.sp)
+            when (type) {
+                AppType.DESKTOP -> DesktopComputerIcon(
+                    modifier = Modifier.size(36.dp),
+                    tint = iconTint,
+                )
+                AppType.ANDROID -> AndroidDeviceIcon(
+                    modifier = Modifier.size(36.dp),
+                    tint = iconTint,
+                )
+            }
             Text(
                 text = type.label,
                 style = MaterialTheme.typography.subtitle1.copy(
@@ -312,5 +327,72 @@ private fun AppTypeCard(
                 textAlign = TextAlign.Center,
             )
         }
+    }
+}
+
+/** Simple desktop-monitor glyph (emoji fonts often lack U+1F5A5 / U+1F5BB on Linux). */
+@Composable
+private fun DesktopComputerIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = TextPrimary,
+) {
+    Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+        drawRoundRect(
+            color = tint,
+            topLeft = Offset(w * 0.08f, h * 0.05f),
+            size = Size(w * 0.84f, h * 0.57f),
+            cornerRadius = CornerRadius(w * 0.06f, w * 0.06f),
+            style = Stroke(width = w * 0.07f),
+        )
+        drawRoundRect(
+            color = tint.copy(alpha = 0.22f),
+            topLeft = Offset(w * 0.16f, h * 0.14f),
+            size = Size(w * 0.68f, h * 0.40f),
+            cornerRadius = CornerRadius(w * 0.03f, w * 0.03f),
+        )
+        drawLine(
+            color = tint,
+            start = Offset(w * 0.50f, h * 0.62f),
+            end = Offset(w * 0.50f, h * 0.78f),
+            strokeWidth = w * 0.07f,
+        )
+        drawLine(
+            color = tint,
+            start = Offset(w * 0.28f, h * 0.82f),
+            end = Offset(w * 0.72f, h * 0.82f),
+            strokeWidth = w * 0.07f,
+            cap = StrokeCap.Round,
+        )
+    }
+}
+
+@Composable
+private fun AndroidDeviceIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = TextPrimary,
+) {
+    Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+        drawRoundRect(
+            color = tint,
+            topLeft = Offset(w * 0.28f, h * 0.08f),
+            size = Size(w * 0.44f, h * 0.84f),
+            cornerRadius = CornerRadius(w * 0.08f, w * 0.08f),
+            style = Stroke(width = w * 0.07f),
+        )
+        drawRoundRect(
+            color = tint.copy(alpha = 0.22f),
+            topLeft = Offset(w * 0.34f, h * 0.18f),
+            size = Size(w * 0.32f, h * 0.58f),
+            cornerRadius = CornerRadius(w * 0.03f, w * 0.03f),
+        )
+        drawCircle(
+            color = tint,
+            radius = w * 0.04f,
+            center = Offset(w * 0.50f, h * 0.84f),
+        )
     }
 }

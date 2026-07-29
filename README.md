@@ -64,6 +64,8 @@ This release is mostly **debugging and patches**: the Gradle graph and package l
 - **Build / modules** — recreated per-module Gradle (`:core`, `:cli`, `:app`) so the client and CLI compile against root modules again (no more missing `:core` directory).
 - **Packages** — first-party Kotlin now lives under `com.nexus.framework.*` with sources at `app/`, `core/`, and `cli/` (not nested under crazy `app/.../framework/core/src/...` paths).
 - **Generate Project UI** — project name starts empty with a clearing placeholder; generate validates blank names and shows a real `Generated: …` status; stack preview follows Desktop vs Android; template folders map to `template/desktop-app` and `template/android-app`.
+- **Generate Project icons** — Desktop / Android template cards use drawn monitor and phone glyphs (emoji fonts often omit the desktop-computer character on Linux).
+- **Blueprint editor** — nodes are draggable again (relative drag deltas); chip size matches canvas pixel space so boxes no longer stack; clustered/zero-origin graphs auto-spread for readability.
 - **Editors** — Blueprint / Flows no longer seed a stuck `"MyApp"` value; dark-theme text fields get readable colors; Whats New shows the live `NexusBranding` version.
 - **IntelliJ** — shareable `intellij/` kit (style, lint-on-save guidance, snippets, wisdom/`AGENTS.md`) via `./intellij/apply-to-idea.sh`.
 - **Tidy** — legacy `nexus.opensource` paths scrubbed from docs/diagrams; nested junk under `app/.../framework/framework/` is gitignored (purge with `sudo rm -rf` if still on disk).
@@ -1105,7 +1107,7 @@ For the full directory tree (every folder, every file), see [Project Structure](
 
 ###  What's in 1.0.3 (Build hygiene + client UX)
 
-Patches in this release focus on restoring a sane build and fixing the Generate Project naming UX:
+Patches in this release focus on restoring a sane build, fixing Generate Project UX, and polishing the Blueprint canvas:
 
 - **Package rename** — all first-party Kotlin now lives under `com.nexus.framework.*` (app / core / cli)
 - **Per-module Gradle** — root `build.gradle.kts` only declares plugins; `:core`, `:cli`, and `:app` each have their own build script; entry points are `com.nexus.framework.AppKt` and `com.nexus.framework.cli.FrameworkCliKt`

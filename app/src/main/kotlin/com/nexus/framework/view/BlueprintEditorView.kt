@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,8 +37,9 @@ import com.nexus.framework.core.model.BlueprintNodeType
 import com.nexus.framework.util.NativeFileDialogs
 import kotlin.math.roundToInt
 
-private val nodeWidth = 168f
-private val nodeHeight = 64f
+/** Canvas / chip size in **pixels** (must stay consistent with [BlueprintPosition]). */
+private val nodeWidthPx = 168f
+private val nodeHeightPx = 64f
 
 private fun nodeAccent(type: String): Color = when (type) {
     BlueprintNodeType.PYTHON_MODULE.id -> NexusTheme.AccentGreen
@@ -487,6 +489,10 @@ private fun BlueprintGraphCanvas(
     modifier: Modifier = Modifier,
 ) {
     val blueprint = controller.blueprint
+    // Un-stack nodes once when the graph membership changes (not on every drag frame).
+    LaunchedEffect(blueprint.nodes.map { it.id }) {
+        controller.ensureReadableLayout(nodeWidthPx, nodeHeightPx)
+    }
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
@@ -519,8 +525,8 @@ private fun BlueprintGraphCanvas(
                 for (edge in blueprint.edges) {
                     val src = positions[edge.source] ?: continue
                     val tgt = positions[edge.target] ?: continue
-                    val start = Offset(src.x + nodeWidth, src.y + nodeHeight / 2f)
-                    val end = Offset(tgt.x, tgt.y + nodeHeight / 2f)
+                    val start = Offset(src.x + nodeWidthPx, src.y + nodeHeightPx / 2f)
+                    val end = Offset(tgt.x, tgt.y + nodeHeightPx / 2f)
                     val midX = (start.x + end.x) / 2f
                     val path = Path().apply {
                         moveTo(start.x, start.y)
@@ -543,13 +549,13 @@ private fun BlueprintGraphCanvas(
                     drawRoundRect(
                         color = accent.copy(alpha = 0.18f),
                         topLeft = Offset(node.position.x, node.position.y),
-                        size = Size(nodeWidth, nodeHeight),
+                        size = Size(nodeWidthPx, nodeHeightPx),
                         cornerRadius = CornerRadius(10f, 10f),
                     )
                     drawRoundRect(
                         color = if (selected || pending) accent else accent.copy(alpha = 0.55f),
                         topLeft = Offset(node.position.x, node.position.y),
-                        size = Size(nodeWidth, nodeHeight),
+                        size = Size(nodeWidthPx, nodeHeightPx),
                         cornerRadius = CornerRadius(10f, 10f),
                         style = Stroke(width = if (selected || pending) 2.5f else 1.2f),
                     )
@@ -569,11 +575,7 @@ private fun BlueprintGraphCanvas(
                         }
                     },
                     onDrag = { dx, dy ->
-                        controller.moveNode(
-                            node.id,
-                            node.position.x + dx,
-                            node.position.y + dy,
-                        )
+                        controller.moveNodeBy(node.id, dx, dy)
                     },
                 )
             }
@@ -600,19 +602,23 @@ private fun DraggableNodeChip(
 ) {
     // CUSTOMIZE: richer hover affordances (port highlights, tooltips)
     var hovered by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
     val accent = nodeAccent(node.type)
     val borderWidth = when {
         selected || pendingSource -> 2.5.dp
         hovered -> 1.5.dp
         else -> 0.dp
     }
+    // Size in dp that matches canvas pixel boxes (BlueprintPosition is pixel-space).
+    val chipWidth = with(density) { nodeWidthPx.toDp() }
+    val chipHeight = with(density) { nodeHeightPx.toDp() }
 
     Box(
         modifier = Modifier
             .offset {
                 IntOffset(node.position.x.roundToInt(), node.position.y.roundToInt())
             }
-            .size(nodeWidth.dp, nodeHeight.dp)
+            .size(chipWidth, chipHeight)
             .pointerInput(node.id) {
                 detectTapGestures(onTap = { onSelect() })
             }
