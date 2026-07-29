@@ -2,7 +2,7 @@
 # Nexus Framework local dev workflow helper.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${ROOT}"
 
 usage() {
@@ -10,10 +10,10 @@ usage() {
 Usage: nexus-dev.sh <command> [args]
 
 Commands:
-  compile          Compile :core, :cli, :app
+  compile          Compile the unified Framework project
   test             Run ./gradlew check
   generate         Run CLI generate (pass args after --)
-  client           Run Compose client (:app:run)
+  client           Run Compose client (./gradlew run)
   docker           Run generate-in-docker.sh (pass args after --)
 
 Examples:
@@ -28,17 +28,17 @@ shift || true
 
 case "${cmd}" in
   compile)
-    ./gradlew :core:compileKotlin :cli:compileKotlin :app:compileKotlin
+    ./gradlew compileKotlin
     ;;
   test)
     ./gradlew check
     ;;
   generate)
     if [[ "${1:-}" == "--" ]]; then shift; fi
-    ./gradlew :cli:run --args="generate $*"
+    ./gradlew runCli --args="generate $*"
     ;;
   client)
-    ./gradlew :app:run
+    ./gradlew run
     ;;
   docker)
     if [[ "${1:-}" == "--" ]]; then shift; fi

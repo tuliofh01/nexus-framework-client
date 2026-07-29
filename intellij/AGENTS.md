@@ -59,11 +59,11 @@ JDK toolchain: **26**. Wrapper: Gradle **9.6.x**. Catalog: `gradle/libs.versions
 
 ## Architecture tips for better suggestions
 
-- Prefer **MVC** boundaries already in `:app` — do not put Compose UI into `:core`.
-- Generation / validation / Langflow mapping belongs in `:core` services.
+- Prefer **MVC** boundaries already in `ui/` — do not put Compose UI into `core/`.
+- Generation / validation / Langflow mapping belongs in `core/` services.
 - Templates for generated apps: `template/desktop-app`, `template/android-app`, `template/shared`.
 - Output of generation: `builds/framework/<name>/` (gitignored contents).
-- Client distributable: `builds/client/` via `:app:deployToBuildsClient`.
+- Client distributable: `builds/client/` via `deployToBuildsClient`.
 
 ## Coding preferences
 
@@ -71,7 +71,7 @@ JDK toolchain: **26**. Wrapper: Gradle **9.6.x**. Catalog: `gradle/libs.versions
 - Optimize imports + remove unused parameters/variables on every edit.
 - Match `.editorconfig` (4 spaces Kotlin).
 - Keep `CUSTOMIZE` comments as extension points — do not delete them casually.
-- When renaming packages, update `mainClass` in `app/build.gradle.kts` and `cli/build.gradle.kts`.
+- When renaming packages, update `mainClass` / `runCli` entry points in root `build.gradle.kts`.
 
 ## Known junk (do not “fix” by nesting modules again)
 

@@ -16,14 +16,13 @@ WORKDIR /workspace
 COPY gradlew gradlew.bat settings.gradle.kts gradle.properties build.gradle.kts ./
 COPY gradle/ gradle/
 COPY misc/build-logic/ misc/build-logic/
-COPY core/ core/
-COPY cli/ cli/
+COPY src/ src/
 COPY template/ template/
 
 RUN chmod +x gradlew
 
 # Warm dependency cache (compile only — no generation at image build time).
-RUN ./gradlew :core:compileKotlin :cli:compileKotlin --no-daemon
+RUN ./gradlew compileKotlin --no-daemon
 
-ENTRYPOINT ["./gradlew", ":cli:run", "--no-daemon"]
+ENTRYPOINT ["./gradlew", "runCli", "--no-daemon"]
 CMD ["--args=help"]

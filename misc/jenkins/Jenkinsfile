@@ -22,7 +22,7 @@ pipeline {
 
         stage('Compile') {
             steps {
-                sh './gradlew :core:compileKotlin :cli:compileKotlin --no-daemon'
+                sh './gradlew compileKotlin --no-daemon'
             }
         }
 
@@ -31,7 +31,7 @@ pipeline {
                 script {
                     def dryRunFlag = params.DRY_RUN ? '--dry-run' : ''
                     sh """
-                        ./gradlew :cli:run --no-daemon --args="generate \
+                        ./gradlew runCli --no-daemon --args="generate \
                           --type ${params.TEMPLATE_TYPE} \
                           --name ${params.PROJECT_NAME} \
                           --output ${params.OUTPUT_DIR} \

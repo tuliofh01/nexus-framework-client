@@ -3,7 +3,7 @@
 Jenkins is **optional**. Local generation works without it:
 
 ```bash
-./gradlew :cli:run --args="generate --type desktop --name MyApp --dry-run"
+./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
 ```
 
 ## Pipeline file

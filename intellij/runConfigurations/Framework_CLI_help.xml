@@ -7,7 +7,7 @@
       <option name="scriptParameters" value="--args=--" />
       <option name="taskNames">
         <list>
-          <option value=":cli:run" />
+          <option value="runCli" />
         </list>
       </option>
     </ExternalSystemSettings>

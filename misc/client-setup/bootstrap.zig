@@ -133,5 +133,5 @@ pub fn main(init: std.process.Init) !void {
     std.debug.print("=== Nexus Bootstrap ===\n", .{});
     _ = try installZig(gpa, io, .{});
     try writeEnvFiles(gpa, io);
-    std.debug.print("Done. Source env.sh and run ./gradlew :app:run\n", .{});
+    std.debug.print("Done. Source env.sh and run ./gradlew run\n", .{});
 }

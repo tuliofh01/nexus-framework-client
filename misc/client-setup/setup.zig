@@ -32,5 +32,5 @@ pub fn main(init: std.process.Init) !void {
 
     std.debug.print("\nDone.\n", .{});
     std.debug.print("Next: source misc/client-setup/env.sh\n", .{});
-    std.debug.print("      ./gradlew :app:run\n", .{});
+    std.debug.print("      ./gradlew run\n", .{});
 }
