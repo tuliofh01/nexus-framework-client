@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# Shared environment for test-gen scripts.
-# Source after resolving SCRIPT_DIR:
-#   source "${SCRIPT_DIR}/env.sh"
+# Shared environment for test-gen scripts (misc/test-gen/ — flat layout).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEST_GEN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-NEXUS_ROOT="$(cd "${TEST_GEN_ROOT}/../.." && pwd)"
+TEST_GEN_ROOT="${SCRIPT_DIR}"
+# misc/test-gen → misc → repo root
+NEXUS_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 export SCRIPT_DIR TEST_GEN_ROOT NEXUS_ROOT
 export BUILDS_DIR="${NEXUS_ROOT}/builds/framework"
-export TEMPLATES_DIR="${SCRIPT_DIR}/templates"
+# Templates live beside this script (depth-2 misc layout).
+export TEMPLATES_DIR="${SCRIPT_DIR}"
 
-# Optional client-setup env (JAVA_HOME for Android Gradle tests)
 CLIENT_SETUP_ENV="${NEXUS_ROOT}/misc/client-setup/env.sh"
 if [[ -f "${CLIENT_SETUP_ENV}" ]]; then
   # shellcheck disable=SC1090

@@ -124,8 +124,11 @@ builds/**
 builds/clients/NexusFrameworkClient-*/
 builds/client/app/
 builds/client/packages/
-# Generated scaffolded native apps under framework/ (anything except keep/docs/_fixture)
-# Already covered by builds/**; explicit note for clarity — do not un-ignore project trees.
+
+### misc/build-logic Gradle caches (never commit) ###
+misc/build-logic/build/
+misc/build-logic/.gradle/
+misc/build-logic/.kotlin/
 
 ### Stale nested junk (root-owned artifacts; sudo rm -rf to purge) ###
 src/main/kotlin/com/nexus/framework/framework/

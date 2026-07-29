@@ -470,7 +470,7 @@ def full_stack_architecture() -> str:
     client_svg, client_boxes, _ = vstack(client_x + 20, client_y + 40, [
         (340, 72, "#FFFFFF", "#1565C0", NF["rocket"], "Generate Project", "Compose UI entry for project scaffolding"),
         (340, 72, "#FFFFFF", "#1565C0", NF["code"], "Blueprint Editor", "Visual canvas + JSON sync for blueprint.json"),
-        (340, 72, "#FFFFFF", "#1565C0", NF["gear"], ":core ProjectGenerator", "Reads graph and emits native project tree"),
+        (340, 72, "#FFFFFF", "#1565C0", NF["gear"], "core ProjectGenerator", "Reads graph and emits native project tree"),
     ])
     client_w = max(b["w"] for b in client_boxes) + 40
     client_h = client_boxes[-1]["y"] + client_boxes[-1]["h"] - client_y + 24
@@ -489,11 +489,11 @@ def full_stack_architecture() -> str:
     graph_x = lua_boxes[0]["x"] + lua_boxes[0]["w"] + GAP_H
     graph_y = auth_y + 60
     graph_bw, graph_bh = _measure(
-        "Langflow-style graph", "Edit blueprint in :app; edges wire data flow", 300, 110, True
+        "Langflow-style graph", "Edit blueprint in Compose client; edges wire data flow", 300, 110, True
     )
     graph_svg = module(
         graph_x, graph_y, 300, 110, "#FFFDE7", "#F9A825", NF["branch"],
-        "Langflow-style graph", "Edit blueprint in :app; edges wire data flow", mono=True,
+        "Langflow-style graph", "Edit blueprint in Compose client; edges wire data flow", mono=True,
     )
     auth_w = graph_x + graph_bw - auth_x + 24
     auth_h = max(left_end, lua_boxes[0]["y"] + lua_boxes[0]["h"], graph_y + graph_bh) - auth_y + 24
@@ -567,7 +567,7 @@ def full_stack_architecture() -> str:
 {defs(logo)}
 {header(logo, w)}
 
-{layer_box(client_x, client_y, client_w, client_h, "#E8F4FD", "#1565C0", "Scaffold client (:app)", NF["desktop"])}
+{layer_box(client_x, client_y, client_w, client_h, "#E8F4FD", "#1565C0", "Scaffold client (Compose)", NF["desktop"])}
 {client_svg}
 
 {layer_box(auth_x, auth_y, auth_w, auth_h, "#FFF8E1", "#F57F17", "Authoring — blueprint.json", NF["file"])}
@@ -651,7 +651,7 @@ def generation_builds_flow() -> str:
             ("Install APK", "Deploy to device or emulator", "#FCE4EC", "#C2185B", NF["phone"]),
         ],
         [
-            ("deployToBuildsClient", "Copy client distro to builds/client/", "#E8EAF6", "#3949AB", NF["cloud"]),
+            ("deployToBuildsClient", "Copy client distro to builds/clients/", "#E8EAF6", "#3949AB", NF["cloud"]),
         ],
     ]
     col_svgs, cols, lane_centers = layout_columns(col_data)
@@ -697,7 +697,7 @@ def generation_builds_flow() -> str:
     lane_labels = f"""
   <text x="{lane_centers[0]}" y="110" text-anchor="middle" class="layer-label">First run</text>
   <text x="{lane_centers[1]}" y="110" text-anchor="middle" class="layer-label">Scaffold client</text>
-  <text x="{lane_centers[2]}" y="110" text-anchor="middle" class="layer-label">:core / :cli</text>
+  <text x="{lane_centers[2]}" y="110" text-anchor="middle" class="layer-label">core / CLI</text>
   <text x="{lane_centers[3]}" y="110" text-anchor="middle" class="layer-label">Output</text>
   <text x="{(lane_centers[4]+lane_centers[5])//2}" y="110" text-anchor="middle" class="layer-label">Native build</text>
   <text x="{lane_centers[7]}" y="110" text-anchor="middle" class="layer-label">Optional</text>
@@ -890,7 +890,7 @@ def langflow_vs_n8n() -> str:
         f'  <text x="{nx_x + 20}" y="{r3[0]["y"] + r3[0]["h"] + 40 + i * 20}" class="{"desc" if i == 2 else "small"}">{t}</text>'
         for i, t in enumerate([
             "• Langflow-style typed DAG (not n8n triggers)",
-            "• Consumed at generate time (:core)",
+            "• Consumed at generate time (core)",
             "Output: C++/Lua/Python/UI project tree",
         ])
     )
@@ -1055,7 +1055,7 @@ def nexus_blueprint_app_structure() -> str:
     codegen_arrow = (
         f'  <line x1="{mid_x}" y1="{note_y}" x2="{mid_x}" y2="{gen_y}" '
         f'stroke="{ARROW_COLOR_ACCENT}" stroke-width="{ARROW_STROKE_ACCENT}" marker-end="url(#arrow-blue)"/>'
-        f'\n  <text x="{mid_x}" y="{note_y + 28}" text-anchor="middle" class="badge">:core ProjectGenerator</text>'
+        f'\n  <text x="{mid_x}" y="{note_y + 28}" text-anchor="middle" class="badge">core ProjectGenerator</text>'
     )
     note_box = f"""  <rect x="{panel_x + 32}" y="{note_y - 40}" width="{panel_w - 64}" height="40" fill="#FFFFFF" stroke="#64748b" stroke-width="2" stroke-dasharray="6,4" rx="8"/>
   <text x="{panel_x + panel_w // 2}" y="{note_y - 16}" text-anchor="middle" class="desc">Not shown: external n8n webhooks (ops glue at app edge)</text>"""
@@ -1075,7 +1075,7 @@ def nexus_blueprint_app_structure() -> str:
 
 {badge}
 
-{layer_box(panel_x, panel_y, panel_w, panel_h, "#FAFAFA", "#B0BEC5", "blueprint.json graph (author in :app Blueprint Editor)", NF["branch"])}
+{layer_box(panel_x, panel_y, panel_w, panel_h, "#FAFAFA", "#B0BEC5", "blueprint.json graph (author in Compose Blueprint Editor)", NF["branch"])}
 {row1_svg}
 {py_svg}
 
@@ -1259,7 +1259,7 @@ def blueprint_vs_flows_layers() -> str:
     ], gap=gap)
     gen_y = lr2[0]["y"] + lr2[0]["h"] + GAP_V
     gen_svg, gen_boxes, _ = vstack(left_x + 32 + (max(b["w"] for b in lr2) - 280) // 2, gen_y, [
-        (280, 72, "#FFFFFF", "#6A1B9A", NF["rocket"], ":core ProjectGenerator", "Validates graph · emits src/ tree"),
+        (280, 72, "#FFFFFF", "#6A1B9A", NF["rocket"], "core ProjectGenerator", "Validates graph · emits src/ tree"),
     ])
     left_w = max(
         lr1[-1]["x"] + lr1[-1]["w"],
@@ -1742,7 +1742,7 @@ def activity_first_run_bootstrap() -> str:
         ("Run setup.zig", "zig run misc/client-setup/setup.zig", "#E8F5E9", "#2E7D32", NF["wrench"]),
         ("Write env.sh / env.bat", "JDK 26 + Zig 0.16.0 toolchain exports", "#E8F5E9", "#2E7D32", NF["file"]),
         ("source misc/client-setup/env.sh", "Activate PATH / JAVA_HOME / ZIG_HOME", "#E3F2FD", "#1565C0", NF["terminal"]),
-        ("./misc/build_client.sh", "Compile :core :cli :app", "#E3F2FD", "#1565C0", NF["gear"]),
+        ("./build_client.sh", "Compile + deploy client", "#E3F2FD", "#1565C0", NF["gear"]),
     ])
     parts.extend(act_parts)
 
@@ -1885,7 +1885,7 @@ def activity_client_navigation() -> str:
 
 
 def activity_generate_pipeline() -> str:
-    """Framework — project generation pipeline (:core)."""
+    """Framework — project generation pipeline (core)."""
     cx = 300
     x = cx - ACT_W // 2
     y = 100
@@ -2339,7 +2339,7 @@ def activity_langflow_import() -> str:
 
     act_parts, act_boxes, y = _vertical_actions(x, y, [
         ("Export Langflow JSON", "API or Export flow from Langflow UI", "#E8F5E9", "#2E7D32", NF["robot"]),
-        ("LangflowTransformationEngine", ":core import — map DAG to Nexus", "#E8EAF6", "#3949AB", NF["gear"]),
+        ("LangflowTransformationEngine", "core import — map DAG to Nexus", "#E8EAF6", "#3949AB", NF["gear"]),
         ("Produce blueprint.json (+ flows)", "Structure + optional automations", "#F3E5F5", "#7B1FA2", NF["file"]),
         ("ProjectGenerator.generate", "Emit builds/framework/<name>/", "#FFF3E0", "#EF6C00", NF["rocket"]),
         ("User edits C++ / Lua / Python", "Customize generated sources", "#E3F2FD", "#1565C0", NF["code"]),
@@ -2372,7 +2372,7 @@ def activity_langflow_import() -> str:
 {chr(10).join(arrows)}
 {legend_box(48, legend_y, 520, 70, [
     ("#E8F5E9", "#2E7D32", "External — Langflow export"),
-    ("#E8EAF6", "#3949AB", "Transform — :core engine"),
+    ("#E8EAF6", "#3949AB", "Transform — core engine"),
     ("#FFF3E0", "#EF6C00", "Generate — ProjectGenerator"),
 ], "Langflow import path")}"""
     return _activity_svg("UML activity — Langflow → Nexus import", w, h, body)

@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Windows test-gen entry point (PowerShell parallel to linux/*.sh).
+  Windows test-gen entry point (PowerShell). Prefer WSL for Nexus client builds.
 .PARAMETER Project
   Project name under builds/framework/<name>.
 .PARAMETER Path
@@ -21,8 +21,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$CommonDir = Join-Path $ScriptDir '..\common'
-$GenerateSh = Join-Path $CommonDir 'generate-tests.sh'
+$GenerateSh = Join-Path $ScriptDir 'generate-tests.sh'
 
 if (-not (Get-Command bash -ErrorAction SilentlyContinue)) {
     throw 'bash is required (Git Bash or WSL). Install Git for Windows or enable WSL.'

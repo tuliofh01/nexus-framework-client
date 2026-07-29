@@ -21,7 +21,7 @@ Repo automation — all scripts live flat in this directory or under `test-gen/`
 ./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
 
 # Test generation (dry-run against fixture)
-./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
+./misc/test-gen/linux-generic.sh --dry-run --project _fixture
 
 # Regenerate all SVGs (architecture + activity + mockups)
 python3 misc/scripts/generate-diagrams.py

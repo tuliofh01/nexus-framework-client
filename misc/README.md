@@ -1,59 +1,58 @@
 # misc/
 
-Supporting tooling for the Framework scaffold client. The Framework client is a **single Gradle module** at the repo root (`src/main/kotlin/com/nexus/framework/`).
+Supporting tooling for the Framework scaffold client (single Gradle module at repo root).
 
-## Layout
+**Layout rule:** at most **two directory levels** under `misc/` (`misc/<category>/<item>`). Files may live in those leaves. Exception: `misc/build-logic/src/main/kotlin/` — required by Gradle precompiled convention plugins.
+
+## Tree
+
+```text
+misc/
+├── README.md
+├── build_client.sh          # license + compile / --deploy (tests + distributable)
+├── build-logic/             # includeBuild convention plugins (JDK 26)
+│   ├── build.gradle.kts
+│   ├── settings.gradle.kts
+│   └── src/main/kotlin/…    # Gradle-required source set
+├── client-setup/            # Zig + env bootstrap
+├── cli/                     # man page
+├── docker/
+├── jenkins/
+├── scripts/                 # flat: nexus-dev, diagrams, docker generate
+├── test-gen/                # flat: smoke-test stub generator
+└── translations/            # localized README landing pages
+```
 
 | Path | Role |
 |------|------|
-| [build_client.sh](build_client.sh) | Compile the unified client (`compileKotlin`) — **prompts for Nexus License** before Gradle |
-| [../build_client.sh](../build_client.sh) | **Preferred:** source env + license + deploy → `builds/clients/NexusFrameworkClient-<ver>/` |
-| [build-logic/](build-logic/) | Gradle convention plugins (included build) — JVM toolchain 26 |
-| [client-setup/](client-setup/) | First-run JDK 26 + Zig bootstrap — see [client-setup/README.md](client-setup/README.md) |
-| [docker/](docker/) | `Dockerfile` + `docker-compose.yml` for containerized generation |
-| [jenkins/](jenkins/) | Optional Jenkins CI — [Jenkinsfile](jenkins/Jenkinsfile), [README](jenkins/README.md) |
-| [scripts/](scripts/) | Repo automation — dev, test-gen, diagram generation |
-| [translations/](translations/) | Localized READMEs — see [translations/README.md](translations/README.md) |
-
-Pipeline definition: [jenkins/Jenkinsfile](jenkins/Jenkinsfile). Configure the job **Script Path** to `misc/jenkins/Jenkinsfile` — see [jenkins/README.md](jenkins/README.md).
-
-Gradle is a **single root project** (`settings.gradle.kts` has no `include(":core")` etc.). Sources live under `src/main/kotlin/com/nexus/framework/` (`core/`, `cli/`, `shared/`, `ui/…`).
+| [build_client.sh](build_client.sh) | License gate + compile; `--deploy` runs **test** then packages client |
+| [../build_client.sh](../build_client.sh) | **Preferred cold-clone:** source env + `--deploy` → `builds/clients/NexusFrameworkClient-<ver>/` |
+| [build-logic/](build-logic/) | Gradle included build — `includeBuild("misc/build-logic")` |
+| [client-setup/](client-setup/) | `setup.zig`, `env.sh` / `env.bat` |
+| [scripts/](scripts/) | `nexus-dev.sh`, `generate-diagrams.py`, `generate-in-docker.sh` |
+| [test-gen/](test-gen/) | Smoke stubs for generated apps |
+| [docker/](docker/) | Containerized generation |
+| [jenkins/](jenkins/) | Optional CI — Script Path `misc/jenkins/Jenkinsfile` |
+| [translations/](translations/) | Non-English landing READMEs |
+| [cli/](cli/) | `nexus.1` man page |
 
 ```kotlin
 pluginManagement {
     includeBuild("misc/build-logic")
 }
-rootProject.name = "Framework"
 ```
-
-## Why `build-logic/` lives here instead of root `buildSrc/`
-
-Gradle only auto-discovers a directory named **`buildSrc/`** at the repository root. To consolidate tooling under `misc/` without losing convention plugins, this repo uses an **included build** at `misc/build-logic/` under `pluginManagement`:
-
-```kotlin
-// settings.gradle.kts
-pluginManagement {
-    includeBuild("misc/build-logic")
-}
-```
-
-The precompiled plugin `buildsrc.convention.kotlin-jvm` (JVM toolchain 26, JUnit Platform defaults) remains available for modules that apply it. Do **not** rename the directory to `misc/buildSrc`; Gradle would not pick it up without `includeBuild`.
 
 ## Common commands
 
 ```bash
-./build_client.sh                      # license + deploy → builds/clients/NexusFrameworkClient-1.1.0/
-./misc/build_client.sh                 # license dialog (once) then compile only
-./misc/build_client.sh --accept-license  # CI / non-interactive accept
-./misc/build_client.sh --show-license  # re-show Nexus License
-./misc/build_client.sh --deploy        # same as root ./build_client.sh (no env source)
-./gradlew compileKotlin
-./gradlew runCli --args="generate --type desktop --name MyApp --dry-run"
+./build_client.sh --accept-license     # test + deploy → builds/clients/NexusFrameworkClient-1.1.0/
+./misc/build_client.sh --accept-license
+./misc/build_client.sh --test
+./gradlew test
 ./misc/scripts/nexus-dev.sh compile
-./misc/scripts/generate-in-docker.sh desktop MyApp builds/framework/MyApp
-./misc/scripts/test-gen/linux/generic.sh --dry-run --project _fixture
+./misc/test-gen/linux-generic.sh --dry-run --project _fixture
 ```
 
-`build_client.sh` stores acceptance in `misc/.license-accepted` (gitignored). See `./misc/build_client.sh --help`.
+License stamp: `misc/.license-accepted` (gitignored).
 
-Docs: [docs/guides/generation-pipeline.md](../docs/guides/generation-pipeline.md) · [../AGENTS.md](../AGENTS.md) · [Nexus License](../LICENSE)
+Docs: [../README.md](../README.md) · [../CONTRIBUTING.md](../CONTRIBUTING.md) · [../docs/hub.md](../docs/hub.md)
