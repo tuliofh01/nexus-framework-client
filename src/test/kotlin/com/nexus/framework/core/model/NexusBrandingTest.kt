@@ -15,9 +15,9 @@ class NexusBrandingTest {
     }
 
     @Test
-    fun frameworkVersionIs110ForThisRelease() {
-        assertEquals("1.1.0", NexusBranding.FRAMEWORK_VERSION)
-        assertTrue(NexusBranding.versionLabel().startsWith("v1.1.0"))
+    fun frameworkVersionIs111ForThisRelease() {
+        assertEquals("1.1.1", NexusBranding.FRAMEWORK_VERSION)
+        assertTrue(NexusBranding.versionLabel().startsWith("v1.1.1"))
     }
 
     @Test

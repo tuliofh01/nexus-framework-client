@@ -1,8 +1,8 @@
 # {{projectName}} — Nexus Desktop App
 
-Nexus desktop starter with a safe equation plotter and full framework feature
-support. Enter expressions such as `y=sin(x)` or `y=x^3-2*x`, choose the
-X range and sample count, and render the result through ImPlot.
+Nexus desktop starter with full framework feature support: greeting,
+counter, Lua panels, TS/XHTML DSL, pybind11 Python, blueprint.json,
+and optional flows/flows.json.
 
 ## Stack
 

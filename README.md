@@ -45,7 +45,7 @@
   <a href="https://www.libsdl.org/"><img src="https://img.shields.io/badge/SDL3-cross--platform-green?style=flat-square" alt="SDL3" /></a>
   <a href="https://ziglang.org/"><img src="https://img.shields.io/badge/Zig-0.16.0-orange?style=flat-square&logo=zig" alt="Zig 0.16.0" /></a>
   <a href="https://github.com/ocornut/imgui"><img src="https://img.shields.io/badge/ImGui-native_UI-green?style=flat-square" alt="Dear ImGui" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/version-1.1.0-blueviolet?style=flat-square" alt="Version 1.1.0" /></a>
+   <a href="#"><img src="https://img.shields.io/badge/version-1.1.1-blueviolet?style=flat-square" alt="Version 1.1.1" /></a>
 </p>
 
 > **Zero to binary**
@@ -53,13 +53,13 @@
 > zig run misc/client-setup/setup.zig && source misc/client-setup/env.sh
 > ./build_client.sh && ./gradlew run
 > ```
-> Packaged client: `builds/clients/NexusFrameworkClient-1.1.0/`. Compile-only: `./misc/build_client.sh`. Tests: `./gradlew test`.
+> Packaged client: `builds/clients/NexusFrameworkClient-1.1.1/`. Compile-only: `./misc/build_client.sh`. Tests: `./gradlew test`.
 
 ---
 
 ## Version 1.1.0 — First production-ready release
 
-> **Clone → client binary:** `zig run misc/client-setup/setup.zig && ./build_client.sh --accept-license` → `builds/clients/NexusFrameworkClient-1.1.0/`
+> **Clone → client binary:** `zig run misc/client-setup/setup.zig && ./build_client.sh --accept-license` → `builds/clients/NexusFrameworkClient-1.1.1/`
 
 **Nexus Framework 1.1.0** is the first cut we call **production-ready** for day-to-day use: generate desktop/Android scaffolds from the Compose client or CLI, edit blueprints and flows, and ship tutorials against a stable layout.
 
@@ -75,7 +75,7 @@ What “production-ready” means here: the **client, generator, templates, and 
 | **UI** | Generate name seeds stuck; Blueprint nodes stacked; missing emoji glyphs | Clearing placeholders, drag deltas, drawn monitor/phone icons, dark text-field colors |
 | **Templates** | Folder / stack preview drift | Resolve **`desktop-app` / `android-app`**; preview matches templates |
 | **Layout tree** | Controllers/views scattered; IntelliJ bookmarks 404 | Feature folders: `ui/{generate,blueprint,flows,home,loading,debugger,chrome,theme}` |
-| **Client packaging** | Deploy path unclear (`builds/client/app/`) | **`./build_client.sh`** → `builds/clients/NexusFrameworkClient-1.1.0/` |
+| **Client packaging** | Deploy path unclear (`builds/client/app/`) | **`./build_client.sh`** → `builds/clients/NexusFrameworkClient-1.1.1/` |
 | **Version skew** | Catalog / branding / CLI / badge disagreed | All report **1.1.0** (`nexusFramework`, `NexusBranding`, CLI, Whats New, badge) |
 
 ### Highlights
@@ -91,9 +91,9 @@ Single Gradle project — no `:app`, `:core`, or `:cli` modules. First-party Kot
 ```text
 Nexus-Framework/
 ├── build.gradle.kts
-├── build_client.sh                  # → builds/clients/NexusFrameworkClient-1.1.0/
+├── build_client.sh                  # → builds/clients/NexusFrameworkClient-1.1.1/
 ├── settings.gradle.kts
-├── gradle/                          # wrapper + libs.versions.toml (nexusFramework=1.1.0)
+├── gradle/                          # wrapper + libs.versions.toml (nexusFramework=1.1.1)
 ├── src/main/kotlin/com/nexus/framework/
 │   ├── App.kt                       # Compose Desktop entry
 │   ├── cli/                         # FrameworkCli
@@ -106,7 +106,7 @@ Nexus-Framework/
 ├── docs/                            # hub, architecture, diagrams
 ├── intellij/                        # shareable IDE kit
 └── builds/
-    ├── clients/NexusFrameworkClient-1.1.0/   # packaged Compose client
+    ├── clients/NexusFrameworkClient-1.1.1/   # packaged Compose client
     └── framework/<Project>/                  # generated native apps
 ```
 
@@ -136,7 +136,7 @@ v1.0.3 was the pre-production patch train (Gradle unify, package rename, Generat
 
 ### Windows (WSL2 recommended)
 
-`build_client.sh` is a **bash** script: it sources `misc/client-setup/env.sh`, accepts the Nexus License, runs **`./gradlew test`**, then **`deployToBuildsClient`** (`createDistributable` → `builds/clients/NexusFrameworkClient-1.1.0/`). Prefer **WSL2** over native Windows CMD/PowerShell for this path.
+`build_client.sh` is a **bash** script: it sources `misc/client-setup/env.sh`, accepts the Nexus License, runs **`./gradlew test`**, then **`deployToBuildsClient`** (`createDistributable` → `builds/clients/NexusFrameworkClient-1.1.1/`). Prefer **WSL2** over native Windows CMD/PowerShell for this path.
 
 **Recommended — WSL2 (Ubuntu):**
 
@@ -152,7 +152,7 @@ chmod +x build_client.sh gradlew misc/build_client.sh
 ./build_client.sh --accept-license
 ```
 
-5. Output: `builds/clients/NexusFrameworkClient-1.1.0/` (binaries under that folder). Run the app from WSL, or open the same folder from Windows Explorer if you need a GUI file browse (`\\wsl$\Ubuntu\home\…\Nexus-Framework\builds\clients\…`).
+5. Output: `builds/clients/NexusFrameworkClient-1.1.1/` (binaries under that folder). Run the app from WSL, or open the same folder from Windows Explorer if you need a GUI file browse (`\\wsl$\Ubuntu\home\…\Nexus-Framework\builds\clients\…`).
 
 **Optional — native Windows:** `gradlew.bat` exists and can run Gradle tasks (e.g. `gradlew.bat test`, `gradlew.bat createDistributable`) if JDK 26 is on `PATH`. There is no Windows equivalent of `build_client.sh` (license gate + env + deploy). For the full clone→client flow, use WSL as above. `call misc\client-setup\env.bat` only sets Zig/PATH hints after setup.
 
@@ -443,7 +443,7 @@ call misc\client-setup\env.bat
 ###  Step 2: Build / package the client
 
 ```bash
-# Recommended: unit tests + Compose distributable → builds/clients/NexusFrameworkClient-1.1.0/
+# Recommended: unit tests + Compose distributable → builds/clients/NexusFrameworkClient-1.1.1/
 ./build_client.sh --accept-license
 
 # Compile only (license gate, no distributable):
@@ -1198,7 +1198,7 @@ For the full directory tree (every folder, every file), see [Project Structure](
 ###  What's in 1.1.0 (First production-ready release)
 
 - **Production-ready client + CLI** — unified Compose Desktop scaffolder and headless generator
-- **`./build_client.sh`** — license gate + deploy to `builds/clients/NexusFrameworkClient-1.1.0/`
+- **`./build_client.sh`** — license gate + deploy to `builds/clients/NexusFrameworkClient-1.1.1/`
 - **Single Gradle module** — `com.nexus.framework.*` under root `src/` (no `:app` / `:core` / `:cli`)
 - **Generate / Blueprint / Flows** — MVC feature folders under `ui/` ready for tutorials
 - **From 1.0.3** — package rename, Generate UX fixes, Blueprint drag fixes, drawn platform icons
@@ -1249,7 +1249,7 @@ Nexus-Framework/
 │   └── jenkins/                   # Jenkins CI/CD (optional)
 └── builds/                        # Generated app output
     ├── clients/                   # Compose Desktop distribution (preferred)
-    │   └── NexusFrameworkClient-1.1.0/
+    │   └── NexusFrameworkClient-1.1.1/
     └── framework/                 # Generated native app projects
         └── <projectName>/         # Per-project Zig/CMake build trees
 ```

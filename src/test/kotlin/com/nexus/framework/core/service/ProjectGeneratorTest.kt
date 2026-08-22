@@ -61,8 +61,20 @@ class ProjectGeneratorTest {
             outputPath = "builds/framework",
             appType = AppType.DESKTOP,
         )
-        // ProjectSpec may allow construction; packageName sanitization still falls back.
         val vars = ProjectGenerator(java.nio.file.Paths.get(".")).templateVars(spec)
         assertEquals("app", vars["packageName"])
+    }
+
+    @Test
+    fun defaultScriptProtectionIsDisabled() {
+        val spec = ProjectSpec(
+            projectName = "MyApp",
+            outputPath = "builds/framework",
+            appType = AppType.DESKTOP,
+        )
+        assertEquals(false, spec.scriptProtectionEnabled)
+        val vars = ProjectGenerator(java.nio.file.Paths.get(".")).templateVars(spec)
+        assertEquals("false", vars["scriptProtectionEnabled"])
+        assertEquals("", vars["scriptProtectionSalt"])
     }
 }

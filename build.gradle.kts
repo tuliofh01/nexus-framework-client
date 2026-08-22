@@ -58,6 +58,9 @@ tasks.register<Sync>("deployToBuildsClient") {
     dependsOn("test", "createDistributable")
     from(composeBinariesDir.map { it.dir("app") })
     into(clientDistDir)
+    from(layout.projectDirectory.dir("template")) {
+        into("template")
+    }
 }
 
 tasks.register<Sync>("deployPackageToBuildsClient") {

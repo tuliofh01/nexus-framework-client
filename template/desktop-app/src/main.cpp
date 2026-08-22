@@ -103,7 +103,7 @@ int main(int, char**) {
     auto python         = nxs::controller::PythonEngine{};
     auto controller     = nxs::controller::AppController{model, python};
     auto plotController = nxs::controller::PlotController{registry, python};
-    auto view           = nxs::view::AppView{controller, plotController};
+    auto view           = nxs::view::AppView{controller};
     auto luaPanels      = nxs::view::LuaPanels{plotController};
     luaPanels.loadScripts();
 

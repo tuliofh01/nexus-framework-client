@@ -460,6 +460,41 @@ export constexpr const char* CREATED_AT = {created};
 PY
 }
 
+# ── Pack Lua/Python scripts into misc/*.dat when scriptProtection enabled ────
+pack_scripts() {
+  local cfg="$ROOT/nxs_config.json"
+  local enabled="false"
+  if [[ -f "$cfg" ]]; then
+    enabled=$(python3 -c "import json; c=json.load(open('$cfg')); print(str(c.get('scriptProtection',{}).get('enabled',False)).lower())" 2>/dev/null || echo false)
+  fi
+  if [[ "$enabled" != "true" ]]; then
+    log "Script protection disabled — using plaintext scripts/"
+    return 0
+  fi
+
+  local tools_dir="$ROOT/shared/tools"
+  local pack_exe="$BUILD_DIR/bin/pack_archive"
+  if [[ ! -f "$pack_exe" ]]; then
+    log "Building pack_archive host tool"
+    mkdir -p "$BUILD_DIR/bin"
+    g++ -std=c++20 -O2 -I"$ROOT/shared/runtime" -o "$pack_exe" \
+      "$tools_dir/pack_archive.cpp" || {
+      warn "pack_archive build failed — falling back to plaintext scripts"
+      return 0
+    }
+  fi
+
+  mkdir -p "$ROOT/misc"
+  log "Packing scripts → misc/lua.dat"
+  "$pack_exe" lua "$ROOT/scripts" "$ROOT/misc/lua.dat" "$cfg" || {
+    warn "Lua pack failed — plaintext scripts/ will be used"
+  }
+  log "Packing python → misc/python.dat"
+  "$pack_exe" python "$ROOT/python" "$ROOT/misc/python.dat" "$cfg" || {
+    warn "Python pack failed — plaintext python/ will be used"
+  }
+}
+
 # ── Main ────────────────────────────────────────────────────────────────────
 main() {
   [[ -f "$ROOT/nxs_config.json" ]] || die "run from a generated Nexus project root (missing nxs_config.json)"
@@ -474,6 +509,7 @@ main() {
   setup_venv
   setup_deps
   fix_script_protection
+  pack_scripts
 
   if [[ "$SETUP_ONLY" -eq 1 ]]; then
     log "Setup complete (--setup-only)"

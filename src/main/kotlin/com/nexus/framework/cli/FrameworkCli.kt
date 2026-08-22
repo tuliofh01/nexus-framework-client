@@ -47,7 +47,7 @@ private fun runGenerate(args: List<String>) {
     val dryRun = flags["dry-run"] == "true" || args.contains("--dry-run")
     val verbose = flags["verbose"] == "true" || TemplateEngine.isDebugEnabled()
     val force = flags["force"] == "true"
-    val scriptProtection = flags["script-protection"]?.let { it != "false" } ?: true
+    val scriptProtection = flags["script-protection"]?.let { it != "false" } ?: false
 
     val spec = ProjectSpec(
         projectName = name,
@@ -178,7 +178,7 @@ private fun printUsage() {
           --window-title TITLE       Window title override
           --cpp-standard 20          C++ standard (default: 20)
           --license Nexus-1.0        License id (default: Nexus License)
-          --script-protection true   Encrypt lua.dat / python.dat (default: true)
+          --script-protection true   Encrypt lua.dat / python.dat (default: false)
           --dry-run                  Preview rendered paths without writing
           --force                    Overwrite non-empty output directory
           --verbose                  Verbose template engine logging

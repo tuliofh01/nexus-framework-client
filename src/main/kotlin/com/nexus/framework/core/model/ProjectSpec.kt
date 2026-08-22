@@ -7,7 +7,7 @@ data class ProjectSpec(
     val windowTitle: String = NexusBranding.windowTitle(projectName),
     val cppStandard: String = "20",
     val license: String = "Nexus-1.0",
-    val scriptProtectionEnabled: Boolean = true,
+    val scriptProtectionEnabled: Boolean = false,
     /** When set, written to the generated project as `blueprint.json` (overrides template copy). */
     val blueprint: BlueprintFile? = null,
     /** When set, written to the generated project as `flows/flows.json` (overrides template copy). */
