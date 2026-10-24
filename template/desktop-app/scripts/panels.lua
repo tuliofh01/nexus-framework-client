@@ -1,32 +1,40 @@
--- panels.lua — runtime scripting layer for {{projectName}}.
+-- panels.lua — widget layer for {{projectName}}.
 --
--- Loaded by LuaPanels (sol2). Scripts see three tables:
---   nxs  : plot commands (add_expression, set_range, register_panel, ...)
---   ui   : a curated ImGui subset for panel bodies
---   keys : ImGuiKey constants for register_hotkey
+-- Architecture split:
+--   * C++   nxs.desktop.compute / nxs.desktop.training  → number crunching
+--   * Python python/helpers.py                          → data prep + SQLite
+--   * Lua   this file                                   → widgets / panels
+--   * TS    ui/ui.xhtml + ui/ui.ts                       → declarative UI
 --
--- This optional panel demonstrates how Lua can provide small plot workflows.
--- Edit or remove it when tailoring the generated application.
+-- Two compact panels only: Training and Chart. The 5-digit hour counter is
+-- rendered with %05d so it is always exactly five digits (00000..99999).
 
-nxs.register_panel("Quick plots", function()
-    ui.text("Add a common curve:")
+nxs.register_panel("Training", function()
+    ui.text(string.format("Hours: %05d", nxs.training_hours()))
+    ui.text(string.format("Gen %04d   best %+.3f",
+                          nxs.training_generation(), nxs.training_best()))
+    ui.text(nxs.training_status())
     ui.separator()
 
-    if ui.button("sin(x)") then
+    if ui.button(nxs.training_active() and "Stop training" or "Start training") then
+        if nxs.training_active() then
+            nxs.training_stop()
+        else
+            nxs.training_start()
+        end
+    end
+    ui.same_line()
+    if ui.button("Reset") then
+        nxs.training_reset()
+    end
+end)
+
+nxs.register_panel("Chart", function()
+    if ui.button("Sine") then
         nxs.add_expression("sin(x)")
     end
     ui.same_line()
-    if ui.button("x^2") then
-        nxs.add_expression("x * x")
-    end
-
-    ui.separator()
-    ui.text("Set the visible x range:")
-    if ui.button("-10 to 10") then
-        nxs.set_range(-10, 10)
-    end
-    ui.same_line()
-    if ui.button("-2pi to 2pi") then
-        nxs.set_range(-2 * math.pi, 2 * math.pi)
+    if ui.button("Damped") then
+        nxs.add_expression("exp(-0.1*x)*sin(2*x)")
     end
 end)

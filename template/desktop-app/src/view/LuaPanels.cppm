@@ -74,6 +74,7 @@ export module nxs.desktop.lua;
 // ── Import peer and shared modules ──
 import nxs.desktop.controller;
 import nxs.desktop.plot;  // controller::PlotController lives here
+import nxs.desktop.training;  // training::TrainingEngine (C++ compute)
 import nexus.shared.paths;
 import nexus.shared.script_archive;
 
@@ -95,8 +96,9 @@ public:
     ///
     /// explicit: prevents implicit conversion from PlotController& to LuaPanels.
     /// noexcept: guarantees no exceptions from construction.
-    explicit LuaPanels(controller::PlotController& controller) noexcept
-        : m_controller{controller} {   // {} brace-init for reference member
+    explicit LuaPanels(controller::PlotController& controller,
+                       training::TrainingEngine& training) noexcept
+        : m_controller{controller}, m_training{training} {   // brace-init
         // Open only the libraries we need — not debug/coroutine/io/os.
         // Keeps the Lua surface minimal and secure.
         m_lua.open_libraries(sol::lib::base, sol::lib::math,
@@ -268,6 +270,31 @@ private:
                 !m_controller.settings().logScaleY;
         });
 
+        // ── training.* — C++ compute exposed to Lua widgets ───────────
+        //
+        // The engine owns the GA loop and .bin checkpoints; Lua only
+        // triggers commands and reads state for display.
+        nxs.set_function("training_start",
+            [this]() { m_training.start(); });
+        nxs.set_function("training_stop",
+            [this]() { m_training.stop(); });
+        nxs.set_function("training_reset",
+            [this]() { m_training.reset(); });
+        nxs.set_function("training_toggle", [this]() {
+            if (m_training.active()) m_training.stop();
+            else m_training.start();
+        });
+        nxs.set_function("training_active",
+            [this]() { return m_training.active(); });
+        nxs.set_function("training_hours",
+            [this]() { return m_training.hours(); });
+        nxs.set_function("training_generation",
+            [this]() { return m_training.generation(); });
+        nxs.set_function("training_best",
+            [this]() { return m_training.best(); });
+        nxs.set_function("training_status",
+            [this]() { return m_training.status(); });
+
         // ── Panel/hotkey registration ──────────────────────────────────
         //
         // These create Panel/Hotkey structs using aggregate init with
@@ -308,6 +335,7 @@ private:
     }
 
     controller::PlotController& m_controller;
+    training::TrainingEngine& m_training;
     sol::state m_lua;                    ///< Owns the Lua VM (value type)
     std::vector<Panel> m_panels;         ///< Registered panel callbacks
     std::vector<Hotkey> m_hotkeys;       ///< Registered hotkey callbacks

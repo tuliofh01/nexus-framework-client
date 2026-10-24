@@ -1,23 +1,43 @@
 /**
  * ui.ts — controller logic for ui.xhtml.
  *
- * Compiled with ui.xhtml into Lua panel definitions executed through sol2.
+ * The TS/XHTML layer is the *interface* declaration. It lowers to the same
+ * Lua widget calls as scripts/panels.lua; compute stays in C++
+ * (nxs.desktop.compute / nxs.desktop.training) and higher-level logic in
+ * python/helpers.py.
+ *
+ * Bindings:
+ *   model.greeting            ← AppController.refresh()
+ *   training.hours            ← TrainingEngine::hours()      (5 digits, %05d)
+ *   training.generation       ← TrainingEngine::generation()
+ *   training.best             ← TrainingEngine::best()
+ *   training.status           ← TrainingEngine::status()
  */
 import { NexusPage, native, state } from "@nexus/runtime";
 
 export class AppPage extends NexusPage {
-  counter = state<number>(0);
   greeting = native<string>("model.greeting");
 
-  increment(): void {
-    this.invoke("nxs.increment");
+  trainingHours = native<number>("training.hours");
+  trainingGeneration = native<number>("training.generation");
+  trainingBest = native<number>("training.best");
+  trainingStatus = native<string>("training.status");
+
+  trainingAction = state<string>("Start");
+
+  toggleTraining(): void {
+    this.invoke("nxs.training_toggle");
   }
 
-  decrement(): void {
-    this.invoke("nxs.decrement");
+  resetTraining(): void {
+    this.invoke("nxs.training_reset");
   }
 
-  reset(): void {
-    this.invoke("nxs.reset");
+  addSine(): void {
+    this.invoke("nxs.add_expression", "sin(x)");
+  }
+
+  addDamped(): void {
+    this.invoke("nxs.add_expression", "exp(-0.1*x)*sin(2*x)");
   }
 }

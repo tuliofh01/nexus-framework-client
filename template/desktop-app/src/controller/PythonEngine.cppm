@@ -171,6 +171,25 @@ public:
     /// Evaluate helpers.greeting(projectName) via the archive or python/ import.
     [[nodiscard]] auto greeting(std::string_view projectName) -> std::string;
 
+    // ── Higher-level logic bridges ─────────────────────────────────────
+    //
+    // Compute (MLP, fitness, mutation, Wilson, .bin I/O) lives in C++
+    // (nxs.desktop.compute / nxs.desktop.training). Python only prepares
+    // the feature dataset and persists study rows to SQLite.
+
+    /// Ask Python to write models/dataset.bin (NXSD). True on success.
+    [[nodiscard]] auto prepareDataset() -> bool;
+
+    /// Persist one C++-computed study row to data/study.db.
+    [[nodiscard]] auto studyPersist(std::string_view asset,
+                                    std::string_view timeframe,
+                                    int n, double mean, double vol,
+                                    double sharpe, double maxDrawdown,
+                                    double hitRate, double skew,
+                                    double kurtosis, int generation,
+                                    double best, double successProb,
+                                    double successLo, double successHi) -> bool;
+
     /// The last Python error message, or empty if no error.
     ///
     // noexcept: returning a const reference is safe (no allocation).
@@ -263,6 +282,7 @@ auto importFromArchive(py::module_& out) -> bool {
 struct PythonEngine::Impl {
     py::scoped_interpreter interpreter;  // RAII: starts CPython on construction
     py::module_ functions;               // reference to python/functions.py
+    py::module_ helpers;                 // reference to python/helpers.py
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -291,6 +311,19 @@ PythonEngine::PythonEngine()
                     .attr("ModuleType")("functions").cast<py::module_>();
             }
         }
+    }
+
+    // helpers.py carries the training + genetic-weight logic. It lives in
+    // the same python/ directory, so ensure that path is importable even
+    // when functions.py came from the packed archive.
+    try {
+        auto sys = py::module_::import("sys");
+        sys.attr("path").attr("insert")(0, "python");
+        m_impl->helpers = py::module_::import("helpers");
+    } catch (const py::error_already_set& e) {
+        m_lastError = e.what();
+        m_impl->helpers = py::module_::import("types")
+            .attr("ModuleType")("helpers").cast<py::module_>();
     }
 }
 
@@ -367,6 +400,42 @@ auto PythonEngine::evaluate(std::string_view functionName,
     } catch (const py::error_already_set& e) {
         m_lastError = e.what();
         return false;  // Python error — caller checks lastError()
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Higher-level logic bridges — compute stays in C++
+// ═══════════════════════════════════════════════════════════════════════════
+
+auto PythonEngine::prepareDataset() -> bool {
+    try {
+        m_lastError.clear();
+        (void)m_impl->helpers.attr("prepare_dataset")().cast<std::string>();
+        return true;
+    } catch (const py::error_already_set& e) {
+        m_lastError = e.what();
+        return false;
+    }
+}
+
+auto PythonEngine::studyPersist(std::string_view asset,
+                                std::string_view timeframe,
+                                int n, double mean, double vol,
+                                double sharpe, double maxDrawdown,
+                                double hitRate, double skew,
+                                double kurtosis, int generation,
+                                double best, double successProb,
+                                double successLo, double successHi) -> bool {
+    try {
+        m_lastError.clear();
+        (void)m_impl->helpers.attr("study_persist")(
+            std::string{asset}, std::string{timeframe}, n, mean, vol, sharpe,
+            maxDrawdown, hitRate, skew, kurtosis, generation, best,
+            successProb, successLo, successHi).cast<bool>();
+        return true;
+    } catch (const py::error_already_set& e) {
+        m_lastError = e.what();
+        return false;
     }
 }
 

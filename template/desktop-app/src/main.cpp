@@ -33,6 +33,7 @@ import nxs.desktop.view;
 import nxs.desktop.lua;
 import nxs.desktop.flow;
 import nxs.desktop.plot;
+import nxs.desktop.training;
 
 import nexus.shared.font_config;
 import nexus.shared.theme;
@@ -103,8 +104,13 @@ int main(int, char**) {
     auto python         = nxs::controller::PythonEngine{};
     auto controller     = nxs::controller::AppController{model, python};
     auto plotController = nxs::controller::PlotController{registry, python};
-    auto view           = nxs::view::AppView{controller};
-    auto luaPanels      = nxs::view::LuaPanels{plotController};
+    auto training       = nxs::training::TrainingEngine{python};
+
+    // Default chart so the generated app is useful immediately.
+    (void)plotController.addExpression("sin(x)");
+
+    auto view           = nxs::view::AppView{controller, plotController};
+    auto luaPanels      = nxs::view::LuaPanels{plotController, training};
     luaPanels.loadScripts();
 
     auto flowRunner     = nxs::service::FlowRunner{controller};
@@ -130,6 +136,7 @@ int main(int, char**) {
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
+        training.update(ImGui::GetIO().DeltaTime);
         plotController.refresh();
         view.draw();
         luaPanels.drawFrame();

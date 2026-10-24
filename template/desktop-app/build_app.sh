@@ -377,9 +377,11 @@ build_cxx() {
 
   compile_one src/model/AppModel.cppm
   compile_one src/model/FunctionRegistry.cppm
+  compile_one src/compute/ComputeKernels.cppm
   compile_one src/controller/PythonEngine.cppm
   compile_one src/controller/AppController.cppm
   compile_one src/controller/PlotController.cppm
+  compile_one src/training/TrainingEngine.cppm
   compile_one src/view/AppView.cppm
   compile_one src/view/LuaPanels.cppm
   compile_one src/service/FlowRunner.cppm
