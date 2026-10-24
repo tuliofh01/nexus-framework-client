@@ -30,12 +30,31 @@ tasks.test {
 // ---------------------------------------------------------------------------
 // Compose Desktop client — ./gradlew run
 // ---------------------------------------------------------------------------
+
+// ── Skiko renderer selection ─────────────────────────────────────────────────
+// PROBLEM THIS SOLVES: on some Linux/WSL2/NVIDIA setups Skia's default
+// hardware (OpenGL/Vulkan) path renders glitched buttons, corrupted text
+// and flickering panels in Compose Desktop.
+//
+// FIX: pass a renderer override, e.g.
+//   ./gradlew run -PnexusRenderer=SOFTWARE       # pure-CPU (always correct)
+//   ./gradlew run -PnexusRenderer=DIRECT3D       # Windows
+//   ./gradlew run -PnexusRenderer=METAL          # macOS
+//   NEXUS_RENDERER=SOFTWARE ./gradlew run        # env var variant
+// or use scripts/run-client.sh which auto-falls-back to SOFTWARE.
+val skikoRenderer: String? = (findProperty("nexusRenderer") as String?)
+    ?: System.getenv("NEXUS_RENDERER")
+val skikoJvmArg: String? = skikoRenderer?.let { "-Dskiko.renderApi=$it" }
+
 val nexusFrameworkVersion = libs.versions.nexusFramework.get()
 val clientDistFolderName = "NexusFrameworkClient-$nexusFrameworkVersion"
 
 compose.desktop {
     application {
         mainClass = "com.nexus.framework.AppKt"
+        // JVM args apply to both `run` and packaged launchers. Honors the
+        // renderer override chosen above (see scripts/run-client.sh).
+        skikoJvmArg?.let { jvmArgs += it }
         nativeDistributions {
             packageName = "NexusFrameworkClient"
             packageVersion = nexusFrameworkVersion

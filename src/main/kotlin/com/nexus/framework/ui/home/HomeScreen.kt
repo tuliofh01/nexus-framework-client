@@ -3,9 +3,6 @@ package com.nexus.framework.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +19,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nexus.framework.AppScreen
@@ -167,20 +165,32 @@ fun HomeScreen(
                 if (recentProjects.isEmpty()) {
                     EmptyRecentProjectsCard()
                 } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
+                    // Fixed 2-column layout without a lazy container: a
+                    // LazyVerticalGrid nested inside this verticalScroll
+                    // column causes unbounded-height measurement glitches.
+                    Column(
                         modifier = Modifier.fillMaxWidth().heightIn(max = 320.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        userScrollEnabled = false,
                     ) {
-                        items(recentProjects) { project ->
-                            RecentProjectCard(
-                                project = project,
-                                onClick = {
-                                    openGenerated(Path.of(project.path), project)
-                                },
-                            )
+                        recentProjects.take(4).chunked(2).forEach { rowItems ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                rowItems.forEach { project ->
+                                    Box(Modifier.weight(1f)) {
+                                        RecentProjectCard(
+                                            project = project,
+                                            onClick = {
+                                                openGenerated(Path.of(project.path), project)
+                                            },
+                                        )
+                                    }
+                                }
+                                if (rowItems.size == 1) {
+                                    Spacer(Modifier.weight(1f))
+                                }
+                            }
                         }
                     }
                 }
@@ -222,8 +232,8 @@ fun HomeScreen(
                 )
 
                 HomeActionCard(
-                    title = "Open generated app",
-                    description = "Load blueprint.json + flows from builds/framework",
+                    title = "Open project",
+                    description = "Load a generated app or blueprint.json",
                     accent = NexusTheme.AccentGreen,
                     icon = { FlamingoGlyph(modifier = Modifier.size(32.dp)) },
                     onClick = {
@@ -240,14 +250,6 @@ fun HomeScreen(
                     },
                 )
 
-                HomeActionCard(
-                    title = "Import Langflow JSON",
-                    description = "Open Blueprint editor with flow nodes + disabled stubs",
-                    accent = NexusTheme.AccentOrange,
-                    icon = { FlamingoIcon(modifier = Modifier.size(36.dp)) },
-                    onClick = { importLangflow() },
-                )
-
                 Box {
                     HomeActionCard(
                         title = "Analyze project",
@@ -259,6 +261,7 @@ fun HomeScreen(
                     DropdownMenu(
                         expanded = showAnalyzeMenu,
                         onDismissRequest = { showAnalyzeMenu = false },
+                        offset = DpOffset(x = 0.dp, y = 56.dp),
                     ) {
                         DropdownMenuItem(onClick = {
                             showAnalyzeMenu = false
@@ -270,24 +273,28 @@ fun HomeScreen(
                             showAnalyzeMenu = false
                             onNavigate(AppScreen.FlowsEditor)
                         }) {
-                            Text("Flows Editor — automation services")
+                            Text("Flows editor — automation services")
                         }
                         DropdownMenuItem(onClick = {
                             showAnalyzeMenu = false
                             onNavigate(AppScreen.TestRunner)
                         }) {
-                            Text("Test Runner — in-memory unit tests")
+                            Text("Test runner — in-memory unit tests")
+                        }
+                        DropdownMenuItem(onClick = {
+                            showAnalyzeMenu = false
+                            onNavigate(AppScreen.BlueprintEditor)
+                        }) {
+                            Text("Blueprint editor — app structure DAG")
+                        }
+                        DropdownMenuItem(onClick = {
+                            showAnalyzeMenu = false
+                            importLangflow()
+                        }) {
+                            Text("Import Langflow JSON…")
                         }
                     }
                 }
-
-                HomeActionCard(
-                    title = "Blueprint editor",
-                    description = "Design the app structure DAG",
-                    accent = NexusTheme.BrandPurple,
-                    icon = { FlamingoIcon(modifier = Modifier.size(36.dp)) },
-                    onClick = { onNavigate(AppScreen.BlueprintEditor) },
-                )
 
                 Spacer(Modifier.weight(1f))
 

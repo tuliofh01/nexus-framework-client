@@ -415,13 +415,58 @@ link_app() {
 
   local out="$BUILD_DIR/bin/$PROJECT_NAME"
   mkdir -p "$BUILD_DIR/bin"
-  g++ -std=c++20 -o "$out" "${objs[@]}" \
-    "$imgui_lib" "$zig_lib" \
-    "${ldflags[@]}"
-  log "Built $out"
-  # Convenience symlink matching zig-out layout
+
+  # ── Stale-artifact guard ─────────────────────────────────────────────────
+  # A previous failed/interrupted link can leave a corrupt file behind
+  # (e.g. the "*.lzf" corrupted binaries that had 8 junk bytes prepended
+  # to a valid ELF header — the OS then refuses to execute them and the
+  # app "does not load anything"). Remove stale artifacts BEFORE linking
+  # so a partially-written file can never be mistaken for a good build.
+  rm -f "$out" "$out.tmp"
+  rm -f "$ROOT/zig-out/bin/$PROJECT_NAME"
+
+  # ── Atomic link with verification ────────────────────────────────────────
+  # 1. Link to a temporary file first.
+  # 2. Verify the ELF magic bytes (7f 45 4c 46 = "\x7fELF") at offset 0.
+  # 3. Only then move it into place (atomic on the same filesystem) and
+  #    recreate the zig-out convenience symlink.
+  # If linking fails or produces garbage we die() loudly instead of
+  # printing "Build OK" over a binary the OS cannot run.
+  local tmp="$out.tmp"
+  if ! g++ -std=c++20 -o "$tmp" "${objs[@]}" \
+      "$imgui_lib" "$zig_lib" \
+      "${ldflags[@]}"; then
+    rm -f "$tmp"
+    die "linking failed — see g++ errors above"
+  fi
+
+  if ! verify_elf_magic "$tmp"; then
+    rm -f "$tmp"
+    die "linked binary failed ELF verification ($tmp is not a valid executable)"
+  fi
+
+  chmod +x "$tmp"
+  mv -f "$tmp" "$out"
+  log "Built $out (ELF verified)"
+
+  # Convenience symlink matching zig-out layout — created only after the
+  # binary passed verification, so it can never dangle.
   mkdir -p "$ROOT/zig-out/bin"
   ln -sfn "$out" "$ROOT/zig-out/bin/$PROJECT_NAME"
+}
+
+# ── ELF magic verification ──────────────────────────────────────────────────
+# Every Linux executable starts with the 4 bytes 7f 45 4c 46 ("\x7fELF").
+# We read them with od (coreutils — always present) so this adds no
+# dependency. This is what catches corrupted binaries like the "*.lzf"
+# files: junk bytes at offset 0 shift the ELF header and make `file`
+# report "data" instead of "ELF 64-bit ... executable".
+verify_elf_magic() {
+  local f="$1"
+  [[ -s "$f" ]] || return 1
+  local magic
+  magic="$(od -An -tx1 -N4 "$f" 2>/dev/null | tr -d ' \n')"
+  [[ "$magic" == "7f454c46" ]]
 }
 
 # ── Sync script_protection.cppm with generated ScriptProtectionConfig.hpp ──
