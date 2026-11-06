@@ -1289,7 +1289,6 @@ Nexus-Framework/
 
 ###  Before You Dive In (The Checklist)
 
-- [ ] **Read `AGENTS.md`** — It explains how to work with AI coding assistants in this repo
 - [ ] **Check `docs/hub.md`** — The documentation hub (start here)
 - [ ] **Verify `misc/client-setup` is fresh** — Run `zig run setup.zig` if you haven't in 30 days
 - [ ] **Look at `build_client.sh`** — It shows how to compile everything
